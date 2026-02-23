@@ -1,32 +1,47 @@
-import { useSignal } from "@preact/signals";
 import { Head } from "fresh/runtime";
 import { define } from "../utils.ts";
-import Counter from "../islands/Counter.tsx";
-
-export default define.page(function Home(ctx) {
-  const count = useSignal(3);
-
-  console.log("Shared value " + ctx.state.shared);
+import { listCharacters } from "../lib/characters.ts";
+export default define.page(async function Home() {
+  const characters = await listCharacters();
 
   return (
     <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
       <Head>
-        <title>Fresh counter</title>
+        <title>World Vore One Character Sheet</title>
       </Head>
-      <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
-        <img
-          class="my-6"
-          src="/logo.svg"
-          width="128"
-          height="128"
-          alt="the Fresh logo: a sliced lemon dripping with juice"
-        />
-        <h1 class="text-4xl font-bold">Welcome to Fresh</h1>
-        <p class="my-4">
-          Try updating this message in the
-          <code class="mx-2">./routes/index.tsx</code> file, and refresh.
-        </p>
-        <Counter count={count} />
+      <div class="max-w-3xl mx-auto space-y-6">
+        <header>
+          <h1 class="text-3xl font-bold">World Vore One Character Sheet</h1>
+          <p class="text-gray-700">
+            Create and edit tabletop characters using stat and perk points.
+          </p>
+        </header>
+
+        <section class="space-y-4">
+          <a
+            href="/characters/new"
+            class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            Create Character
+          </a>
+
+          <div class="border rounded-lg p-4 bg-white/80">
+            <h2 class="text-xl font-semibold mb-2">Characters</h2>
+            {characters.length === 0
+              ? <p class="text-gray-700">No characters yet.</p>
+              : (
+                <ul class="space-y-2">
+                  {characters.map((character) => (
+                    <li key={character.id}>
+                      <a href={`/characters/${character.id}`} class="underline">
+                        {character.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+          </div>
+        </section>
       </div>
     </div>
   );

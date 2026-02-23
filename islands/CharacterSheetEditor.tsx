@@ -1,0 +1,295 @@
+import { useMemo, useState } from "preact/hooks";
+import type { PerkDefinition } from "../data/perks.ts";
+import {
+  BASE_STAT_FIELDS,
+  type BaseStatKey,
+  type CharacterDraft,
+  type CharacterSheet,
+  RACES,
+} from "../lib/character_types.ts";
+import {
+  calculateEffectiveCarryCapacity,
+  calculateEffectiveCharisma,
+  calculateEffectiveConstitution,
+  calculateEffectiveDexterity,
+  calculateEffectiveDigestionResilience,
+  calculateEffectiveDigestionStrength,
+  calculateEffectiveEscapeTraining,
+  calculateEffectiveHealth,
+  calculateEffectiveIntelligence,
+  calculateEffectiveOrganCapacity,
+  calculateEffectiveStrength,
+} from "../lib/stat_calculations.ts";
+
+interface CharacterSheetEditorProps {
+  action: "create" | "update";
+  title: string;
+  submitLabel: string;
+  characterId?: string;
+  initialCharacter: CharacterDraft | CharacterSheet;
+  perks: PerkDefinition[];
+}
+
+export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
+  const [name, setName] = useState(props.initialCharacter.name);
+  const [race, setRace] = useState(props.initialCharacter.race);
+  const [description, setDescription] = useState(
+    props.initialCharacter.description,
+  );
+  const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
+  const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
+    props.initialCharacter.unallocatedStatPoints,
+  );
+  const [unspentPerkPoints, setUnspentPerkPoints] = useState(
+    props.initialCharacter.unspentPerkPoints,
+  );
+  const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
+  const [showPerkPicker, setShowPerkPicker] = useState(false);
+
+  const draft: CharacterDraft = {
+    name,
+    race,
+    description,
+    baseStats,
+    unallocatedStatPoints,
+    unspentPerkPoints,
+    perkIds,
+  };
+
+  const effectiveByStat = useMemo(() => {
+    return {
+      strength: calculateEffectiveStrength(draft),
+      dexterity: calculateEffectiveDexterity(draft),
+      constitution: calculateEffectiveConstitution(draft),
+      intelligence: calculateEffectiveIntelligence(draft),
+      charisma: calculateEffectiveCharisma(draft),
+      escapeTraining: calculateEffectiveEscapeTraining(draft),
+      digestionStrength: calculateEffectiveDigestionStrength(draft),
+      digestionResilience: calculateEffectiveDigestionResilience(draft),
+    };
+  }, [draft]);
+
+  const availablePerks = props.perks.filter((perk) =>
+    !perkIds.includes(perk.id)
+  );
+
+  function increaseStat(statKey: BaseStatKey) {
+    if (unallocatedStatPoints < 1) {
+      return;
+    }
+
+    setBaseStats((current) => ({
+      ...current,
+      [statKey]: current[statKey] + 1,
+    }));
+    setUnallocatedStatPoints((current) => current - 1);
+  }
+
+  function buyPerkPoint() {
+    if (unallocatedStatPoints < 3) {
+      return;
+    }
+
+    setUnallocatedStatPoints((current) => current - 3);
+    setUnspentPerkPoints((current) => current + 1);
+  }
+
+  function buyPerk(perkId: string) {
+    if (unspentPerkPoints < 1 || perkIds.includes(perkId)) {
+      return;
+    }
+
+    setPerkIds((current) => [...current, perkId]);
+    setUnspentPerkPoints((current) => current - 1);
+  }
+
+  return (
+    <form method="POST" class="space-y-4 border rounded-lg p-4 bg-white/80">
+      <h2 class="text-xl font-semibold">{props.title}</h2>
+      <input type="hidden" name="action" value={props.action} />
+      {props.action === "update" && props.characterId && (
+        <input type="hidden" name="id" value={props.characterId} />
+      )}
+      <input type="hidden" name="baseStats" value={JSON.stringify(baseStats)} />
+      <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />
+      <input
+        type="hidden"
+        name="unallocatedStatPoints"
+        value={String(unallocatedStatPoints)}
+      />
+      <input
+        type="hidden"
+        name="unspentPerkPoints"
+        value={String(unspentPerkPoints)}
+      />
+
+      <label class="block">
+        <span class="block font-medium mb-1">Name</span>
+        <input
+          class="w-full border rounded px-3 py-2"
+          name="name"
+          type="text"
+          value={name}
+          onInput={(event) =>
+            setName(event.currentTarget.value)}
+          required
+        />
+      </label>
+
+      <label class="block">
+        <span class="block font-medium mb-1">Race</span>
+        <select
+          class="w-full border rounded px-3 py-2"
+          name="race"
+          value={race}
+          onInput={(event) =>
+            setRace(event.currentTarget.value as CharacterDraft["race"])}
+        >
+          {RACES.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      </label>
+
+      <label class="block">
+        <span class="block font-medium mb-1">Description</span>
+        <textarea
+          class="w-full border rounded px-3 py-2"
+          name="description"
+          rows={3}
+          value={description}
+          onInput={(event) =>
+            setDescription(event.currentTarget.value)}
+        />
+      </label>
+
+      <div class="rounded border p-3 space-y-2">
+        <h3 class="font-semibold">Base Stats</h3>
+        <p class="text-sm text-gray-700">
+          Unallocated stat points: <strong>{unallocatedStatPoints}</strong>
+        </p>
+        <ul class="space-y-2">
+          {BASE_STAT_FIELDS.map((field) => (
+            <li class="flex items-center justify-between gap-2" key={field.key}>
+              <span class="text-sm">{field.label}</span>
+              <span class="text-sm">
+                Base: <strong>{baseStats[field.key]}</strong> | Effective:{" "}
+                <strong>{effectiveByStat[field.key]}</strong>
+              </span>
+              <button
+                type="button"
+                class="px-2 py-1 border rounded disabled:opacity-40"
+                disabled={unallocatedStatPoints < 1}
+                onClick={() =>
+                  increaseStat(field.key)}
+              >
+                +1
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="rounded border p-3 space-y-2">
+        <h3 class="font-semibold">Other Stats</h3>
+        <ul class="space-y-1 text-sm">
+          <li>
+            Health: <strong>{calculateEffectiveHealth(draft)}</strong>
+          </li>
+          <li>
+            Carry Capacity:{" "}
+            <strong>{calculateEffectiveCarryCapacity(draft)}</strong>
+          </li>
+          <li>
+            Organ Capacity:{" "}
+            <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
+          </li>
+        </ul>
+      </div>
+
+      <div class="rounded border p-3 space-y-3">
+        <h3 class="font-semibold">Perks</h3>
+        <p class="text-sm text-gray-700">
+          Unspent perk points: <strong>{unspentPerkPoints}</strong>
+        </p>
+
+        <button
+          type="button"
+          class="px-2 py-1 border rounded disabled:opacity-40"
+          disabled={unallocatedStatPoints < 3}
+          onClick={buyPerkPoint}
+        >
+          Buy 1 perk point (cost: 3 stat points)
+        </button>
+
+        <div>
+          <h4 class="font-medium">Owned Perks</h4>
+          {perkIds.length === 0
+            ? <p class="text-sm text-gray-700">No perks unlocked.</p>
+            : (
+              <ul class="list-disc list-inside text-sm">
+                {perkIds.map((id) => {
+                  const perk = props.perks.find((entry) => entry.id === id);
+                  return (
+                    <li key={id}>
+                      {perk ? `${perk.name}: ${perk.description}` : id}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+        </div>
+
+        {unspentPerkPoints > 0 && (
+          <div class="space-y-2">
+            <button
+              type="button"
+              class="px-2 py-1 border rounded"
+              onClick={() => setShowPerkPicker((current) => !current)}
+            >
+              Add Perk
+            </button>
+            {showPerkPicker && (
+              <div class="space-y-2">
+                {availablePerks.length === 0
+                  ? (
+                    <p class="text-sm text-gray-700">
+                      No more perks available.
+                    </p>
+                  )
+                  : (
+                    <ul class="space-y-2">
+                      {availablePerks.map((perk) => (
+                        <li
+                          class="flex items-center justify-between gap-2"
+                          key={perk.id}
+                        >
+                          <span class="text-sm">
+                            <strong>{perk.name}</strong>: {perk.description}
+                          </span>
+                          <button
+                            type="button"
+                            class="px-2 py-1 border rounded"
+                            onClick={() => buyPerk(perk.id)}
+                          >
+                            Buy
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <button
+        type="submit"
+        class="px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+      >
+        {props.submitLabel}
+      </button>
+    </form>
+  );
+}

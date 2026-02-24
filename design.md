@@ -65,3 +65,54 @@ are some examples of perks:
 
 If a character has unspent perk points, they may click an "add perk" button to
 see a list of perks, then click on one of them to buy it.
+
+## Weight and Encumbrance
+
+Carrying equipment, cargo, or people (including inside of you) increases your
+carried weight.
+
+If your carried weight exceeds your Carry capacity, you become Encumbered.
+
+If it exceeds double your carry capacity, you are Heavily Encumbered.
+
+If it exceeds triple your carry capacity, you are Immobile.
+
+Every encumbrance level reduces your dex and strength by 1, though these cannot
+be reduced below 0. While Immobile, you are unable to move. The 'runner' perk is
+affected by encumbrance.
+
+For example, if your carry capacity is 3, you are Unencumbered up to 3 carried
+weight, Encumbered up to 6, Heaily Encumbered up to 9, and Immobile beyond that.
+
+## Skill Checks
+
+When performing a skill check, you roll a d6 (random integer from 1 to 6,
+inclusive) for each point in the applicable skill.
+
+A strength of 3 means you can roll 3 d6s on a strength check. A dex of 5 means
+you can roll 5 d6s on a dexterity check.
+
+You obtain successes when rolling a 5 or a 6. The number of successes you get
+determine whether you pass the check. Check difficulty is decided by the GM.
+
+## Contested checks
+
+In a contested check, the difference in a skill between two players modifies
+their total dice to roll.
+
+When grappling, if you have 5 strength and your opponent has 3, you gain an
+extra two dice to your check. This means you'd roll 7 d6, wheras they roll
+only 3.
+
+## Incapacitation
+
+When a non-incapacitated player is damaged, and their HP is brought to zero or
+below, their HP will be set to zero, and they become incapacitated.
+
+While incapacitated, they cannot do anything, and automatically fail any checks.
+They are alive, however, and will recover over time.
+
+If they're damaged while incapacitated, their HP goes into the negatives and
+they're put into critical condition, and will eventually die if not treated. If
+a player's health is brought below the negative of their base health - for
+example, a player with 5 hp going below negative 5 - they are killed.

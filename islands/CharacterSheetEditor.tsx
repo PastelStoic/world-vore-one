@@ -26,6 +26,7 @@ interface CharacterSheetEditorProps {
   title: string;
   submitLabel: string;
   characterId?: string;
+  basedOnSnapshotId?: string;
   initialCharacter: CharacterDraft | CharacterSheet;
   perks: PerkDefinition[];
 }
@@ -110,6 +111,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <input type="hidden" name="action" value={props.action} />
       {props.action === "update" && props.characterId && (
         <input type="hidden" name="id" value={props.characterId} />
+      )}
+      {props.basedOnSnapshotId && (
+        <input
+          type="hidden"
+          name="basedOnSnapshotId"
+          value={props.basedOnSnapshotId}
+        />
       )}
       <input type="hidden" name="baseStats" value={JSON.stringify(baseStats)} />
       <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />

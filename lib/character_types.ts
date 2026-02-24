@@ -47,6 +47,7 @@ export interface CharacterSnapshot {
   characterId: string;
   timestamp: string;
   changelog: string;
+  basedOnSnapshotId?: string;
   data: CharacterDraft;
 }
 

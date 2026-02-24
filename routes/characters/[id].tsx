@@ -27,6 +27,8 @@ export const handler = define.handlers({
     const action = formData.get("action");
     const name = String(formData.get("name") ?? "").trim();
     const changelog = String(formData.get("changelog") ?? "").trim();
+    const basedOnSnapshotId = String(formData.get("basedOnSnapshotId") ?? "")
+      .trim();
     const race = parseRace(String(formData.get("race") ?? ""));
     const description = String(formData.get("description") ?? "").trim();
     const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
@@ -82,7 +84,9 @@ export const handler = define.handlers({
       return new Response("Character not found.", { status: 404 });
     }
 
-    await upsertCharacter({ id, ...draft }, changelog);
+    await upsertCharacter({ id, ...draft }, changelog, {
+      basedOnSnapshotId,
+    });
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),
@@ -117,6 +121,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
           title={`Edit: ${character.name}`}
           submitLabel="Save Changes"
           characterId={character.id}
+          basedOnSnapshotId={character.latestSnapshotId}
           initialCharacter={character}
           perks={PERKS}
         />

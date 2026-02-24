@@ -42,17 +42,24 @@ export async function getCharacter(id: string) {
 export async function upsertCharacter(
   input: CharacterDraft & Pick<CharacterSheet, "id">,
   changelog: string,
+  options?: { basedOnSnapshotId?: string },
 ) {
   const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
   const snapshotId = crypto.randomUUID();
+  const basedOnSnapshotId = options?.basedOnSnapshotId?.trim();
+  const changelogWithBase = basedOnSnapshotId && existing &&
+      basedOnSnapshotId !== existing.latestSnapshotId
+    ? `${changelog} Based on old snapshot ${basedOnSnapshotId}`
+    : changelog;
 
   const snapshot: CharacterSnapshot = {
     snapshotId,
     characterId: input.id,
     timestamp: now,
-    changelog,
+    changelog: changelogWithBase,
+    basedOnSnapshotId: basedOnSnapshotId || undefined,
     data: {
       name: input.name,
       race: input.race,

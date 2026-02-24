@@ -26,6 +26,7 @@ export const handler = define.handlers({
     const formData = await ctx.req.formData();
     const action = formData.get("action");
     const name = String(formData.get("name") ?? "").trim();
+    const changelog = String(formData.get("changelog") ?? "").trim();
     const race = parseRace(String(formData.get("race") ?? ""));
     const description = String(formData.get("description") ?? "").trim();
     const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
@@ -39,6 +40,10 @@ export const handler = define.handlers({
 
     if (!name) {
       return new Response("Name is required.", { status: 400 });
+    }
+
+    if (!changelog) {
+      return new Response("Changelog is required.", { status: 400 });
     }
 
     if (
@@ -72,7 +77,7 @@ export const handler = define.handlers({
     }
 
     const id = crypto.randomUUID();
-    await upsertCharacter({ id, ...draft });
+    await upsertCharacter({ id, ...draft }, changelog);
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),

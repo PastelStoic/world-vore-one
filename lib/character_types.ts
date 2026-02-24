@@ -37,8 +37,17 @@ export interface CharacterDraft {
 
 export interface CharacterSheet extends CharacterDraft {
   id: string;
+  latestSnapshotId: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CharacterSnapshot {
+  snapshotId: string;
+  characterId: string;
+  timestamp: string;
+  changelog: string;
+  data: CharacterDraft;
 }
 
 export const DEFAULT_STAT_POINTS = 5;

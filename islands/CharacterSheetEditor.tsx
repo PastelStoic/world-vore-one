@@ -44,6 +44,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     props.initialCharacter.unspentPerkPoints,
   );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
+  const [changelog, setChangelog] = useState("");
   const [showPerkPicker, setShowPerkPicker] = useState(false);
 
   const draft: CharacterDraft = {
@@ -160,6 +161,19 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           value={description}
           onInput={(event) =>
             setDescription(event.currentTarget.value)}
+        />
+      </label>
+
+      <label class="block">
+        <span class="block font-medium mb-1">Changelog</span>
+        <input
+          class="w-full border rounded px-3 py-2"
+          name="changelog"
+          type="text"
+          value={changelog}
+          onInput={(event) => setChangelog(event.currentTarget.value)}
+          placeholder="Describe what changed in this save"
+          required
         />
       </label>
 

@@ -2,14 +2,18 @@ import {
   BASE_STAT_FIELDS,
   type BaseStats,
   type CharacterDraft,
+  type CharacterDescription,
   type CharacterSheet,
   type CharacterSnapshot,
   createDefaultBaseStats,
   createDefaultCharacterDraft,
+  createDefaultDescription,
   DEFAULT_PERK_POINTS,
   DEFAULT_STAT_POINTS,
   type Race,
   RACES,
+  SEX_OPTIONS,
+  type Sex,
 } from "./character_types.ts";
 import { getKv } from "./kv.ts";
 
@@ -181,6 +185,44 @@ export function parsePerkIds(raw: string): string[] | null {
   }
 }
 
+export function parseDescription(raw: string): CharacterDescription | null {
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const defaults = createDefaultDescription();
+
+    const str = (key: keyof CharacterDescription): string =>
+      typeof parsed[key] === "string" ? String(parsed[key]).trim() : defaults[key] as string;
+
+    const sex = SEX_OPTIONS.includes(parsed.sex as Sex)
+      ? (parsed.sex as Sex)
+      : defaults.sex;
+
+    return {
+      isTemplate: typeof parsed.isTemplate === "boolean" ? parsed.isTemplate : false,
+      countryOfOrigin: str("countryOfOrigin"),
+      faction: str("faction"),
+      subfaction: str("subfaction"),
+      role: str("role"),
+      age: str("age"),
+      dateOfBirth: str("dateOfBirth"),
+      sex,
+      height: str("height"),
+      weight: str("weight"),
+      skinColor: str("skinColor"),
+      hairColor: str("hairColor"),
+      eyeColor: str("eyeColor"),
+      ethnicity: str("ethnicity"),
+      bodyType: str("bodyType"),
+      generalAppearance: str("generalAppearance"),
+      generalHealth: str("generalHealth"),
+      personality: str("personality"),
+      biography: str("biography"),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function validateCharacterProgression(
   input: CharacterDraft,
 ): string | null {
@@ -220,7 +262,9 @@ export function validateCharacterProgression(
 
 export {
   type CharacterDraft,
+  type CharacterDescription,
   type CharacterSheet,
   type CharacterSnapshot,
   createDefaultCharacterDraft,
+  createDefaultDescription,
 };

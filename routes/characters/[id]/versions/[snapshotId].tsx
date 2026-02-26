@@ -122,9 +122,65 @@ export default define.page<typeof handler>(
             <p>
               <strong>Race:</strong> {draft.race}
             </p>
-            <p>
-              <strong>Description:</strong> {draft.description || "(none)"}
-            </p>
+
+            <div class="space-y-1">
+              <h3 class="font-semibold">Description</h3>
+              {draft.description.isTemplate && (
+                <p><strong>Template:</strong> Yes</p>
+              )}
+              {draft.description.countryOfOrigin && (
+                <p><strong>Country of Origin:</strong> {draft.description.countryOfOrigin}</p>
+              )}
+              {draft.description.faction && (
+                <p><strong>Faction:</strong> {draft.description.faction}</p>
+              )}
+              {draft.description.subfaction && (
+                <p><strong>Subfaction:</strong> {draft.description.subfaction}</p>
+              )}
+              {draft.description.role && (
+                <p><strong>Role:</strong> {draft.description.role}</p>
+              )}
+              {draft.description.age && (
+                <p><strong>Age:</strong> {draft.description.age}</p>
+              )}
+              {draft.description.dateOfBirth && (
+                <p><strong>Date of Birth:</strong> {draft.description.dateOfBirth}</p>
+              )}
+              <p><strong>Sex:</strong> {draft.description.sex}</p>
+              {draft.description.height && (
+                <p><strong>Height:</strong> {draft.description.height}</p>
+              )}
+              {draft.description.weight && (
+                <p><strong>Weight:</strong> {draft.description.weight}</p>
+              )}
+              {draft.description.skinColor && (
+                <p><strong>Skin Color:</strong> {draft.description.skinColor}</p>
+              )}
+              {draft.description.hairColor && (
+                <p><strong>Hair Color:</strong> {draft.description.hairColor}</p>
+              )}
+              {draft.description.eyeColor && (
+                <p><strong>Eye Color:</strong> {draft.description.eyeColor}</p>
+              )}
+              {draft.description.ethnicity && (
+                <p><strong>Ethnicity:</strong> {draft.description.ethnicity}</p>
+              )}
+              {draft.description.bodyType && (
+                <p><strong>Body Type:</strong> {draft.description.bodyType}</p>
+              )}
+              {draft.description.generalAppearance && (
+                <p><strong>General Appearance:</strong> {draft.description.generalAppearance}</p>
+              )}
+              {draft.description.generalHealth && (
+                <p><strong>General Health:</strong> {draft.description.generalHealth}</p>
+              )}
+              {draft.description.personality && (
+                <p><strong>Personality:</strong> {draft.description.personality}</p>
+              )}
+              {draft.description.biography && (
+                <p><strong>Biography:</strong> {draft.description.biography}</p>
+              )}
+            </div>
 
             <form method="POST" class="space-y-2 border rounded p-3">
               <input type="hidden" name="action" value="set_current" />

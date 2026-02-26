@@ -25,10 +25,35 @@ export interface BaseStats {
   digestionResilience: number;
 }
 
+export const SEX_OPTIONS = ["Male", "Female", "Futa"] as const;
+export type Sex = (typeof SEX_OPTIONS)[number];
+
+export interface CharacterDescription {
+  isTemplate: boolean;
+  countryOfOrigin: string;
+  faction: string;
+  subfaction: string;
+  role: string;
+  age: string;
+  dateOfBirth: string;
+  sex: Sex;
+  height: string;
+  weight: string;
+  skinColor: string;
+  hairColor: string;
+  eyeColor: string;
+  ethnicity: string;
+  bodyType: string;
+  generalAppearance: string;
+  generalHealth: string;
+  personality: string;
+  biography: string;
+}
+
 export interface CharacterDraft {
   name: string;
   race: Race;
-  description: string;
+  description: CharacterDescription;
   baseStats: BaseStats;
   unallocatedStatPoints: number;
   unspentPerkPoints: number;
@@ -68,11 +93,35 @@ export function createDefaultBaseStats(): BaseStats {
   };
 }
 
+export function createDefaultDescription(): CharacterDescription {
+  return {
+    isTemplate: false,
+    countryOfOrigin: "",
+    faction: "",
+    subfaction: "",
+    role: "",
+    age: "",
+    dateOfBirth: "",
+    sex: "Male",
+    height: "",
+    weight: "",
+    skinColor: "",
+    hairColor: "",
+    eyeColor: "",
+    ethnicity: "",
+    bodyType: "",
+    generalAppearance: "",
+    generalHealth: "",
+    personality: "",
+    biography: "",
+  };
+}
+
 export function createDefaultCharacterDraft(): CharacterDraft {
   return {
     name: "",
     race: "Baseliner",
-    description: "",
+    description: createDefaultDescription(),
     baseStats: createDefaultBaseStats(),
     unallocatedStatPoints: DEFAULT_STAT_POINTS,
     unspentPerkPoints: DEFAULT_PERK_POINTS,

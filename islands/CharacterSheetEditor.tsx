@@ -4,8 +4,11 @@ import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
   type CharacterDraft,
+  type CharacterDescription,
   type CharacterSheet,
+  type Sex,
   RACES,
+  SEX_OPTIONS,
 } from "../lib/character_types.ts";
 import {
   calculateEncumbranceLevel,
@@ -36,7 +39,7 @@ interface CharacterSheetEditorProps {
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [name, setName] = useState(props.initialCharacter.name);
   const [race, setRace] = useState(props.initialCharacter.race);
-  const [description, setDescription] = useState(
+  const [description, setDescription] = useState<CharacterDescription>(
     props.initialCharacter.description,
   );
   const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
@@ -85,6 +88,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     !perkIds.includes(perk.id)
   );
 
+  function updateDescription<K extends keyof CharacterDescription>(
+    key: K,
+    value: CharacterDescription[K],
+  ) {
+    setDescription((current) => ({ ...current, [key]: value }));
+  }
+
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints < 1) {
       return;
@@ -130,6 +140,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         />
       )}
       <input type="hidden" name="baseStats" value={JSON.stringify(baseStats)} />
+      <input type="hidden" name="description" value={JSON.stringify(description)} />
       <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />
       <input
         type="hidden"
@@ -170,17 +181,236 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         </select>
       </label>
 
-      <label class="block">
-        <span class="block font-medium mb-1">Description</span>
-        <textarea
-          class="w-full border rounded px-3 py-2"
-          name="description"
-          rows={3}
-          value={description}
-          onInput={(event) =>
-            setDescription(event.currentTarget.value)}
-        />
-      </label>
+      <div class="rounded border p-3 space-y-3">
+        <h3 class="font-semibold">Description</h3>
+
+        {race === "Pilzfraun" && (
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={description.isTemplate}
+              onChange={(event) =>
+                updateDescription("isTemplate", event.currentTarget.checked)}
+            />
+            <span class="font-medium">Is a template</span>
+          </label>
+        )}
+
+        <label class="block">
+          <span class="block font-medium mb-1">Country of Origin</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            value={description.countryOfOrigin}
+            onInput={(event) =>
+              updateDescription("countryOfOrigin", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Faction</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            value={description.faction}
+            onInput={(event) =>
+              updateDescription("faction", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Role</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            placeholder="Cook, politician, soldier, sapper, conscript, etc."
+            value={description.role}
+            onInput={(event) =>
+              updateDescription("role", event.currentTarget.value)}
+          />
+        </label>
+
+        {description.role.toLowerCase() === "soldier" && (
+          <label class="block">
+            <span class="block font-medium mb-1">Subfaction</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.subfaction}
+              onInput={(event) =>
+                updateDescription("subfaction", event.currentTarget.value)}
+            />
+          </label>
+        )}
+
+        <label class="block">
+          <span class="block font-medium mb-1">Age</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            placeholder={race === "Pilzfraun" ? "Biological age is 21 by default. Include chronological age." : "Must be 18+. Include chronological age (year 1922)."}
+            value={description.age}
+            onInput={(event) =>
+              updateDescription("age", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Date of Birth</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            placeholder="M/D/Y — Year is mandatory, month and day are optional"
+            value={description.dateOfBirth}
+            onInput={(event) =>
+              updateDescription("dateOfBirth", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Sex</span>
+          <select
+            class="w-full border rounded px-3 py-2"
+            value={description.sex}
+            onInput={(event) =>
+              updateDescription("sex", event.currentTarget.value as Sex)}
+          >
+            {SEX_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="block font-medium mb-1">Height</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.height}
+              onInput={(event) =>
+                updateDescription("height", event.currentTarget.value)}
+            />
+          </label>
+
+          <label class="block">
+            <span class="block font-medium mb-1">Weight</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.weight}
+              onInput={(event) =>
+                updateDescription("weight", event.currentTarget.value)}
+            />
+          </label>
+        </div>
+
+        <p class="text-sm text-gray-500 italic">
+          The appearance fields below may be left blank if using an image to represent your character.
+        </p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="block font-medium mb-1">Skin Color</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.skinColor}
+              onInput={(event) =>
+                updateDescription("skinColor", event.currentTarget.value)}
+            />
+          </label>
+
+          <label class="block">
+            <span class="block font-medium mb-1">Hair Color</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.hairColor}
+              onInput={(event) =>
+                updateDescription("hairColor", event.currentTarget.value)}
+            />
+          </label>
+
+          <label class="block">
+            <span class="block font-medium mb-1">Eye Color</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.eyeColor}
+              onInput={(event) =>
+                updateDescription("eyeColor", event.currentTarget.value)}
+            />
+          </label>
+
+          <label class="block">
+            <span class="block font-medium mb-1">Ethnicity</span>
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="text"
+              value={description.ethnicity}
+              onInput={(event) =>
+                updateDescription("ethnicity", event.currentTarget.value)}
+            />
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Body Type</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            type="text"
+            value={description.bodyType}
+            onInput={(event) =>
+              updateDescription("bodyType", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">General Appearance</span>
+          <textarea
+            class="w-full border rounded px-3 py-2"
+            rows={3}
+            value={description.generalAppearance}
+            onInput={(event) =>
+              updateDescription("generalAppearance", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">General Health</span>
+          <textarea
+            class="w-full border rounded px-3 py-2"
+            rows={3}
+            placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
+            value={description.generalHealth}
+            onInput={(event) =>
+              updateDescription("generalHealth", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Personality</span>
+          <textarea
+            class="w-full border rounded px-3 py-2"
+            rows={3}
+            value={description.personality}
+            onInput={(event) =>
+              updateDescription("personality", event.currentTarget.value)}
+          />
+        </label>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Biography</span>
+          <textarea
+            class="w-full border rounded px-3 py-2"
+            rows={5}
+            value={description.biography}
+            onInput={(event) =>
+              updateDescription("biography", event.currentTarget.value)}
+          />
+        </label>
+      </div>
 
       <label class="block">
         <span class="block font-medium mb-1">Changelog</span>

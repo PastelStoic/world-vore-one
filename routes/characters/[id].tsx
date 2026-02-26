@@ -6,6 +6,7 @@ import {
   type CharacterDraft,
   getCharacter,
   parseBaseStats,
+  parseDescription,
   parsePerkIds,
   parseRace,
   upsertCharacter,
@@ -35,7 +36,7 @@ export const handler = define.handlers({
     const basedOnSnapshotId = String(formData.get("basedOnSnapshotId") ?? "")
       .trim();
     const race = parseRace(String(formData.get("race") ?? ""));
-    const description = String(formData.get("description") ?? "").trim();
+    const description = parseDescription(String(formData.get("description") ?? "{}"));
     const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
     const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
     const unallocatedStatPoints = parseNonNegativeInt(
@@ -54,7 +55,7 @@ export const handler = define.handlers({
     }
 
     if (
-      !baseStats || !perkIds || unallocatedStatPoints === null ||
+      !description || !baseStats || !perkIds || unallocatedStatPoints === null ||
       unspentPerkPoints === null
     ) {
       return new Response("Invalid character payload.", { status: 400 });

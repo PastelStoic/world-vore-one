@@ -23,6 +23,11 @@ import {
 
 export const handler = define.handlers({
   async POST(ctx) {
+    const user = ctx.state.user;
+    if (!user) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
     const characterId = ctx.params.id;
     const snapshotId = ctx.params.snapshotId;
     const formData = await ctx.req.formData();
@@ -46,13 +51,19 @@ export const handler = define.handlers({
       return new Response("Character not found.", { status: 404 });
     }
 
+    if (character.userId !== user.id) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     if (!snapshot) {
       return new Response("Snapshot not found.", { status: 404 });
     }
 
-    await upsertCharacter({ id: characterId, ...snapshot.data }, changelog, {
-      basedOnSnapshotId: snapshotId,
-    });
+    await upsertCharacter(
+      { id: characterId, userId: user.id, ...snapshot.data },
+      changelog,
+      { basedOnSnapshotId: snapshotId },
+    );
 
     return Response.redirect(
       new URL(`/characters/${characterId}?saved=1`, ctx.url),

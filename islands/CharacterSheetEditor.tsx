@@ -8,6 +8,7 @@ import {
   RACES,
 } from "../lib/character_types.ts";
 import {
+  calculateEncumbranceLevel,
   calculateEffectiveCarryCapacity,
   calculateEffectiveCharisma,
   calculateEffectiveConstitution,
@@ -19,6 +20,7 @@ import {
   calculateEffectiveIntelligence,
   calculateEffectiveOrganCapacity,
   calculateEffectiveStrength,
+  getEncumbranceLabel,
 } from "../lib/stat_calculations.ts";
 
 interface CharacterSheetEditorProps {
@@ -45,6 +47,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     props.initialCharacter.unspentPerkPoints,
   );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
+  const [carriedWeight, setCarriedWeight] = useState(0);
   const [changelog, setChangelog] = useState("");
   const [showPerkPicker, setShowPerkPicker] = useState(false);
 
@@ -58,10 +61,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkIds,
   };
 
+  const carryCapacity = calculateEffectiveCarryCapacity(draft);
+  const encumbranceLevel = calculateEncumbranceLevel(carryCapacity, carriedWeight);
+  const encumbrancePenaltyText =
+    encumbranceLevel > 0
+      ? `-${encumbranceLevel} STR / -${encumbranceLevel} DEX`
+      : "No STR/DEX penalty";
+
   const effectiveByStat = useMemo(() => {
     return {
-      strength: calculateEffectiveStrength(draft),
-      dexterity: calculateEffectiveDexterity(draft),
+      strength: calculateEffectiveStrength(draft, { encumbranceLevel }),
+      dexterity: calculateEffectiveDexterity(draft, { encumbranceLevel }),
       constitution: calculateEffectiveConstitution(draft),
       intelligence: calculateEffectiveIntelligence(draft),
       charisma: calculateEffectiveCharisma(draft),
@@ -69,7 +79,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       digestionStrength: calculateEffectiveDigestionStrength(draft),
       digestionResilience: calculateEffectiveDigestionResilience(draft),
     };
-  }, [draft]);
+  }, [draft, encumbranceLevel]);
 
   const availablePerks = props.perks.filter((perk) =>
     !perkIds.includes(perk.id)
@@ -220,13 +230,44 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </li>
           <li>
             Carry Capacity:{" "}
-            <strong>{calculateEffectiveCarryCapacity(draft)}</strong>
+            <strong>{carryCapacity}</strong>
           </li>
           <li>
             Organ Capacity:{" "}
             <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
           </li>
         </ul>
+      </div>
+
+      <div class="rounded border p-3 space-y-2">
+        <h3 class="font-semibold">Effects</h3>
+        <label class="block">
+          <span class="block font-medium mb-1">Carried Weight</span>
+          <div class="flex items-center gap-3">
+            <input
+              class="w-full border rounded px-3 py-2"
+              type="number"
+              min="0"
+              step="1"
+              value={String(carriedWeight)}
+              onInput={(event) => {
+                const parsed = Number(event.currentTarget.value);
+                if (Number.isNaN(parsed) || parsed < 0) {
+                  setCarriedWeight(0);
+                  return;
+                }
+
+                setCarriedWeight(parsed);
+              }}
+            />
+            <span class="text-sm text-gray-700 whitespace-nowrap">
+              Encumbrance: <strong>{getEncumbranceLabel(encumbranceLevel)}</strong>
+            </span>
+            <span class="text-sm text-gray-700 whitespace-nowrap">
+              <strong>{encumbrancePenaltyText}</strong>
+            </span>
+          </div>
+        </label>
       </div>
 
       <div class="rounded border p-3 space-y-3">

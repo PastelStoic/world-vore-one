@@ -15,6 +15,9 @@ built-in perks. This is a dropdown with the following options:
 2. Tierfraun
 3. Baseliner
 
+If chosen race is Tierfraun, a second dropdown appears, requiring the user to
+select an animal type.
+
 ## Description
 
 A simple description of the character.
@@ -112,7 +115,7 @@ below, their HP will be set to zero, and they become incapacitated.
 While incapacitated, they cannot do anything, and automatically fail any checks.
 They are alive, however, and will recover over time.
 
-If they're damaged while incapacitated, their HP goes into the negatives and
+If they're damaged while incapacitated, their HP goes into the negatives and 
 they're put into critical condition, and will eventually die if not treated. If
 a player's health is brought below the negative of their base health - for
 example, a player with 5 hp going below negative 5 - they are killed.

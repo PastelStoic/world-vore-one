@@ -1,13 +1,21 @@
 import { App, staticFiles } from "fresh";
 import { define, type State } from "./utils.ts";
+import {
+  getSession,
+  getSessionIdFromRequest,
+} from "./lib/auth.ts";
 
 export const app = new App<State>();
 
 app.use(staticFiles());
 
-// Pass a shared value from a middleware
+// Auth middleware – resolves user from session cookie
 app.use(async (ctx) => {
   ctx.state.shared = "hello";
+
+  const sessionId = getSessionIdFromRequest(ctx.req);
+  ctx.state.user = sessionId ? await getSession(sessionId) : null;
+
   return await ctx.next();
 });
 

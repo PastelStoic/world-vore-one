@@ -1,6 +1,19 @@
 import { PERKS_BY_ID } from "../data/perks.ts";
 import type { BaseStatKey, CharacterDraft } from "./character_types.ts";
 
+export const ENCUMBRANCE_LEVELS = [
+  "Unencumbered",
+  "Encumbered",
+  "Heavily Encumbered",
+  "Immobile",
+] as const;
+
+export type EncumbranceLevel = 0 | 1 | 2 | 3;
+
+interface CalculationOptions {
+  encumbranceLevel?: EncumbranceLevel;
+}
+
 function getBaseStatBonus(input: CharacterDraft, statKey: BaseStatKey): number {
   let bonus = 0;
 
@@ -29,12 +42,53 @@ function getMultiplier(
   return multiplier;
 }
 
-export function calculateEffectiveStrength(input: CharacterDraft) {
-  return input.baseStats.strength + getBaseStatBonus(input, "strength");
+function applyEncumbrancePenalty(value: number, level: EncumbranceLevel) {
+  return Math.max(0, value - level);
 }
 
-export function calculateEffectiveDexterity(input: CharacterDraft) {
-  return input.baseStats.dexterity + getBaseStatBonus(input, "dexterity");
+export function calculateEncumbranceLevel(
+  carryCapacity: number,
+  carriedWeight: number,
+): EncumbranceLevel {
+  if (carryCapacity <= 0) {
+    return carriedWeight > 0 ? 3 : 0;
+  }
+
+  if (carriedWeight > carryCapacity * 3) {
+    return 3;
+  }
+
+  if (carriedWeight > carryCapacity * 2) {
+    return 2;
+  }
+
+  if (carriedWeight > carryCapacity) {
+    return 1;
+  }
+
+  return 0;
+}
+
+export function getEncumbranceLabel(level: EncumbranceLevel) {
+  return ENCUMBRANCE_LEVELS[level];
+}
+
+export function calculateEffectiveStrength(
+  input: CharacterDraft,
+  options: CalculationOptions = {},
+) {
+  const effective = input.baseStats.strength + getBaseStatBonus(input, "strength");
+  const level = options.encumbranceLevel ?? 0;
+  return applyEncumbrancePenalty(effective, level);
+}
+
+export function calculateEffectiveDexterity(
+  input: CharacterDraft,
+  options: CalculationOptions = {},
+) {
+  const effective = input.baseStats.dexterity + getBaseStatBonus(input, "dexterity");
+  const level = options.encumbranceLevel ?? 0;
+  return applyEncumbrancePenalty(effective, level);
 }
 
 export function calculateEffectiveConstitution(input: CharacterDraft) {

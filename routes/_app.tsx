@@ -1,6 +1,8 @@
 import { define } from "../utils.ts";
 
-export default define.page(function App({ Component }) {
+export default define.page(function App({ Component, state }) {
+  const user = state.user;
+
   return (
     <html>
       <head>
@@ -9,6 +11,28 @@ export default define.page(function App({ Component }) {
         <title>world-vore-one</title>
       </head>
       <body>
+        <nav class="flex items-center justify-end px-4 py-2 bg-white/60 border-b">
+          {user
+            ? (
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium">{user.username}</span>
+                <a
+                  href="/auth/logout"
+                  class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+                >
+                  Logout
+                </a>
+              </div>
+            )
+            : (
+              <a
+                href="/auth/discord"
+                class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+              >
+                Login with Discord
+              </a>
+            )}
+        </nav>
         <Component />
       </body>
     </html>

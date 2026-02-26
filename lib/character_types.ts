@@ -37,6 +37,7 @@ export interface CharacterDraft {
 
 export interface CharacterSheet extends CharacterDraft {
   id: string;
+  userId: string;
   latestSnapshotId: string;
   createdAt: string;
   updatedAt: string;

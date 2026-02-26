@@ -23,6 +23,11 @@ function parseNonNegativeInt(rawValue: FormDataEntryValue | null) {
 
 export const handler = define.handlers({
   async POST(ctx) {
+    const user = ctx.state.user;
+    if (!user) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
     const formData = await ctx.req.formData();
     const action = formData.get("action");
     const name = String(formData.get("name") ?? "").trim();
@@ -77,7 +82,7 @@ export const handler = define.handlers({
     }
 
     const id = crypto.randomUUID();
-    await upsertCharacter({ id, ...draft }, changelog);
+    await upsertCharacter({ id, userId: user.id, ...draft }, changelog);
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),
@@ -86,7 +91,13 @@ export const handler = define.handlers({
   },
 });
 
-export default define.page(function NewCharacterPage() {
+export default define.page<typeof handler>((ctx) => {
+  if (!ctx.state.user) {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/auth/discord" },
+    });
+  }
   return (
     <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
       <Head>

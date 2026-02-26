@@ -23,6 +23,11 @@ function parseNonNegativeInt(rawValue: FormDataEntryValue | null) {
 
 export const handler = define.handlers({
   async POST(ctx) {
+    const user = ctx.state.user;
+    if (!user) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
     const formData = await ctx.req.formData();
     const action = formData.get("action");
     const name = String(formData.get("name") ?? "").trim();
@@ -84,7 +89,11 @@ export const handler = define.handlers({
       return new Response("Character not found.", { status: 404 });
     }
 
-    await upsertCharacter({ id, ...draft }, changelog, {
+    if (existing.userId !== user.id) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
+    await upsertCharacter({ id, userId: user.id, ...draft }, changelog, {
       basedOnSnapshotId,
     });
 
@@ -103,6 +112,9 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
     return new Response("Character not found.", { status: 404 });
   }
 
+  const user = ctx.state.user;
+  const isOwner = user !== null && character.userId === user.id;
+
   const justSaved = ctx.url.searchParams.get("saved") === "1";
 
   return (
@@ -116,15 +128,24 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
           Previous Versions
         </a>
         {justSaved && <p class="text-green-700">Character saved.</p>}
-        <CharacterSheetEditor
-          action="update"
-          title={`Edit: ${character.name}`}
-          submitLabel="Save Changes"
-          characterId={character.id}
-          basedOnSnapshotId={character.latestSnapshotId}
-          initialCharacter={character}
-          perks={PERKS}
-        />
+        {isOwner
+          ? (
+            <CharacterSheetEditor
+              action="update"
+              title={`Edit: ${character.name}`}
+              submitLabel="Save Changes"
+              characterId={character.id}
+              basedOnSnapshotId={character.latestSnapshotId}
+              initialCharacter={character}
+              perks={PERKS}
+            />
+          )
+          : (
+            <div class="border rounded-lg p-4 bg-white/80">
+              <h2 class="text-xl font-bold">{character.name}</h2>
+              <p class="text-gray-600 text-sm">You do not own this character.</p>
+            </div>
+          )}
       </div>
     </div>
   );

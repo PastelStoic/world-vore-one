@@ -14,18 +14,29 @@ import {
 import { getKv } from "./kv.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
+const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
 const CHARACTER_SNAPSHOT_PREFIX = ["character_snapshots"] as const;
 const CHARACTER_SNAPSHOT_BY_ID_PREFIX = ["character_snapshots_by_id"] as const;
 
-export async function listCharacters() {
+export async function listCharacters(userId?: string) {
   const kv = await getKv();
   const characters: CharacterSheet[] = [];
 
-  for await (
-    const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
-  ) {
-    if (entry.value) {
-      characters.push(entry.value);
+  if (userId) {
+    for await (
+      const entry of kv.list<CharacterSheet>({ prefix: [...CHARACTER_BY_USER_PREFIX, userId] })
+    ) {
+      if (entry.value) {
+        characters.push(entry.value);
+      }
+    }
+  } else {
+    for await (
+      const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
+    ) {
+      if (entry.value) {
+        characters.push(entry.value);
+      }
     }
   }
 
@@ -40,7 +51,7 @@ export async function getCharacter(id: string) {
 }
 
 export async function upsertCharacter(
-  input: CharacterDraft & Pick<CharacterSheet, "id">,
+  input: CharacterDraft & Pick<CharacterSheet, "id" | "userId">,
   changelog: string,
   options?: { basedOnSnapshotId?: string },
 ) {
@@ -90,6 +101,7 @@ export async function upsertCharacter(
     snapshotId,
   ], snapshot);
   await kv.set([...CHARACTER_PREFIX, input.id], character);
+  await kv.set([...CHARACTER_BY_USER_PREFIX, input.userId, input.id], character);
   return character;
 }
 

@@ -45,6 +45,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
   const [initialBaseStats] = useState(props.initialCharacter.baseStats);
   const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
+  const [initialPerkIds] = useState(props.initialCharacter.perkIds);
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
     props.initialCharacter.unallocatedStatPoints,
   );
@@ -126,6 +127,18 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
     setPerkIds((current) => [...current, perkId]);
     setUnallocatedStatPoints((current) => current - cost);
+  }
+
+  function unbuyPerk(perkId: string) {
+    if (initialPerkIds.includes(perkId) || !perkIds.includes(perkId)) {
+      return;
+    }
+
+    const newPerkIds = perkIds.filter((id) => id !== perkId);
+    // Refund: if removing this perk brings us back to the free perk slot, refund 0
+    const refund = newPerkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
+    setPerkIds(newPerkIds);
+    setUnallocatedStatPoints((current) => current + refund);
   }
 
   return (
@@ -533,12 +546,24 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           {perkIds.length === 0
             ? <p class="text-sm text-gray-700">No perks unlocked.</p>
             : (
-              <ul class="list-disc list-inside text-sm">
+              <ul class="space-y-1 text-sm">
                 {perkIds.map((id) => {
                   const perk = props.perks.find((entry) => entry.id === id);
+                  const canRemove = !initialPerkIds.includes(id);
                   return (
-                    <li key={id}>
-                      {perk ? `${perk.name}: ${perk.description}` : id}
+                    <li class="flex items-center gap-2" key={id}>
+                      <span>
+                        {perk ? `${perk.name}: ${perk.description}` : id}
+                      </span>
+                      {canRemove && (
+                        <button
+                          type="button"
+                          class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                          onClick={() => unbuyPerk(id)}
+                        >
+                          Remove
+                        </button>
+                      )}
                     </li>
                   );
                 })}

@@ -20,33 +20,36 @@ select an animal type.
 
 ## Description
 
-**Is a template:** [ Y/N. Only for Pilzfraun. ]
-**Country of origin:** [ Where you were born, regardless of type ].
-**Faction:** [ Which faction your character belongs to, if any.  ].
-**Subfaction:** [ ONLY if Soldier! (below). The subfaction of your main faction!  ].
-**Role:** [ What you do! Cook, politician, soldier, sapper, conscript, etc. Humans *must* be commanders, they are too valuable to lose as regular foot soldiers. ]
+**Is a template:** [ Y/N. Only for Pilzfraun. ] **Country of origin:** [ Where
+you were born, regardless of type ]. **Faction:** [ Which faction your character
+belongs to, if any. ]. **Subfaction:** [ ONLY if Soldier! (below). The
+subfaction of your main faction! ]. **Role:** [ What you do! Cook, politician,
+soldier, sapper, conscript, etc. Humans _must_ be commanders, they are too
+valuable to lose as regular foot soldiers. ]
 
-**Name:** [ Name ]
-**Age:** [ If Baseliner, must be 18+. If Pilzfraun, biological age is 21 by default. Include CHRONOLOGICAL AGE, noting that we are in 1922 ].
-**Date of birth:** [ M/D/Y. Year is MANDATORY, day and month are OPTIONAL. We are in 1922. IRP month/day corresponds to IRL month/day ]
-**Sex:** [ If Baseliner, may be male or female. If Pilzfraun, must be female/futa, males need a perk in #pf-type-perks ].
-**Height:**
-**Weight:**
+**Name:** [ Name ] **Age:** [ If Baseliner, must be 18+. If Pilzfraun,
+biological age is 21 by default. Include CHRONOLOGICAL AGE, noting that we are
+in 1922 ]. **Date of birth:** [ M/D/Y. Year is MANDATORY, day and month are
+OPTIONAL. We are in 1922. IRP month/day corresponds to IRL month/day ] **Sex:**
+[ If Baseliner, may be male or female. If Pilzfraun, must be female/futa, males
+need a perk in #pf-type-perks ]. **Height:** **Weight:**
 
-[ The six appearance related options below may be left unfulfilled if using an image to represent your character. ]
+[ The six appearance related options below may be left unfulfilled if using an
+image to represent your character. ]
 
-**Skin color:**
-**Hair color:**
-**Eye color:**
-**Ethnicity:**
-**Body type:**
+**Skin color:** **Hair color:** **Eye color:** **Ethnicity:** **Body type:**
 **General appearance:**
 
-**General Health:** [ Include only permanent factors, be them physical, mental, or something else. I.E: Scars, missing limbs, mental conditions, etc. Note that baseliners may be as unhealthy as you want - but an unhealthy Pilzfraun is a rarity, and often gets replaced! ]
+**General Health:** [ Include only permanent factors, be them physical, mental,
+or something else. I.E: Scars, missing limbs, mental conditions, etc. Note that
+baseliners may be as unhealthy as you want - but an unhealthy Pilzfraun is a
+rarity, and often gets replaced! ]
 
 **Personality:** [ How your character behaves! ]
 
-**Biography:** [ Essentially your backstory and other things of note. PF girls should have a simpler one for the most part, as they are birthed for a single purpose, and are expected to do it for the rest of their lives. ]
+**Biography:** [ Essentially your backstory and other things of note. PF girls
+should have a simpler one for the most part, as they are birthed for a single
+purpose, and are expected to do it for the rest of their lives. ]
 
 ## Base Stats
 
@@ -82,9 +85,9 @@ effective value should be shown.
 
 ## Perks
 
-Like stat points, characters may spend perk points to unlock perks. Each
-character starts with 1 perk point. They may spend 3 stat points to buy 1 perk
-point.
+Like stats points, characters may spend stat points to unlock perks. Each
+character may unlock one perk for free, and may spend 3 stat points to buy
+additional perks.
 
 Some perks directly modify stats, while others only apply during gameplay. These
 are some examples of perks:
@@ -141,7 +144,7 @@ below, their HP will be set to zero, and they become incapacitated.
 While incapacitated, they cannot do anything, and automatically fail any checks.
 They are alive, however, and will recover over time.
 
-If they're damaged while incapacitated, their HP goes into the negatives and 
+If they're damaged while incapacitated, their HP goes into the negatives and
 they're put into critical condition, and will eventually die if not treated. If
 a player's health is brought below the negative of their base health - for
 example, a player with 5 hp going below negative 5 - they are killed.

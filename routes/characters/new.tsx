@@ -32,7 +32,7 @@ export const handler = define.handlers({
     const formData = await ctx.req.formData();
     const action = formData.get("action");
     const name = String(formData.get("name") ?? "").trim();
-    const changelog = String(formData.get("changelog") ?? "").trim();
+    const changelog = String(formData.get("changelog") ?? "").trim() || "Initial creation";
     const race = parseRace(String(formData.get("race") ?? ""));
     const description = parseDescription(String(formData.get("description") ?? "{}"));
     const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
@@ -46,10 +46,6 @@ export const handler = define.handlers({
 
     if (!name) {
       return new Response("Name is required.", { status: 400 });
-    }
-
-    if (!changelog) {
-      return new Response("Changelog is required.", { status: 400 });
     }
 
     if (

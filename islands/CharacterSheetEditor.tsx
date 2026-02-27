@@ -75,6 +75,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
+  const ownedLockCategories = new Set(
+    ownedPerks
+      .map((item) => item.perk?.lockCategory)
+      .filter((lockCategory): lockCategory is string => Boolean(lockCategory)),
+  );
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
@@ -86,6 +91,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const availablePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
+      return false;
+    }
+    if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
       return false;
     }
     if (perkCategoryFilter && perk.category !== perkCategoryFilter) return false;

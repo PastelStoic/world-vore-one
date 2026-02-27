@@ -43,6 +43,7 @@ export interface PerkDefinition {
   description: string;
   modifiers?: PerkModifiers;
   requiredRaces?: Race[];
+  lockCategory?: string;
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -95,6 +96,7 @@ export const PERKS: PerkDefinition[] = [
     name: "Pilzherr (STANDARD)",
     category: "pf-type",
     requiredRaces: ["Pilzherr", "Tierherr"],
+    lockCategory: "pilzherr-type",
     description: `You are a MALE PF! Not a futa, you've no pussy nor womb.
 
 *Free perk: This perk is free, we just want this on your sheet so others are aware of what this entails.
@@ -187,6 +189,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     name: "Pilzherr (FEMBOY)",
     category: "pf-type",
     requiredRaces: ["Pilzherr", "Tierherr"],
+    lockCategory: "pilzherr-type",
     description: `You are a MALE PF! You look just like a girl though.
 
 *Variant of the 'Pilzherr' perk. This one is not free.
@@ -286,6 +289,7 @@ Disadvantages:
     name: "Pilzherr (NEANDERTAL)",
     category: "pf-type",
     requiredRaces: ["Pilzherr", "Tierherr"],
+    lockCategory: "pilzherr-type",
     description: `You are a MALE PF! You look very manly, unmistakeable as a man!
 
 *Variant of the 'Pilzherr' perk. This one is not free.
@@ -599,6 +603,7 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     name: "Tierfraun (CANINE)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -673,6 +678,7 @@ Disadvantages:
     name: "Tierfraun (FELINES, VULPINES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -721,6 +727,7 @@ Disadvantages:
     name: "Tierfraun (BOVINES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -782,6 +789,7 @@ Disadvantages:
     name: "Tierfraun (CENTAURS, CERVINES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -831,6 +839,7 @@ Disadvantages:
     name: "Tierfraun (SEALIFE)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -885,6 +894,7 @@ Disadvantages:
     name: "Tierfraun (AVIAN)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -935,6 +945,7 @@ Disadvantages:
     name: "Tierfraun (LIZARDS)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -992,6 +1003,7 @@ Disadvantages:
     name: "Tierfraun (HEFTIES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1051,6 +1063,7 @@ Disadvantages:
     name: "Tierfraun (LEPORINES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1094,6 +1107,7 @@ Disadvantages:
     name: "Tierfraun (LAMIAS)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1134,6 +1148,7 @@ Disadvantages:
     name: "Tierfraun (CUSTOM)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1212,6 +1227,8 @@ export function validatePerkRequirements(
   race: Race,
   perkIds: string[],
 ): string | null {
+  const selectedByLockCategory = new Map<string, string>();
+
   for (const perkId of perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
     if (!perk) {
@@ -1220,6 +1237,14 @@ export function validatePerkRequirements(
 
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
       return `Perk \"${perk.name}\" requires one of: ${perk.requiredRaces.join(", ")}.`;
+    }
+
+    if (perk.lockCategory) {
+      const lockedByPerkName = selectedByLockCategory.get(perk.lockCategory);
+      if (lockedByPerkName && lockedByPerkName !== perk.name) {
+        return `Perk \"${perk.name}\" cannot be combined with \"${lockedByPerkName}\".`;
+      }
+      selectedByLockCategory.set(perk.lockCategory, perk.name);
     }
   }
 

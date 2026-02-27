@@ -1,5 +1,5 @@
 import { useRef, useState } from "preact/hooks";
-import type { PerkDefinition } from "../data/perks.ts";
+import type { PerkCategory, PerkDefinition } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
@@ -46,6 +46,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
+  const [perkCategoryFilter, setPerkCategoryFilter] = useState<PerkCategory | "">("")
+  const [perkSearchFilter, setPerkSearchFilter] = useState("");
 
   // Image upload state
   const [currentImageUrl, setCurrentImageUrl] = useState(props.imageUrl ?? "");
@@ -72,9 +74,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     effectiveByStat,
   } = useCharacterStats(draft);
 
-  const availablePerks = props.perks.filter((perk) =>
-    !perkIds.includes(perk.id)
-  );
+  const availablePerks = props.perks.filter((perk) => {
+    if (perkIds.includes(perk.id)) return false;
+    if (perkCategoryFilter && perk.category !== perkCategoryFilter) return false;
+    if (perkSearchFilter) {
+      const q = perkSearchFilter.toLowerCase();
+      if (!perk.name.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   function updateDescription<K extends keyof CharacterDescription>(
     key: K,
@@ -662,6 +670,37 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             </button>
             {showPerkPicker && (
               <div class="space-y-2">
+                <div class="flex flex-wrap gap-2">
+                  <select
+                    class="border rounded px-2 py-1 text-sm"
+                    value={perkCategoryFilter}
+                    onChange={(e) =>
+                      setPerkCategoryFilter(
+                        (e.target as HTMLSelectElement).value as PerkCategory | "",
+                      )
+                    }
+                  >
+                    <option value="">All categories</option>
+                    <option value="combat">Combat</option>
+                    <option value="vore">Vore</option>
+                    <option value="smut">Smut</option>
+                    <option value="gimmick">Gimmick</option>
+                    <option value="pf-type">PF Type</option>
+                    <option value="faction">Faction</option>
+                    <option value="negative">Negative</option>
+                  </select>
+                  <input
+                    type="text"
+                    class="border rounded px-2 py-1 text-sm flex-1 min-w-[140px]"
+                    placeholder="Search perks by name…"
+                    value={perkSearchFilter}
+                    onInput={(e) =>
+                      setPerkSearchFilter(
+                        (e.target as HTMLInputElement).value,
+                      )
+                    }
+                  />
+                </div>
                 <ul class="space-y-2">
                   {availablePerks.map((perk) => {
                     const cost = perkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;

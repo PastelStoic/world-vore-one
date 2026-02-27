@@ -24,10 +24,12 @@ import {
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
   perks: PerkDefinition[];
+  /** Cloudflare Images delivery URL for existing character image */
+  imageUrl?: string;
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
-  const { character, perks } = props;
+  const { character, perks, imageUrl } = props;
   const desc = character.description;
 
   const [carriedWeight, setCarriedWeight] = useState(0);
@@ -119,36 +121,51 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <strong>Weight:</strong> {desc.weight}
               </p>
             )}
-            {desc.skinColor && (
-              <p>
-                <strong>Skin Color:</strong> {desc.skinColor}
-              </p>
-            )}
-            {desc.hairColor && (
-              <p>
-                <strong>Hair Color:</strong> {desc.hairColor}
-              </p>
-            )}
-            {desc.eyeColor && (
-              <p>
-                <strong>Eye Color:</strong> {desc.eyeColor}
-              </p>
-            )}
-            {desc.ethnicity && (
-              <p>
-                <strong>Ethnicity:</strong> {desc.ethnicity}
-              </p>
-            )}
-            {desc.bodyType && (
-              <p>
-                <strong>Body Type:</strong> {desc.bodyType}
-              </p>
-            )}
-            {desc.generalAppearance && (
-              <p>
-                <strong>General Appearance:</strong> {desc.generalAppearance}
-              </p>
-            )}
+            {imageUrl
+              ? (
+                <div class="mt-2">
+                  <img
+                    src={imageUrl}
+                    alt={`${character.name} character image`}
+                    class="max-w-sm rounded border"
+                  />
+                </div>
+              )
+              : (
+                <>
+                  {desc.skinColor && (
+                    <p>
+                      <strong>Skin Color:</strong> {desc.skinColor}
+                    </p>
+                  )}
+                  {desc.hairColor && (
+                    <p>
+                      <strong>Hair Color:</strong> {desc.hairColor}
+                    </p>
+                  )}
+                  {desc.eyeColor && (
+                    <p>
+                      <strong>Eye Color:</strong> {desc.eyeColor}
+                    </p>
+                  )}
+                  {desc.ethnicity && (
+                    <p>
+                      <strong>Ethnicity:</strong> {desc.ethnicity}
+                    </p>
+                  )}
+                  {desc.bodyType && (
+                    <p>
+                      <strong>Body Type:</strong> {desc.bodyType}
+                    </p>
+                  )}
+                  {desc.generalAppearance && (
+                    <p>
+                      <strong>General Appearance:</strong>{" "}
+                      {desc.generalAppearance}
+                    </p>
+                  )}
+                </>
+              )}
             {desc.generalHealth && (
               <p>
                 <strong>General Health:</strong> {desc.generalHealth}

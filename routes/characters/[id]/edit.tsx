@@ -11,6 +11,7 @@ import {
   upsertCharacter,
   validateCharacterProgression,
 } from "../../../lib/characters.ts";
+import { cfImageUrl } from "../../api/characters/[id]/image.tsx";
 
 function parseNonNegativeInt(rawValue: FormDataEntryValue | null) {
   const parsed = Number(rawValue);
@@ -135,6 +136,7 @@ export default define.page<typeof handler>(
             basedOnSnapshotId={character.latestSnapshotId}
             initialCharacter={character}
             perks={PERKS}
+            imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
           />
         </div>
       </div>

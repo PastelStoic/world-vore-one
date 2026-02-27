@@ -3,6 +3,7 @@ import { define } from "../../utils.ts";
 import CharacterSheetViewer from "../../islands/CharacterSheetViewer.tsx";
 import { PERKS } from "../../data/perks.ts";
 import { getCharacter } from "../../lib/characters.ts";
+import { cfImageUrl } from "../api/characters/[id]/image.tsx";
 
 export default define.page(async function CharacterPage(ctx) {
   const id = ctx.params.id;
@@ -38,7 +39,11 @@ export default define.page(async function CharacterPage(ctx) {
           </div>
         )}
         {justSaved && <p class="text-green-700">Character saved.</p>}
-        <CharacterSheetViewer character={character} perks={PERKS} />
+        <CharacterSheetViewer
+          character={character}
+          perks={PERKS}
+          imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
+        />
       </div>
     </div>
   );

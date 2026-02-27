@@ -88,6 +88,7 @@ export async function upsertCharacter(
   const character: CharacterSheet = {
     ...input,
     latestSnapshotId: snapshotId,
+    imageId: existing?.imageId,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -105,6 +106,29 @@ export async function upsertCharacter(
   ], snapshot);
   await kv.set([...CHARACTER_PREFIX, input.id], character);
   await kv.set([...CHARACTER_BY_USER_PREFIX, input.userId, input.id], character);
+  return character;
+}
+
+export async function setCharacterImageId(
+  characterId: string,
+  imageId: string | null,
+) {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  if (imageId) {
+    character.imageId = imageId;
+  } else {
+    delete character.imageId;
+  }
+  character.updatedAt = new Date().toISOString();
+
+  await kv.set([...CHARACTER_PREFIX, characterId], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
+    character,
+  );
   return character;
 }
 

@@ -11,7 +11,6 @@ import {
   SEX_OPTIONS,
   getRacesForSex,
   isPilzRace,
-  isTierRace,
   mapRaceForSex,
 } from "../lib/character_types.ts";
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
@@ -76,6 +75,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   const availablePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
+    if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
+      return false;
+    }
     if (perkCategoryFilter && perk.category !== perkCategoryFilter) return false;
     if (perkSearchFilter) {
       const q = perkSearchFilter.toLowerCase();

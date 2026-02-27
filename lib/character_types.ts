@@ -51,6 +51,7 @@ export interface BaseStats {
   charisma: number;
   escapeTraining: number;
   digestionStrength: number;
+  digestionResilience: number;
 }
 
 export interface CharacterDescription {

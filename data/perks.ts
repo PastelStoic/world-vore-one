@@ -1,4 +1,4 @@
-import type { BaseStatKey } from "../lib/character_types.ts";
+import type { BaseStatKey, Race } from "../lib/character_types.ts";
 
 export type PerkCategory =
   | "combat"
@@ -22,6 +22,7 @@ export interface PerkDefinition {
   category: PerkCategory;
   description: string;
   modifiers?: PerkModifiers;
+  requiredRaces?: Race[];
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -73,6 +74,7 @@ export const PERKS: PerkDefinition[] = [
     id: "pilzherr-standard",
     name: "Pilzherr (STANDARD)",
     category: "pf-type",
+    requiredRaces: ["Pilzherr", "Tierherr"],
     description: `You are a MALE PF! Not a futa, you've no pussy nor womb.
 
 *Free perk: This perk is free, we just want this on your sheet so others are aware of what this entails.
@@ -164,6 +166,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "pilzherr-femboy",
     name: "Pilzherr (FEMBOY)",
     category: "pf-type",
+    requiredRaces: ["Pilzherr", "Tierherr"],
     description: `You are a MALE PF! You look just like a girl though.
 
 *Variant of the 'Pilzherr' perk. This one is not free.
@@ -262,6 +265,7 @@ Disadvantages:
     id: "pilzherr-neandertal",
     name: "Pilzherr (NEANDERTAL)",
     category: "pf-type",
+    requiredRaces: ["Pilzherr", "Tierherr"],
     description: `You are a MALE PF! You look very manly, unmistakeable as a man!
 
 *Variant of the 'Pilzherr' perk. This one is not free.
@@ -1172,3 +1176,21 @@ Disadvantages:
 
 export const PERKS_BY_ID = new Map(PERKS.map((perk) => [perk.id, perk]));
 export const PERK_IDS = new Set(PERKS.map((perk) => perk.id));
+
+export function validatePerkRequirements(
+  race: Race,
+  perkIds: string[],
+): string | null {
+  for (const perkId of perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    if (!perk) {
+      return "Invalid perk id in payload.";
+    }
+
+    if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
+      return `Perk \"${perk.name}\" requires one of: ${perk.requiredRaces.join(", ")}.`;
+    }
+  }
+
+  return null;
+}

@@ -1,4 +1,4 @@
-import { PERK_IDS } from "../data/perks.ts";
+import { PERK_IDS, validatePerkRequirements } from "../data/perks.ts";
 import {
   type CharacterDraft,
   type Race,
@@ -105,6 +105,11 @@ export function buildAndValidateDraft(
   const progressionError = validateCharacterProgression(draft);
   if (progressionError) {
     return new Response(progressionError, { status: 400 });
+  }
+
+  const perkRequirementError = validatePerkRequirements(draft.race, draft.perkIds);
+  if (perkRequirementError) {
+    return new Response(perkRequirementError, { status: 400 });
   }
 
   return draft;

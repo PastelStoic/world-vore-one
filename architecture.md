@@ -114,7 +114,7 @@ All persistence uses Deno's built-in KV store accessed through a lazy singleton 
 
 Core types: `CharacterDraft` (editable fields), `CharacterSheet` (persisted, with id/userId/timestamps/imageId/latestSnapshotId), `CharacterSnapshot` (immutable version record).
 
-Constants: `RACES`, `SEX_OPTIONS`, `FACTIONS`, `BASE_STAT_FIELDS`, `DEFAULT_STAT_POINTS` (5), `PERK_COST_STAT_POINTS` (3).
+Constants: `RACES`, `SEX_OPTIONS`, `FACTIONS`, `BASE_STAT_FIELDS`, `BASELINER_STAT_POINTS` (7), `DEFAULT_STAT_POINTS` (5), `PERK_COST_STAT_POINTS` (3). Helper `getStartingStatPoints(race)` returns 7 for Baseliners and 5 for all other races.
 
 ### Perks (`data/perks/`)
 

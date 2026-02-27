@@ -9,6 +9,7 @@ import {
   createDefaultCharacterDraft,
   createDefaultDescription,
   DEFAULT_STAT_POINTS,
+  getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type Race,
   RACES,
@@ -271,7 +272,7 @@ export function validateCharacterProgression(
   }
 
   const spentOnPerks = calculatePerksCost(input.perkIds.length);
-  const expectedUnallocated = DEFAULT_STAT_POINTS - spentOnStats - spentOnPerks;
+  const expectedUnallocated = getStartingStatPoints(input.race) - spentOnStats - spentOnPerks;
 
   if (expectedUnallocated !== input.unallocatedStatPoints) {
     return "Invalid stat/perk point allocation.";

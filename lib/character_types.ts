@@ -106,8 +106,14 @@ export interface CharacterSnapshot {
   data: CharacterDraft;
 }
 
+export const BASELINER_STAT_POINTS = 7;
 export const DEFAULT_STAT_POINTS = 5;
 export const PERK_COST_STAT_POINTS = 3;
+
+/** Returns the starting stat points for a given race. Baseliners get 7, others get 5. */
+export function getStartingStatPoints(race: Race): number {
+  return race === "Baseliner" ? BASELINER_STAT_POINTS : DEFAULT_STAT_POINTS;
+}
 
 export function createDefaultBaseStats(): BaseStats {
   return {
@@ -152,7 +158,7 @@ export function createDefaultCharacterDraft(): CharacterDraft {
     race: "Baseliner",
     description: createDefaultDescription(),
     baseStats: createDefaultBaseStats(),
-    unallocatedStatPoints: DEFAULT_STAT_POINTS,
+    unallocatedStatPoints: getStartingStatPoints("Baseliner"),
     perkIds: [],
   };
 }

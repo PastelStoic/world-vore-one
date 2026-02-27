@@ -7,6 +7,7 @@ import {
   type CharacterDescription,
   type CharacterSheet,
   FACTIONS,
+  getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type Sex,
   SEX_OPTIONS,
@@ -296,8 +297,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             name="race"
             value={race}
             disabled={props.action === "update"}
-            onInput={(event) =>
-              setRace(event.currentTarget.value as CharacterDraft["race"])}
+            onInput={(event) => {
+              const newRace = event.currentTarget.value as CharacterDraft["race"];
+              const pointsDiff = getStartingStatPoints(newRace) - getStartingStatPoints(race);
+              setRace(newRace);
+              setUnallocatedStatPoints((current) => current + pointsDiff);
+            }}
           >
             {getRacesForSex(description.sex).map((option) => (
               <option key={option} value={option}>{option}</option>

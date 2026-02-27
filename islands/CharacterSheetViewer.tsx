@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import type { PerkDefinition } from "../data/perks.ts";
+import { PERK_CATEGORY_LABELS, PERK_CATEGORY_ORDER, type PerkDefinition } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type CharacterDraft,
@@ -19,6 +19,15 @@ interface CharacterSheetViewerProps {
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const { character, perks, imageUrl } = props;
   const desc = character.description;
+  const perksById = new Map(perks.map((perk) => [perk.id, perk]));
+  const ownedPerks = character.perkIds.map((id) => ({ id, perk: perksById.get(id) }));
+  const ownedPerkGroups = PERK_CATEGORY_ORDER
+    .map((category) => ({
+      category,
+      items: ownedPerks.filter((item) => item.perk?.category === category),
+    }))
+    .filter((group) => group.items.length > 0);
+  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
 
   const {
     carriedWeight,
@@ -191,16 +200,26 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         {character.perkIds.length === 0
           ? <p class="text-sm text-gray-700">No perks unlocked.</p>
           : (
-            <ul class="list-disc list-inside text-sm">
-              {character.perkIds.map((id) => {
-                const perk = perks.find((entry) => entry.id === id);
-                return (
-                  <li key={id}>
-                    {perk ? `${perk.name}: ${perk.description}` : id}
-                  </li>
-                );
-              })}
-            </ul>
+            <div class="space-y-3 text-sm">
+              {ownedPerkGroups.map((group) => (
+                <div key={group.category} class="space-y-1">
+                  <h4 class="font-medium">{PERK_CATEGORY_LABELS[group.category]}</h4>
+                  <ul class="list-disc list-inside">
+                    {group.items.map(({ id, perk }) => (
+                      <li key={id}>{perk ? `${perk.name}: ${perk.description}` : id}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              {uncategorizedOwnedPerks.length > 0 && (
+                <div class="space-y-1">
+                  <h4 class="font-medium">Other</h4>
+                  <ul class="list-disc list-inside">
+                    {uncategorizedOwnedPerks.map(({ id }) => <li key={id}>{id}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
           )}
       </div>
     </div>

@@ -9,6 +9,26 @@ export type PerkCategory =
   | "faction"
   | "negative";
 
+export const PERK_CATEGORY_ORDER: PerkCategory[] = [
+  "combat",
+  "vore",
+  "smut",
+  "gimmick",
+  "pf-type",
+  "faction",
+  "negative",
+];
+
+export const PERK_CATEGORY_LABELS: Record<PerkCategory, string> = {
+  combat: "Combat",
+  vore: "Vore",
+  smut: "Smut",
+  gimmick: "Gimmick",
+  "pf-type": "PF Type",
+  faction: "Faction",
+  negative: "Negative",
+};
+
 interface PerkModifiers {
   baseStatBonuses?: Partial<Record<BaseStatKey, number>>;
   healthMultiplier?: number;

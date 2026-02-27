@@ -1,5 +1,5 @@
 import { useRef, useState } from "preact/hooks";
-import type { PerkCategory, PerkDefinition } from "../data/perks.ts";
+import { PERK_CATEGORY_LABELS, PERK_CATEGORY_ORDER, type PerkCategory, type PerkDefinition } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
@@ -72,6 +72,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     encumbrancePenaltyText,
     effectiveByStat,
   } = useCharacterStats(draft);
+
+  const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
+  const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
+  const ownedPerkGroups = PERK_CATEGORY_ORDER
+    .map((category) => ({
+      category,
+      items: ownedPerks.filter((item) => item.perk?.category === category),
+    }))
+    .filter((group) => group.items.length > 0);
+  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
 
   const availablePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
@@ -636,28 +646,56 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           {perkIds.length === 0
             ? <p class="text-sm text-gray-700">No perks unlocked.</p>
             : (
-              <ul class="space-y-1 text-sm">
-                {perkIds.map((id) => {
-                  const perk = props.perks.find((entry) => entry.id === id);
-                  const canRemove = !initialPerkIds.includes(id);
-                  return (
-                    <li class="flex items-center gap-2" key={id}>
-                      <span>
-                        {perk ? `${perk.name}: ${perk.description}` : id}
-                      </span>
-                      {canRemove && (
-                        <button
-                          type="button"
-                          class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
-                          onClick={() => unbuyPerk(id)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+              <div class="space-y-3 text-sm">
+                {ownedPerkGroups.map((group) => (
+                  <div key={group.category} class="space-y-1">
+                    <h5 class="font-medium">{PERK_CATEGORY_LABELS[group.category]}</h5>
+                    <ul class="space-y-1">
+                      {group.items.map(({ id, perk }) => {
+                        const canRemove = !initialPerkIds.includes(id);
+                        return (
+                          <li class="flex items-center gap-2" key={id}>
+                            <span>{perk ? `${perk.name}: ${perk.description}` : id}</span>
+                            {canRemove && (
+                              <button
+                                type="button"
+                                class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                                onClick={() => unbuyPerk(id)}
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+                {uncategorizedOwnedPerks.length > 0 && (
+                  <div class="space-y-1">
+                    <h5 class="font-medium">Other</h5>
+                    <ul class="space-y-1">
+                      {uncategorizedOwnedPerks.map(({ id }) => {
+                        const canRemove = !initialPerkIds.includes(id);
+                        return (
+                          <li class="flex items-center gap-2" key={id}>
+                            <span>{id}</span>
+                            {canRemove && (
+                              <button
+                                type="button"
+                                class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                                onClick={() => unbuyPerk(id)}
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </div>
             )}
         </div>
 

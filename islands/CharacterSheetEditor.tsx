@@ -59,6 +59,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   // Image upload state
   const [currentImageUrl, setCurrentImageUrl] = useState(props.imageUrl ?? "");
+  const [pendingImageId, setPendingImageId] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [imageError, setImageError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -104,16 +105,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   async function handleImageUpload(file: File) {
-    if (!props.characterId) return;
     setImageUploading(true);
     setImageError("");
 
     try {
-      // 1. Request a direct upload URL from our API
-      const urlRes = await fetch(
-        `/api/characters/${props.characterId}/image`,
-        { method: "POST" },
-      );
+      // 1. Get a direct upload URL
+      const isUpdate = props.action === "update" && props.characterId;
+      const urlEndpoint = isUpdate
+        ? `/api/characters/${props.characterId}/image`
+        : `/api/images/direct-upload`;
+
+      const urlRes = await fetch(urlEndpoint, { method: "POST" });
       if (!urlRes.ok) {
         throw new Error("Failed to get upload URL");
       }
@@ -130,21 +132,27 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         throw new Error("Image upload to Cloudflare failed");
       }
 
-      // 3. Save the image ID on the character via our API
-      const saveRes = await fetch(
-        `/api/characters/${props.characterId}/image`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageId }),
-        },
-      );
-      if (!saveRes.ok) {
-        throw new Error("Failed to save image reference");
+      if (isUpdate) {
+        // 3a. Update mode: save the image ID on the character immediately
+        const saveRes = await fetch(
+          `/api/characters/${props.characterId}/image`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageId }),
+          },
+        );
+        if (!saveRes.ok) {
+          throw new Error("Failed to save image reference");
+        }
+        const { imageUrl } = await saveRes.json();
+        setCurrentImageUrl(imageUrl);
+      } else {
+        // 3b. Create mode: store the imageId to submit with the form
+        setPendingImageId(imageId);
+        // Show a preview via the object URL
+        setCurrentImageUrl(URL.createObjectURL(file));
       }
-
-      const { imageUrl } = await saveRes.json();
-      setCurrentImageUrl(imageUrl);
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "Upload failed");
     } finally {
@@ -154,19 +162,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   async function handleImageDelete() {
-    if (!props.characterId) return;
     setImageUploading(true);
     setImageError("");
 
     try {
-      const res = await fetch(
-        `/api/characters/${props.characterId}/image`,
-        { method: "DELETE" },
-      );
-      if (!res.ok) {
-        throw new Error("Failed to delete image");
+      if (props.action === "update" && props.characterId) {
+        const res = await fetch(
+          `/api/characters/${props.characterId}/image`,
+          { method: "DELETE" },
+        );
+        if (!res.ok) {
+          throw new Error("Failed to delete image");
+        }
       }
+      // For create mode, just clear local state (orphaned CF image will expire)
       setCurrentImageUrl("");
+      setPendingImageId("");
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "Delete failed");
     } finally {
@@ -237,6 +248,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <input type="hidden" name="baseStats" value={JSON.stringify(baseStats)} />
       <input type="hidden" name="description" value={JSON.stringify(description)} />
       <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />
+      <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
         type="hidden"
         name="unallocatedStatPoints"
@@ -409,50 +421,48 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           The appearance fields below may be left blank if using an image to represent your character.
         </p>
 
-        {props.action === "update" && props.characterId && (
-          <div class="rounded border p-3 space-y-2 bg-gray-50">
-            <h4 class="font-medium">Character Image</h4>
-            {currentImageUrl && (
-              <div class="space-y-2">
-                <img
-                  src={currentImageUrl}
-                  alt={`${name} character image`}
-                  class="max-w-xs rounded border"
-                />
-                <button
-                  type="button"
-                  class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
-                  disabled={imageUploading}
-                  onClick={handleImageDelete}
-                >
-                  Remove Image
-                </button>
-              </div>
-            )}
-            <label class="block">
-              <span class="block text-sm mb-1">
-                {currentImageUrl ? "Replace image:" : "Upload an image:"}
-              </span>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                class="block text-sm"
-                disabled={imageUploading}
-                onChange={(event) => {
-                  const file = event.currentTarget.files?.[0];
-                  if (file) handleImageUpload(file);
-                }}
+        <div class="rounded border p-3 space-y-2 bg-gray-50">
+          <h4 class="font-medium">Character Image</h4>
+          {currentImageUrl && (
+            <div class="space-y-2">
+              <img
+                src={currentImageUrl}
+                alt={`${name} character image`}
+                class="max-w-xs rounded border"
               />
-            </label>
-            {imageUploading && (
-              <p class="text-sm text-blue-600">Uploading…</p>
-            )}
-            {imageError && (
-              <p class="text-sm text-red-600">{imageError}</p>
-            )}
-          </div>
-        )}
+              <button
+                type="button"
+                class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                disabled={imageUploading}
+                onClick={handleImageDelete}
+              >
+                Remove Image
+              </button>
+            </div>
+          )}
+          <label class="block">
+            <span class="block text-sm mb-1">
+              {currentImageUrl ? "Replace image:" : "Upload an image:"}
+            </span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              class="block text-sm"
+              disabled={imageUploading}
+              onChange={(event) => {
+                const file = event.currentTarget.files?.[0];
+                if (file) handleImageUpload(file);
+              }}
+            />
+          </label>
+          {imageUploading && (
+            <p class="text-sm text-blue-600">Uploading…</p>
+          )}
+          {imageError && (
+            <p class="text-sm text-red-600">{imageError}</p>
+          )}
+        </div>
 
         <div class="grid grid-cols-2 gap-3">
           <label class="block">

@@ -9,6 +9,7 @@ import {
   parseDescription,
   parsePerkIds,
   parseRace,
+  setCharacterImageId,
   upsertCharacter,
   validateCharacterProgression,
 } from "../../lib/characters.ts";
@@ -75,6 +76,12 @@ export const handler = define.handlers({
 
     const id = crypto.randomUUID();
     await upsertCharacter({ id, userId: user.id, ...draft }, changelog);
+
+    // If an image was uploaded during creation, associate it with the character
+    const pendingImageId = String(formData.get("pendingImageId") ?? "").trim();
+    if (pendingImageId) {
+      await setCharacterImageId(id, pendingImageId);
+    }
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),

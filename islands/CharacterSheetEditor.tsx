@@ -282,13 +282,29 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </select>
         </label>
 
+        <label class="block">
+          <span class="block font-medium mb-1">Sex</span>
+          <select
+            class="w-full border rounded px-3 py-2"
+            value={description.sex}
+            onInput={(event) =>
+              updateDescription("sex", event.currentTarget.value as Sex)}
+          >
+            {SEX_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
+
         {race === "Pilzfraun" && (
           <label class="flex items-center gap-2">
             <input
               type="checkbox"
               checked={description.isTemplate}
+              disabled={props.action === "update"}
               onChange={(event) =>
                 updateDescription("isTemplate", event.currentTarget.checked)}
+              class={props.action === "update" ? "opacity-60 cursor-not-allowed" : ""}
             />
             <span class="font-medium">Is a template</span>
           </label>
@@ -363,20 +379,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             onInput={(event) =>
               updateDescription("dateOfBirth", event.currentTarget.value)}
           />
-        </label>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Sex</span>
-          <select
-            class="w-full border rounded px-3 py-2"
-            value={description.sex}
-            onInput={(event) =>
-              updateDescription("sex", event.currentTarget.value as Sex)}
-          >
-            {SEX_OPTIONS.map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
         </label>
 
         <div class="grid grid-cols-2 gap-3">

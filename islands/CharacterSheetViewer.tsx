@@ -73,6 +73,9 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
             <p>
               <strong>Race:</strong> {character.race}
             </p>
+            <p>
+              <strong>Sex:</strong> {desc.sex}
+            </p>
             {desc.isTemplate && (
               <p>
                 <strong>Template:</strong> Yes
@@ -108,9 +111,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <strong>Date of Birth:</strong> {desc.dateOfBirth}
               </p>
             )}
-            <p>
-              <strong>Sex:</strong> {desc.sex}
-            </p>
             {desc.height && (
               <p>
                 <strong>Height:</strong> {desc.height}

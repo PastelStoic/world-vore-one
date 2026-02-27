@@ -42,6 +42,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [description, setDescription] = useState<CharacterDescription>(
     props.initialCharacter.description,
   );
+  const [initialBaseStats] = useState(props.initialCharacter.baseStats);
   const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
     props.initialCharacter.unallocatedStatPoints,
@@ -107,6 +108,18 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setUnallocatedStatPoints((current) => current - 1);
   }
 
+  function decreaseStat(statKey: BaseStatKey) {
+    if (baseStats[statKey] <= initialBaseStats[statKey]) {
+      return;
+    }
+
+    setBaseStats((current) => ({
+      ...current,
+      [statKey]: current[statKey] - 1,
+    }));
+    setUnallocatedStatPoints((current) => current + 1);
+  }
+
   function buyPerkPoint() {
     if (unallocatedStatPoints < 3) {
       return;
@@ -169,9 +182,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <label class="block">
         <span class="block font-medium mb-1">Race</span>
         <select
-          class="w-full border rounded px-3 py-2"
+          class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
           name="race"
           value={race}
+          disabled={props.action === "update"}
           onInput={(event) =>
             setRace(event.currentTarget.value as CharacterDraft["race"])}
         >
@@ -412,18 +426,20 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         </label>
       </div>
 
-      <label class="block">
-        <span class="block font-medium mb-1">Changelog</span>
-        <input
-          class="w-full border rounded px-3 py-2"
-          name="changelog"
-          type="text"
-          value={changelog}
-          onInput={(event) => setChangelog(event.currentTarget.value)}
-          placeholder="Describe what changed in this save"
-          required
-        />
-      </label>
+      {props.action === "update" && (
+        <label class="block">
+          <span class="block font-medium mb-1">Changelog</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            name="changelog"
+            type="text"
+            value={changelog}
+            onInput={(event) => setChangelog(event.currentTarget.value)}
+            placeholder="Describe what changed in this save"
+            required
+          />
+        </label>
+      )}
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
@@ -438,15 +454,24 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 Base: <strong>{baseStats[field.key]}</strong> | Effective:{" "}
                 <strong>{effectiveByStat[field.key]}</strong>
               </span>
-              <button
-                type="button"
-                class="px-2 py-1 border rounded disabled:opacity-40"
-                disabled={unallocatedStatPoints < 1}
-                onClick={() =>
-                  increaseStat(field.key)}
-              >
-                +1
-              </button>
+              <div class="flex gap-1">
+                <button
+                  type="button"
+                  class="px-2 py-1 border rounded disabled:opacity-40"
+                  disabled={baseStats[field.key] <= initialBaseStats[field.key]}
+                  onClick={() => decreaseStat(field.key)}
+                >
+                  -1
+                </button>
+                <button
+                  type="button"
+                  class="px-2 py-1 border rounded disabled:opacity-40"
+                  disabled={unallocatedStatPoints < 1}
+                  onClick={() => increaseStat(field.key)}
+                >
+                  +1
+                </button>
+              </div>
             </li>
           ))}
         </ul>

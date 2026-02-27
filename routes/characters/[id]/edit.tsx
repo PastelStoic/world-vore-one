@@ -42,9 +42,6 @@ export const handler = define.handlers({
     const unallocatedStatPoints = parseNonNegativeInt(
       formData.get("unallocatedStatPoints"),
     );
-    const unspentPerkPoints = parseNonNegativeInt(
-      formData.get("unspentPerkPoints"),
-    );
 
     if (!name) {
       return new Response("Name is required.", { status: 400 });
@@ -56,8 +53,7 @@ export const handler = define.handlers({
 
     if (
       !description || !baseStats || !perkIds ||
-      unallocatedStatPoints === null ||
-      unspentPerkPoints === null
+      unallocatedStatPoints === null
     ) {
       return new Response("Invalid character payload.", { status: 400 });
     }
@@ -76,7 +72,6 @@ export const handler = define.handlers({
       description,
       baseStats,
       unallocatedStatPoints,
-      unspentPerkPoints,
       perkIds,
     };
 

@@ -234,9 +234,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Perks</h3>
-        <p class="text-sm text-gray-700">
-          Unspent perk points: <strong>{character.unspentPerkPoints}</strong>
-        </p>
         {character.perkIds.length === 0
           ? <p class="text-sm text-gray-700">No perks unlocked.</p>
           : (

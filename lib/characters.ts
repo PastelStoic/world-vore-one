@@ -8,8 +8,8 @@ import {
   createDefaultBaseStats,
   createDefaultCharacterDraft,
   createDefaultDescription,
-  DEFAULT_PERK_POINTS,
   DEFAULT_STAT_POINTS,
+  PERK_COST_STAT_POINTS,
   type Race,
   RACES,
   SEX_OPTIONS,
@@ -81,7 +81,6 @@ export async function upsertCharacter(
       description: input.description,
       baseStats: input.baseStats,
       unallocatedStatPoints: input.unallocatedStatPoints,
-      unspentPerkPoints: input.unspentPerkPoints,
       perkIds: input.perkIds,
     },
   };
@@ -223,11 +222,17 @@ export function parseDescription(raw: string): CharacterDescription | null {
   }
 }
 
+export function calculatePerksCost(perkCount: number): number {
+  if (perkCount <= 0) return 0;
+  // First perk is free, subsequent perks cost PERK_COST_STAT_POINTS each
+  return (perkCount - 1) * PERK_COST_STAT_POINTS;
+}
+
 export function validateCharacterProgression(
   input: CharacterDraft,
 ): string | null {
-  if (input.unallocatedStatPoints < 0 || input.unspentPerkPoints < 0) {
-    return "Unspent points cannot be negative.";
+  if (input.unallocatedStatPoints < 0) {
+    return "Unallocated stat points cannot be negative.";
   }
 
   const statTotal = BASE_STAT_FIELDS.reduce((total, stat) => {
@@ -241,20 +246,11 @@ export function validateCharacterProgression(
     return "Base stats cannot go below their default values.";
   }
 
-  const spentOnPerkPointPurchases = DEFAULT_STAT_POINTS -
-    spentOnStats -
-    input.unallocatedStatPoints;
+  const spentOnPerks = calculatePerksCost(input.perkIds.length);
+  const expectedUnallocated = DEFAULT_STAT_POINTS - spentOnStats - spentOnPerks;
 
-  if (spentOnPerkPointPurchases < 0 || spentOnPerkPointPurchases % 3 !== 0) {
+  if (expectedUnallocated !== input.unallocatedStatPoints) {
     return "Invalid stat/perk point allocation.";
-  }
-
-  const perkPointsPurchased = spentOnPerkPointPurchases / 3;
-  const expectedUnspentPerkPoints = DEFAULT_PERK_POINTS + perkPointsPurchased -
-    input.perkIds.length;
-
-  if (expectedUnspentPerkPoints !== input.unspentPerkPoints) {
-    return "Invalid perk point total.";
   }
 
   return null;

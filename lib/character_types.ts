@@ -56,7 +56,6 @@ export interface CharacterDraft {
   description: CharacterDescription;
   baseStats: BaseStats;
   unallocatedStatPoints: number;
-  unspentPerkPoints: number;
   perkIds: string[];
 }
 
@@ -78,7 +77,7 @@ export interface CharacterSnapshot {
 }
 
 export const DEFAULT_STAT_POINTS = 5;
-export const DEFAULT_PERK_POINTS = 1;
+export const PERK_COST_STAT_POINTS = 3;
 
 export function createDefaultBaseStats(): BaseStats {
   return {
@@ -124,7 +123,6 @@ export function createDefaultCharacterDraft(): CharacterDraft {
     description: createDefaultDescription(),
     baseStats: createDefaultBaseStats(),
     unallocatedStatPoints: DEFAULT_STAT_POINTS,
-    unspentPerkPoints: DEFAULT_PERK_POINTS,
     perkIds: [],
   };
 }

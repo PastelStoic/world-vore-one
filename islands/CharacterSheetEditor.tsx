@@ -6,6 +6,7 @@ import {
   type CharacterDraft,
   type CharacterDescription,
   type CharacterSheet,
+  PERK_COST_STAT_POINTS,
   type Sex,
   RACES,
   SEX_OPTIONS,
@@ -47,9 +48,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
     props.initialCharacter.unallocatedStatPoints,
   );
-  const [unspentPerkPoints, setUnspentPerkPoints] = useState(
-    props.initialCharacter.unspentPerkPoints,
-  );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
   const [carriedWeight, setCarriedWeight] = useState(0);
   const [changelog, setChangelog] = useState("");
@@ -62,7 +60,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     description,
     baseStats,
     unallocatedStatPoints,
-    unspentPerkPoints,
     perkIds,
   };
 
@@ -121,22 +118,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setUnallocatedStatPoints((current) => current + 1);
   }
 
-  function buyPerkPoint() {
-    if (unallocatedStatPoints < 3) {
-      return;
-    }
-
-    setUnallocatedStatPoints((current) => current - 3);
-    setUnspentPerkPoints((current) => current + 1);
-  }
-
   function buyPerk(perkId: string) {
-    if (unspentPerkPoints < 1 || perkIds.includes(perkId)) {
+    const cost = perkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
+    if (unallocatedStatPoints < cost || perkIds.includes(perkId)) {
       return;
     }
 
     setPerkIds((current) => [...current, perkId]);
-    setUnspentPerkPoints((current) => current - 1);
+    setUnallocatedStatPoints((current) => current - cost);
   }
 
   return (
@@ -160,11 +149,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         type="hidden"
         name="unallocatedStatPoints"
         value={String(unallocatedStatPoints)}
-      />
-      <input
-        type="hidden"
-        name="unspentPerkPoints"
-        value={String(unspentPerkPoints)}
       />
 
       <label class="block">
@@ -538,17 +522,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <div class="rounded border p-3 space-y-3">
         <h3 class="font-semibold">Perks</h3>
         <p class="text-sm text-gray-700">
-          Unspent perk points: <strong>{unspentPerkPoints}</strong>
+          Perks cost {PERK_COST_STAT_POINTS} stat points each.{" "}
+          {perkIds.length === 0
+            ? <strong>First perk is free!</strong>
+            : null}
         </p>
-
-        <button
-          type="button"
-          class="px-2 py-1 border rounded disabled:opacity-40"
-          disabled={unallocatedStatPoints < 3}
-          onClick={buyPerkPoint}
-        >
-          Buy 1 perk point (cost: 3 stat points)
-        </button>
 
         <div>
           <h4 class="font-medium">Owned Perks</h4>
@@ -568,7 +546,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             )}
         </div>
 
-        {unspentPerkPoints > 0 && (
+        {availablePerks.length > 0 && (
           <div class="space-y-2">
             <button
               type="button"
@@ -579,33 +557,30 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             </button>
             {showPerkPicker && (
               <div class="space-y-2">
-                {availablePerks.length === 0
-                  ? (
-                    <p class="text-sm text-gray-700">
-                      No more perks available.
-                    </p>
-                  )
-                  : (
-                    <ul class="space-y-2">
-                      {availablePerks.map((perk) => (
-                        <li
-                          class="flex items-center justify-between gap-2"
-                          key={perk.id}
+                <ul class="space-y-2">
+                  {availablePerks.map((perk) => {
+                    const cost = perkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
+                    const canAfford = unallocatedStatPoints >= cost;
+                    return (
+                      <li
+                        class="flex items-center justify-between gap-2"
+                        key={perk.id}
+                      >
+                        <span class="text-sm">
+                          <strong>{perk.name}</strong>: {perk.description}
+                        </span>
+                        <button
+                          type="button"
+                          class="px-2 py-1 border rounded disabled:opacity-40"
+                          disabled={!canAfford}
+                          onClick={() => buyPerk(perk.id)}
                         >
-                          <span class="text-sm">
-                            <strong>{perk.name}</strong>: {perk.description}
-                          </span>
-                          <button
-                            type="button"
-                            class="px-2 py-1 border rounded"
-                            onClick={() => buyPerk(perk.id)}
-                          >
-                            Buy
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                          {cost === 0 ? "Unlock (Free)" : `Buy (${cost} SP)`}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             )}
           </div>

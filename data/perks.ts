@@ -578,6 +578,7 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "tierfraun-canine",
     name: "Tierfraun (CANINE)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -651,6 +652,7 @@ Disadvantages:
     id: "tierfraun-felines-vulpines",
     name: "Tierfraun (FELINES, VULPINES)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -698,6 +700,7 @@ Disadvantages:
     id: "tierfraun-bovines",
     name: "Tierfraun (BOVINES)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -758,6 +761,7 @@ Disadvantages:
     id: "tierfraun-centaurs-cervines",
     name: "Tierfraun (CENTAURS, CERVINES)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -806,6 +810,7 @@ Disadvantages:
     id: "tierfraun-sealife",
     name: "Tierfraun (SEALIFE)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -859,6 +864,7 @@ Disadvantages:
     id: "tierfraun-avian",
     name: "Tierfraun (AVIAN)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -908,6 +914,7 @@ Disadvantages:
     id: "tierfraun-lizards",
     name: "Tierfraun (LIZARDS)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -964,6 +971,7 @@ Disadvantages:
     id: "tierfraun-hefties",
     name: "Tierfraun (HEFTIES)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1022,6 +1030,7 @@ Disadvantages:
     id: "tierfraun-leporines",
     name: "Tierfraun (LEPORINES)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1064,6 +1073,7 @@ Disadvantages:
     id: "tierfraun-lamias",
     name: "Tierfraun (LAMIAS)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
@@ -1103,6 +1113,7 @@ Disadvantages:
     id: "tierfraun-custom",
     name: "Tierfraun (CUSTOM)",
     category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
     description: `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.

@@ -5,6 +5,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     id: "king-s-royal-army-pf",
     name: "King's royal army PF",
     category: "faction",
+    requiredFaction: "Switzerland",
     description: `Switzerland strong!
 
 Advantages:
@@ -23,6 +24,7 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
+    requiredFaction: "Germany",
     description: `Germany strong!
 
 Advantages:
@@ -41,6 +43,7 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench raider",
     category: "faction",
+    requiredFaction: "England",
     description: `ENGERLAAAANNDDD
 
 Advantages:
@@ -59,6 +62,7 @@ Disadvantages:
     id: "harlem-hellfighter",
     name: "Harlem Hellfighter",
     category: "faction",
+    requiredFaction: "America",
     description: `America strong!
  
 Advantages:
@@ -76,6 +80,7 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
+    requiredFaction: "Mafia",
     description: `You are an underboss of your respective mafia, owning some sort of safehouse/business within New Orleans!
 
 Advantages:

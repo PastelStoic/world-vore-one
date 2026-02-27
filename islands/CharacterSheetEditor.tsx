@@ -6,6 +6,7 @@ import {
   type CharacterDraft,
   type CharacterDescription,
   type CharacterSheet,
+  FACTIONS,
   PERK_COST_STAT_POINTS,
   type Sex,
   SEX_OPTIONS,
@@ -91,6 +92,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const availablePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
+      return false;
+    }
+    if (perk.requiredFaction && perk.requiredFaction !== description.faction) {
       return false;
     }
     if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
@@ -346,13 +350,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
         <label class="block">
           <span class="block font-medium mb-1">Faction</span>
-          <input
+          <select
             class="w-full border rounded px-3 py-2"
-            type="text"
             value={description.faction}
-            onInput={(event) =>
-              updateDescription("faction", event.currentTarget.value)}
-          />
+            onChange={(event) =>
+              updateDescription("faction", (event.target as HTMLSelectElement).value)}
+          >
+            <option value="">— None —</option>
+            {FACTIONS.map((f) => (
+              <option key={f} value={f}>{f}</option>
+            ))}
+          </select>
         </label>
 
         <label class="block">

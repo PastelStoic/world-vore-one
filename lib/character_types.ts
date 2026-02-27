@@ -1,6 +1,9 @@
 export const RACES = ["Pilzfraun", "Pilzherr", "Tierfraun", "Tierherr", "Baseliner"] as const;
 export type Race = (typeof RACES)[number];
 
+export const FACTIONS = ["Switzerland", "Germany", "England", "America", "Mafia", "Japanese"] as const;
+export type Faction = (typeof FACTIONS)[number];
+
 export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];
 

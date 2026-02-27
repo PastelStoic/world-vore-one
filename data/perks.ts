@@ -1,4 +1,4 @@
-import type { BaseStatKey, Race } from "../lib/character_types.ts";
+import type { BaseStatKey, Faction, Race } from "../lib/character_types.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -50,6 +50,7 @@ export interface PerkDefinition {
   description: string;
   modifiers?: PerkModifiers;
   requiredRaces?: Race[];
+  requiredFaction?: Faction;
   lockCategory?: string;
 }
 

@@ -633,7 +633,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           <span class="block font-medium mb-1">Carried Weight</span>
           <div class="flex items-center gap-3">
             <input
-              class="w-full border rounded px-3 py-2"
+              class="w-1/2 border rounded px-3 py-2"
               type="number"
               min="0"
               step="1"

@@ -52,6 +52,16 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     <div class="border rounded-lg p-4 bg-white/80 space-y-4">
       <h2 class="text-2xl font-bold">{character.name}</h2>
 
+      {imageUrl && (
+        <div>
+          <img
+            src={imageUrl}
+            alt={`${character.name} character image`}
+            class="max-w-sm rounded border"
+          />
+        </div>
+      )}
+
       <div class="rounded border p-3 space-y-1">
         <button
           type="button"
@@ -113,51 +123,41 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <strong>Weight:</strong> {desc.weight}
               </p>
             )}
-            {imageUrl
-              ? (
-                <div class="mt-2">
-                  <img
-                    src={imageUrl}
-                    alt={`${character.name} character image`}
-                    class="max-w-sm rounded border"
-                  />
-                </div>
-              )
-              : (
-                <>
-                  {desc.skinColor && (
-                    <p>
-                      <strong>Skin Color:</strong> {desc.skinColor}
-                    </p>
-                  )}
-                  {desc.hairColor && (
-                    <p>
-                      <strong>Hair Color:</strong> {desc.hairColor}
-                    </p>
-                  )}
-                  {desc.eyeColor && (
-                    <p>
-                      <strong>Eye Color:</strong> {desc.eyeColor}
-                    </p>
-                  )}
-                  {desc.ethnicity && (
-                    <p>
-                      <strong>Ethnicity:</strong> {desc.ethnicity}
-                    </p>
-                  )}
-                  {desc.bodyType && (
-                    <p>
-                      <strong>Body Type:</strong> {desc.bodyType}
-                    </p>
-                  )}
-                  {desc.generalAppearance && (
-                    <p>
-                      <strong>General Appearance:</strong>{" "}
-                      {desc.generalAppearance}
-                    </p>
-                  )}
-                </>
-              )}
+            {!imageUrl && (
+              <>
+                {desc.skinColor && (
+                  <p>
+                    <strong>Skin Color:</strong> {desc.skinColor}
+                  </p>
+                )}
+                {desc.hairColor && (
+                  <p>
+                    <strong>Hair Color:</strong> {desc.hairColor}
+                  </p>
+                )}
+                {desc.eyeColor && (
+                  <p>
+                    <strong>Eye Color:</strong> {desc.eyeColor}
+                  </p>
+                )}
+                {desc.ethnicity && (
+                  <p>
+                    <strong>Ethnicity:</strong> {desc.ethnicity}
+                  </p>
+                )}
+                {desc.bodyType && (
+                  <p>
+                    <strong>Body Type:</strong> {desc.bodyType}
+                  </p>
+                )}
+                {desc.generalAppearance && (
+                  <p>
+                    <strong>General Appearance:</strong>{" "}
+                    {desc.generalAppearance}
+                  </p>
+                )}
+              </>
+            )}
             {desc.generalHealth && (
               <p>
                 <strong>General Health:</strong> {desc.generalHealth}

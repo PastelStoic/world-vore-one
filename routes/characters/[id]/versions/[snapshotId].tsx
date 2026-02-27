@@ -255,7 +255,6 @@ export default define.page<typeof handler>(
                 )}
             </div>
           </div>
-        </div>
       </CharacterPageLayout>
     );
   },

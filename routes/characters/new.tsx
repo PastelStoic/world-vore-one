@@ -1,27 +1,16 @@
-import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import CharacterSheetEditor from "../../islands/CharacterSheetEditor.tsx";
-import { PERK_IDS, PERKS } from "../../data/perks.ts";
+import { PERKS } from "../../data/perks.ts";
 import {
-  type CharacterDraft,
   createDefaultCharacterDraft,
-  parseBaseStats,
-  parseDescription,
-  parsePerkIds,
-  parseRace,
   setCharacterImageId,
   upsertCharacter,
-  validateCharacterProgression,
 } from "../../lib/characters.ts";
-
-function parseNonNegativeInt(rawValue: FormDataEntryValue | null) {
-  const parsed = Number(rawValue);
-  if (!Number.isInteger(parsed) || parsed < 0) {
-    return null;
-  }
-
-  return parsed;
-}
+import {
+  buildAndValidateDraft,
+  parseCharacterFormData,
+} from "../../lib/form_helpers.ts";
+import CharacterPageLayout from "../../components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -31,56 +20,26 @@ export const handler = define.handlers({
     }
 
     const formData = await ctx.req.formData();
-    const action = formData.get("action");
-    const name = String(formData.get("name") ?? "").trim();
-    const changelog = String(formData.get("changelog") ?? "").trim() || "Initial creation";
-    const race = parseRace(String(formData.get("race") ?? ""));
-    const description = parseDescription(String(formData.get("description") ?? "{}"));
-    const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
-    const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
-    const unallocatedStatPoints = parseNonNegativeInt(
-      formData.get("unallocatedStatPoints"),
-    );
+    const parsed = parseCharacterFormData(formData);
+    if (parsed instanceof Response) return parsed;
 
-    if (!name) {
-      return new Response("Name is required.", { status: 400 });
-    }
-
-    if (
-      !description || !baseStats || !perkIds || unallocatedStatPoints === null
-    ) {
-      return new Response("Invalid character payload.", { status: 400 });
-    }
-
-    if (action !== "create") {
+    if (parsed.action !== "create") {
       return new Response("Invalid form action.", { status: 400 });
     }
 
-    if (perkIds.some((id) => !PERK_IDS.has(id))) {
-      return new Response("Invalid perk id in payload.", { status: 400 });
+    if (!parsed.changelog) {
+      parsed.changelog = "Initial creation";
     }
 
-    const draft: CharacterDraft = {
-      name,
-      race,
-      description,
-      baseStats,
-      unallocatedStatPoints,
-      perkIds,
-    };
-
-    const progressionError = validateCharacterProgression(draft);
-    if (progressionError) {
-      return new Response(progressionError, { status: 400 });
-    }
+    const draft = buildAndValidateDraft(parsed);
+    if (draft instanceof Response) return draft;
 
     const id = crypto.randomUUID();
-    await upsertCharacter({ id, userId: user.id, ...draft }, changelog);
+    await upsertCharacter({ id, userId: user.id, ...draft }, parsed.changelog);
 
     // If an image was uploaded during creation, associate it with the character
-    const pendingImageId = String(formData.get("pendingImageId") ?? "").trim();
-    if (pendingImageId) {
-      await setCharacterImageId(id, pendingImageId);
+    if (parsed.pendingImageId) {
+      await setCharacterImageId(id, parsed.pendingImageId);
     }
 
     return Response.redirect(
@@ -98,20 +57,18 @@ export default define.page<typeof handler>((ctx) => {
     });
   }
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
-      <Head>
-        <title>Create Character</title>
-      </Head>
-      <div class="max-w-3xl mx-auto space-y-4">
-        <a href="/" class="underline">← Back to Character List</a>
-        <CharacterSheetEditor
-          action="create"
-          title="Create Character"
-          submitLabel="Create Character"
-          initialCharacter={createDefaultCharacterDraft()}
-          perks={PERKS}
-        />
-      </div>
-    </div>
+    <CharacterPageLayout
+      title="Create Character"
+      backHref="/"
+      backLabel="Back to Character List"
+    >
+      <CharacterSheetEditor
+        action="create"
+        title="Create Character"
+        submitLabel="Create Character"
+        initialCharacter={createDefaultCharacterDraft()}
+        perks={PERKS}
+      />
+    </CharacterPageLayout>
   );
 });

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import type { PerkDefinition } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
@@ -11,21 +11,9 @@ import {
   RACES,
   SEX_OPTIONS,
 } from "../lib/character_types.ts";
-import {
-  calculateEncumbranceLevel,
-  calculateEffectiveCarryCapacity,
-  calculateEffectiveCharisma,
-  calculateEffectiveConstitution,
-  calculateEffectiveDexterity,
-  calculateEffectiveDigestionResilience,
-  calculateEffectiveDigestionStrength,
-  calculateEffectiveEscapeTraining,
-  calculateEffectiveHealth,
-  calculateEffectiveIntelligence,
-  calculateEffectiveOrganCapacity,
-  calculateEffectiveStrength,
-  getEncumbranceLabel,
-} from "../lib/stat_calculations.ts";
+import { useCharacterStats } from "../lib/useCharacterStats.ts";
+import OtherStatsSection from "../components/OtherStatsSection.tsx";
+import EncumbranceSection from "../components/EncumbranceSection.tsx";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -52,7 +40,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     props.initialCharacter.unallocatedStatPoints,
   );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
-  const [carriedWeight, setCarriedWeight] = useState(0);
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
@@ -73,25 +60,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkIds,
   };
 
-  const carryCapacity = calculateEffectiveCarryCapacity(draft);
-  const encumbranceLevel = calculateEncumbranceLevel(carryCapacity, carriedWeight);
-  const encumbrancePenaltyText =
-    encumbranceLevel > 0
-      ? `-${encumbranceLevel} STR / -${encumbranceLevel} DEX`
-      : "No STR/DEX penalty";
-
-  const effectiveByStat = useMemo(() => {
-    return {
-      strength: calculateEffectiveStrength(draft, { encumbranceLevel }),
-      dexterity: calculateEffectiveDexterity(draft, { encumbranceLevel }),
-      constitution: calculateEffectiveConstitution(draft),
-      intelligence: calculateEffectiveIntelligence(draft),
-      charisma: calculateEffectiveCharisma(draft),
-      escapeTraining: calculateEffectiveEscapeTraining(draft),
-      digestionStrength: calculateEffectiveDigestionStrength(draft),
-      digestionResilience: calculateEffectiveDigestionResilience(draft),
-    };
-  }, [draft, encumbranceLevel]);
+  const {
+    carriedWeight,
+    setCarriedWeight,
+    carryCapacity,
+    encumbranceLevel,
+    encumbrancePenaltyText,
+    effectiveByStat,
+  } = useCharacterStats(draft);
 
   const availablePerks = props.perks.filter((perk) =>
     !perkIds.includes(perk.id)
@@ -620,53 +596,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         </ul>
       </div>
 
-      <div class="rounded border p-3 space-y-2">
-        <h3 class="font-semibold">Other Stats</h3>
-        <ul class="space-y-1 text-sm">
-          <li>
-            Health: <strong>{calculateEffectiveHealth(draft)}</strong>
-          </li>
-          <li>
-            Carry Capacity:{" "}
-            <strong>{carryCapacity}</strong>
-          </li>
-          <li>
-            Organ Capacity:{" "}
-            <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
-          </li>
-        </ul>
-      </div>
+      <OtherStatsSection draft={draft} carryCapacity={carryCapacity} />
 
-      <div class="rounded border p-3 space-y-2">
-        <h3 class="font-semibold">Effects</h3>
-        <label class="block">
-          <span class="block font-medium mb-1">Carried Weight</span>
-          <div class="flex items-center gap-3">
-            <input
-              class="w-1/2 border rounded px-3 py-2"
-              type="number"
-              min="0"
-              step="1"
-              value={String(carriedWeight)}
-              onInput={(event) => {
-                const parsed = Number(event.currentTarget.value);
-                if (Number.isNaN(parsed) || parsed < 0) {
-                  setCarriedWeight(0);
-                  return;
-                }
-
-                setCarriedWeight(parsed);
-              }}
-            />
-            <span class="text-sm text-gray-700 whitespace-nowrap">
-              Encumbrance: <strong>{getEncumbranceLabel(encumbranceLevel)}</strong>
-            </span>
-            <span class="text-sm text-gray-700 whitespace-nowrap">
-              <strong>{encumbrancePenaltyText}</strong>
-            </span>
-          </div>
-        </label>
-      </div>
+      <EncumbranceSection
+        carriedWeight={carriedWeight}
+        onCarriedWeightChange={setCarriedWeight}
+        encumbranceLevel={encumbranceLevel}
+        encumbrancePenaltyText={encumbrancePenaltyText}
+      />
 
       <div class="rounded border p-3 space-y-3">
         <h3 class="font-semibold">Perks</h3>

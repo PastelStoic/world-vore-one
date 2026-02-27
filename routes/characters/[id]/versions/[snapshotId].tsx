@@ -1,4 +1,3 @@
-import { Head } from "fresh/runtime";
 import { define } from "../../../../utils.ts";
 import { PERKS_BY_ID } from "../../../../data/perks.ts";
 import { BASE_STAT_FIELDS } from "../../../../lib/character_types.ts";
@@ -20,6 +19,7 @@ import {
   calculateEffectiveOrganCapacity,
   calculateEffectiveStrength,
 } from "../../../../lib/stat_calculations.ts";
+import CharacterPageLayout from "../../../../components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -102,16 +102,12 @@ export default define.page<typeof handler>(
     };
 
     return (
-      <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
-        <Head>
-          <title>{character.name} - Snapshot</title>
-        </Head>
-        <div class="max-w-3xl mx-auto space-y-4">
-          <a href={`/characters/${characterId}/versions`} class="underline">
-            ← Back to Previous Versions
-          </a>
-
-          <div class="border rounded p-4 bg-white/80 space-y-3">
+      <CharacterPageLayout
+        title={`${character.name} - Snapshot`}
+        backHref={`/characters/${characterId}/versions`}
+        backLabel="Back to Previous Versions"
+      >
+        <div class="border rounded p-4 bg-white/80 space-y-3">
             <h1 class="text-2xl font-bold">{draft.name}</h1>
             <p>
               <strong>Timestamp:</strong> {snapshot.timestamp}
@@ -254,7 +250,7 @@ export default define.page<typeof handler>(
             </div>
           </div>
         </div>
-      </div>
+      </CharacterPageLayout>
     );
   },
 );

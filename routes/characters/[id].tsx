@@ -1,9 +1,9 @@
-import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import CharacterSheetViewer from "../../islands/CharacterSheetViewer.tsx";
 import { PERKS } from "../../data/perks.ts";
 import { getCharacter } from "../../lib/characters.ts";
 import { cfImageUrl } from "../api/characters/[id]/image.tsx";
+import CharacterPageLayout from "../../components/CharacterPageLayout.tsx";
 
 export default define.page(async function CharacterPage(ctx) {
   const id = ctx.params.id;
@@ -19,32 +19,30 @@ export default define.page(async function CharacterPage(ctx) {
   const justSaved = ctx.url.searchParams.get("saved") === "1";
 
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
-      <Head>
-        <title>{character.name}</title>
-      </Head>
-      <div class="max-w-3xl mx-auto space-y-4">
-        <a href="/" class="underline">← Back to Character List</a>
-        {isOwner && (
-          <div class="flex gap-4">
-            <a
-              href={`/characters/${id}/edit`}
-              class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
-            >
-              Edit Character
-            </a>
-            <a href={`/characters/${id}/versions`} class="underline self-center">
-              Previous Versions
-            </a>
-          </div>
-        )}
-        {justSaved && <p class="text-green-700">Character saved.</p>}
-        <CharacterSheetViewer
-          character={character}
-          perks={PERKS}
-          imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
-        />
-      </div>
-    </div>
+    <CharacterPageLayout
+      title={character.name}
+      backHref="/"
+      backLabel="Back to Character List"
+    >
+      {isOwner && (
+        <div class="flex gap-4">
+          <a
+            href={`/characters/${id}/edit`}
+            class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            Edit Character
+          </a>
+          <a href={`/characters/${id}/versions`} class="underline self-center">
+            Previous Versions
+          </a>
+        </div>
+      )}
+      {justSaved && <p class="text-green-700">Character saved.</p>}
+      <CharacterSheetViewer
+        character={character}
+        perks={PERKS}
+        imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
+      />
+    </CharacterPageLayout>
   );
 });

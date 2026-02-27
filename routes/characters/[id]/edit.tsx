@@ -1,26 +1,16 @@
-import { Head } from "fresh/runtime";
 import { define } from "../../../utils.ts";
 import CharacterSheetEditor from "../../../islands/CharacterSheetEditor.tsx";
-import { PERK_IDS, PERKS } from "../../../data/perks.ts";
+import { PERKS } from "../../../data/perks.ts";
 import {
-  type CharacterDraft,
   getCharacter,
-  parseBaseStats,
-  parseDescription,
-  parsePerkIds,
   upsertCharacter,
-  validateCharacterProgression,
 } from "../../../lib/characters.ts";
+import {
+  buildAndValidateDraft,
+  parseCharacterFormData,
+} from "../../../lib/form_helpers.ts";
 import { cfImageUrl } from "../../api/characters/[id]/image.tsx";
-
-function parseNonNegativeInt(rawValue: FormDataEntryValue | null) {
-  const parsed = Number(rawValue);
-  if (!Number.isInteger(parsed) || parsed < 0) {
-    return null;
-  }
-
-  return parsed;
-}
+import CharacterPageLayout from "../../../components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -30,55 +20,15 @@ export const handler = define.handlers({
     }
 
     const formData = await ctx.req.formData();
-    const action = formData.get("action");
-    const name = String(formData.get("name") ?? "").trim();
-    const changelog = String(formData.get("changelog") ?? "").trim();
-    const basedOnSnapshotId = String(formData.get("basedOnSnapshotId") ?? "")
-      .trim();
-    const description = parseDescription(
-      String(formData.get("description") ?? "{}"),
-    );
-    const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
-    const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
-    const unallocatedStatPoints = parseNonNegativeInt(
-      formData.get("unallocatedStatPoints"),
-    );
+    const parsed = parseCharacterFormData(formData);
+    if (parsed instanceof Response) return parsed;
 
-    if (!name) {
-      return new Response("Name is required.", { status: 400 });
-    }
-
-    if (!changelog) {
-      return new Response("Changelog is required.", { status: 400 });
-    }
-
-    if (
-      !description || !baseStats || !perkIds ||
-      unallocatedStatPoints === null
-    ) {
-      return new Response("Invalid character payload.", { status: 400 });
-    }
-
-    if (action !== "update") {
+    if (parsed.action !== "update") {
       return new Response("Invalid form action.", { status: 400 });
     }
 
-    if (perkIds.some((id) => !PERK_IDS.has(id))) {
-      return new Response("Invalid perk id in payload.", { status: 400 });
-    }
-
-    const draft: CharacterDraft = {
-      name,
-      race: "Baseliner", // Overwritten with existing character's race below
-      description,
-      baseStats,
-      unallocatedStatPoints,
-      perkIds,
-    };
-
-    const progressionError = validateCharacterProgression(draft);
-    if (progressionError) {
-      return new Response(progressionError, { status: 400 });
+    if (!parsed.changelog) {
+      return new Response("Changelog is required.", { status: 400 });
     }
 
     const id = ctx.params.id;
@@ -92,10 +42,13 @@ export const handler = define.handlers({
     }
 
     // Race is immutable after creation — always use the existing value
-    draft.race = existing.race;
+    parsed.race = existing.race;
 
-    await upsertCharacter({ id, userId: user.id, ...draft }, changelog, {
-      basedOnSnapshotId,
+    const draft = buildAndValidateDraft(parsed);
+    if (draft instanceof Response) return draft;
+
+    await upsertCharacter({ id, userId: user.id, ...draft }, parsed.changelog, {
+      basedOnSnapshotId: parsed.basedOnSnapshotId,
     });
 
     return Response.redirect(
@@ -120,26 +73,22 @@ export default define.page<typeof handler>(
     }
 
     return (
-      <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
-        <Head>
-          <title>Edit: {character.name}</title>
-        </Head>
-        <div class="max-w-3xl mx-auto space-y-4">
-          <a href={`/characters/${id}`} class="underline">
-            ← Back to Character
-          </a>
-          <CharacterSheetEditor
-            action="update"
-            title={`Edit: ${character.name}`}
-            submitLabel="Save Changes"
-            characterId={character.id}
-            basedOnSnapshotId={character.latestSnapshotId}
-            initialCharacter={character}
-            perks={PERKS}
-            imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
-          />
-        </div>
-      </div>
+      <CharacterPageLayout
+        title={`Edit: ${character.name}`}
+        backHref={`/characters/${id}`}
+        backLabel="Back to Character"
+      >
+        <CharacterSheetEditor
+          action="update"
+          title={`Edit: ${character.name}`}
+          submitLabel="Save Changes"
+          characterId={character.id}
+          basedOnSnapshotId={character.latestSnapshotId}
+          initialCharacter={character}
+          perks={PERKS}
+          imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
+        />
+      </CharacterPageLayout>
     );
   },
 );

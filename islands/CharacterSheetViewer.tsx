@@ -5,21 +5,9 @@ import {
   type CharacterDraft,
   type CharacterSheet,
 } from "../lib/character_types.ts";
-import {
-  calculateEffectiveCarryCapacity,
-  calculateEffectiveCharisma,
-  calculateEffectiveConstitution,
-  calculateEffectiveDexterity,
-  calculateEffectiveDigestionResilience,
-  calculateEffectiveDigestionStrength,
-  calculateEffectiveEscapeTraining,
-  calculateEffectiveHealth,
-  calculateEffectiveIntelligence,
-  calculateEffectiveOrganCapacity,
-  calculateEffectiveStrength,
-  calculateEncumbranceLevel,
-  getEncumbranceLabel,
-} from "../lib/stat_calculations.ts";
+import { useCharacterStats } from "../lib/useCharacterStats.ts";
+import OtherStatsSection from "../components/OtherStatsSection.tsx";
+import EncumbranceSection from "../components/EncumbranceSection.tsx";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -32,29 +20,16 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const { character, perks, imageUrl } = props;
   const desc = character.description;
 
-  const [carriedWeight, setCarriedWeight] = useState(0);
-  const [showDescription, setShowDescription] = useState(true);
-
-  const carryCapacity = calculateEffectiveCarryCapacity(character);
-  const encumbranceLevel = calculateEncumbranceLevel(
-    carryCapacity,
+  const {
     carriedWeight,
-  );
-  const encumbrancePenaltyText =
-    encumbranceLevel > 0
-      ? `-${encumbranceLevel} STR / -${encumbranceLevel} DEX`
-      : "No STR/DEX penalty";
+    setCarriedWeight,
+    carryCapacity,
+    encumbranceLevel,
+    encumbrancePenaltyText,
+    effectiveByStat,
+  } = useCharacterStats(character);
 
-  const effectiveByStat = {
-    strength: calculateEffectiveStrength(character, { encumbranceLevel }),
-    dexterity: calculateEffectiveDexterity(character, { encumbranceLevel }),
-    constitution: calculateEffectiveConstitution(character),
-    intelligence: calculateEffectiveIntelligence(character),
-    charisma: calculateEffectiveCharisma(character),
-    escapeTraining: calculateEffectiveEscapeTraining(character),
-    digestionStrength: calculateEffectiveDigestionStrength(character),
-    digestionResilience: calculateEffectiveDigestionResilience(character),
-  };
+  const [showDescription, setShowDescription] = useState(true);
 
   return (
     <div class="border rounded-lg p-4 bg-white/80 space-y-4">
@@ -202,52 +177,14 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         </ul>
       </div>
 
-      <div class="rounded border p-3 space-y-2">
-        <h3 class="font-semibold">Other Stats</h3>
-        <ul class="space-y-1 text-sm">
-          <li>
-            Health: <strong>{calculateEffectiveHealth(character)}</strong>
-          </li>
-          <li>
-            Carry Capacity: <strong>{carryCapacity}</strong>
-          </li>
-          <li>
-            Organ Capacity:{" "}
-            <strong>{calculateEffectiveOrganCapacity(character)}</strong>
-          </li>
-        </ul>
-      </div>
+      <OtherStatsSection draft={character} carryCapacity={carryCapacity} />
 
-      <div class="rounded border p-3 space-y-2">
-        <h3 class="font-semibold">Effects</h3>
-        <label class="block">
-          <span class="block font-medium mb-1">Carried Weight</span>
-          <div class="flex items-center gap-3">
-            <input
-              class="w-1/2 border rounded px-3 py-2"
-              type="number"
-              min="0"
-              step="1"
-              value={String(carriedWeight)}
-              onInput={(event) => {
-                const parsed = Number(event.currentTarget.value);
-                if (Number.isNaN(parsed) || parsed < 0) {
-                  setCarriedWeight(0);
-                  return;
-                }
-                setCarriedWeight(parsed);
-              }}
-            />
-            <span class="text-sm text-gray-700 whitespace-nowrap">
-              Encumbrance:{" "}
-              <strong>{getEncumbranceLabel(encumbranceLevel)}</strong>
-            </span>
-            <span class="text-sm text-gray-700 whitespace-nowrap">
-              <strong>{encumbrancePenaltyText}</strong>
-            </span>
-          </div>
-        </label>
-      </div>
+      <EncumbranceSection
+        carriedWeight={carriedWeight}
+        onCarriedWeightChange={setCarriedWeight}
+        encumbranceLevel={encumbranceLevel}
+        encumbrancePenaltyText={encumbrancePenaltyText}
+      />
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Perks</h3>

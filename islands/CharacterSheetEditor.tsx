@@ -23,6 +23,7 @@ import {
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
 import EncumbranceSection from "../components/EncumbranceSection.tsx";
+import PerkDescription from "../components/PerkDescription.tsx";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -725,7 +726,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         return (
                           <li class="flex items-center gap-2" key={id}>
                             <span>
-                              {perk ? `${perk.name}: ${perk.description}` : id}
+                              {perk
+                                ? (
+                                  <PerkDescription
+                                    name={perk.name}
+                                    description={perk.description}
+                                  />
+                                )
+                                : id}
                             </span>
                             {canRemove && (
                               <button
@@ -824,7 +832,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         key={perk.id}
                       >
                         <span class="text-sm">
-                          <strong>{perk.name}</strong>: {perk.description}
+                          <PerkDescription
+                            name={perk.name}
+                            description={perk.description}
+                            boldName
+                          />
                         </span>
                         <button
                           type="button"

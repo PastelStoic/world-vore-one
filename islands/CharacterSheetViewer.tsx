@@ -12,6 +12,7 @@ import {
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
 import EncumbranceSection from "../components/EncumbranceSection.tsx";
+import PerkDescription from "../components/PerkDescription.tsx";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -216,7 +217,14 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                   <ul class="list-disc list-inside">
                     {group.items.map(({ id, perk }) => (
                       <li key={id}>
-                        {perk ? `${perk.name}: ${perk.description}` : id}
+                        {perk
+                          ? (
+                            <PerkDescription
+                              name={perk.name}
+                              description={perk.description}
+                            />
+                          )
+                          : id}
                       </li>
                     ))}
                   </ul>

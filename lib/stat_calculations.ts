@@ -77,7 +77,8 @@ export function calculateEffectiveStrength(
   input: CharacterDraft,
   options: CalculationOptions = {},
 ) {
-  const effective = input.baseStats.strength + getBaseStatBonus(input, "strength");
+  const effective = input.baseStats.strength +
+    getBaseStatBonus(input, "strength");
   const level = options.encumbranceLevel ?? 0;
   return applyEncumbrancePenalty(effective, level);
 }
@@ -86,7 +87,8 @@ export function calculateEffectiveDexterity(
   input: CharacterDraft,
   options: CalculationOptions = {},
 ) {
-  const effective = input.baseStats.dexterity + getBaseStatBonus(input, "dexterity");
+  const effective = input.baseStats.dexterity +
+    getBaseStatBonus(input, "dexterity");
   const level = options.encumbranceLevel ?? 0;
   return applyEncumbrancePenalty(effective, level);
 }

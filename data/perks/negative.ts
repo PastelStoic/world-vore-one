@@ -5,7 +5,8 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
     id: "rival",
     name: "Rival",
     category: "negative",
-    description: `You became someone's worst enemy, and they hate you with a burning passion.
+    description:
+      `You became someone's worst enemy, and they hate you with a burning passion.
 
 *You need another player in order to use this perk. They will control your rival if they are ever brought up.
 *Pick how many points you wish to gain, from 1 to 6. 
@@ -23,7 +24,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "extremely-inefficient-digestion",
     name: "Extremely inefficient digestion",
     category: "negative",
-    description: `Your metabolism is extremely slow - and it just doesn't work as well as others.
+    description:
+      `Your metabolism is extremely slow - and it just doesn't work as well as others.
 
 *PFs only
 *Digestion strength can go into the negatives. You may bring it up to -4.
@@ -45,7 +47,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "m-r-e",
     name: "M.R.E",
     category: "negative",
-    description: `Your purpose is being eaten by others, so much so that your body has been made to digest extremely easily.
+    description:
+      `Your purpose is being eaten by others, so much so that your body has been made to digest extremely easily.
 
 *You must have the Speisfraun perk, with all of its disadvantages.
 *This perk is free.
@@ -61,7 +64,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "crippling-addiction",
     name: "Crippling addiction",
     category: "negative",
-    description: `You have an addiction so absolutely crippling that you cannot go without it.
+    description:
+      `You have an addiction so absolutely crippling that you cannot go without it.
 
 *This perk is free.
 *Gain 4 points by picking this perk.
@@ -78,7 +82,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "crippling-health-condition",
     name: "Crippling health condition",
     category: "negative",
-    description: `You have some type of health condition that is completely crippling in some way or another.
+    description:
+      `You have some type of health condition that is completely crippling in some way or another.
 
 *This perk is free.
 *Gain 4 points by picking this perk.

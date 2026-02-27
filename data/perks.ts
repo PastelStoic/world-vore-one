@@ -80,7 +80,9 @@ export function validatePerkRequirements(
     }
 
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
-      return `Perk "${perk.name}" requires one of: ${perk.requiredRaces.join(", ")}.`;
+      return `Perk "${perk.name}" requires one of: ${
+        perk.requiredRaces.join(", ")
+      }.`;
     }
 
     if (perk.lockCategory) {

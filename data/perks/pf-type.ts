@@ -41,7 +41,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Pilzherr", "Tierherr"],
     lockCategory: "pilzherr-type",
-    description: `You are a MALE PF! You look very manly, unmistakeable as a man!
+    description:
+      `You are a MALE PF! You look very manly, unmistakeable as a man!
 
 *Variant of the 'Pilzherr' perk. This one is not free.
 *One of the biggest advantages of PFs is the fact that they reproduce so quickly. 
@@ -58,7 +59,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "speisfraun",
     name: "Speisfraun",
     category: "pf-type",
-    description: `You are a PF birthed for the sole purpose of feeding yourself to others. Your body's fatty in all the right places! 
+    description:
+      `You are a PF birthed for the sole purpose of feeding yourself to others. Your body's fatty in all the right places! 
 
 *You burn calories very slowly, semdomly needing to eat anything at all. One meal per week is enough.
 *You are built to transform inedible things something edible (yourself.) 
@@ -82,7 +84,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "tiny",
     name: "Tiny",
     category: "pf-type",
-    description: `Through some abysmal fuckery, you are born extremely tiny - no more than four inches tall at most.
+    description:
+      `Through some abysmal fuckery, you are born extremely tiny - no more than four inches tall at most.
 
 *You are considered to have values of 1 in Strenght, Dex and Constitution when dealing with someone normal sized. 
 *Any investments into those stats only apply when dealing with other equally sized beings.
@@ -99,7 +102,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -117,7 +121,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -133,7 +138,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -154,7 +160,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -171,7 +178,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -190,7 +198,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -209,7 +218,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics.
@@ -227,7 +237,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristics
@@ -247,7 +258,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristic.
@@ -267,7 +279,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristic.
@@ -287,7 +300,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    description: `You have animal genes in you, making you stronger in certain areas.
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
 
 *You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
 *Anyone can tell you are a tierfraun based on your characteristic.

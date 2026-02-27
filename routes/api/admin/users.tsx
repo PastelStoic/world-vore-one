@@ -1,9 +1,5 @@
 import { define } from "../../../utils.ts";
-import {
-  setAdmin,
-  removeAdmin,
-  listAdmins,
-} from "../../../lib/admin.ts";
+import { listAdmins, removeAdmin, setAdmin } from "../../../lib/admin.ts";
 
 export const handler = define.handlers({
   /** List all admins. */

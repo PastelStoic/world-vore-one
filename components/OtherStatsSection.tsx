@@ -1,6 +1,5 @@
 import type { CharacterDraft } from "../lib/character_types.ts";
 import {
-  calculateEffectiveCarryCapacity,
   calculateEffectiveHealth,
   calculateEffectiveOrganCapacity,
 } from "../lib/stat_calculations.ts";

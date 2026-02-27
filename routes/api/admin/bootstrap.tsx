@@ -12,7 +12,9 @@ export const handler = define.handlers({
     const hasAdmins = await anyAdminsExist();
     if (hasAdmins) {
       return new Response(
-        JSON.stringify({ error: "Admins already exist. Ask an existing admin to promote you." }),
+        JSON.stringify({
+          error: "Admins already exist. Ask an existing admin to promote you.",
+        }),
         { status: 403, headers: { "content-type": "application/json" } },
       );
     }

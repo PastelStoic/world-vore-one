@@ -73,7 +73,9 @@ export function getSessionIdFromRequest(req: Request): string | null {
 export function setSessionCookie(headers: Headers, sessionId: string) {
   headers.append(
     "set-cookie",
-    `${COOKIE_NAME}=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_TTL_MS / 1000}`,
+    `${COOKIE_NAME}=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${
+      SESSION_TTL_MS / 1000
+    }`,
   );
 }
 

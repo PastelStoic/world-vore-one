@@ -5,7 +5,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "melee-fighter",
     name: "Melee fighter",
     category: "combat",
-    description: `Your character is remarkably strong, or particularly precise with their strikes! 
+    description:
+      `Your character is remarkably strong, or particularly precise with their strikes! 
 *When rolling to attack someone through melee means, roll +4d6 
 *You now count a success on a 4 and above, instead of a 5 and above.`,
   },
@@ -22,7 +23,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "runner",
     name: "Runner",
     category: "combat",
-    description: `Your character is remarkably fast, and most struggle to keep up! 
+    description:
+      `Your character is remarkably fast, and most struggle to keep up! 
 ---->So long as you are not encumbered:
 *Move up to two distances, instead of the usual one, in combat. 
 *You are always at the top of initative regardless of your dexterity.
@@ -50,7 +52,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "tough",
     name: "Tough",
     category: "combat",
-    description: `Your skin, meat 'n bones are very tough and hard to break through! 
+    description:
+      `Your skin, meat 'n bones are very tough and hard to break through! 
 
 Your HP is doubled. Your constitution is not doubled, it applies only to your HP!`,
     modifiers: {
@@ -61,7 +64,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "explosive-intolerant",
     name: "Explosive intolerant",
     category: "combat",
-    description: `Explosions in general only ever seem to avoid you somehow, it's like you repel them! 
+    description:
+      `Explosions in general only ever seem to avoid you somehow, it's like you repel them! 
 
 *During events and combat related scenes, never die or get hurt from explosives-related random chance
 ( Random mines, artillery shells and stray explosives ^ )
@@ -71,7 +75,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "danger-sense",
     name: "Danger sense",
     category: "combat",
-    description: `You have a natural feeling for 'danger', as if it were a sixth sense! 
+    description:
+      `You have a natural feeling for 'danger', as if it were a sixth sense! 
 
 *Any stealth action or ambush done against you immediately fails. You are never caught by surprise. 
 *Always notice traps before they can pose a danger to you. You can still trip them though.
@@ -105,7 +110,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "brawler",
     name: "Brawler",
     category: "combat",
-    description: `You are a natural brawler, and fight with whatever you have on hands. 
+    description:
+      `You are a natural brawler, and fight with whatever you have on hands. 
 
 *Tier 0 and tier 1 weapons ( unarmed and makeshift weapons respectively ) deal +1 damage. 
 *When attacking with tier 0 and tier 1 weapons, gain +3d6 to attack with them.
@@ -115,7 +121,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "sapper",
     name: "Sapper",
     category: "combat",
-    description: `A Sapper is a military engineer of sorts. You build fortifications and do general groundworks of the sort.
+    description:
+      `A Sapper is a military engineer of sorts. You build fortifications and do general groundworks of the sort.
 
 *You have a no-weight entrenching gear AND an explosives kit which are not considered 'bulky kits' thanks to this perk. 
 *They always return to you through one means or another, but you can be separated from them temporarily.
@@ -128,7 +135,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "baiter",
     name: "Baiter",
     category: "combat",
-    description: `You are really fucking annoying, or a particularly juicy target.
+    description:
+      `You are really fucking annoying, or a particularly juicy target.
 
 *When fighting as a group, enemies must target you even if other allies of yours are closer/easier/better targets.
 *Does not apply if your enemy is incapable of targetting you at all.
@@ -152,7 +160,8 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "weapon-master",
     name: "Weapon master",
     category: "combat",
-    description: `You have weapons from all across the world, neatly stashed away someplace conveniently nearby.
+    description:
+      `You have weapons from all across the world, neatly stashed away someplace conveniently nearby.
 
 *With this perk, you have ONE copy of every weapon in the system. 
 *You have as many melee weapons as you want, with fitting traits.

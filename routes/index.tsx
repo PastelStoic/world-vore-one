@@ -22,7 +22,11 @@ export default define.page(async function Home(ctx) {
           ? (
             <section>
               <p class="text-gray-700">
-                Please <a href="/auth/discord" class="underline font-medium">log in with Discord</a> to manage your characters.
+                Please{" "}
+                <a href="/auth/discord" class="underline font-medium">
+                  log in with Discord
+                </a>{" "}
+                to manage your characters.
               </p>
             </section>
           )
@@ -43,7 +47,10 @@ export default define.page(async function Home(ctx) {
                     <ul class="space-y-2">
                       {characters.map((character) => (
                         <li key={character.id}>
-                          <a href={`/characters/${character.id}`} class="underline">
+                          <a
+                            href={`/characters/${character.id}`}
+                            class="underline"
+                          >
                             {character.name}
                           </a>
                         </li>

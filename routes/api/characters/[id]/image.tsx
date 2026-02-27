@@ -6,7 +6,8 @@ import {
 
 const CF_ACCOUNT_ID = Deno.env.get("CLOUDFLARE_ACCOUNT_ID") ?? "";
 const CF_IMAGES_TOKEN = Deno.env.get("CLOUDFLARE_IMAGES_API_TOKEN") ?? "";
-const CF_IMAGES_ACCOUNT_HASH = Deno.env.get("CLOUDFLARE_IMAGES_ACCOUNT_HASH") ?? "";
+const CF_IMAGES_ACCOUNT_HASH = Deno.env.get("CLOUDFLARE_IMAGES_ACCOUNT_HASH") ??
+  "";
 
 /**
  * Build a Cloudflare Images delivery URL.

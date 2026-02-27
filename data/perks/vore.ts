@@ -5,7 +5,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "survivor",
     name: "Survivor",
     category: "vore",
-    description: `You have survived many stomachs before, or otherwise you're naturally good at escaping them! 
+    description:
+      `You have survived many stomachs before, or otherwise you're naturally good at escaping them! 
 
 *You roll an extra 4d6 to avoid being eaten and gain +4 to your escape training stat.
 *Gain +3 escape attempts OR set your escape attempts to an exact 3; whichever would benefit you more when ingested.
@@ -15,7 +16,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "natural-predator",
     name: "Natural predator",
     category: "vore",
-    description: `You are a man-eater and devour others without much difficulty at all. 
+    description:
+      `You are a man-eater and devour others without much difficulty at all. 
 
 *You roll an extra 4d6 to grapple, swallow and to keep prey down. 
 *You now count successes on a 4 and above, rather than a 5 and above, to do that.`,
@@ -24,7 +26,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "hard-to-churn",
     name: "Hard to churn",
     category: "vore",
-    description: `You're naturally resilient to digestion somehow, or you're just very willful to survive! 
+    description:
+      `You're naturally resilient to digestion somehow, or you're just very willful to survive! 
 
 *Your points in Digestion Resilience are quadrupled.`,
   },
@@ -42,7 +45,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "in-charge",
     name: "In charge",
     category: "vore",
-    description: `You have an unreal amount of control over your digestive system! Mostly narrative perk.
+    description:
+      `You have an unreal amount of control over your digestive system! Mostly narrative perk.
 
 *By default, stomachs always digest, balls, womb and breasts are always safe. This perk ignores that.
 *You may decide if any organ is capable of digesting prey or holding them safely, whenever you wish. 
@@ -70,7 +74,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "inescapable",
     name: "Inescapable",
     category: "vore",
-    description: `Once prey has grown weak and soft enough, they can't find a way out of you at all! 
+    description:
+      `Once prey has grown weak and soft enough, they can't find a way out of you at all! 
 
 *If prey is at 0 HP, or is brought to 0 HP, and they're inside you - they cannot attempt any escapes! 
 *They may only be rescued by someone from the outside, or released!`,
@@ -88,7 +93,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "heavy",
     name: "Heavy",
     category: "vore",
-    description: `Fatty! You keep your predator pinned with your weight, or your struggles are very destabilizing!
+    description:
+      `Fatty! You keep your predator pinned with your weight, or your struggles are very destabilizing!
 
 *This may be justified through you being very heavy, or your struggles being too strong to move around with.
 *When eaten by someone, you make them immobile, and they receive the respective penalties!
@@ -98,7 +104,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "internal-fighter",
     name: "Internal fighter",
     category: "vore",
-    description: `You must certainly be mad! Rather than fighting outside of your predator, you'd rather do so from the inside!
+    description:
+      `You must certainly be mad! Rather than fighting outside of your predator, you'd rather do so from the inside!
 
 *When rolling your "escape training", you may choose to, instead of trying to escape, damage your predator! 
 *This must be declared before rolling, otherwise, it will automatically default to an escape attempt. 
@@ -139,7 +146,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "crusher",
     name: "Crusher",
     category: "vore",
-    description: `Your prey is MEANT to stay inside you! They better not fight back, lest they want to be punished! 
+    description:
+      `Your prey is MEANT to stay inside you! They better not fight back, lest they want to be punished! 
 
 *If your prey rolls to escape your stomach and fails, they take 1 damage for every success you have over their own.
 *Prey can be killed through these means! Digesting their body still takes the usual time, this does not speed it up at all.
@@ -162,7 +170,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "living-fat-advisors",
     name: "Living fat advisors",
     category: "vore",
-    description: `The dead remain within you after churning, awakening as your fat!
+    description:
+      `The dead remain within you after churning, awakening as your fat!
 
 *Prey must pick a bodypart ( Boobs, butt, belly, dick, balls, etc ) to live on as. They'll retain their consciousness and memories.
 *The pred will then be able hear their living fat within their mind, and may be advised by it, if they're willing.
@@ -190,7 +199,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "stuffer",
     name: "Stuffer",
     category: "vore",
-    description: `You actively want to shove yourself into the tummies of your predators and keep yourself in!
+    description:
+      `You actively want to shove yourself into the tummies of your predators and keep yourself in!
 
 *You gain 4d6 to grapple, stuff yourself into a predator and keep yourself in there! 
 *You now count successes on a 4 and above, rather than 5 and above, to do that.`,
@@ -199,7 +209,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "forceful-feeder",
     name: "Forceful feeder",
     category: "vore",
-    description: `You like to see others get stuffed to the very brim - and then push them past it!
+    description:
+      `You like to see others get stuffed to the very brim - and then push them past it!
 
 *You gain +4d6 to grapple prey and to force-feed them to someone.
 *You now count successes on 4 and above, rather than 5 and above, to do that.
@@ -217,7 +228,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "last-ditch-escapee",
     name: "Last ditch escapee",
     category: "vore",
-    description: `When things are tough, you always seem to get hit by a strong second wind!
+    description:
+      `When things are tough, you always seem to get hit by a strong second wind!
 
 ---->If you're inside someone and you're at 0 HP or below ( not self-inflicted ), 
 *You gain +6d6 to escape their stomach.
@@ -232,7 +244,8 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "open-ended-tail",
     name: "Open ended tail",
     category: "vore",
-    description: `Through some sort of strange mutation, your tail isn't normal - it's fleshy, stretchy, and opens near the end!
+    description:
+      `Through some sort of strange mutation, your tail isn't normal - it's fleshy, stretchy, and opens near the end!
 
 ---->Perk requirement: Must be a tierfraun with a tail.
 *This perk gives you a special tail may be used to carry things, but it cannot manipulate them.

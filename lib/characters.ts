@@ -1,20 +1,19 @@
 import {
   BASE_STAT_FIELDS,
   type BaseStats,
-  type CharacterDraft,
   type CharacterDescription,
+  type CharacterDraft,
   type CharacterSheet,
   type CharacterSnapshot,
   createDefaultBaseStats,
   createDefaultCharacterDraft,
   createDefaultDescription,
-  DEFAULT_STAT_POINTS,
   getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type Race,
   RACES,
-  SEX_OPTIONS,
   type Sex,
+  SEX_OPTIONS,
 } from "./character_types.ts";
 import { getKv } from "./kv.ts";
 
@@ -29,7 +28,9 @@ export async function listCharacters(userId?: string) {
 
   if (userId) {
     for await (
-      const entry of kv.list<CharacterSheet>({ prefix: [...CHARACTER_BY_USER_PREFIX, userId] })
+      const entry of kv.list<CharacterSheet>({
+        prefix: [...CHARACTER_BY_USER_PREFIX, userId],
+      })
     ) {
       if (entry.value) {
         characters.push(entry.value);
@@ -106,7 +107,10 @@ export async function upsertCharacter(
     snapshotId,
   ], snapshot);
   await kv.set([...CHARACTER_PREFIX, input.id], character);
-  await kv.set([...CHARACTER_BY_USER_PREFIX, input.userId, input.id], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, input.userId, input.id],
+    character,
+  );
   return character;
 }
 
@@ -215,14 +219,18 @@ export function parseDescription(raw: string): CharacterDescription | null {
     const defaults = createDefaultDescription();
 
     const str = (key: keyof CharacterDescription): string =>
-      typeof parsed[key] === "string" ? String(parsed[key]).trim() : defaults[key] as string;
+      typeof parsed[key] === "string"
+        ? String(parsed[key]).trim()
+        : defaults[key] as string;
 
     const sex = SEX_OPTIONS.includes(parsed.sex as Sex)
       ? (parsed.sex as Sex)
       : defaults.sex;
 
     return {
-      isTemplate: typeof parsed.isTemplate === "boolean" ? parsed.isTemplate : false,
+      isTemplate: typeof parsed.isTemplate === "boolean"
+        ? parsed.isTemplate
+        : false,
       countryOfOrigin: str("countryOfOrigin"),
       faction: str("faction"),
       subfaction: str("subfaction"),
@@ -272,7 +280,8 @@ export function validateCharacterProgression(
   }
 
   const spentOnPerks = calculatePerksCost(input.perkIds.length);
-  const expectedUnallocated = getStartingStatPoints(input.race) - spentOnStats - spentOnPerks;
+  const expectedUnallocated = getStartingStatPoints(input.race) - spentOnStats -
+    spentOnPerks;
 
   if (expectedUnallocated !== input.unallocatedStatPoints) {
     return "Invalid stat/perk point allocation.";
@@ -282,8 +291,8 @@ export function validateCharacterProgression(
 }
 
 export {
-  type CharacterDraft,
   type CharacterDescription,
+  type CharacterDraft,
   type CharacterSheet,
   type CharacterSnapshot,
   createDefaultCharacterDraft,

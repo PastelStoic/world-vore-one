@@ -1,10 +1,7 @@
 import { define } from "../../../utils.ts";
 import CharacterSheetEditor from "../../../islands/CharacterSheetEditor.tsx";
 import { PERKS } from "../../../data/perks.ts";
-import {
-  getCharacter,
-  upsertCharacter,
-} from "../../../lib/characters.ts";
+import { getCharacter, upsertCharacter } from "../../../lib/characters.ts";
 import {
   buildAndValidateDraft,
   parseCharacterFormData,
@@ -53,9 +50,13 @@ export const handler = define.handlers({
       ? `[Admin edit by ${user.username}] ${parsed.changelog}`
       : parsed.changelog;
 
-    await upsertCharacter({ id, userId: existing.userId, ...draft }, changelog, {
-      basedOnSnapshotId: parsed.basedOnSnapshotId,
-    });
+    await upsertCharacter(
+      { id, userId: existing.userId, ...draft },
+      changelog,
+      {
+        basedOnSnapshotId: parsed.basedOnSnapshotId,
+      },
+    );
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),
@@ -93,7 +94,9 @@ export default define.page<typeof handler>(
           basedOnSnapshotId={character.latestSnapshotId}
           initialCharacter={character}
           perks={PERKS}
-          imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
+          imageUrl={character.imageId
+            ? cfImageUrl(character.imageId)
+            : undefined}
         />
       </CharacterPageLayout>
     );

@@ -10,7 +10,10 @@ export async function isAdmin(userId: string): Promise<boolean> {
 }
 
 /** Grant admin status to a user. */
-export async function setAdmin(userId: string, username: string): Promise<void> {
+export async function setAdmin(
+  userId: string,
+  username: string,
+): Promise<void> {
   const kv = await getKv();
   await kv.set([...ADMIN_PREFIX, userId], true);
   // Also store the username for display purposes
@@ -49,7 +52,11 @@ export async function listAdmins(): Promise<AdminRecord[]> {
   for await (const entry of kv.list<boolean>({ prefix: [...ADMIN_PREFIX] })) {
     if (entry.key.length === 2 && entry.value === true) {
       const userId = entry.key[1] as string;
-      const usernameEntry = await kv.get<string>([...ADMIN_PREFIX, userId, "username"]);
+      const usernameEntry = await kv.get<string>([
+        ...ADMIN_PREFIX,
+        userId,
+        "username",
+      ]);
       admins.push({
         userId,
         username: usernameEntry.value ?? userId,

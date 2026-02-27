@@ -61,7 +61,9 @@ export default function AdminPanel(props: AdminPanelProps) {
     searchLoading.value = true;
     try {
       const res = await fetch(
-        `/api/admin/search-characters?q=${encodeURIComponent(searchQuery.value)}`,
+        `/api/admin/search-characters?q=${
+          encodeURIComponent(searchQuery.value)
+        }`,
       );
       if (res.ok) {
         characters.value = await res.json();
@@ -95,7 +97,11 @@ export default function AdminPanel(props: AdminPanelProps) {
       const res = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ userId, username: username || userId, action: "add" }),
+        body: JSON.stringify({
+          userId,
+          username: username || userId,
+          action: "add",
+        }),
       });
       if (res.ok) {
         admins.value = await res.json();
@@ -134,9 +140,11 @@ export default function AdminPanel(props: AdminPanelProps) {
     return (
       <div class="space-y-4">
         <p class="text-gray-700">
-          No admin accounts exist yet. As the site owner, you can make yourself the first admin.
+          No admin accounts exist yet. As the site owner, you can make yourself
+          the first admin.
         </p>
         <button
+          type="button"
           onClick={bootstrap}
           disabled={bootstrapping.value}
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
@@ -174,13 +182,16 @@ export default function AdminPanel(props: AdminPanelProps) {
             type="text"
             placeholder="Character name or user ID…"
             value={searchQuery.value}
-            onInput={(e) => (searchQuery.value = (e.target as HTMLInputElement).value)}
+            onInput={(
+              e,
+            ) => (searchQuery.value = (e.target as HTMLInputElement).value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") searchCharacters();
             }}
             class="flex-1 px-3 py-2 border rounded"
           />
           <button
+            type="button"
             onClick={searchCharacters}
             disabled={searchLoading.value}
             class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
@@ -204,13 +215,18 @@ export default function AdminPanel(props: AdminPanelProps) {
                 {characters.value.map((c) => (
                   <tr key={c.id} class="border-t hover:bg-gray-50">
                     <td class="px-3 py-2">
-                      <a href={`/characters/${c.id}`} class="underline text-blue-600">
+                      <a
+                        href={`/characters/${c.id}`}
+                        class="underline text-blue-600"
+                      >
                         {c.name}
                       </a>
                     </td>
                     <td class="px-3 py-2">{c.race}</td>
                     <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
-                    <td class="px-3 py-2 text-xs">{new Date(c.updatedAt).toLocaleDateString()}</td>
+                    <td class="px-3 py-2 text-xs">
+                      {new Date(c.updatedAt).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -240,7 +256,9 @@ export default function AdminPanel(props: AdminPanelProps) {
                     <td class="px-3 py-2 font-mono text-xs">{a.userId}</td>
                     <td class="px-3 py-2">
                       <button
-                        onClick={() => removeAdminUser(a.userId)}
+                        type="button"
+                        onClick={() =>
+                          removeAdminUser(a.userId)}
                         class="text-red-600 hover:underline text-xs"
                       >
                         Remove
@@ -260,7 +278,10 @@ export default function AdminPanel(props: AdminPanelProps) {
               type="text"
               placeholder="e.g. 123456789012345678"
               value={newAdminUserId.value}
-              onInput={(e) => (newAdminUserId.value = (e.target as HTMLInputElement).value)}
+              onInput={(
+                e,
+              ) => (newAdminUserId.value =
+                (e.target as HTMLInputElement).value)}
               class="w-full px-3 py-2 border rounded"
             />
           </div>
@@ -270,11 +291,15 @@ export default function AdminPanel(props: AdminPanelProps) {
               type="text"
               placeholder="Display name"
               value={newAdminUsername.value}
-              onInput={(e) => (newAdminUsername.value = (e.target as HTMLInputElement).value)}
+              onInput={(
+                e,
+              ) => (newAdminUsername.value =
+                (e.target as HTMLInputElement).value)}
               class="w-full px-3 py-2 border rounded"
             />
           </div>
           <button
+            type="button"
             onClick={addAdmin}
             class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
           >

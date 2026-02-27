@@ -1,19 +1,24 @@
 import { useRef, useState } from "preact/hooks";
-import { PERK_CATEGORY_LABELS, PERK_CATEGORY_ORDER, type PerkCategory, type PerkDefinition } from "../data/perks.ts";
+import {
+  PERK_CATEGORY_LABELS,
+  PERK_CATEGORY_ORDER,
+  type PerkCategory,
+  type PerkDefinition,
+} from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
-  type CharacterDraft,
   type CharacterDescription,
+  type CharacterDraft,
   type CharacterSheet,
   FACTIONS,
+  getRacesForSex,
   getStartingStatPoints,
+  isPilzRace,
+  mapRaceForSex,
   PERK_COST_STAT_POINTS,
   type Sex,
   SEX_OPTIONS,
-  getRacesForSex,
-  isPilzRace,
-  mapRaceForSex,
 } from "../lib/character_types.ts";
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
@@ -47,7 +52,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
-  const [perkCategoryFilter, setPerkCategoryFilter] = useState<PerkCategory | "">("")
+  const [perkCategoryFilter, setPerkCategoryFilter] = useState<
+    PerkCategory | ""
+  >("");
   const [perkSearchFilter, setPerkSearchFilter] = useState("");
 
   // Image upload state
@@ -101,7 +108,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
       return false;
     }
-    if (perkCategoryFilter && perk.category !== perkCategoryFilter) return false;
+    if (perkCategoryFilter && perk.category !== perkCategoryFilter) {
+      return false;
+    }
     if (perkSearchFilter) {
       const q = perkSearchFilter.toLowerCase();
       if (!perk.name.toLowerCase().includes(q)) return false;
@@ -258,7 +267,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         />
       )}
       <input type="hidden" name="baseStats" value={JSON.stringify(baseStats)} />
-      <input type="hidden" name="description" value={JSON.stringify(description)} />
+      <input
+        type="hidden"
+        name="description"
+        value={JSON.stringify(description)}
+      />
       <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
@@ -284,313 +297,331 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <button
           type="button"
           class="font-semibold text-blue-600 hover:underline cursor-pointer"
-          onClick={() => setShowDescription((v) => !v)}
+          onClick={() =>
+            setShowDescription((v) => !v)}
         >
           Description {showDescription ? "▲" : "▼"}
         </button>
-        {showDescription && <>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Race</span>
-          <select
-            class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
-            name="race"
-            value={race}
-            disabled={props.action === "update"}
-            onInput={(event) => {
-              const newRace = event.currentTarget.value as CharacterDraft["race"];
-              const pointsDiff = getStartingStatPoints(newRace) - getStartingStatPoints(race);
-              setRace(newRace);
-              setUnallocatedStatPoints((current) => current + pointsDiff);
-            }}
-          >
-            {getRacesForSex(description.sex).map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Sex</span>
-          <select
-            class="w-full border rounded px-3 py-2"
-            value={description.sex}
-            onInput={(event) => {
-              const newSex = event.currentTarget.value as Sex;
-              updateDescription("sex", newSex);
-              // Swap gendered race name to match new sex
-              setRace((prev) => mapRaceForSex(prev, newSex));
-            }}
-          >
-            {SEX_OPTIONS.map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        </label>
-
-        {isPilzRace(race) && (
-          <label class="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={description.isTemplate}
-              disabled={props.action === "update"}
-              onChange={(event) =>
-                updateDescription("isTemplate", event.currentTarget.checked)}
-              class={props.action === "update" ? "opacity-60 cursor-not-allowed" : ""}
-            />
-            <span class="font-medium">Is a template</span>
-          </label>
-        )}
-
-        <label class="block">
-          <span class="block font-medium mb-1">Country of Origin</span>
-          <input
-            class="w-full border rounded px-3 py-2"
-            type="text"
-            value={description.countryOfOrigin}
-            onInput={(event) =>
-              updateDescription("countryOfOrigin", event.currentTarget.value)}
-          />
-        </label>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Faction</span>
-          <select
-            class="w-full border rounded px-3 py-2"
-            value={description.faction}
-            onChange={(event) =>
-              updateDescription("faction", (event.target as HTMLSelectElement).value)}
-          >
-            <option value="">— None —</option>
-            {FACTIONS.map((f) => (
-              <option key={f} value={f}>{f}</option>
-            ))}
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Role</span>
-          <input
-            class="w-full border rounded px-3 py-2"
-            type="text"
-            placeholder="Cook, politician, soldier, sapper, conscript, etc."
-            value={description.role}
-            onInput={(event) =>
-              updateDescription("role", event.currentTarget.value)}
-          />
-        </label>
-
-        {description.role.toLowerCase() === "soldier" && (
-          <label class="block">
-            <span class="block font-medium mb-1">Subfaction</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.subfaction}
-              onInput={(event) =>
-                updateDescription("subfaction", event.currentTarget.value)}
-            />
-          </label>
-        )}
-
-        <label class="block">
-          <span class="block font-medium mb-1">Age</span>
-          <input
-            class="w-full border rounded px-3 py-2"
-            type="text"
-            placeholder={isPilzRace(race) ? "Biological age is 21 by default. Include chronological age." : "Must be 18+. Include chronological age (year 1922)."}
-            value={description.age}
-            onInput={(event) =>
-              updateDescription("age", event.currentTarget.value)}
-          />
-        </label>
-
-        <label class="block">
-          <span class="block font-medium mb-1">Date of Birth</span>
-          <input
-            class="w-full border rounded px-3 py-2"
-            type="text"
-            placeholder="M/D/Y — Year is mandatory, month and day are optional"
-            value={description.dateOfBirth}
-            onInput={(event) =>
-              updateDescription("dateOfBirth", event.currentTarget.value)}
-          />
-        </label>
-
-        <div class="grid grid-cols-2 gap-3">
-          <label class="block">
-            <span class="block font-medium mb-1">Height</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.height}
-              onInput={(event) =>
-                updateDescription("height", event.currentTarget.value)}
-            />
-          </label>
-
-          <label class="block">
-            <span class="block font-medium mb-1">Weight</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.weight}
-              onInput={(event) =>
-                updateDescription("weight", event.currentTarget.value)}
-            />
-          </label>
-        </div>
-
-        <p class="text-sm text-gray-500 italic">
-          The appearance fields below may be left blank if using an image to represent your character.
-        </p>
-
-        <div class="rounded border p-3 space-y-2 bg-gray-50">
-          <h4 class="font-medium">Character Image</h4>
-          {currentImageUrl && (
-            <div class="space-y-2">
-              <img
-                src={currentImageUrl}
-                alt={`${name} character image`}
-                class="max-w-xs rounded border"
-              />
-              <button
-                type="button"
-                class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
-                disabled={imageUploading}
-                onClick={handleImageDelete}
+        {showDescription && (
+          <>
+            <label class="block">
+              <span class="block font-medium mb-1">Race</span>
+              <select
+                class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                name="race"
+                value={race}
+                disabled={props.action === "update"}
+                onInput={(event) => {
+                  const newRace = event.currentTarget
+                    .value as CharacterDraft["race"];
+                  const pointsDiff = getStartingStatPoints(newRace) -
+                    getStartingStatPoints(race);
+                  setRace(newRace);
+                  setUnallocatedStatPoints((current) => current + pointsDiff);
+                }}
               >
-                Remove Image
-              </button>
+                {getRacesForSex(description.sex).map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="block font-medium mb-1">Sex</span>
+              <select
+                class="w-full border rounded px-3 py-2"
+                value={description.sex}
+                onInput={(event) => {
+                  const newSex = event.currentTarget.value as Sex;
+                  updateDescription("sex", newSex);
+                  // Swap gendered race name to match new sex
+                  setRace((prev) =>
+                    mapRaceForSex(prev, newSex)
+                  );
+                }}
+              >
+                {SEX_OPTIONS.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </label>
+
+            {isPilzRace(race) && (
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={description.isTemplate}
+                  disabled={props.action === "update"}
+                  onChange={(event) =>
+                    updateDescription(
+                      "isTemplate",
+                      event.currentTarget.checked,
+                    )}
+                  class={props.action === "update"
+                    ? "opacity-60 cursor-not-allowed"
+                    : ""}
+                />
+                <span class="font-medium">Is a template</span>
+              </label>
+            )}
+
+            <label class="block">
+              <span class="block font-medium mb-1">Country of Origin</span>
+              <input
+                class="w-full border rounded px-3 py-2"
+                type="text"
+                value={description.countryOfOrigin}
+                onInput={(event) =>
+                  updateDescription(
+                    "countryOfOrigin",
+                    event.currentTarget.value,
+                  )}
+              />
+            </label>
+
+            <label class="block">
+              <span class="block font-medium mb-1">Faction</span>
+              <select
+                class="w-full border rounded px-3 py-2"
+                value={description.faction}
+                onChange={(event) =>
+                  updateDescription(
+                    "faction",
+                    (event.target as HTMLSelectElement).value,
+                  )}
+              >
+                <option value="">— None —</option>
+                {FACTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </label>
+
+            <label class="block">
+              <span class="block font-medium mb-1">Role</span>
+              <input
+                class="w-full border rounded px-3 py-2"
+                type="text"
+                placeholder="Cook, politician, soldier, sapper, conscript, etc."
+                value={description.role}
+                onInput={(event) =>
+                  updateDescription("role", event.currentTarget.value)}
+              />
+            </label>
+
+            {description.role.toLowerCase() === "soldier" && (
+              <label class="block">
+                <span class="block font-medium mb-1">Subfaction</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.subfaction}
+                  onInput={(event) =>
+                    updateDescription("subfaction", event.currentTarget.value)}
+                />
+              </label>
+            )}
+
+            <label class="block">
+              <span class="block font-medium mb-1">Age</span>
+              <input
+                class="w-full border rounded px-3 py-2"
+                type="text"
+                placeholder={isPilzRace(race)
+                  ? "Biological age is 21 by default. Include chronological age."
+                  : "Must be 18+. Include chronological age (year 1922)."}
+                value={description.age}
+                onInput={(event) =>
+                  updateDescription("age", event.currentTarget.value)}
+              />
+            </label>
+
+            <label class="block">
+              <span class="block font-medium mb-1">Date of Birth</span>
+              <input
+                class="w-full border rounded px-3 py-2"
+                type="text"
+                placeholder="M/D/Y — Year is mandatory, month and day are optional"
+                value={description.dateOfBirth}
+                onInput={(event) =>
+                  updateDescription("dateOfBirth", event.currentTarget.value)}
+              />
+            </label>
+
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block">
+                <span class="block font-medium mb-1">Height</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.height}
+                  onInput={(event) =>
+                    updateDescription("height", event.currentTarget.value)}
+                />
+              </label>
+
+              <label class="block">
+                <span class="block font-medium mb-1">Weight</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.weight}
+                  onInput={(event) =>
+                    updateDescription("weight", event.currentTarget.value)}
+                />
+              </label>
             </div>
-          )}
-          <label class="block">
-            <span class="block text-sm mb-1">
-              {currentImageUrl ? "Replace image:" : "Upload an image:"}
-            </span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              class="block text-sm"
-              disabled={imageUploading}
-              onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
-                if (file) handleImageUpload(file);
-              }}
-            />
-          </label>
-          {imageUploading && (
-            <p class="text-sm text-blue-600">Uploading…</p>
-          )}
-          {imageError && (
-            <p class="text-sm text-red-600">{imageError}</p>
-          )}
-        </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <label class="block">
-            <span class="block font-medium mb-1">Skin Color</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.skinColor}
-              onInput={(event) =>
-                updateDescription("skinColor", event.currentTarget.value)}
-            />
-          </label>
+            <p class="text-sm text-gray-500 italic">
+              The appearance fields below may be left blank if using an image to
+              represent your character.
+            </p>
 
-          <label class="block">
-            <span class="block font-medium mb-1">Hair Color</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.hairColor}
-              onInput={(event) =>
-                updateDescription("hairColor", event.currentTarget.value)}
-            />
-          </label>
+            <div class="rounded border p-3 space-y-2 bg-gray-50">
+              <h4 class="font-medium">Character Image</h4>
+              {currentImageUrl && (
+                <div class="space-y-2">
+                  <img
+                    src={currentImageUrl}
+                    alt={`${name} character image`}
+                    class="max-w-xs rounded border"
+                  />
+                  <button
+                    type="button"
+                    class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                    disabled={imageUploading}
+                    onClick={handleImageDelete}
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              )}
+              <label class="block">
+                <span class="block text-sm mb-1">
+                  {currentImageUrl ? "Replace image:" : "Upload an image:"}
+                </span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  class="block text-sm"
+                  disabled={imageUploading}
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0];
+                    if (file) handleImageUpload(file);
+                  }}
+                />
+              </label>
+              {imageUploading && (
+                <p class="text-sm text-blue-600">Uploading…</p>
+              )}
+              {imageError && <p class="text-sm text-red-600">{imageError}</p>}
+            </div>
 
-          <label class="block">
-            <span class="block font-medium mb-1">Eye Color</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.eyeColor}
-              onInput={(event) =>
-                updateDescription("eyeColor", event.currentTarget.value)}
-            />
-          </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block">
+                <span class="block font-medium mb-1">Skin Color</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.skinColor}
+                  onInput={(event) =>
+                    updateDescription("skinColor", event.currentTarget.value)}
+                />
+              </label>
 
-          <label class="block">
-            <span class="block font-medium mb-1">Ethnicity</span>
-            <input
-              class="w-full border rounded px-3 py-2"
-              type="text"
-              value={description.ethnicity}
-              onInput={(event) =>
-                updateDescription("ethnicity", event.currentTarget.value)}
-            />
-          </label>
-        </div>
+              <label class="block">
+                <span class="block font-medium mb-1">Hair Color</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.hairColor}
+                  onInput={(event) =>
+                    updateDescription("hairColor", event.currentTarget.value)}
+                />
+              </label>
 
-        <label class="block">
-          <span class="block font-medium mb-1">Body Type</span>
-          <input
-            class="w-full border rounded px-3 py-2"
-            type="text"
-            value={description.bodyType}
-            onInput={(event) =>
-              updateDescription("bodyType", event.currentTarget.value)}
-          />
-        </label>
+              <label class="block">
+                <span class="block font-medium mb-1">Eye Color</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.eyeColor}
+                  onInput={(event) =>
+                    updateDescription("eyeColor", event.currentTarget.value)}
+                />
+              </label>
 
-        <label class="block">
-          <span class="block font-medium mb-1">General Appearance</span>
-          <textarea
-            class="w-full border rounded px-3 py-2"
-            rows={3}
-            value={description.generalAppearance}
-            onInput={(event) =>
-              updateDescription("generalAppearance", event.currentTarget.value)}
-          />
-        </label>
+              <label class="block">
+                <span class="block font-medium mb-1">Ethnicity</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.ethnicity}
+                  onInput={(event) =>
+                    updateDescription("ethnicity", event.currentTarget.value)}
+                />
+              </label>
+            </div>
 
-        <label class="block">
-          <span class="block font-medium mb-1">General Health</span>
-          <textarea
-            class="w-full border rounded px-3 py-2"
-            rows={3}
-            placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
-            value={description.generalHealth}
-            onInput={(event) =>
-              updateDescription("generalHealth", event.currentTarget.value)}
-          />
-        </label>
+            <label class="block">
+              <span class="block font-medium mb-1">Body Type</span>
+              <input
+                class="w-full border rounded px-3 py-2"
+                type="text"
+                value={description.bodyType}
+                onInput={(event) =>
+                  updateDescription("bodyType", event.currentTarget.value)}
+              />
+            </label>
 
-        <label class="block">
-          <span class="block font-medium mb-1">Personality</span>
-          <textarea
-            class="w-full border rounded px-3 py-2"
-            rows={3}
-            value={description.personality}
-            onInput={(event) =>
-              updateDescription("personality", event.currentTarget.value)}
-          />
-        </label>
+            <label class="block">
+              <span class="block font-medium mb-1">General Appearance</span>
+              <textarea
+                class="w-full border rounded px-3 py-2"
+                rows={3}
+                value={description.generalAppearance}
+                onInput={(event) =>
+                  updateDescription(
+                    "generalAppearance",
+                    event.currentTarget.value,
+                  )}
+              />
+            </label>
 
-        <label class="block">
-          <span class="block font-medium mb-1">Biography</span>
-          <textarea
-            class="w-full border rounded px-3 py-2"
-            rows={5}
-            value={description.biography}
-            onInput={(event) =>
-              updateDescription("biography", event.currentTarget.value)}
-          />
-        </label>
+            <label class="block">
+              <span class="block font-medium mb-1">General Health</span>
+              <textarea
+                class="w-full border rounded px-3 py-2"
+                rows={3}
+                placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
+                value={description.generalHealth}
+                onInput={(event) =>
+                  updateDescription("generalHealth", event.currentTarget.value)}
+              />
+            </label>
 
-        </>}
+            <label class="block">
+              <span class="block font-medium mb-1">Personality</span>
+              <textarea
+                class="w-full border rounded px-3 py-2"
+                rows={3}
+                value={description.personality}
+                onInput={(event) =>
+                  updateDescription("personality", event.currentTarget.value)}
+              />
+            </label>
+
+            <label class="block">
+              <span class="block font-medium mb-1">Biography</span>
+              <textarea
+                class="w-full border rounded px-3 py-2"
+                rows={5}
+                value={description.biography}
+                onInput={(event) =>
+                  updateDescription("biography", event.currentTarget.value)}
+              />
+            </label>
+          </>
+        )}
       </div>
 
       {props.action === "update" && (
@@ -626,7 +657,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
                   disabled={baseStats[field.key] <= initialBaseStats[field.key]}
-                  onClick={() => decreaseStat(field.key)}
+                  onClick={() =>
+                    decreaseStat(field.key)}
                 >
                   -1
                 </button>
@@ -634,7 +666,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
                   disabled={unallocatedStatPoints < 1}
-                  onClick={() => increaseStat(field.key)}
+                  onClick={() =>
+                    increaseStat(field.key)}
                 >
                   +1
                 </button>
@@ -657,9 +690,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <h3 class="font-semibold">Perks</h3>
         <p class="text-sm text-gray-700">
           Perks cost {PERK_COST_STAT_POINTS} stat points each.{" "}
-          {perkIds.length === 0
-            ? <strong>First perk is free!</strong>
-            : null}
+          {perkIds.length === 0 ? <strong>First perk is free!</strong> : null}
         </p>
 
         <div>
@@ -670,13 +701,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <div class="space-y-3 text-sm">
                 {ownedPerkGroups.map((group) => (
                   <div key={group.category} class="space-y-1">
-                    <h5 class="font-medium">{PERK_CATEGORY_LABELS[group.category]}</h5>
+                    <h5 class="font-medium">
+                      {PERK_CATEGORY_LABELS[group.category]}
+                    </h5>
                     <ul class="space-y-1">
                       {group.items.map(({ id, perk }) => {
                         const canRemove = !initialPerkIds.includes(id);
                         return (
                           <li class="flex items-center gap-2" key={id}>
-                            <span>{perk ? `${perk.name}: ${perk.description}` : id}</span>
+                            <span>
+                              {perk ? `${perk.name}: ${perk.description}` : id}
+                            </span>
                             {canRemove && (
                               <button
                                 type="button"
@@ -737,9 +772,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     value={perkCategoryFilter}
                     onChange={(e) =>
                       setPerkCategoryFilter(
-                        (e.target as HTMLSelectElement).value as PerkCategory | "",
-                      )
-                    }
+                        (e.target as HTMLSelectElement).value as
+                          | PerkCategory
+                          | "",
+                      )}
                   >
                     <option value="">All categories</option>
                     <option value="combat">Combat</option>
@@ -758,13 +794,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     onInput={(e) =>
                       setPerkSearchFilter(
                         (e.target as HTMLInputElement).value,
-                      )
-                    }
+                      )}
                   />
                 </div>
                 <ul class="space-y-2">
                   {availablePerks.map((perk) => {
-                    const cost = perkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
+                    const cost = perkIds.length === 0
+                      ? 0
+                      : PERK_COST_STAT_POINTS;
                     const canAfford = unallocatedStatPoints >= cost;
                     return (
                       <li

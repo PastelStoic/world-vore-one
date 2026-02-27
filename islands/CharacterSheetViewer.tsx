@@ -1,5 +1,9 @@
 import { useState } from "preact/hooks";
-import { PERK_CATEGORY_LABELS, PERK_CATEGORY_ORDER, type PerkDefinition } from "../data/perks.ts";
+import {
+  PERK_CATEGORY_LABELS,
+  PERK_CATEGORY_ORDER,
+  type PerkDefinition,
+} from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type CharacterDraft,
@@ -20,7 +24,10 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const { character, perks, imageUrl } = props;
   const desc = character.description;
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
-  const ownedPerks = character.perkIds.map((id) => ({ id, perk: perksById.get(id) }));
+  const ownedPerks = character.perkIds.map((id) => ({
+    id,
+    perk: perksById.get(id),
+  }));
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
@@ -203,10 +210,14 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
             <div class="space-y-3 text-sm">
               {ownedPerkGroups.map((group) => (
                 <div key={group.category} class="space-y-1">
-                  <h4 class="font-medium">{PERK_CATEGORY_LABELS[group.category]}</h4>
+                  <h4 class="font-medium">
+                    {PERK_CATEGORY_LABELS[group.category]}
+                  </h4>
                   <ul class="list-disc list-inside">
                     {group.items.map(({ id, perk }) => (
-                      <li key={id}>{perk ? `${perk.name}: ${perk.description}` : id}</li>
+                      <li key={id}>
+                        {perk ? `${perk.name}: ${perk.description}` : id}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -215,7 +226,9 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <div class="space-y-1">
                   <h4 class="font-medium">Other</h4>
                   <ul class="list-disc list-inside">
-                    {uncategorizedOwnedPerks.map(({ id }) => <li key={id}>{id}</li>)}
+                    {uncategorizedOwnedPerks.map(({ id }) => (
+                      <li key={id}>{id}</li>
+                    ))}
                   </ul>
                 </div>
               )}

@@ -1,6 +1,5 @@
 import { define } from "../../../utils.ts";
 import { listCharacters } from "../../../lib/characters.ts";
-import { isAdmin } from "../../../lib/admin.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
@@ -14,10 +13,10 @@ export const handler = define.handlers({
 
     const filtered = query
       ? allCharacters.filter(
-          (c) =>
-            c.name.toLowerCase().includes(query) ||
-            c.userId.includes(query),
-        )
+        (c) =>
+          c.name.toLowerCase().includes(query) ||
+          c.userId.includes(query),
+      )
       : allCharacters;
 
     const results = filtered.slice(0, 50).map((c) => ({

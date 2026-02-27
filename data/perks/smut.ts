@@ -5,7 +5,8 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "milky",
     name: "Milky",
     category: "smut",
-    description: `You are always producing milk ( or cum ) at a very substantial rate!
+    description:
+      `You are always producing milk ( or cum ) at a very substantial rate!
 
 *Only for PFs/PHs.
 *Pick whether you are always producing milk, or overproducing cum. 
@@ -34,7 +35,8 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "rewritter",
     name: "Rewritter",
     category: "smut",
-    description: `Fucking a PF into rewriting her brain is doable, and you fuck them hard enough to do it regularly!
+    description:
+      `Fucking a PF into rewriting her brain is doable, and you fuck them hard enough to do it regularly!
 
 *Only for PFs/PHs. 
 *Whenever you are having sex with a template, you can hardcore fuck her, and thus, rewrire their brain!

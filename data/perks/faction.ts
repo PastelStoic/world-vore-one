@@ -81,7 +81,8 @@ Disadvantages:
     name: "Capo",
     category: "faction",
     requiredFaction: "Mafia",
-    description: `You are an underboss of your respective mafia, owning some sort of safehouse/business within New Orleans!
+    description:
+      `You are an underboss of your respective mafia, owning some sort of safehouse/business within New Orleans!
 
 Advantages:
 *This perk is free.

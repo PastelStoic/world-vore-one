@@ -1,9 +1,6 @@
 import { App, staticFiles } from "fresh";
 import { define, type State } from "./utils.ts";
-import {
-  getSession,
-  getSessionIdFromRequest,
-} from "./lib/auth.ts";
+import { getSession, getSessionIdFromRequest } from "./lib/auth.ts";
 import { isAdmin } from "./lib/admin.ts";
 
 export const app = new App<State>();

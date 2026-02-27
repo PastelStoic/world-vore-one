@@ -5,7 +5,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "innovator",
     name: "Innovator",
     category: "gimmick",
-    description: `Your character is awfully creative! Or awfully good at stealing others' ideas~ 
+    description:
+      `Your character is awfully creative! Or awfully good at stealing others' ideas~ 
 
 *Not applicable for baseliners; PFs only. PFs aren't bright and are generally uncreative - this perk is to circunvent that.
 *You get to make up ONE technology and make use of it IRP, so long as it is reasonably believable.
@@ -15,7 +16,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "scrounger",
     name: "Scrounger",
     category: "gimmick",
-    description: `Somehow, almost as if you are favoured by the gods, you always manage to find exactly what you need, whenever you need it. 
+    description:
+      `Somehow, almost as if you are favoured by the gods, you always manage to find exactly what you need, whenever you need it. 
 
 *If you ever need to find something, you do find it - even in unlikely places!
 *It takes you time to find the thing. You may take anywhere between 1 to 3 turns to find it, up to GM's discretion. 
@@ -26,7 +28,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "wayfinder",
     name: "Wayfinder",
     category: "gimmick",
-    description: `You have a perfect sense of where exactly you are in the world.
+    description:
+      `You have a perfect sense of where exactly you are in the world.
 
 *Always know the state of the region you are in, as well as local dangers and safe passages, if any.
 *Whenever you need to find your way, you always manage to do so.
@@ -48,7 +51,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "allies",
     name: "Allies",
     category: "gimmick",
-    description: `You know a guy or two, who happens to know another- with connections and stuff! 
+    description:
+      `You know a guy or two, who happens to know another- with connections and stuff! 
 
 *You have a vast connection of allies who are reliable and support you, who may be called upon when needed.
 *While they will support you, they aren't brainless, and won't allow you to blatantly scam, kill or harm them!
@@ -101,7 +105,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "free-range",
     name: "Free range",
     category: "gimmick",
-    description: `The world is at war. Free travel is greatly limited. You manage to get around, though!
+    description:
+      `The world is at war. Free travel is greatly limited. You manage to get around, though!
 
 *You always manage to go wherever you need to go, even if the starting point and ending point are at war! 
 *If permission is needed, you always have it to go wherever, regardless of your alignments.
@@ -126,7 +131,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "authoritarian",
     name: "Authoritarian",
     category: "gimmick",
-    description: `Your mere presence commands authority! Most will not dare speak ill of you to your face!
+    description:
+      `Your mere presence commands authority! Most will not dare speak ill of you to your face!
 
 *When attempting to intimidate or force someone do something based on your authority, add +4d6 to your charisma.
 *You now count count successess on 4 and above when doing that. 
@@ -136,7 +142,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "natural-fibster",
     name: "Natural Fibster",
     category: "gimmick",
-    description: `People will eat your bullshit up like a well baked fresh blueberry pie!
+    description:
+      `People will eat your bullshit up like a well baked fresh blueberry pie!
 
 *When trying to lie or manipulate someone, you roll an additional 4d6. 
 *You now count successes on 4 and above when doing that.
@@ -146,7 +153,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "emergency-treatment-expertise",
     name: "Emergency treatment expertise",
     category: "gimmick",
-    description: `You regularly have to tend to people on the very verge of death!
+    description:
+      `You regularly have to tend to people on the very verge of death!
 
 *With this perk, you immediately succeed in stabilizing anyone.
 *When you stabilize someone for the first time in a scene, their HP is healed back to 1.
@@ -157,7 +165,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "master-tactician",
     name: "Master tactician",
     category: "gimmick",
-    description: `You are a mastermind of tactics; your brain can see the battlefield as though it is top-down. 
+    description:
+      `You are a mastermind of tactics; your brain can see the battlefield as though it is top-down. 
 
 *When doing anything related to military strategy, you gain +4d6 to perform it.
 *You now count successes on a 4 when doing that.
@@ -171,7 +180,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "hidden-personality",
     name: "Hidden personality",
     category: "gimmick",
-    description: `You keep yourself on the down-low, people cannot know you very well at a glance. 
+    description:
+      `You keep yourself on the down-low, people cannot know you very well at a glance. 
 
 *Create a fake sheet and include whatever information you wish inside it. Send it to submissions.
 *Create a real sheet and send it to staff in DMs, preferably Doc3613 or PastelStoic
@@ -183,7 +193,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "masterful-linguist",
     name: "Masterful linguist",
     category: "gimmick",
-    description: `You are a master of communications. You speak clearly, and your ears are awfully sharp! 
+    description:
+      `You are a master of communications. You speak clearly, and your ears are awfully sharp! 
 
 *You always manage to communicate with people, even if you would otherwise be unable to.
 *Language barriers, being mute, talking through radio interference - you are always clearly understood through this.
@@ -195,7 +206,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "hypnotist",
     name: "Hypnotist",
     category: "gimmick",
-    description: `You are a hypnotist; you can put people into trances which they find hard to break out of! 
+    description:
+      `You are a hypnotist; you can put people into trances which they find hard to break out of! 
 
 *You may try to hypnotize a willing volunteer who plays along with your hypnotization. 
 *Roll your charisma. Each success is equivalent to an hour of hypnosis, where the target must follow your commands.

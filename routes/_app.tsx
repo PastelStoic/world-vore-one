@@ -15,6 +15,14 @@ export default define.page(function App({ Component, state }) {
           {user
             ? (
               <div class="flex items-center gap-3">
+                {state.isAdmin && (
+                  <a
+                    href="/admin"
+                    class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+                  >
+                    Admin
+                  </a>
+                )}
                 <span class="text-sm font-medium">{user.username}</span>
                 <a
                   href="/auth/logout"

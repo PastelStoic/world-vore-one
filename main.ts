@@ -4,6 +4,7 @@ import {
   getSession,
   getSessionIdFromRequest,
 } from "./lib/auth.ts";
+import { isAdmin } from "./lib/admin.ts";
 
 export const app = new App<State>();
 
@@ -15,6 +16,7 @@ app.use(async (ctx) => {
 
   const sessionId = getSessionIdFromRequest(ctx.req);
   ctx.state.user = sessionId ? await getSession(sessionId) : null;
+  ctx.state.isAdmin = ctx.state.user ? await isAdmin(ctx.state.user.id) : false;
 
   return await ctx.next();
 });

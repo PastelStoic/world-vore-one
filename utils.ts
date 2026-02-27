@@ -6,6 +6,7 @@ import type { SessionUser } from "./lib/auth.ts";
 export interface State {
   shared: string;
   user: SessionUser | null;
+  isAdmin: boolean;
 }
 
 export const define = createDefine<State>();

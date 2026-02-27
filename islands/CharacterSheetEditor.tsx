@@ -8,8 +8,11 @@ import {
   type CharacterSheet,
   PERK_COST_STAT_POINTS,
   type Sex,
-  RACES,
   SEX_OPTIONS,
+  getRacesForSex,
+  isPilzRace,
+  isTierRace,
+  mapRaceForSex,
 } from "../lib/character_types.ts";
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
@@ -264,7 +267,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             onInput={(event) =>
               setRace(event.currentTarget.value as CharacterDraft["race"])}
           >
-            {RACES.map((option) => (
+            {getRacesForSex(description.sex).map((option) => (
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
@@ -275,8 +278,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           <select
             class="w-full border rounded px-3 py-2"
             value={description.sex}
-            onInput={(event) =>
-              updateDescription("sex", event.currentTarget.value as Sex)}
+            onInput={(event) => {
+              const newSex = event.currentTarget.value as Sex;
+              updateDescription("sex", newSex);
+              // Swap gendered race name to match new sex
+              setRace((prev) => mapRaceForSex(prev, newSex));
+            }}
           >
             {SEX_OPTIONS.map((option) => (
               <option key={option} value={option}>{option}</option>
@@ -284,7 +291,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </select>
         </label>
 
-        {race === "Pilzfraun" && (
+        {isPilzRace(race) && (
           <label class="flex items-center gap-2">
             <input
               type="checkbox"
@@ -350,7 +357,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           <input
             class="w-full border rounded px-3 py-2"
             type="text"
-            placeholder={race === "Pilzfraun" ? "Biological age is 21 by default. Include chronological age." : "Must be 18+. Include chronological age (year 1922)."}
+            placeholder={isPilzRace(race) ? "Biological age is 21 by default. Include chronological age." : "Must be 18+. Include chronological age (year 1922)."}
             value={description.age}
             onInput={(event) =>
               updateDescription("age", event.currentTarget.value)}

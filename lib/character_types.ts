@@ -1,5 +1,34 @@
-export const RACES = ["Pilzfraun", "Tierfraun", "Baseliner"] as const;
+export const RACES = ["Pilzfraun", "Pilzherr", "Tierfraun", "Tierherr", "Baseliner"] as const;
 export type Race = (typeof RACES)[number];
+
+export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
+export type Sex = (typeof SEX_OPTIONS)[number];
+
+/** Returns the race options appropriate for the given sex. */
+export function getRacesForSex(sex: Sex): Race[] {
+  if (sex === "Male") {
+    return ["Pilzherr", "Tierherr", "Baseliner"];
+  }
+  return ["Pilzfraun", "Tierfraun", "Baseliner"];
+}
+
+/** Check whether a race is a Pilz-type (Pilzfraun or Pilzherr). */
+export function isPilzRace(race: Race): boolean {
+  return race === "Pilzfraun" || race === "Pilzherr";
+}
+
+/** Check whether a race is a Tier-type (Tierfraun or Tierherr). */
+export function isTierRace(race: Race): boolean {
+  return race === "Tierfraun" || race === "Tierherr";
+}
+
+/** Map a race to its equivalent for the given sex (swaps gendered suffix). */
+export function mapRaceForSex(race: Race, sex: Sex): Race {
+  const male = sex === "Male";
+  if (isPilzRace(race)) return male ? "Pilzherr" : "Pilzfraun";
+  if (isTierRace(race)) return male ? "Tierherr" : "Tierfraun";
+  return race;
+}
 
 export const BASE_STAT_FIELDS = [
   { key: "strength", label: "Strength" },
@@ -22,11 +51,7 @@ export interface BaseStats {
   charisma: number;
   escapeTraining: number;
   digestionStrength: number;
-  digestionResilience: number;
 }
-
-export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
-export type Sex = (typeof SEX_OPTIONS)[number];
 
 export interface CharacterDescription {
   isTemplate: boolean;

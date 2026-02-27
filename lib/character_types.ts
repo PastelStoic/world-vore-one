@@ -25,7 +25,7 @@ export interface BaseStats {
   digestionResilience: number;
 }
 
-export const SEX_OPTIONS = ["Male", "Female", "Futa"] as const;
+export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];
 
 export interface CharacterDescription {

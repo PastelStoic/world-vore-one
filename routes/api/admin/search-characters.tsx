@@ -14,8 +14,8 @@ export const handler = define.handlers({
     const filtered = query
       ? allCharacters.filter(
         (c) =>
-          c.name.toLowerCase().includes(query) ||
-          c.userId.includes(query),
+          c.name?.toLowerCase().includes(query) ||
+          c.userId?.includes(query),
       )
       : allCharacters;
 

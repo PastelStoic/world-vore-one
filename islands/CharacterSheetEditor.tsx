@@ -641,8 +641,23 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-gray-700 flex items-center gap-2">
           Unallocated stat points: <strong>{unallocatedStatPoints}</strong>
+          <button
+            type="button"
+            class="px-2 py-1 border rounded disabled:opacity-40"
+            disabled={unallocatedStatPoints < 1}
+            onClick={() => setUnallocatedStatPoints((c) => c - 1)}
+          >
+            -1
+          </button>
+          <button
+            type="button"
+            class="px-2 py-1 border rounded"
+            onClick={() => setUnallocatedStatPoints((c) => c + 1)}
+          >
+            +1
+          </button>
         </p>
         <ul class="space-y-2">
           {BASE_STAT_FIELDS.map((field) => (

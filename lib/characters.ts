@@ -280,10 +280,9 @@ export function validateCharacterProgression(
   }
 
   const spentOnPerks = calculatePerksCost(input.perkIds.length);
-  const expectedUnallocated = getStartingStatPoints(input.race) - spentOnStats -
-    spentOnPerks;
+  const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 
-  if (expectedUnallocated !== input.unallocatedStatPoints) {
+  if (totalUsed < getStartingStatPoints(input.race)) {
     return "Invalid stat/perk point allocation.";
   }
 

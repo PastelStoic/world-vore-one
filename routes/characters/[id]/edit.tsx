@@ -37,7 +37,8 @@ export const handler = define.handlers({
       return new Response("Character not found.", { status: 404 });
     }
 
-    if (existing.userId !== user.id) {
+    const isOwner = existing.userId === user.id;
+    if (!isOwner && !ctx.state.isAdmin) {
       return new Response("Forbidden", { status: 403 });
     }
 
@@ -47,7 +48,12 @@ export const handler = define.handlers({
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
 
-    await upsertCharacter({ id, userId: user.id, ...draft }, parsed.changelog, {
+    // If an admin is editing someone else's character, note it in the changelog
+    const changelog = !isOwner
+      ? `[Admin edit by ${user.username}] ${parsed.changelog}`
+      : parsed.changelog;
+
+    await upsertCharacter({ id, userId: existing.userId, ...draft }, changelog, {
       basedOnSnapshotId: parsed.basedOnSnapshotId,
     });
 
@@ -68,7 +74,8 @@ export default define.page<typeof handler>(
     }
 
     const user = ctx.state.user;
-    if (!user || character.userId !== user.id) {
+    const isOwner = user !== null && character.userId === user.id;
+    if (!user || (!isOwner && !ctx.state.isAdmin)) {
       return new Response("Forbidden", { status: 403 });
     }
 

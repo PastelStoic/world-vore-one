@@ -51,7 +51,8 @@ export const handler = define.handlers({
       return new Response("Character not found.", { status: 404 });
     }
 
-    if (character.userId !== user.id) {
+    const isOwner = character.userId === user.id;
+    if (!isOwner && !ctx.state.isAdmin) {
       return new Response("Forbidden", { status: 403 });
     }
 
@@ -59,9 +60,14 @@ export const handler = define.handlers({
       return new Response("Snapshot not found.", { status: 404 });
     }
 
+    // If an admin is restoring someone else's snapshot, note it in the changelog
+    const finalChangelog = !isOwner
+      ? `[Admin edit by ${user.username}] ${changelog}`
+      : changelog;
+
     await upsertCharacter(
-      { id: characterId, userId: user.id, ...snapshot.data },
-      changelog,
+      { id: characterId, userId: character.userId, ...snapshot.data },
+      finalChangelog,
       { basedOnSnapshotId: snapshotId },
     );
 

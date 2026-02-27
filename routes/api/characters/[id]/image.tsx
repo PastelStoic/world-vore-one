@@ -31,7 +31,7 @@ export const handler = define.handlers({
     if (!character) {
       return Response.json({ error: "Character not found" }, { status: 404 });
     }
-    if (character.userId !== user.id) {
+    if (character.userId !== user.id && !ctx.state.isAdmin) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -84,7 +84,7 @@ export const handler = define.handlers({
     if (!character) {
       return Response.json({ error: "Character not found" }, { status: 404 });
     }
-    if (character.userId !== user.id) {
+    if (character.userId !== user.id && !ctx.state.isAdmin) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -126,7 +126,7 @@ export const handler = define.handlers({
     if (!character) {
       return Response.json({ error: "Character not found" }, { status: 404 });
     }
-    if (character.userId !== user.id) {
+    if (character.userId !== user.id && !ctx.state.isAdmin) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 

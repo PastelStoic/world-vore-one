@@ -15,6 +15,7 @@ export default define.page(async function CharacterPage(ctx) {
 
   const user = ctx.state.user;
   const isOwner = user !== null && character.userId === user.id;
+  const canEdit = isOwner || ctx.state.isAdmin;
 
   const justSaved = ctx.url.searchParams.get("saved") === "1";
 
@@ -24,7 +25,7 @@ export default define.page(async function CharacterPage(ctx) {
       backHref="/"
       backLabel="Back to Character List"
     >
-      {isOwner && (
+      {canEdit && (
         <div class="flex gap-4">
           <a
             href={`/characters/${id}/edit`}

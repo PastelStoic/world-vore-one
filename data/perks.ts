@@ -41,6 +41,9 @@ interface PerkModifiers {
   healthMultiplier?: number;
   carryCapacityMultiplier?: number;
   organCapacityMultiplier?: number;
+  digestionResilienceMultiplier?: number;
+  digestionStrengthMultiplier?: number;
+  statCaps?: Partial<Record<BaseStatKey, number>>;
 }
 
 export interface PerkDefinition {

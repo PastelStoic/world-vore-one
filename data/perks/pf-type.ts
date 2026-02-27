@@ -68,6 +68,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Such things do not taste good.
 *Because of your nature, you are worth four X [CONSTITUTION] times as much nutrition towards whoever eats you. 
 *our strength and dexterity are capped to 1. You're not meant for fighting and you don't put on a lot of muscle - you are nutrition!`,
+    modifiers: {
+      statCaps: { strength: 1, dexterity: 1 },
+    },
   },
   {
     id: "twins",

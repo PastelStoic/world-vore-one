@@ -30,6 +30,9 @@ export const VORE_PERKS: PerkDefinition[] = [
       `You're naturally resilient to digestion somehow, or you're just very willful to survive! 
 
 *Your points in Digestion Resilience are quadrupled.`,
+    modifiers: {
+      digestionResilienceMultiplier: 4,
+    },
   },
   {
     id: "living-furnace",
@@ -40,6 +43,9 @@ export const VORE_PERKS: PerkDefinition[] = [
 *Your points in digestion strenght are quadrupled. 
 *You can digest any objects you eat. Based on the material, it'll have 4/8/12 digestion resilience.
 *Digesting an object depends on its resilience - it takes as long as a person would with that same resilience.`,
+    modifiers: {
+      digestionStrengthMultiplier: 4,
+    },
   },
   {
     id: "in-charge",

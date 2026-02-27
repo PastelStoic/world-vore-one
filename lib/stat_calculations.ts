@@ -30,7 +30,9 @@ function getMultiplier(
   key:
     | "healthMultiplier"
     | "carryCapacityMultiplier"
-    | "organCapacityMultiplier",
+    | "organCapacityMultiplier"
+    | "digestionResilienceMultiplier"
+    | "digestionStrengthMultiplier",
 ) {
   let multiplier = 1;
 
@@ -40,6 +42,27 @@ function getMultiplier(
   }
 
   return multiplier;
+}
+
+function getStatCap(
+  input: CharacterDraft,
+  statKey: BaseStatKey,
+): number | undefined {
+  let cap: number | undefined;
+
+  for (const perkId of input.perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    const perkCap = perk?.modifiers?.statCaps?.[statKey];
+    if (perkCap !== undefined) {
+      cap = cap === undefined ? perkCap : Math.min(cap, perkCap);
+    }
+  }
+
+  return cap;
+}
+
+function applyStatCap(value: number, cap: number | undefined): number {
+  return cap !== undefined ? Math.min(value, cap) : value;
 }
 
 function applyEncumbrancePenalty(value: number, level: EncumbranceLevel) {
@@ -79,8 +102,9 @@ export function calculateEffectiveStrength(
 ) {
   const effective = input.baseStats.strength +
     getBaseStatBonus(input, "strength");
+  const capped = applyStatCap(effective, getStatCap(input, "strength"));
   const level = options.encumbranceLevel ?? 0;
-  return applyEncumbrancePenalty(effective, level);
+  return applyEncumbrancePenalty(capped, level);
 }
 
 export function calculateEffectiveDexterity(
@@ -89,35 +113,49 @@ export function calculateEffectiveDexterity(
 ) {
   const effective = input.baseStats.dexterity +
     getBaseStatBonus(input, "dexterity");
+  const capped = applyStatCap(effective, getStatCap(input, "dexterity"));
   const level = options.encumbranceLevel ?? 0;
-  return applyEncumbrancePenalty(effective, level);
+  return applyEncumbrancePenalty(capped, level);
 }
 
 export function calculateEffectiveConstitution(input: CharacterDraft) {
-  return input.baseStats.constitution + getBaseStatBonus(input, "constitution");
+  const effective = input.baseStats.constitution +
+    getBaseStatBonus(input, "constitution");
+  return applyStatCap(effective, getStatCap(input, "constitution"));
 }
 
 export function calculateEffectiveIntelligence(input: CharacterDraft) {
-  return input.baseStats.intelligence + getBaseStatBonus(input, "intelligence");
+  const effective = input.baseStats.intelligence +
+    getBaseStatBonus(input, "intelligence");
+  return applyStatCap(effective, getStatCap(input, "intelligence"));
 }
 
 export function calculateEffectiveCharisma(input: CharacterDraft) {
-  return input.baseStats.charisma + getBaseStatBonus(input, "charisma");
+  const effective = input.baseStats.charisma +
+    getBaseStatBonus(input, "charisma");
+  return applyStatCap(effective, getStatCap(input, "charisma"));
 }
 
 export function calculateEffectiveEscapeTraining(input: CharacterDraft) {
-  return input.baseStats.escapeTraining +
+  const effective = input.baseStats.escapeTraining +
     getBaseStatBonus(input, "escapeTraining");
+  return applyStatCap(effective, getStatCap(input, "escapeTraining"));
 }
 
 export function calculateEffectiveDigestionStrength(input: CharacterDraft) {
-  return input.baseStats.digestionStrength +
+  const base = input.baseStats.digestionStrength +
     getBaseStatBonus(input, "digestionStrength");
+  const multiplier = getMultiplier(input, "digestionStrengthMultiplier");
+  const effective = base * multiplier;
+  return applyStatCap(effective, getStatCap(input, "digestionStrength"));
 }
 
 export function calculateEffectiveDigestionResilience(input: CharacterDraft) {
-  return input.baseStats.digestionResilience +
+  const base = input.baseStats.digestionResilience +
     getBaseStatBonus(input, "digestionResilience");
+  const multiplier = getMultiplier(input, "digestionResilienceMultiplier");
+  const effective = base * multiplier;
+  return applyStatCap(effective, getStatCap(input, "digestionResilience"));
 }
 
 export function calculateBaseHealth(input: CharacterDraft) {

@@ -184,8 +184,9 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
           <strong>{character.unallocatedStatPoints}</strong>
         </p>
         <ul class="space-y-1 text-sm">
-          {BASE_STAT_FIELDS.map((field) => (
+          {BASE_STAT_FIELDS.map((field, idx) => (
             <li key={field.key}>
+              {idx === 5 && <br />/* Gap between regular and vore stats */}
               {field.label}: Base{" "}
               <strong>{character.baseStats[field.key]}</strong> | Effective{" "}
               <strong>{effectiveByStat[field.key]}</strong>

@@ -53,6 +53,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
   const [carriedWeight, setCarriedWeight] = useState(0);
   const [changelog, setChangelog] = useState("");
+  const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
 
   const draft: CharacterDraft = {
@@ -179,24 +180,31 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         />
       </label>
 
-      <label class="block">
-        <span class="block font-medium mb-1">Race</span>
-        <select
-          class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
-          name="race"
-          value={race}
-          disabled={props.action === "update"}
-          onInput={(event) =>
-            setRace(event.currentTarget.value as CharacterDraft["race"])}
-        >
-          {RACES.map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-      </label>
-
       <div class="rounded border p-3 space-y-3">
-        <h3 class="font-semibold">Description</h3>
+        <button
+          type="button"
+          class="font-semibold text-blue-600 hover:underline cursor-pointer"
+          onClick={() => setShowDescription((v) => !v)}
+        >
+          Description {showDescription ? "▲" : "▼"}
+        </button>
+        {showDescription && <>
+
+        <label class="block">
+          <span class="block font-medium mb-1">Race</span>
+          <select
+            class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            name="race"
+            value={race}
+            disabled={props.action === "update"}
+            onInput={(event) =>
+              setRace(event.currentTarget.value as CharacterDraft["race"])}
+          >
+            {RACES.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </label>
 
         {race === "Pilzfraun" && (
           <label class="flex items-center gap-2">
@@ -424,6 +432,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               updateDescription("biography", event.currentTarget.value)}
           />
         </label>
+
+        </>}
       </div>
 
       {props.action === "update" && (

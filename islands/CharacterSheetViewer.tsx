@@ -31,6 +31,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const desc = character.description;
 
   const [carriedWeight, setCarriedWeight] = useState(0);
+  const [showDescription, setShowDescription] = useState(true);
 
   const carryCapacity = calculateEffectiveCarryCapacity(character);
   const encumbranceLevel = calculateEncumbranceLevel(
@@ -57,104 +58,113 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     <div class="border rounded-lg p-4 bg-white/80 space-y-4">
       <h2 class="text-2xl font-bold">{character.name}</h2>
 
-      <p>
-        <strong>Race:</strong> {character.race}
-      </p>
-
       <div class="rounded border p-3 space-y-1">
-        <h3 class="font-semibold">Description</h3>
-        {desc.isTemplate && (
-          <p>
-            <strong>Template:</strong> Yes
-          </p>
-        )}
-        {desc.countryOfOrigin && (
-          <p>
-            <strong>Country of Origin:</strong> {desc.countryOfOrigin}
-          </p>
-        )}
-        {desc.faction && (
-          <p>
-            <strong>Faction:</strong> {desc.faction}
-          </p>
-        )}
-        {desc.subfaction && (
-          <p>
-            <strong>Subfaction:</strong> {desc.subfaction}
-          </p>
-        )}
-        {desc.role && (
-          <p>
-            <strong>Role:</strong> {desc.role}
-          </p>
-        )}
-        {desc.age && (
-          <p>
-            <strong>Age:</strong> {desc.age}
-          </p>
-        )}
-        {desc.dateOfBirth && (
-          <p>
-            <strong>Date of Birth:</strong> {desc.dateOfBirth}
-          </p>
-        )}
-        <p>
-          <strong>Sex:</strong> {desc.sex}
-        </p>
-        {desc.height && (
-          <p>
-            <strong>Height:</strong> {desc.height}
-          </p>
-        )}
-        {desc.weight && (
-          <p>
-            <strong>Weight:</strong> {desc.weight}
-          </p>
-        )}
-        {desc.skinColor && (
-          <p>
-            <strong>Skin Color:</strong> {desc.skinColor}
-          </p>
-        )}
-        {desc.hairColor && (
-          <p>
-            <strong>Hair Color:</strong> {desc.hairColor}
-          </p>
-        )}
-        {desc.eyeColor && (
-          <p>
-            <strong>Eye Color:</strong> {desc.eyeColor}
-          </p>
-        )}
-        {desc.ethnicity && (
-          <p>
-            <strong>Ethnicity:</strong> {desc.ethnicity}
-          </p>
-        )}
-        {desc.bodyType && (
-          <p>
-            <strong>Body Type:</strong> {desc.bodyType}
-          </p>
-        )}
-        {desc.generalAppearance && (
-          <p>
-            <strong>General Appearance:</strong> {desc.generalAppearance}
-          </p>
-        )}
-        {desc.generalHealth && (
-          <p>
-            <strong>General Health:</strong> {desc.generalHealth}
-          </p>
-        )}
-        {desc.personality && (
-          <p>
-            <strong>Personality:</strong> {desc.personality}
-          </p>
-        )}
-        {desc.biography && (
-          <p>
-            <strong>Biography:</strong> {desc.biography}
-          </p>
+        <button
+          type="button"
+          class="font-semibold text-blue-600 hover:underline cursor-pointer"
+          onClick={() => setShowDescription((v) => !v)}
+        >
+          Description {showDescription ? "▲" : "▼"}
+        </button>
+        {showDescription && (
+          <div class="space-y-1 mt-2">
+            <p>
+              <strong>Race:</strong> {character.race}
+            </p>
+            {desc.isTemplate && (
+              <p>
+                <strong>Template:</strong> Yes
+              </p>
+            )}
+            {desc.countryOfOrigin && (
+              <p>
+                <strong>Country of Origin:</strong> {desc.countryOfOrigin}
+              </p>
+            )}
+            {desc.faction && (
+              <p>
+                <strong>Faction:</strong> {desc.faction}
+              </p>
+            )}
+            {desc.subfaction && (
+              <p>
+                <strong>Subfaction:</strong> {desc.subfaction}
+              </p>
+            )}
+            {desc.role && (
+              <p>
+                <strong>Role:</strong> {desc.role}
+              </p>
+            )}
+            {desc.age && (
+              <p>
+                <strong>Age:</strong> {desc.age}
+              </p>
+            )}
+            {desc.dateOfBirth && (
+              <p>
+                <strong>Date of Birth:</strong> {desc.dateOfBirth}
+              </p>
+            )}
+            <p>
+              <strong>Sex:</strong> {desc.sex}
+            </p>
+            {desc.height && (
+              <p>
+                <strong>Height:</strong> {desc.height}
+              </p>
+            )}
+            {desc.weight && (
+              <p>
+                <strong>Weight:</strong> {desc.weight}
+              </p>
+            )}
+            {desc.skinColor && (
+              <p>
+                <strong>Skin Color:</strong> {desc.skinColor}
+              </p>
+            )}
+            {desc.hairColor && (
+              <p>
+                <strong>Hair Color:</strong> {desc.hairColor}
+              </p>
+            )}
+            {desc.eyeColor && (
+              <p>
+                <strong>Eye Color:</strong> {desc.eyeColor}
+              </p>
+            )}
+            {desc.ethnicity && (
+              <p>
+                <strong>Ethnicity:</strong> {desc.ethnicity}
+              </p>
+            )}
+            {desc.bodyType && (
+              <p>
+                <strong>Body Type:</strong> {desc.bodyType}
+              </p>
+            )}
+            {desc.generalAppearance && (
+              <p>
+                <strong>General Appearance:</strong> {desc.generalAppearance}
+              </p>
+            )}
+            {desc.generalHealth && (
+              <p>
+                <strong>General Health:</strong> {desc.generalHealth}
+              </p>
+            )}
+            {desc.personality && (
+              <p>
+                <strong>Personality:</strong> {desc.personality}
+              </p>
+            )}
+            {desc.biography && (
+              <p>
+                <strong>Biography:</strong> {desc.biography}
+              </p>
+            )}
+          </div>
         )}
       </div>
 

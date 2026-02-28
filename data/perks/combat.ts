@@ -47,6 +47,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Pick one type of terrain ( Forests, mountains, plains, no-man's-land, urban, etc ). 
 *While in such a terrain, double any cover bonuses you would get!
 *Never get lost in such terrain, always know your way around.`,
+    customInput: "Chosen terrain (e.g. forests, mountains, urban…)",
   },
   {
     id: "tough",
@@ -97,6 +98,7 @@ Your HP is doubled. Your constitution is not doubled, it applies only to your HP
     id: "signiature-weapon",
     name: "Signiature weapon",
     category: "combat",
+    customInput: "Your signature weapon",
     description: `You have a special weapon that belongs to you, and only you! 
 
 *It must be grabbed from the weapon's list, or reflavoured from there.

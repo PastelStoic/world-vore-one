@@ -5,6 +5,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "innovator",
     name: "Innovator",
     category: "gimmick",
+    customInput: "Describe your invented technology",
     description:
       `Your character is awfully creative! Or awfully good at stealing others' ideas~ 
 
@@ -51,6 +52,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "allies",
     name: "Allies",
     category: "gimmick",
+    customInput: "Describe your allies",
     description:
       `You know a guy or two, who happens to know another- with connections and stuff! 
 
@@ -64,6 +66,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "patron",
     name: "Patron",
     category: "gimmick",
+    customInput:
+      "Who are your patrons, what do they provide, and your relation?",
     description: `You know people in high places!
 
 *You have a very deep connection with a single person, or group of few individuals. 
@@ -77,6 +81,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "spy",
     name: "Spy",
     category: "gimmick",
+    customInput: "Loyal faction and faction you're spying on",
     description: `You are a spy, infiltrated in an enemy faction! Sneaky sneak.
 
 *Specify which faction you are loyal to, and which faction you're spying on, when making your character.
@@ -91,6 +96,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "beastmaster",
     name: "Beastmaster",
     category: "gimmick",
+    customInput: "Your animal companion (species and name)",
     description: `You have a pet animal. How cute! 
 
 *The animal may be common or exotic, whichever you please. 

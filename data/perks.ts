@@ -59,6 +59,8 @@ export interface PerkDefinition {
   isFree?: boolean;
   /** Stat points granted when this perk is taken (e.g. negative perks). */
   pointsGranted?: number;
+  /** When set, the player is prompted to enter custom text when taking this perk. */
+  customInput?: string;
 }
 
 export const PERKS: PerkDefinition[] = [

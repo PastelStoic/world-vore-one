@@ -106,6 +106,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    customInput: "Good boy or bad boy?",
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -304,6 +305,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    customInput: "Your animal type, chosen perks, and custom gimmick",
     description:
       `You have animal genes in you, making you stronger in certain areas.
 

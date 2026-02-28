@@ -5,6 +5,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "milky",
     name: "Milky",
     category: "smut",
+    customInput: "Milk, cum, or both?",
     description:
       `You are always producing milk ( or cum ) at a very substantial rate!
 

@@ -99,6 +99,7 @@ export interface CharacterDraft {
   baseStats: BaseStats;
   unallocatedStatPoints: number;
   perkIds: string[];
+  perkNotes?: Record<string, string>;
 }
 
 export interface CharacterSheet extends CharacterDraft {
@@ -174,5 +175,6 @@ export function createDefaultCharacterDraft(): CharacterDraft {
     baseStats: createDefaultBaseStats(),
     unallocatedStatPoints: getStartingStatPoints("Baseliner"),
     perkIds: [],
+    perkNotes: {},
   };
 }

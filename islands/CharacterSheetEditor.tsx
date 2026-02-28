@@ -52,6 +52,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     props.initialCharacter.unallocatedStatPoints,
   );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
+  const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
+    props.initialCharacter.perkNotes ?? {},
+  );
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
@@ -74,6 +77,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     baseStats,
     unallocatedStatPoints,
     perkIds,
+    perkNotes,
   };
 
   const {
@@ -253,6 +257,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const newPerkIds = perkIds.filter((id) => id !== perkId);
     const refund = calculatePerksCost(perkIds) - calculatePerksCost(newPerkIds);
     setPerkIds(newPerkIds);
+    setPerkNotes((current) => {
+      const next = { ...current };
+      delete next[perkId];
+      return next;
+    });
     setUnallocatedStatPoints((current) => current + refund);
   }
 
@@ -277,6 +286,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         value={JSON.stringify(description)}
       />
       <input type="hidden" name="perkIds" value={JSON.stringify(perkIds)} />
+      <input
+        type="hidden"
+        name="perkNotes"
+        value={JSON.stringify(perkNotes)}
+      />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
         type="hidden"
@@ -728,29 +742,47 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <h5 class="font-medium">
                       {PERK_CATEGORY_LABELS[group.category]}
                     </h5>
-                    <ul class="space-y-1">
+                    <ul class="space-y-2">
                       {group.items.map(({ id, perk }) => {
                         const canRemove = !initialPerkIds.includes(id);
                         return (
-                          <li class="flex items-center gap-2" key={id}>
-                            <span>
-                              {perk
-                                ? (
-                                  <PerkDescription
-                                    name={perk.name}
-                                    description={perk.description}
-                                  />
-                                )
-                                : id}
-                            </span>
-                            {canRemove && (
-                              <button
-                                type="button"
-                                class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
-                                onClick={() => unbuyPerk(id)}
-                              >
-                                Remove
-                              </button>
+                          <li key={id}>
+                            <div class="flex items-center gap-2">
+                              <span>
+                                {perk
+                                  ? (
+                                    <PerkDescription
+                                      name={perk.name}
+                                      description={perk.description}
+                                    />
+                                  )
+                                  : id}
+                              </span>
+                              {canRemove && (
+                                <button
+                                  type="button"
+                                  class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                                  onClick={() => unbuyPerk(id)}
+                                >
+                                  Remove
+                                </button>
+                              )}
+                            </div>
+                            {perk?.customInput && (
+                              <input
+                                type="text"
+                                class="mt-1 w-full border rounded px-2 py-1 text-sm"
+                                placeholder={perk.customInput}
+                                value={perkNotes[id] ?? ""}
+                                onInput={(e) => {
+                                  const value =
+                                    (e.target as HTMLInputElement).value;
+                                  setPerkNotes((current) => ({
+                                    ...current,
+                                    [id]: value,
+                                  }));
+                                }}
+                              />
                             )}
                           </li>
                         );

@@ -4,6 +4,7 @@ import {
   parseBaseStats,
   parseDescription,
   parsePerkIds,
+  parsePerkNotes,
   parseRace,
   validateCharacterProgression,
 } from "./characters.ts";
@@ -26,6 +27,7 @@ export interface ParsedCharacterFields {
   description: NonNullable<ReturnType<typeof parseDescription>>;
   baseStats: NonNullable<ReturnType<typeof parseBaseStats>>;
   perkIds: NonNullable<ReturnType<typeof parsePerkIds>>;
+  perkNotes: Record<string, string>;
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
   pendingImageId: string;
@@ -47,6 +49,9 @@ export function parseCharacterFormData(
   );
   const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
   const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
+  const perkNotes = parsePerkNotes(
+    String(formData.get("perkNotes") ?? "{}"),
+  );
   const unallocatedStatPoints = parseNonNegativeInt(
     formData.get("unallocatedStatPoints"),
   );
@@ -77,6 +82,7 @@ export function parseCharacterFormData(
     description,
     baseStats,
     perkIds,
+    perkNotes,
     unallocatedStatPoints,
     basedOnSnapshotId,
     pendingImageId,
@@ -97,6 +103,7 @@ export function buildAndValidateDraft(
     baseStats: fields.baseStats,
     unallocatedStatPoints: fields.unallocatedStatPoints,
     perkIds: fields.perkIds,
+    perkNotes: fields.perkNotes,
   };
 
   const progressionError = validateCharacterProgression(draft);

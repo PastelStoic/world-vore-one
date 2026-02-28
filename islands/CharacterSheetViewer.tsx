@@ -234,6 +234,11 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                             />
                           )
                           : id}
+                        {character.perkNotes?.[id] && (
+                          <span class="block ml-5 text-gray-600 italic">
+                            {character.perkNotes[id]}
+                          </span>
+                        )}
                       </li>
                     ))}
                   </ul>

@@ -8,6 +8,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     requiredFaction: "Switzerland",
     isFree: true,
     pointsGranted: 3,
+    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `Switzerland strong!
 
 Advantages:
@@ -28,6 +29,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: "Germany",
     pointsGranted: 2,
+    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `Germany strong!
 
 Advantages:
@@ -48,6 +50,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: "England",
     pointsGranted: 2,
+    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `ENGERLAAAANNDDD
 
 Advantages:
@@ -68,6 +71,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: "America",
     pointsGranted: 2,
+    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `America strong!
  
 Advantages:

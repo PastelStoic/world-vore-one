@@ -5,6 +5,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
     id: "rival",
     name: "Rival",
     category: "negative",
+    customInput: "Points gained (1–6) and rival description",
     description:
       `You became someone's worst enemy, and they hate you with a burning passion.
 
@@ -68,6 +69,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     category: "negative",
     isFree: true,
     pointsGranted: 4,
+    customInput: "Subject of your addiction",
     description:
       `You have an addiction so absolutely crippling that you cannot go without it.
 
@@ -88,6 +90,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     category: "negative",
     isFree: true,
     pointsGranted: 4,
+    customInput: "Locked stat and description of your condition",
     description:
       `You have some type of health condition that is completely crippling in some way or another.
 

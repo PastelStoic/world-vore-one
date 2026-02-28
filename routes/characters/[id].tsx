@@ -59,8 +59,8 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
   return (
     <CharacterPageLayout
       title={character.name}
-      backHref="/"
-      backLabel="Back to Character List"
+      backHref={isOwner ? "/" : undefined}
+      backLabel={isOwner ? "Back to Character List" : undefined}
     >
       {character.status === "pending" && (
         <div class="flex items-center gap-3 px-3 py-2 bg-yellow-50 border border-yellow-300 rounded text-yellow-800 text-sm">

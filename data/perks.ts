@@ -65,6 +65,8 @@ export interface PerkDefinition {
   pointsGranted?: number;
   /** When set, the player is prompted to enter custom text when taking this perk. */
   customInput?: string;
+  /** Perk IDs that cannot be taken alongside this perk (mutual exclusion). */
+  excludesPerks?: string[];
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -104,6 +106,15 @@ export function validatePerkRequirements(
         return `Perk "${perk.name}" cannot be combined with "${lockedByPerkName}".`;
       }
       selectedByLockCategory.set(perk.lockCategory, perk.name);
+    }
+
+    if (perk.excludesPerks) {
+      for (const excludedId of perk.excludesPerks) {
+        if (perkIds.includes(excludedId)) {
+          const excludedPerk = PERKS_BY_ID.get(excludedId);
+          return `Perk "${perk.name}" cannot be combined with "${excludedPerk?.name ?? excludedId}".`;
+        }
+      }
     }
   }
 

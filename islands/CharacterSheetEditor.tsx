@@ -117,6 +117,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
       return false;
     }
+    if (perk.excludesPerks?.some((id) => perkIds.includes(id))) {
+      return false;
+    }
+    // Also hide perks that are excluded BY a currently-owned perk
+    const isExcludedByOwned = ownedPerks.some((owned) =>
+      owned.perk?.excludesPerks?.includes(perk.id)
+    );
+    if (isExcludedByOwned) return false;
     return true;
   });
 

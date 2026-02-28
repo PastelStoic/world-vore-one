@@ -91,6 +91,7 @@ export async function upsertCharacter(
     ...input,
     latestSnapshotId: snapshotId,
     imageId: existing?.imageId,
+    hidden: existing?.hidden,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -126,6 +127,29 @@ export async function setCharacterImageId(
     character.imageId = imageId;
   } else {
     delete character.imageId;
+  }
+  character.updatedAt = new Date().toISOString();
+
+  await kv.set([...CHARACTER_PREFIX, characterId], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
+    character,
+  );
+  return character;
+}
+
+export async function setCharacterHidden(
+  characterId: string,
+  hidden: boolean,
+) {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  if (hidden) {
+    character.hidden = true;
+  } else {
+    delete character.hidden;
   }
   character.updatedAt = new Date().toISOString();
 

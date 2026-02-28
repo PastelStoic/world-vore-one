@@ -106,6 +106,7 @@ export interface CharacterSheet extends CharacterDraft {
   userId: string;
   latestSnapshotId: string;
   imageId?: string;
+  hidden?: boolean;
   createdAt: string;
   updatedAt: string;
 }

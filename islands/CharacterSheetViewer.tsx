@@ -48,9 +48,17 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
 
   const [showDescription, setShowDescription] = useState(true);
 
+  const isHidden = "hidden" in character &&
+    (character as CharacterSheet).hidden;
+
   return (
     <div class="border rounded-lg p-4 bg-white/80 space-y-4">
-      <h2 class="text-2xl font-bold">{character.name}</h2>
+      <h2 class="text-2xl font-bold">
+        {character.name}
+        {isHidden && (
+          <span class="ml-2 text-base font-semibold text-red-600">Hidden</span>
+        )}
+      </h2>
 
       {imageUrl && (
         <div>
@@ -186,7 +194,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         <ul class="space-y-1 text-sm">
           {BASE_STAT_FIELDS.map((field, idx) => (
             <li key={field.key}>
-              {idx === 5 && <br />/* Gap between regular and vore stats */}
+              {idx === 5 && <br /> /* Gap between regular and vore stats */}
               {field.label}: Base{" "}
               <strong>{character.baseStats[field.key]}</strong> | Effective{" "}
               <strong>{effectiveByStat[field.key]}</strong>

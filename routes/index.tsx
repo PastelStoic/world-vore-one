@@ -3,7 +3,9 @@ import { define } from "../utils.ts";
 import { listCharacters } from "../lib/characters.ts";
 export default define.page(async function Home(ctx) {
   const user = ctx.state.user;
-  const characters = user ? await listCharacters(user.id) : [];
+  const allCharacters = user ? await listCharacters(user.id) : [];
+  const characters = allCharacters.filter((c) => !c.hidden);
+  const hiddenCharacters = allCharacters.filter((c) => c.hidden);
 
   return (
     <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
@@ -57,6 +59,26 @@ export default define.page(async function Home(ctx) {
                       ))}
                     </ul>
                   )}
+                {hiddenCharacters.length > 0 && (
+                  <details class="mt-4">
+                    <summary class="cursor-pointer text-gray-600 hover:text-gray-900">
+                      Show hidden characters ({hiddenCharacters.length})
+                    </summary>
+                    <ul class="space-y-2 mt-2">
+                      {hiddenCharacters.map((character) => (
+                        <li key={character.id}>
+                          <a
+                            href={`/characters/${character.id}`}
+                            class="underline"
+                          >
+                            {character.name}
+                          </a>
+                          <span class="ml-2 text-sm text-red-600">Hidden</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </div>
             </section>
           )}

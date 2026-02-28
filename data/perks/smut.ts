@@ -5,12 +5,12 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "milky",
     name: "Milky",
     category: "smut",
+    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     customInput: "Milk, cum, or both?",
     description:
       `You are always producing milk ( or cum ) at a very substantial rate!
 
-*Only for PFs/PHs.
-*Pick whether you are always producing milk, or overproducing cum. 
+*Pick whether you are always overproducing milk, or overproducing cum. 
 *You may pick both if you're a futa, but that will not increase your charges.
 *Milk/cum works as 'charges'. You have 1 + [CONSTITUTION] charges. Each person can drink one charge of milk or more. 
 *By drinking a charge, a person is fed for a full day, and after 4 hours, heals 3 HP!
@@ -36,10 +36,10 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "rewritter",
     name: "Rewritter",
     category: "smut",
+    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     description:
       `Fucking a PF into rewriting her brain is doable, and you fuck them hard enough to do it regularly!
 
-*Only for PFs/PHs. 
 *Whenever you are having sex with a template, you can hardcore fuck her, and thus, rewrire their brain!
 *You can turn them into a template of your choosing. The appearance remains the same though!
 *Whenever fucking them hard, roll your strength against their own.
@@ -65,9 +65,9 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "baby-factory",
     name: "Baby-factory",
     category: "smut",
+    requiredRaces: ["Pilzfraun","Tierfraun"],
     description: `Your womb is extremely fertile and spacious! 
 
-*Only for PFs. 
 *You are impregnated for certainty whenever someone with a penis cums inside you. 
 *Your womb specifically is considered to have 3 stacks of the 'unreal capacity' perk. You still obey encumbrance rules.
 *You can choose which templates you give birth to, and you can choose if someone with the 'ever-lasting' perk is birthed or not.

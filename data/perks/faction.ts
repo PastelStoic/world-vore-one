@@ -3,7 +3,7 @@ import type { PerkDefinition } from "../perks.ts";
 export const FACTION_PERKS: PerkDefinition[] = [
   {
     id: "king-s-royal-army-pf",
-    name: "King's royal army PF",
+    name: "King's royal army",
     category: "faction",
     requiredFaction: "Switzerland",
     isFree: true,
@@ -20,7 +20,7 @@ Disadvantages:
 *Only one per player.
 *Must be Swiss-born.
 *Must be part of the King's Royal Army in #factions
-*You give two points to a PF that digests you, instead of one.
+*If you are a PF, give two points to a PF that digests you, instead of one.
 *You are a target: You may be abducted for very nasty experimentation purposes.`,
   },
   {

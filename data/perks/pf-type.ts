@@ -60,6 +60,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "speisfraun",
     name: "Speisfraun",
     category: "pf-type",
+    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     description:
       `You are a PF birthed for the sole purpose of feeding yourself to others. Your body's fatty in all the right places! 
 
@@ -77,6 +78,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "twins",
     name: "Twins",
     category: "pf-type",
+    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     description: `You have a perfect twin! 
 
 *When a pair ( or more ) PFs are birthed and are twins, they gain a special ability: 
@@ -88,6 +90,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "tiny",
     name: "Tiny",
     category: "pf-type",
+    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     description:
       `Through some abysmal fuckery, you are born extremely tiny - no more than four inches tall at most.
 

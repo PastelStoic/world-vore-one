@@ -113,6 +113,7 @@ export function buildAndValidateDraft(
 
   const perkRequirementError = validatePerkRequirements(
     draft.race,
+    draft.description.sex,
     draft.perkIds,
   );
   if (perkRequirementError) {

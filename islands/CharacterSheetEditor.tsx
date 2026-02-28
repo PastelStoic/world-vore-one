@@ -111,6 +111,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
       return false;
     }
+    if (perk.requiredSex && !perk.requiredSex.includes(description.sex)) {
+      return false;
+    }
     if (perk.requiredFaction && perk.requiredFaction !== description.faction) {
       return false;
     }

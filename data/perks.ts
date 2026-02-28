@@ -1,4 +1,4 @@
-import type { BaseStatKey, Faction, OrganType, Race } from "../lib/character_types.ts";
+import type { BaseStatKey, Faction, OrganType, Race, Sex } from "../lib/character_types.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -57,6 +57,7 @@ export interface PerkDefinition {
   description: string;
   modifiers?: PerkModifiers;
   requiredRaces?: Race[];
+  requiredSex?: Sex[];
   requiredFaction?: Faction;
   lockCategory?: string;
   /** When true, this perk costs nothing and doesn't consume the first-perk freebie. */
@@ -84,6 +85,7 @@ export const PERK_IDS = new Set(PERKS.map((perk) => perk.id));
 
 export function validatePerkRequirements(
   race: Race,
+  sex: Sex,
   perkIds: string[],
 ): string | null {
   const selectedByLockCategory = new Map<string, string>();
@@ -97,6 +99,12 @@ export function validatePerkRequirements(
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
       return `Perk "${perk.name}" requires one of: ${
         perk.requiredRaces.join(", ")
+      }.`;
+    }
+
+    if (perk.requiredSex && !perk.requiredSex.includes(sex)) {
+      return `Perk "${perk.name}" requires sex: ${
+        perk.requiredSex.join(" or ")
       }.`;
     }
 

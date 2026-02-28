@@ -23,6 +23,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "the-impregnator",
     name: "THE IMPREGNATOR",
     category: "smut",
+    requiredSex: ["Male", "Futa"],
     description: `Your sperm quality is very high, and you produce a lot of it. 
 
 *Must have a penis. 
@@ -66,6 +67,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     name: "Baby Factory",
     category: "smut",
     requiredRaces: ["Pilzfraun","Tierfraun"],
+    requiredSex: ["Female", "Futa"],
     modifiers: {
       organCapacityMultipliers: { womb: 27 },
     },

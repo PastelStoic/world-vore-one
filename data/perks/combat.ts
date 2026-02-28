@@ -56,7 +56,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `Your skin, meat 'n bones are very tough and hard to break through! 
 
-Your HP is doubled. Your constitution is not doubled, it applies only to your HP!`,
+*Your HP is doubled. Your constitution is not doubled, it applies only to your HP!`,
     modifiers: {
       healthMultiplier: 2,
     },

@@ -1,6 +1,6 @@
 import { define } from "../../../../utils.ts";
 import { PERKS_BY_ID } from "../../../../data/perks.ts";
-import { BASE_STAT_FIELDS } from "../../../../lib/character_types.ts";
+import { BASE_STAT_FIELDS, ORGAN_LABELS } from "../../../../lib/character_types.ts";
 import {
   getCharacter,
   getCharacterSnapshot,
@@ -16,8 +16,8 @@ import {
   calculateEffectiveEscapeTraining,
   calculateEffectiveHealth,
   calculateEffectiveIntelligence,
-  calculateEffectiveOrganCapacity,
   calculateEffectiveStrength,
+  calculateOrganCapacities,
 } from "../../../../lib/stat_calculations.ts";
 import CharacterPageLayout from "../../../../components/CharacterPageLayout.tsx";
 
@@ -270,12 +270,22 @@ export default define.page<typeof handler>(
                 Carry Capacity:{" "}
                 <strong>{calculateEffectiveCarryCapacity(draft)}</strong>
               </li>
-              {draft.race !== "Baseliner" && (
-                <li>
-                  Organ Capacity:{" "}
-                  <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
-                </li>
-              )}
+              {(() => {
+                const organCapacities = calculateOrganCapacities(draft);
+                if (organCapacities.length === 0) return null;
+                return (
+                  <li>
+                    Organ Capacity:
+                    <ul class="ml-4 space-y-0.5">
+                      {organCapacities.map(({ organ, capacity }) => (
+                        <li key={organ}>
+                          {ORGAN_LABELS[organ]}: <strong>{capacity}</strong>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })()}
             </ul>
           </div>
 

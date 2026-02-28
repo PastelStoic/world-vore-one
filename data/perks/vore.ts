@@ -263,6 +263,9 @@ export const VORE_PERKS: PerkDefinition[] = [
     name: "Open ended tail",
     category: "vore",
     requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    modifiers: {
+      grantsOrgans: ["tail"],
+    },
     description:
       `Through some sort of strange mutation, your tail isn't normal - it's fleshy, stretchy, and opens near the end!
 
@@ -278,6 +281,9 @@ export const VORE_PERKS: PerkDefinition[] = [
     name: "Open ended tail (MOUTHLESS)",
     category: "vore",
     requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    modifiers: {
+      grantsOrgans: ["tail"],
+    },
     description: `You do not have a mouth! You must eat through your tail!
 
 ---->Perk requirement: Must be a tierfraun with a tail.

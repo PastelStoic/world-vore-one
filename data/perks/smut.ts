@@ -66,6 +66,9 @@ export const SMUT_PERKS: PerkDefinition[] = [
     name: "Baby Factory",
     category: "smut",
     requiredRaces: ["Pilzfraun","Tierfraun"],
+    modifiers: {
+      organCapacityMultipliers: { womb: 27 },
+    },
     description: `Your womb is extremely fertile and spacious! 
 
 *You are impregnated for certainty whenever someone with a penis cums inside you. 

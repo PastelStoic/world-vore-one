@@ -1,7 +1,8 @@
+import { ORGAN_LABELS } from "../lib/character_types.ts";
 import type { CharacterDraft } from "../lib/character_types.ts";
 import {
   calculateEffectiveHealth,
-  calculateEffectiveOrganCapacity,
+  calculateOrganCapacities,
 } from "../lib/stat_calculations.ts";
 
 interface OtherStatsSectionProps {
@@ -11,6 +12,7 @@ interface OtherStatsSectionProps {
 
 export default function OtherStatsSection(props: OtherStatsSectionProps) {
   const { draft, carryCapacity } = props;
+  const organCapacities = calculateOrganCapacities(draft);
 
   return (
     <div class="rounded border p-3 space-y-2">
@@ -22,10 +24,16 @@ export default function OtherStatsSection(props: OtherStatsSectionProps) {
         <li>
           Carry Capacity: <strong>{carryCapacity}</strong>
         </li>
-        {draft.race !== "Baseliner" && (
+        {organCapacities.length > 0 && (
           <li>
-            Organ Capacity:{" "}
-            <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
+            Organ Capacity:
+            <ul class="ml-4 space-y-0.5">
+              {organCapacities.map(({ organ, capacity }) => (
+                <li key={organ}>
+                  {ORGAN_LABELS[organ]}: <strong>{capacity}</strong>
+                </li>
+              ))}
+            </ul>
           </li>
         )}
       </ul>

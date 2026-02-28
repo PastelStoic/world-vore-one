@@ -1,4 +1,4 @@
-import type { BaseStatKey, Faction, Race } from "../lib/character_types.ts";
+import type { BaseStatKey, Faction, OrganType, Race } from "../lib/character_types.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -44,6 +44,10 @@ interface PerkModifiers {
   digestionResilienceMultiplier?: number;
   digestionStrengthMultiplier?: number;
   statCaps?: Partial<Record<BaseStatKey, number>>;
+  /** Organs granted by this perk (e.g. tail from Lamia or Open-ended tail). */
+  grantsOrgans?: OrganType[];
+  /** Per-organ capacity multipliers (applied on top of the global organCapacityMultiplier). */
+  organCapacityMultipliers?: Partial<Record<OrganType, number>>;
 }
 
 export interface PerkDefinition {

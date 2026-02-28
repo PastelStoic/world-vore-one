@@ -1,5 +1,5 @@
 import { PERKS_BY_ID } from "../data/perks.ts";
-import type { BaseStatKey, CharacterDraft } from "./character_types.ts";
+import type { BaseStatKey, CharacterDraft, OrganType } from "./character_types.ts";
 
 export const ENCUMBRANCE_LEVELS = [
   "Unencumbered",
@@ -186,4 +186,62 @@ export function calculateEffectiveOrganCapacity(input: CharacterDraft) {
   const base = calculateBaseOrganCapacity();
   const multiplier = getMultiplier(input, "organCapacityMultiplier");
   return base * multiplier;
+}
+
+/**
+ * Returns the list of organs a character has based on race, sex, and perks.
+ * Baseliners have no organs. Females get stomach/breasts/womb, males get
+ * stomach/dick, futas get all four. Perks may grant additional organs (e.g. tail).
+ */
+export function getCharacterOrgans(input: CharacterDraft): OrganType[] {
+  if (input.race === "Baseliner") return [];
+
+  const sex = input.description.sex;
+  const organs: OrganType[] = ["stomach"];
+
+  if (sex === "Female" || sex === "Futa") {
+    organs.push("breasts", "womb");
+  }
+
+  if (sex === "Male" || sex === "Futa") {
+    organs.push("dick");
+  }
+
+  for (const perkId of input.perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    if (perk?.modifiers?.grantsOrgans) {
+      for (const organ of perk.modifiers.grantsOrgans) {
+        if (!organs.includes(organ)) {
+          organs.push(organ);
+        }
+      }
+    }
+  }
+
+  return organs;
+}
+
+/**
+ * Calculates the effective capacity of each organ the character possesses.
+ * Each organ starts at base capacity 2, is multiplied by the global
+ * organCapacityMultiplier (from "Unreal capacity"), then by any per-organ
+ * multipliers (e.g. Baby Factory gives womb 27x, Lamia gives tail 3x).
+ */
+export function calculateOrganCapacities(
+  input: CharacterDraft,
+): { organ: OrganType; capacity: number }[] {
+  const organs = getCharacterOrgans(input);
+  const base = calculateBaseOrganCapacity();
+  const globalMultiplier = getMultiplier(input, "organCapacityMultiplier");
+
+  return organs.map((organ) => {
+    let organMultiplier = 1;
+
+    for (const perkId of input.perkIds) {
+      const perk = PERKS_BY_ID.get(perkId);
+      organMultiplier *= perk?.modifiers?.organCapacityMultipliers?.[organ] ?? 1;
+    }
+
+    return { organ, capacity: base * globalMultiplier * organMultiplier };
+  });
 }

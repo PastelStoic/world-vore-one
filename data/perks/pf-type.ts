@@ -301,6 +301,10 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 ->Prey inside the tail stomach must roll twice when trying to escape, always taking the set with the fewer successes. 
 ->Should they succeed, they crawl back into the first stomach, but can be sent back into the tail if they fail another escape attempt.
 *Jungle and swampy terrain does not affect you - you can climb trees and move around freely.`,
+    modifiers: {
+      grantsOrgans: ["tail"],
+      organCapacityMultipliers: { tail: 3 },
+    },
   },
   {
     id: "tierfraun-custom",

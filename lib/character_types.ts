@@ -7,6 +7,23 @@ export const RACES = [
 ] as const;
 export type Race = (typeof RACES)[number];
 
+export const ORGAN_TYPES = [
+  "stomach",
+  "breasts",
+  "womb",
+  "dick",
+  "tail",
+] as const;
+export type OrganType = (typeof ORGAN_TYPES)[number];
+
+export const ORGAN_LABELS: Record<OrganType, string> = {
+  stomach: "Stomach",
+  breasts: "Breasts",
+  womb: "Womb",
+  dick: "Dick",
+  tail: "Tail",
+};
+
 export const FACTIONS = [
   "Switzerland",
   "Germany",

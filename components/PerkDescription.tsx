@@ -3,12 +3,10 @@ import { useState } from "preact/hooks";
 interface PerkDescriptionProps {
   name: string;
   description: string;
-  /** When true, render name as <strong> instead of plain text */
-  boldName?: boolean;
 }
 
 export default function PerkDescription(
-  { name, description, boldName }: PerkDescriptionProps,
+  { name, description }: PerkDescriptionProps,
 ) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -19,7 +17,7 @@ export default function PerkDescription(
 
   return (
     <span>
-      {boldName ? <strong>{name}</strong> : name}: {brief}
+      <strong>{name}</strong>: {brief}
       {hasDetails && (
         <>
           {" "}

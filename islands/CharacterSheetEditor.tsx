@@ -892,7 +892,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                               <PerkDescription
                                 name={perk.name}
                                 description={perk.description}
-                                boldName
                               />
                             </span>
                             <button

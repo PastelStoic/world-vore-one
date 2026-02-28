@@ -69,7 +69,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     description: `Your womb is extremely fertile and spacious! 
 
 *You are impregnated for certainty whenever someone with a penis cums inside you. 
-*Your womb specifically is considered to have 3 stacks of the 'unreal capacity' perk. You still obey encumbrance rules.
+*Your womb has 27x the capacity of your stomach and scales accordingly. You still obey encumbrance rules.
 *You can choose which templates you give birth to, and you can choose if someone with the 'ever-lasting' perk is birthed or not.
 *Being impregnated by a PH does not force you to only birth males from there on out.
 *Your pregnancies last 1 week. You still need the required nutrition to birth someone that fast.

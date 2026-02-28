@@ -7,6 +7,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Pilzherr", "Tierherr"],
     lockCategory: "pilzherr-type",
+    isFree: true,
     description: `You are a MALE PF! Not a futa, you've no pussy nor womb.
 
 *Free perk: This perk is free, we just want this on your sheet so others are aware of what this entails.

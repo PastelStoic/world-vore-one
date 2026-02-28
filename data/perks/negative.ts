@@ -47,6 +47,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "m-r-e",
     name: "M.R.E",
     category: "negative",
+    isFree: true,
+    pointsGranted: 2,
     description:
       `Your purpose is being eaten by others, so much so that your body has been made to digest extremely easily.
 
@@ -64,6 +66,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "crippling-addiction",
     name: "Crippling addiction",
     category: "negative",
+    isFree: true,
+    pointsGranted: 4,
     description:
       `You have an addiction so absolutely crippling that you cannot go without it.
 
@@ -82,6 +86,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "crippling-health-condition",
     name: "Crippling health condition",
     category: "negative",
+    isFree: true,
+    pointsGranted: 4,
     description:
       `You have some type of health condition that is completely crippling in some way or another.
 

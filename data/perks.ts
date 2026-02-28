@@ -55,6 +55,10 @@ export interface PerkDefinition {
   requiredRaces?: Race[];
   requiredFaction?: Faction;
   lockCategory?: string;
+  /** When true, this perk costs nothing and doesn't consume the first-perk freebie. */
+  isFree?: boolean;
+  /** Stat points granted when this perk is taken (e.g. negative perks). */
+  pointsGranted?: number;
 }
 
 export const PERKS: PerkDefinition[] = [

@@ -15,6 +15,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "./character_types.ts";
+import { PERKS_BY_ID } from "../data/perks.ts";
 import { getKv } from "./kv.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
@@ -279,10 +280,23 @@ export function parseDescription(raw: string): CharacterDescription | null {
   }
 }
 
-export function calculatePerksCost(perkCount: number): number {
-  if (perkCount <= 0) return 0;
-  // First perk is free, subsequent perks cost PERK_COST_STAT_POINTS each
-  return (perkCount - 1) * PERK_COST_STAT_POINTS;
+export function calculatePerksCost(perkIds: string[]): number {
+  if (perkIds.length <= 0) return 0;
+
+  let paidPerkCount = 0;
+  let totalPointsGranted = 0;
+
+  for (const perkId of perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    totalPointsGranted += perk?.pointsGranted ?? 0;
+    if (!perk?.isFree) {
+      paidPerkCount++;
+    }
+  }
+
+  // First paid perk is free, subsequent paid perks cost PERK_COST_STAT_POINTS each
+  const baseCost = Math.max(0, paidPerkCount - 1) * PERK_COST_STAT_POINTS;
+  return baseCost - totalPointsGranted;
 }
 
 export function validateCharacterProgression(
@@ -303,7 +317,7 @@ export function validateCharacterProgression(
     return "Base stats cannot go below their default values.";
   }
 
-  const spentOnPerks = calculatePerksCost(input.perkIds.length);
+  const spentOnPerks = calculatePerksCost(input.perkIds);
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 
   if (totalUsed < getStartingStatPoints(input.race)) {

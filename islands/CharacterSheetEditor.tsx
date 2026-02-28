@@ -4,6 +4,7 @@ import {
   PERK_CATEGORY_ORDER,
   type PerkCategory,
   type PerkDefinition,
+  PERKS_BY_ID,
 } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
@@ -20,6 +21,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "../lib/character_types.ts";
+import { calculatePerksCost } from "../lib/characters.ts";
 import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
 import EncumbranceSection from "../components/EncumbranceSection.tsx";
@@ -232,12 +234,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function buyPerk(perkId: string) {
-    const cost = perkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
-    if (unallocatedStatPoints < cost || perkIds.includes(perkId)) {
-      return;
-    }
+    if (perkIds.includes(perkId)) return;
 
-    setPerkIds((current) => [...current, perkId]);
+    const newPerkIds = [...perkIds, perkId];
+    const cost = calculatePerksCost(newPerkIds) - calculatePerksCost(perkIds);
+
+    if (unallocatedStatPoints < cost) return;
+
+    setPerkIds(newPerkIds);
     setUnallocatedStatPoints((current) => current - cost);
   }
 
@@ -247,8 +251,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
 
     const newPerkIds = perkIds.filter((id) => id !== perkId);
-    // Refund: if removing this perk brings us back to the free perk slot, refund 0
-    const refund = newPerkIds.length === 0 ? 0 : PERK_COST_STAT_POINTS;
+    const refund = calculatePerksCost(perkIds) - calculatePerksCost(newPerkIds);
     setPerkIds(newPerkIds);
     setUnallocatedStatPoints((current) => current + refund);
   }
@@ -705,8 +708,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <div class="rounded border p-3 space-y-3">
         <h3 class="font-semibold">Perks</h3>
         <p class="text-sm text-gray-700">
-          Perks cost {PERK_COST_STAT_POINTS} stat points each.{" "}
-          {perkIds.length === 0 ? <strong>First perk is free!</strong> : null}
+          Perks cost {PERK_COST_STAT_POINTS} stat points each. {(() => {
+            const paidPerkCount =
+              perkIds.filter((id) => !PERKS_BY_ID.get(id)?.isFree).length;
+            return paidPerkCount === 0
+              ? <strong>First perk is free!</strong>
+              : null;
+          })()}
         </p>
 
         <div>
@@ -822,10 +830,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 </div>
                 <ul class="space-y-2">
                   {availablePerks.map((perk) => {
-                    const cost = perkIds.length === 0
-                      ? 0
-                      : PERK_COST_STAT_POINTS;
+                    const cost = calculatePerksCost([...perkIds, perk.id]) -
+                      calculatePerksCost(perkIds);
                     const canAfford = unallocatedStatPoints >= cost;
+                    const costLabel = cost < 0
+                      ? `Unlock (+${-cost} SP)`
+                      : cost === 0
+                      ? "Unlock (Free)"
+                      : `Buy (${cost} SP)`;
                     return (
                       <li
                         class="flex items-center justify-between gap-2"
@@ -844,7 +856,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           disabled={!canAfford}
                           onClick={() => buyPerk(perk.id)}
                         >
-                          {cost === 0 ? "Unlock (Free)" : `Buy (${cost} SP)`}
+                          {costLabel}
                         </button>
                       </li>
                     );

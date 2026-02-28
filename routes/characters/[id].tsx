@@ -1,3 +1,4 @@
+import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
 import CharacterSheetViewer from "../../islands/CharacterSheetViewer.tsx";
 import { PERKS } from "../../data/perks.ts";
@@ -55,6 +56,9 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
   const canEdit = isOwner || ctx.state.isAdmin;
 
   const justSaved = ctx.url.searchParams.get("saved") === "1";
+  const imageUrl = character.imageId
+    ? cfImageUrl(character.imageId)
+    : undefined;
 
   return (
     <CharacterPageLayout
@@ -62,6 +66,15 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       backHref={isOwner ? "/" : undefined}
       backLabel={isOwner ? "Back to Character List" : undefined}
     >
+      <Head>
+        <title>{`Character Sheet: ${character.name}`}</title>
+        <meta property="og:title" content={`Character Sheet: ${character.name}`} />
+        <meta property="og:type" content="website" />
+        {imageUrl && <meta property="og:image" content={imageUrl} />}
+        <meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+        <meta name="twitter:title" content={`Character Sheet: ${character.name}`} />
+        {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+      </Head>
       {character.status === "pending" && (
         <div class="flex items-center gap-3 px-3 py-2 bg-yellow-50 border border-yellow-300 rounded text-yellow-800 text-sm">
           <span class="font-medium">Pending Approval</span>
@@ -105,7 +118,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       <CharacterSheetViewer
         character={character}
         perks={PERKS}
-        imageUrl={character.imageId ? cfImageUrl(character.imageId) : undefined}
+        imageUrl={imageUrl}
       />
     </CharacterPageLayout>
   );

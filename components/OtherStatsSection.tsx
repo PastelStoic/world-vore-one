@@ -22,10 +22,12 @@ export default function OtherStatsSection(props: OtherStatsSectionProps) {
         <li>
           Carry Capacity: <strong>{carryCapacity}</strong>
         </li>
-        <li>
-          Organ Capacity:{" "}
-          <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
-        </li>
+        {draft.race !== "Baseliner" && (
+          <li>
+            Organ Capacity:{" "}
+            <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
+          </li>
+        )}
       </ul>
     </div>
   );

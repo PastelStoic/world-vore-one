@@ -250,7 +250,7 @@ export default define.page<typeof handler>(
           <div>
             <h2 class="text-lg font-semibold">Base Stats</h2>
             <ul class="space-y-1 text-sm">
-              {BASE_STAT_FIELDS.map((field) => (
+              {BASE_STAT_FIELDS.filter((field) => draft.race !== "Baseliner" || field.key !== "digestionStrength").map((field) => (
                 <li key={field.key}>
                   {field.label}: Base{" "}
                   <strong>{draft.baseStats[field.key]}</strong> | Effective{" "}
@@ -270,10 +270,12 @@ export default define.page<typeof handler>(
                 Carry Capacity:{" "}
                 <strong>{calculateEffectiveCarryCapacity(draft)}</strong>
               </li>
-              <li>
-                Organ Capacity:{" "}
-                <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
-              </li>
+              {draft.race !== "Baseliner" && (
+                <li>
+                  Organ Capacity:{" "}
+                  <strong>{calculateEffectiveOrganCapacity(draft)}</strong>
+                </li>
+              )}
             </ul>
           </div>
 

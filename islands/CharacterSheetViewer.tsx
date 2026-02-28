@@ -192,7 +192,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
           <strong>{character.unallocatedStatPoints}</strong>
         </p>
         <ul class="space-y-1 text-sm">
-          {BASE_STAT_FIELDS.map((field, idx) => (
+          {BASE_STAT_FIELDS.filter((field) => character.race !== "Baseliner" || field.key !== "digestionStrength").map((field, idx) => (
             <li key={field.key}>
               {idx === 5 && <br /> /* Gap between regular and vore stats */}
               {field.label}: Base{" "}

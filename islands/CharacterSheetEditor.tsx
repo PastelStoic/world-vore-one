@@ -684,7 +684,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </button>
         </p>
         <ul class="space-y-2">
-          {BASE_STAT_FIELDS.map((field) => (
+          {BASE_STAT_FIELDS.filter((field) => race !== "Baseliner" || field.key !== "digestionStrength").map((field) => (
             <li class="flex items-center justify-between gap-2" key={field.key}>
               <span class="text-sm">{field.label}</span>
               <span class="text-sm">

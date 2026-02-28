@@ -104,7 +104,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     .filter((group) => group.items.length > 0);
   const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
 
-  const availablePerks = props.perks.filter((perk) => {
+  const eligiblePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
       return false;
@@ -115,6 +115,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
       return false;
     }
+    return true;
+  });
+
+  const availablePerks = eligiblePerks.filter((perk) => {
     if (perkCategoryFilter && perk.category !== perkCategoryFilter) {
       return false;
     }
@@ -818,7 +822,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             )}
         </div>
 
-        {availablePerks.length > 0 && (
+        {eligiblePerks.length > 0 && (
           <div class="space-y-2">
             <button
               type="button"
@@ -860,40 +864,48 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       )}
                   />
                 </div>
-                <ul class="space-y-2">
-                  {availablePerks.map((perk) => {
-                    const cost = calculatePerksCost([...perkIds, perk.id]) -
-                      calculatePerksCost(perkIds);
-                    const canAfford = unallocatedStatPoints >= cost;
-                    const costLabel = cost < 0
-                      ? `Unlock (+${-cost} SP)`
-                      : cost === 0
-                      ? "Unlock (Free)"
-                      : `Buy (${cost} SP)`;
-                    return (
-                      <li
-                        class="flex items-center justify-between gap-2"
-                        key={perk.id}
-                      >
-                        <span class="text-sm">
-                          <PerkDescription
-                            name={perk.name}
-                            description={perk.description}
-                            boldName
-                          />
-                        </span>
-                        <button
-                          type="button"
-                          class="px-2 py-1 border rounded disabled:opacity-40"
-                          disabled={!canAfford}
-                          onClick={() => buyPerk(perk.id)}
-                        >
-                          {costLabel}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {availablePerks.length === 0
+                  ? (
+                    <p class="text-sm text-gray-500 italic">
+                      No matching perks found.
+                    </p>
+                  )
+                  : (
+                    <ul class="space-y-2">
+                      {availablePerks.map((perk) => {
+                        const cost = calculatePerksCost([...perkIds, perk.id]) -
+                          calculatePerksCost(perkIds);
+                        const canAfford = unallocatedStatPoints >= cost;
+                        const costLabel = cost < 0
+                          ? `Unlock (+${-cost} SP)`
+                          : cost === 0
+                          ? "Unlock (Free)"
+                          : `Buy (${cost} SP)`;
+                        return (
+                          <li
+                            class="flex items-center justify-between gap-2"
+                            key={perk.id}
+                          >
+                            <span class="text-sm">
+                              <PerkDescription
+                                name={perk.name}
+                                description={perk.description}
+                                boldName
+                              />
+                            </span>
+                            <button
+                              type="button"
+                              class="px-2 py-1 border rounded disabled:opacity-40"
+                              disabled={!canAfford}
+                              onClick={() => buyPerk(perk.id)}
+                            >
+                              {costLabel}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
               </div>
             )}
           </div>

@@ -63,7 +63,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
   },
   {
     id: "baby-factory",
-    name: "Baby-factory",
+    name: "Baby Factory",
     category: "smut",
     requiredRaces: ["Pilzfraun","Tierfraun"],
     description: `Your womb is extremely fertile and spacious! 

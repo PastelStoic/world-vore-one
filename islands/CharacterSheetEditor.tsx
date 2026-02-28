@@ -37,6 +37,8 @@ interface CharacterSheetEditorProps {
   perks: PerkDefinition[];
   /** Cloudflare Images delivery URL for existing character image */
   imageUrl?: string;
+  /** Whether the character is still pending admin approval */
+  isPending?: boolean;
 }
 
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
@@ -646,7 +648,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         )}
       </div>
 
-      {props.action === "update" && (
+      {props.action === "update" && !props.isPending && (
         <label class="block">
           <span class="block font-medium mb-1">Changelog</span>
           <input

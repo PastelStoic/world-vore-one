@@ -55,6 +55,11 @@ export default define.page(async function Home(ctx) {
                           >
                             {character.name}
                           </a>
+                          {character.status === "pending" && (
+                            <span class="ml-2 text-sm text-yellow-700">
+                              Pending
+                            </span>
+                          )}
                         </li>
                       ))}
                     </ul>

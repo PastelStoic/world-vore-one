@@ -5,6 +5,7 @@ interface CharacterResult {
   name: string;
   userId: string;
   race: string;
+  status: string;
   updatedAt: string;
 }
 
@@ -70,6 +71,24 @@ export default function AdminPanel(props: AdminPanelProps) {
       }
     } finally {
       searchLoading.value = false;
+    }
+  }
+
+  async function approveCharacter(id: string) {
+    try {
+      const res = await fetch("/api/admin/approve-character", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: id }),
+      });
+      if (res.ok) {
+        // Update the local list to reflect the approved status
+        characters.value = characters.value.map((c) =>
+          c.id === id ? { ...c, status: "approved" } : c
+        );
+      }
+    } catch {
+      // ignore
     }
   }
 
@@ -207,6 +226,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                 <tr>
                   <th class="text-left px-3 py-2">Name</th>
                   <th class="text-left px-3 py-2">Race</th>
+                  <th class="text-left px-3 py-2">Status</th>
                   <th class="text-left px-3 py-2">Owner ID</th>
                   <th class="text-left px-3 py-2">Updated</th>
                 </tr>
@@ -223,6 +243,21 @@ export default function AdminPanel(props: AdminPanelProps) {
                       </a>
                     </td>
                     <td class="px-3 py-2">{c.race}</td>
+                    <td class="px-3 py-2">
+                      {c.status === "pending"
+                        ? (
+                          <button
+                            type="button"
+                            onClick={() => approveCharacter(c.id)}
+                            class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-green-100 hover:text-green-800 hover:border-green-300 transition-colors"
+                          >
+                            Pending — Approve
+                          </button>
+                        )
+                        : (
+                          <span class="text-xs text-green-700">Approved</span>
+                        )}
+                    </td>
                     <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
                     <td class="px-3 py-2 text-xs">
                       {new Date(c.updatedAt).toLocaleDateString()}

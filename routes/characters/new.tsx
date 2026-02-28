@@ -4,7 +4,7 @@ import { PERKS } from "../../data/perks.ts";
 import {
   createDefaultCharacterDraft,
   setCharacterImageId,
-  upsertCharacter,
+  upsertCharacterDirect,
 } from "../../lib/characters.ts";
 import {
   buildAndValidateDraft,
@@ -35,7 +35,12 @@ export const handler = define.handlers({
     if (draft instanceof Response) return draft;
 
     const id = crypto.randomUUID();
-    await upsertCharacter({ id, userId: user.id, ...draft }, parsed.changelog);
+    await upsertCharacterDirect({
+      id,
+      userId: user.id,
+      status: "pending",
+      ...draft,
+    });
 
     // If an image was uploaded during creation, associate it with the character
     if (parsed.pendingImageId) {

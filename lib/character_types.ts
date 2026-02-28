@@ -102,12 +102,15 @@ export interface CharacterDraft {
   perkNotes?: Record<string, string>;
 }
 
+export type CharacterStatus = "pending" | "approved";
+
 export interface CharacterSheet extends CharacterDraft {
   id: string;
   userId: string;
   latestSnapshotId: string;
   imageId?: string;
   hidden?: boolean;
+  status?: CharacterStatus;
   createdAt: string;
   updatedAt: string;
 }

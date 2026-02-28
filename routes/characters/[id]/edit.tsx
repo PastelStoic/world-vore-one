@@ -1,7 +1,11 @@
 import { define } from "../../../utils.ts";
 import CharacterSheetEditor from "../../../islands/CharacterSheetEditor.tsx";
 import { PERKS } from "../../../data/perks.ts";
-import { getCharacter, upsertCharacter } from "../../../lib/characters.ts";
+import {
+  getCharacter,
+  upsertCharacter,
+  upsertCharacterDirect,
+} from "../../../lib/characters.ts";
 import {
   buildAndValidateDraft,
   parseCharacterFormData,
@@ -24,14 +28,16 @@ export const handler = define.handlers({
       return new Response("Invalid form action.", { status: 400 });
     }
 
-    if (!parsed.changelog) {
-      return new Response("Changelog is required.", { status: 400 });
-    }
-
     const id = ctx.params.id;
     const existing = await getCharacter(id);
     if (!existing) {
       return new Response("Character not found.", { status: 404 });
+    }
+
+    const isPending = existing.status === "pending";
+
+    if (!isPending && !parsed.changelog) {
+      return new Response("Changelog is required.", { status: 400 });
     }
 
     const isOwner = existing.userId === user.id;
@@ -50,13 +56,23 @@ export const handler = define.handlers({
       ? `[Admin edit by ${user.username}] ${parsed.changelog}`
       : parsed.changelog;
 
-    await upsertCharacter(
-      { id, userId: existing.userId, ...draft },
-      changelog,
-      {
-        basedOnSnapshotId: parsed.basedOnSnapshotId,
-      },
-    );
+    if (isPending) {
+      // Pending characters save directly without snapshots or changelog
+      await upsertCharacterDirect({
+        id,
+        userId: existing.userId,
+        status: "pending",
+        ...draft,
+      });
+    } else {
+      await upsertCharacter(
+        { id, userId: existing.userId, ...draft },
+        changelog,
+        {
+          basedOnSnapshotId: parsed.basedOnSnapshotId,
+        },
+      );
+    }
 
     return Response.redirect(
       new URL(`/characters/${id}?saved=1`, ctx.url),
@@ -94,6 +110,7 @@ export default define.page<typeof handler>(
           basedOnSnapshotId={character.latestSnapshotId}
           initialCharacter={character}
           perks={PERKS}
+          isPending={character.status === "pending"}
           imageUrl={character.imageId
             ? cfImageUrl(character.imageId)
             : undefined}

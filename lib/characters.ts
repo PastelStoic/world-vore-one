@@ -5,6 +5,7 @@ import {
   type CharacterDraft,
   type CharacterSheet,
   type CharacterSnapshot,
+  type CharacterStatus,
   createDefaultBaseStats,
   createDefaultCharacterDraft,
   createDefaultDescription,
@@ -93,6 +94,7 @@ export async function upsertCharacter(
     latestSnapshotId: snapshotId,
     imageId: existing?.imageId,
     hidden: existing?.hidden,
+    status: existing?.status,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -129,6 +131,54 @@ export async function setCharacterImageId(
   } else {
     delete character.imageId;
   }
+  character.updatedAt = new Date().toISOString();
+
+  await kv.set([...CHARACTER_PREFIX, characterId], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
+    character,
+  );
+  return character;
+}
+
+/**
+ * Save a character directly without creating a snapshot.
+ * Used for edits while a character is still pending approval.
+ */
+export async function upsertCharacterDirect(
+  input: CharacterDraft & Pick<CharacterSheet, "id" | "userId"> & { status?: CharacterStatus },
+) {
+  const kv = await getKv();
+  const now = new Date().toISOString();
+  const existing = await getCharacter(input.id);
+
+  const character: CharacterSheet = {
+    ...input,
+    latestSnapshotId: existing?.latestSnapshotId ?? "",
+    imageId: existing?.imageId,
+    hidden: existing?.hidden,
+    status: input.status ?? existing?.status,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  };
+
+  await kv.set([...CHARACTER_PREFIX, input.id], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, input.userId, input.id],
+    character,
+  );
+  return character;
+}
+
+export async function setCharacterStatus(
+  characterId: string,
+  status: CharacterStatus,
+) {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  character.status = status;
   character.updatedAt = new Date().toISOString();
 
   await kv.set([...CHARACTER_PREFIX, characterId], character);

@@ -24,6 +24,7 @@ export const handler = define.handlers({
       name: c.name,
       userId: c.userId,
       race: c.race,
+      status: c.status ?? "approved",
       updatedAt: c.updatedAt,
     }));
 

@@ -451,7 +451,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 type="text"
                 placeholder={isPilzRace(race)
                   ? "Biological age is 21 by default. Include chronological age."
-                  : "Must be 18+. Include chronological age (year 1922)."}
+                  : "Must be 18+. Include chronological age (year 1923)."}
                 value={description.age}
                 onInput={(event) =>
                   updateDescription("age", event.currentTarget.value)}

@@ -12,7 +12,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
 
 Advantages:
 *This perk is free.
-*Start with an additional 3 points compared to PFs.
+*Start with an additional 3 points.
 *Better gear: You are the best, so you get the best. Pick any perk that reasonably comes from having good gear: Scrounger, Sapper, Inventor, etc.
 
 Disadvantages:

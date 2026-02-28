@@ -48,7 +48,11 @@ export async function listCharacters(userId?: string) {
     }
   }
 
-  characters.sort((a, b) => a.name.localeCompare(b.name));
+  characters.sort((a, b) => {
+    const ta = a.updatedAt || a.createdAt || "";
+    const tb = b.updatedAt || b.createdAt || "";
+    return tb.localeCompare(ta);
+  });
   return characters;
 }
 

@@ -48,7 +48,7 @@ export default define.page(async function Home(ctx) {
                   : (
                     <ul class="space-y-2">
                       {characters.map((character) => (
-                        <li key={character.id}>
+                        <li key={character.id} class="flex items-baseline gap-2">
                           <a
                             href={`/characters/${character.id}`}
                             class="underline"
@@ -56,8 +56,13 @@ export default define.page(async function Home(ctx) {
                             {character.name}
                           </a>
                           {character.status === "pending" && (
-                            <span class="ml-2 text-sm text-yellow-700">
+                            <span class="text-sm text-yellow-700">
                               Pending
+                            </span>
+                          )}
+                          {character.updatedAt && (
+                            <span class="text-xs text-gray-500 ml-auto">
+                              {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </span>
                           )}
                         </li>
@@ -71,14 +76,19 @@ export default define.page(async function Home(ctx) {
                     </summary>
                     <ul class="space-y-2 mt-2">
                       {hiddenCharacters.map((character) => (
-                        <li key={character.id}>
+                        <li key={character.id} class="flex items-baseline gap-2">
                           <a
                             href={`/characters/${character.id}`}
                             class="underline"
                           >
                             {character.name}
                           </a>
-                          <span class="ml-2 text-sm text-red-600">Hidden</span>
+                          <span class="text-sm text-red-600">Hidden</span>
+                          {character.updatedAt && (
+                            <span class="text-xs text-gray-500 ml-auto">
+                              {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          )}
                         </li>
                       ))}
                     </ul>

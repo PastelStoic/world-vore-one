@@ -6,6 +6,7 @@ interface CharacterResult {
   userId: string;
   race: string;
   status: string;
+  hidden: boolean;
   updatedAt: string;
 }
 
@@ -38,6 +39,13 @@ export default function AdminPanel(props: AdminPanelProps) {
   const newAdminUserId = useSignal("");
   const newAdminUsername = useSignal("");
   const adminError = useSignal("");
+
+  // All characters list
+  const allCharacters = useSignal<CharacterResult[]>([]);
+  const allCharsLoaded = useSignal(false);
+  const allCharsLoading = useSignal(false);
+  const filterPendingOnly = useSignal(false);
+  const filterIncludeHidden = useSignal(false);
 
   async function bootstrap() {
     bootstrapping.value = true;
@@ -82,8 +90,11 @@ export default function AdminPanel(props: AdminPanelProps) {
         body: JSON.stringify({ characterId: id }),
       });
       if (res.ok) {
-        // Update the local list to reflect the approved status
+        // Update both local lists to reflect the approved status
         characters.value = characters.value.map((c) =>
+          c.id === id ? { ...c, status: "approved" } : c
+        );
+        allCharacters.value = allCharacters.value.map((c) =>
           c.id === id ? { ...c, status: "approved" } : c
         );
       }
@@ -151,6 +162,41 @@ export default function AdminPanel(props: AdminPanelProps) {
       }
     } catch {
       adminError.value = "Network error.";
+    }
+  }
+
+  async function loadAllCharacters() {
+    allCharsLoading.value = true;
+    try {
+      const params = new URLSearchParams();
+      if (filterPendingOnly.value) params.set("status", "pending");
+      if (filterIncludeHidden.value) params.set("includeHidden", "true");
+      const res = await fetch(
+        `/api/admin/search-characters?${params.toString()}`,
+      );
+      if (res.ok) {
+        allCharacters.value = await res.json();
+        allCharsLoaded.value = true;
+      }
+    } finally {
+      allCharsLoading.value = false;
+    }
+  }
+
+  async function toggleHideCharacter(id: string, currentlyHidden: boolean) {
+    try {
+      const res = await fetch(`/api/admin/hide-character`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: id, hidden: !currentlyHidden }),
+      });
+      if (res.ok) {
+        allCharacters.value = allCharacters.value.map((c) =>
+          c.id === id ? { ...c, hidden: !currentlyHidden } : c
+        );
+      }
+    } catch {
+      // ignore
     }
   }
 
@@ -267,6 +313,119 @@ export default function AdminPanel(props: AdminPanelProps) {
               </tbody>
             </table>
           </div>
+        )}
+      </section>
+
+      {/* ── All Characters ───────────────────────────────── */}
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">All Characters</h2>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              filterPendingOnly.value = !filterPendingOnly.value;
+              loadAllCharacters();
+            }}
+            class={`px-3 py-1.5 border rounded text-sm transition-colors ${
+              filterPendingOnly.value
+                ? "bg-yellow-100 border-yellow-400 text-yellow-800"
+                : "bg-white hover:bg-gray-50"
+            }`}
+          >
+            {filterPendingOnly.value ? "✓ Pending Only" : "Pending Only"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              filterIncludeHidden.value = !filterIncludeHidden.value;
+              loadAllCharacters();
+            }}
+            class={`px-3 py-1.5 border rounded text-sm transition-colors ${
+              filterIncludeHidden.value
+                ? "bg-gray-200 border-gray-400"
+                : "bg-white hover:bg-gray-50"
+            }`}
+          >
+            {filterIncludeHidden.value ? "✓ Include Hidden" : "Include Hidden"}
+          </button>
+          <button
+            type="button"
+            onClick={loadAllCharacters}
+            disabled={allCharsLoading.value}
+            class="px-3 py-1.5 border rounded text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          >
+            {allCharsLoading.value ? "Loading…" : allCharsLoaded.value ? "Refresh" : "Load"}
+          </button>
+        </div>
+
+        {allCharsLoaded.value && (
+          <>
+            <p class="text-sm text-gray-600">
+              {allCharacters.value.length} character{allCharacters.value.length !== 1 ? "s" : ""} found
+            </p>
+            {allCharacters.value.length > 0 && (
+              <div class="border rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="text-left px-3 py-2">Name</th>
+                      <th class="text-left px-3 py-2">Race</th>
+                      <th class="text-left px-3 py-2">Status</th>
+                      <th class="text-left px-3 py-2">Owner ID</th>
+                      <th class="text-left px-3 py-2">Updated</th>
+                      <th class="text-left px-3 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allCharacters.value.map((c) => (
+                      <tr key={c.id} class={`border-t hover:bg-gray-50 ${c.hidden ? "opacity-50" : ""}`}>
+                        <td class="px-3 py-2">
+                          <a
+                            href={`/characters/${c.id}`}
+                            class="underline text-blue-600"
+                          >
+                            {c.name}
+                          </a>
+                          {c.hidden && (
+                            <span class="ml-1 text-xs text-gray-500">(hidden)</span>
+                          )}
+                        </td>
+                        <td class="px-3 py-2">{c.race}</td>
+                        <td class="px-3 py-2">
+                          {c.status === "pending"
+                            ? (
+                              <button
+                                type="button"
+                                onClick={() => approveCharacter(c.id)}
+                                class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-green-100 hover:text-green-800 hover:border-green-300 transition-colors"
+                              >
+                                Pending — Approve
+                              </button>
+                            )
+                            : (
+                              <span class="text-xs text-green-700">Approved</span>
+                            )}
+                        </td>
+                        <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
+                        <td class="px-3 py-2 text-xs">
+                          {new Date(c.updatedAt).toLocaleDateString()}
+                        </td>
+                        <td class="px-3 py-2">
+                          <button
+                            type="button"
+                            onClick={() => toggleHideCharacter(c.id, c.hidden)}
+                            class="text-xs hover:underline"
+                          >
+                            {c.hidden ? "Unhide" : "Hide"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         )}
       </section>
 

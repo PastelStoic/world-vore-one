@@ -9,22 +9,40 @@ export const handler = define.handlers({
     }
 
     const query = ctx.url.searchParams.get("q")?.trim().toLowerCase() ?? "";
+    const statusFilter = ctx.url.searchParams.get("status") ?? "";
+    const includeHidden = ctx.url.searchParams.get("includeHidden") === "true";
     const allCharacters = await listCharacters();
 
-    const filtered = query
-      ? allCharacters.filter(
+    let filtered = allCharacters;
+
+    // Exclude hidden characters unless explicitly requested
+    if (!includeHidden) {
+      filtered = filtered.filter((c) => !c.hidden);
+    }
+
+    // Filter by status if specified
+    if (statusFilter) {
+      filtered = filtered.filter(
+        (c) => (c.status ?? "approved") === statusFilter,
+      );
+    }
+
+    // Filter by search query if provided
+    if (query) {
+      filtered = filtered.filter(
         (c) =>
           c.name?.toLowerCase().includes(query) ||
           c.userId?.includes(query),
-      )
-      : allCharacters;
+      );
+    }
 
-    const results = filtered.slice(0, 50).map((c) => ({
+    const results = filtered.slice(0, 200).map((c) => ({
       id: c.id,
       name: c.name,
       userId: c.userId,
       race: c.race,
       status: c.status ?? "approved",
+      hidden: c.hidden ?? false,
       updatedAt: c.updatedAt,
     }));
 

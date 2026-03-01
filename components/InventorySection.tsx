@@ -1,9 +1,9 @@
 import { useState } from "preact/hooks";
 import {
-  ATTACHMENTS,
   ATTACHMENTS_BY_ID,
   EQUIPMENT,
   EQUIPMENT_BY_ID,
+  FREE_ACCESSORIES_BY_ID,
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
   WEAPONS,
@@ -11,15 +11,16 @@ import {
 } from "../data/equipment.ts";
 import type {
   CharacterInventory,
-  InventoryAttachment,
   InventoryEquipment,
   InventoryMeleeWeapon,
   InventoryWeapon,
 } from "../lib/inventory_types.ts";
 import {
+  calculateInventoryPointCost,
   calculateInventoryWeight,
   countCarriedItemSlots,
   CREATION_FREE_ITEM_SLOTS,
+  EXTRA_ITEM_POINT_COST,
 } from "../lib/inventory_types.ts";
 import PerkDescription from "./PerkDescription.tsx";
 
@@ -32,6 +33,8 @@ interface InventorySectionProps {
   onChange: (inventory: CharacterInventory) => void;
   /** Whether this is in read-only viewer mode */
   readOnly?: boolean;
+  /** Available stat points for display / validation (after perks, before inventory) */
+  availablePoints?: number;
 }
 
 // ─── Lookups for weight calculation ─────────────────────────────────────────
@@ -42,10 +45,14 @@ const weightLookups = {
   getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
 };
 
+function getWeaponPointCost(id: string): number {
+  return WEAPONS_BY_ID.get(id)?.pointCost ?? 0;
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function InventorySection(props: InventorySectionProps) {
-  const { inventory, onChange, readOnly } = props;
+  const { inventory, onChange, readOnly, availablePoints } = props;
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
@@ -56,6 +63,39 @@ export default function InventorySection(props: InventorySectionProps) {
   // ── Derived ──
   const carriedSlots = countCarriedItemSlots(inventory);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
+  const inventoryPointCost = calculateInventoryPointCost(inventory, getWeaponPointCost);
+  const pointsAfterInventory = availablePoints != null
+    ? availablePoints - inventoryPointCost
+    : undefined;
+
+  // ── Cost computation for adding an item ──
+  /** Compute how many points adding a weapon to a location would cost */
+  function weaponAddCost(weaponId: string, location: InventoryLocation): number {
+    const def = WEAPONS_BY_ID.get(weaponId);
+    if (!def) return 0;
+    let cost = def.pointCost;
+    if (location === "carried") {
+      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
+        cost += EXTRA_ITEM_POINT_COST;
+      }
+    }
+    return cost;
+  }
+
+  /** Compute how many points adding equipment to a location would cost */
+  function equipmentAddCost(location: InventoryLocation): number {
+    if (location === "carried") {
+      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
+        return EXTRA_ITEM_POINT_COST;
+      }
+    }
+    return 0;
+  }
+
+  function costLabel(cost: number): string {
+    if (cost === 0) return "Free";
+    return `${cost}pt`;
+  }
 
   // ── Mutation helpers ──
   function update(fn: (inv: CharacterInventory) => CharacterInventory) {
@@ -70,6 +110,7 @@ export default function InventorySection(props: InventorySectionProps) {
       weaponId,
       currentAmmo: def.ammo,
       attachedIds: [],
+      magazines: 0,
     };
     update((inv) => {
       inv[location].weapons.push(item);
@@ -105,7 +146,8 @@ export default function InventorySection(props: InventorySectionProps) {
     if (!def) return;
     const item: InventoryEquipment = {
       equipmentId,
-      charges: def.isCharge ? 1 : 0,
+      totalCharges: def.isCharge ? 1 : 0,
+      usedCharges: 0,
     };
     update((inv) => {
       inv[location].equipment.push(item);
@@ -135,14 +177,35 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Update charges --
-  function setCharges(
+  // -- Update total charges --
+  function setTotalCharges(
     location: InventoryLocation,
     index: number,
-    charges: number,
+    total: number,
   ) {
     update((inv) => {
-      inv[location].equipment[index].charges = Math.max(0, charges);
+      const eq = inv[location].equipment[index];
+      eq.totalCharges = Math.max(0, total);
+      if (eq.usedCharges > eq.totalCharges) eq.usedCharges = eq.totalCharges;
+      return inv;
+    });
+  }
+
+  // -- Toggle a charge used/unused --
+  function toggleCharge(
+    location: InventoryLocation,
+    index: number,
+    chargeIndex: number,
+  ) {
+    update((inv) => {
+      const eq = inv[location].equipment[index];
+      // chargeIndex < usedCharges means it's marking as unused (un-use from the right)
+      // chargeIndex >= usedCharges means it's marking as used
+      if (chargeIndex < eq.usedCharges) {
+        eq.usedCharges = chargeIndex;
+      } else {
+        eq.usedCharges = chargeIndex + 1;
+      }
       return inv;
     });
   }
@@ -159,6 +222,18 @@ export default function InventorySection(props: InventorySectionProps) {
         0,
         Math.min(ammo, def?.ammo ?? 999),
       );
+      return inv;
+    });
+  }
+
+  // -- Magazine tracking --
+  function setMagazines(
+    location: InventoryLocation,
+    index: number,
+    count: number,
+  ) {
+    update((inv) => {
+      inv[location].weapons[index].magazines = Math.max(0, count);
       return inv;
     });
   }
@@ -258,42 +333,6 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Attachment charge update --
-  function setAttachmentCharges(
-    location: InventoryLocation,
-    index: number,
-    charges: number,
-  ) {
-    update((inv) => {
-      inv[location].attachments[index].charges = Math.max(0, charges);
-      return inv;
-    });
-  }
-
-  // -- Loose attachment management --
-  function addLooseAttachment(
-    attachmentId: string,
-    location: InventoryLocation,
-  ) {
-    const def = ATTACHMENTS_BY_ID.get(attachmentId);
-    if (!def) return;
-    const item: InventoryAttachment = {
-      attachmentId,
-      charges: def.isCharge ? 1 : 0,
-    };
-    update((inv) => {
-      inv[location].attachments.push(item);
-      return inv;
-    });
-  }
-
-  function removeLooseAttachment(location: InventoryLocation, index: number) {
-    update((inv) => {
-      inv[location].attachments.splice(index, 1);
-      return inv;
-    });
-  }
-
   // ── Render helpers ──
 
   function renderWeapon(
@@ -314,6 +353,12 @@ export default function InventorySection(props: InventorySectionProps) {
       .map((aId) => ATTACHMENTS_BY_ID.get(aId))
       .filter(Boolean);
 
+    // Check if weapon uses magazines (freeAccessoryIds)
+    const hasMagazines = def.freeAccessoryIds && def.freeAccessoryIds.length > 0;
+    const magazineAccessory = hasMagazines
+      ? FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0])
+      : undefined;
+
     return (
       <div class="border rounded p-2 space-y-1 bg-white">
         <div class="flex items-center justify-between flex-wrap gap-1">
@@ -324,7 +369,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </span>
             {def.pointCost > 0 && (
               <span class="text-xs text-amber-600 ml-1">
-                [{def.pointCost === 3 ? "Restricted" : `${def.pointCost}pt`}]
+                [Cost: {def.pointCost}pt]
               </span>
             )}
           </div>
@@ -362,26 +407,21 @@ export default function InventorySection(props: InventorySectionProps) {
             </strong>
           ) : (
             <>
+              <input
+                type="number"
+                class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+                min="0"
+                max={def.ammo}
+                value={w.currentAmmo}
+                onInput={(e) => {
+                  const val = Number((e.target as HTMLInputElement).value);
+                  if (!Number.isNaN(val)) setCurrentAmmo(location, index, val);
+                }}
+              />
+              <span class="text-xs text-gray-500">/ {def.ammo}</span>
               <button
                 type="button"
-                class="px-1 border rounded"
-                onClick={() => setCurrentAmmo(location, index, w.currentAmmo - 1)}
-              >
-                −
-              </button>
-              <span class="font-mono">
-                {w.currentAmmo} / {def.ammo}
-              </span>
-              <button
-                type="button"
-                class="px-1 border rounded"
-                onClick={() => setCurrentAmmo(location, index, w.currentAmmo + 1)}
-              >
-                +
-              </button>
-              <button
-                type="button"
-                class="px-1 text-xs border rounded"
+                class="px-1 text-xs border rounded hover:bg-gray-100"
                 onClick={() => setCurrentAmmo(location, index, def.ammo)}
               >
                 Reload
@@ -389,6 +429,32 @@ export default function InventorySection(props: InventorySectionProps) {
             </>
           )}
         </div>
+
+        {/* Magazine tracking */}
+        {hasMagazines && magazineAccessory && (
+          <div class="flex items-center gap-2 text-sm">
+            <span>Spare magazines ({magazineAccessory.name}):</span>
+            {readOnly ? (
+              <strong>{w.magazines}</strong>
+            ) : (
+              <>
+                <input
+                  type="number"
+                  class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+                  min="0"
+                  value={w.magazines}
+                  onInput={(e) => {
+                    const val = Number((e.target as HTMLInputElement).value);
+                    if (!Number.isNaN(val)) setMagazines(location, index, val);
+                  }}
+                />
+                <span class="text-xs text-gray-500">
+                  ({magazineAccessory.weight}W each)
+                </span>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Attached attachments */}
         {w.attachedIds.length > 0 && (
@@ -443,7 +509,7 @@ export default function InventorySection(props: InventorySectionProps) {
               <option value="">+ Attach…</option>
               {availableAttachments.map((a) => (
                 <option key={a!.id} value={a!.id}>
-                  {a!.name}
+                  {a!.name} (W:{a!.weight})
                 </option>
               ))}
             </select>
@@ -467,13 +533,20 @@ export default function InventorySection(props: InventorySectionProps) {
       ? "stowed"
       : "carried";
 
+    const remaining = def.isCharge
+      ? Math.max(0, eq.totalCharges - eq.usedCharges)
+      : 0;
+    const currentWeight = def.isCharge
+      ? def.weight * remaining
+      : def.weight;
+
     return (
       <div class="border rounded p-2 space-y-1 bg-white">
         <div class="flex items-center justify-between flex-wrap gap-1">
           <div>
             <strong>{def.name}</strong>{" "}
             <span class="text-xs text-gray-500">
-              (W:{def.weight}{def.isBulky ? " · Bulky" : ""})
+              (W:{currentWeight}{def.isBulky ? " · Bulky" : ""})
             </span>
           </div>
           {!readOnly && (
@@ -500,31 +573,52 @@ export default function InventorySection(props: InventorySectionProps) {
           <PerkDescription name="" description={def.description} />
         </div>
 
-        {/* Charge tracking */}
+        {/* Charge tracking with checkboxes */}
         {def.isCharge && (
-          <div class="flex items-center gap-2 text-sm">
-            <span>Charges:</span>
-            {readOnly ? (
-              <strong>{eq.charges}</strong>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  class="px-1 border rounded"
-                  onClick={() => setCharges(location, index, eq.charges - 1)}
-                >
-                  −
-                </button>
-                <span class="font-mono">{eq.charges}</span>
-                <button
-                  type="button"
-                  class="px-1 border rounded"
-                  onClick={() => setCharges(location, index, eq.charges + 1)}
-                >
-                  +
-                </button>
-              </>
-            )}
+          <div class="space-y-1 text-sm">
+            <div class="flex items-center gap-2">
+              <span>Charges:</span>
+              {!readOnly && (
+                <span class="text-xs text-gray-500">
+                  (Total:{" "}
+                  <input
+                    type="number"
+                    class="w-12 border rounded px-1 text-xs"
+                    min="0"
+                    value={eq.totalCharges}
+                    onInput={(e) => {
+                      const val = Number((e.target as HTMLInputElement).value);
+                      if (!Number.isNaN(val)) setTotalCharges(location, index, val);
+                    }}
+                  />
+                  )
+                </span>
+              )}
+            </div>
+            <div class="flex flex-wrap gap-1 ml-2">
+              {Array.from({ length: eq.totalCharges }, (_, ci) => {
+                const isUsed = ci < eq.usedCharges;
+                return (
+                  <button
+                    key={ci}
+                    type="button"
+                    disabled={readOnly}
+                    class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
+                      isUsed
+                        ? "bg-red-100 border-red-400 text-red-600"
+                        : "bg-green-50 border-green-400 text-green-700"
+                    } ${readOnly ? "cursor-default" : "cursor-pointer hover:opacity-75"}`}
+                    title={isUsed ? "Used (click to restore)" : "Available (click to use)"}
+                    onClick={() => !readOnly && toggleCharge(location, index, ci)}
+                  >
+                    {isUsed ? "✕" : "●"}
+                  </button>
+                );
+              })}
+            </div>
+            <div class="text-xs text-gray-500 ml-2">
+              {remaining} remaining · {eq.usedCharges} used · W:{currentWeight}
+            </div>
           </div>
         )}
       </div>
@@ -679,80 +773,13 @@ export default function InventorySection(props: InventorySectionProps) {
     );
   }
 
-  function renderLooseAttachment(
-    att: InventoryAttachment,
-    location: InventoryLocation,
-    index: number,
-  ) {
-    const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
-    if (!def) {
-      return (
-        <div class="text-red-500">Unknown attachment: {att.attachmentId}</div>
-      );
-    }
-
-    return (
-      <div class="border rounded p-2 space-y-1 bg-white text-sm">
-        <div class="flex items-center justify-between gap-1">
-          <div>
-            <strong>{def.name}</strong>
-            {def.weight > 0 && (
-              <span class="text-xs text-gray-400 ml-1">(W:{def.weight})</span>
-            )}
-          </div>
-          {!readOnly && (
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
-              onClick={() => removeLooseAttachment(location, index)}
-            >
-              Remove
-            </button>
-          )}
-        </div>
-        <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
-          <PerkDescription name="" description={def.description} />
-        </div>
-        {def.isCharge && (
-          <div class="flex items-center gap-2">
-            <span class="text-xs">Charges:</span>
-            {readOnly ? (
-              <strong class="text-xs">{att.charges}</strong>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  class="px-1 text-xs border rounded"
-                  onClick={() =>
-                    setAttachmentCharges(location, index, att.charges - 1)}
-                >
-                  −
-                </button>
-                <span class="font-mono text-xs">{att.charges}</span>
-                <button
-                  type="button"
-                  class="px-1 text-xs border rounded"
-                  onClick={() =>
-                    setAttachmentCharges(location, index, att.charges + 1)}
-                >
-                  +
-                </button>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-
   function renderInventoryBlock(location: InventoryLocation) {
     const inv = inventory[location];
     const label = location === "carried" ? "Equipment (On Person)" : "Stowed (Owned, Not Carried)";
     const isEmpty =
       inv.weapons.length === 0 &&
       inv.meleeWeapons.length === 0 &&
-      inv.equipment.length === 0 &&
-      inv.attachments.length === 0;
+      inv.equipment.length === 0;
 
     return (
       <div class="space-y-2">
@@ -760,8 +787,7 @@ export default function InventorySection(props: InventorySectionProps) {
           {label}
           {location === "carried" && (
             <span class="text-xs text-gray-500 ml-2">
-              ({carriedSlots} / {CREATION_FREE_ITEM_SLOTS} free item slots used ·
-              Weight: {totalWeight})
+              (Weight: {totalWeight})
             </span>
           )}
         </h4>
@@ -811,20 +837,6 @@ export default function InventorySection(props: InventorySectionProps) {
             ))}
           </div>
         )}
-
-        {/* Loose attachments */}
-        {inv.attachments.length > 0 && (
-          <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Loose Attachments
-            </h5>
-            {inv.attachments.map((att, i) => (
-              <div key={`${location}-att-${i}`}>
-                {renderLooseAttachment(att, location, i)}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     );
   }
@@ -847,7 +859,14 @@ export default function InventorySection(props: InventorySectionProps) {
 
   return (
     <div class="rounded border p-3 space-y-3">
-      <h3 class="font-semibold">Inventory</h3>
+      <h3 class="font-semibold">
+        Inventory
+        {pointsAfterInventory != null && (
+          <span class={`text-sm font-normal ml-2 ${pointsAfterInventory < 0 ? "text-red-600" : "text-gray-500"}`}>
+            (Inventory cost: {inventoryPointCost}pt · Remaining: {pointsAfterInventory}pt)
+          </span>
+        )}
+      </h3>
 
       {/* Carried inventory */}
       {renderInventoryBlock("carried")}
@@ -925,33 +944,34 @@ export default function InventorySection(props: InventorySectionProps) {
                 <p class="text-sm text-gray-400 italic">No matching weapons.</p>
               ) : (
                 <ul class="max-h-64 overflow-y-auto space-y-1">
-                  {filteredWeapons.map((w) => (
-                    <li
-                      key={w.id}
-                      class="flex items-center justify-between text-sm"
-                    >
-                      <span>
-                        {w.name}{" "}
-                        <span class="text-xs text-gray-500">
-                          ({w.type} · {w.nation} · W:{w.weight} · DMG:{w.damage})
-                        </span>
-                        {w.pointCost > 0 && (
-                          <span class="text-xs text-amber-600 ml-1">
-                            [{w.pointCost === 3
-                              ? "Restricted"
-                              : `${w.pointCost}pt`}]
-                          </span>
-                        )}
-                      </span>
-                      <button
-                        type="button"
-                        class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
-                        onClick={() => addWeapon(w.id, addTarget)}
+                  {filteredWeapons.map((w) => {
+                    const addCost = weaponAddCost(w.id, addTarget);
+                    return (
+                      <li
+                        key={w.id}
+                        class="flex items-center justify-between text-sm"
                       >
-                        Add
-                      </button>
-                    </li>
-                  ))}
+                        <span>
+                          {w.name}{" "}
+                          <span class="text-xs text-gray-500">
+                            ({w.type} · {w.nation} · W:{w.weight} · DMG:{w.damage})
+                          </span>
+                          {w.pointCost > 0 && (
+                            <span class="text-xs text-amber-600 ml-1">
+                              [Cost: {w.pointCost}pt]
+                            </span>
+                          )}
+                        </span>
+                        <button
+                          type="button"
+                          class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                          onClick={() => addWeapon(w.id, addTarget)}
+                        >
+                          Add ({costLabel(addCost)})
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
@@ -974,28 +994,31 @@ export default function InventorySection(props: InventorySectionProps) {
                 </p>
               ) : (
                 <ul class="space-y-1">
-                  {filteredEquipment.map((eq) => (
-                    <li
-                      key={eq.id}
-                      class="flex items-center justify-between text-sm"
-                    >
-                      <span>
-                        {eq.name}{" "}
-                        <span class="text-xs text-gray-500">
-                          (W:{eq.weight}
-                          {eq.isCharge ? " · Charges" : ""}
-                          {eq.isBulky ? " · Bulky" : ""})
-                        </span>
-                      </span>
-                      <button
-                        type="button"
-                        class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
-                        onClick={() => addEquipment(eq.id, addTarget)}
+                  {filteredEquipment.map((eq) => {
+                    const addCost = equipmentAddCost(addTarget);
+                    return (
+                      <li
+                        key={eq.id}
+                        class="flex items-center justify-between text-sm"
                       >
-                        Add
-                      </button>
-                    </li>
-                  ))}
+                        <span>
+                          {eq.name}{" "}
+                          <span class="text-xs text-gray-500">
+                            (W:{eq.weight}
+                            {eq.isCharge ? " · Charges" : ""}
+                            {eq.isBulky ? " · Bulky" : ""})
+                          </span>
+                        </span>
+                        <button
+                          type="button"
+                          class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                          onClick={() => addEquipment(eq.id, addTarget)}
+                        >
+                          Add ({costLabel(addCost)})
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
@@ -1017,25 +1040,6 @@ export default function InventorySection(props: InventorySectionProps) {
               </button>
             </div>
           )}
-
-          {/* Add loose attachment */}
-          <div>
-            <select
-              class="text-xs border rounded px-1 py-0.5"
-              value=""
-              onChange={(e) => {
-                const val = (e.target as HTMLSelectElement).value;
-                if (val) addLooseAttachment(val, addTarget);
-              }}
-            >
-              <option value="">+ Add loose attachment…</option>
-              {ATTACHMENTS.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name} ({a.appliesTo})
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
       )}
     </div>

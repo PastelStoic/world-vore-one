@@ -42,6 +42,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const {
     carriedWeight,
     setCarriedWeight,
+    inventoryWeight,
     carryCapacity,
     encumbranceLevel,
     encumbrancePenaltyText,
@@ -212,6 +213,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         onCarriedWeightChange={setCarriedWeight}
         encumbranceLevel={encumbranceLevel}
         encumbrancePenaltyText={encumbrancePenaltyText}
+        inventoryWeight={inventoryWeight}
       />
 
       <InventorySection

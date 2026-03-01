@@ -28,7 +28,8 @@ import EncumbranceSection from "../components/EncumbranceSection.tsx";
 import PerkDescription from "../components/PerkDescription.tsx";
 import InventorySection from "../components/InventorySection.tsx";
 import type { CharacterInventory } from "../lib/inventory_types.ts";
-import { createEmptyInventory } from "../lib/inventory_types.ts";
+import { calculateInventoryPointCost, createEmptyInventory } from "../lib/inventory_types.ts";
+import { WEAPONS_BY_ID } from "../data/equipment.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -92,11 +93,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const {
     carriedWeight,
     setCarriedWeight,
+    inventoryWeight,
     carryCapacity,
     encumbranceLevel,
     encumbrancePenaltyText,
     effectiveByStat,
   } = useCharacterStats(draft);
+
+  const inventoryPointCost = calculateInventoryPointCost(
+    inventory,
+    (id) => WEAPONS_BY_ID.get(id)?.pointCost ?? 0,
+  );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
@@ -238,7 +245,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function increaseStat(statKey: BaseStatKey) {
-    if (unallocatedStatPoints < 1) {
+    if (unallocatedStatPoints - inventoryPointCost < 1) {
       return;
     }
 
@@ -267,7 +274,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const newPerkIds = [...perkIds, perkId];
     const cost = calculatePerksCost(newPerkIds) - calculatePerksCost(perkIds);
 
-    if (unallocatedStatPoints < cost) return;
+    if (unallocatedStatPoints - inventoryPointCost < cost) return;
 
     setPerkIds(newPerkIds);
     setUnallocatedStatPoints((current) => current - cost);
@@ -689,11 +696,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-gray-700 flex items-center gap-2">
-          Unallocated stat points: <strong>{unallocatedStatPoints}</strong>
+          Unallocated stat points: <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
           <button
             type="button"
             class="px-2 py-1 border rounded disabled:opacity-40"
-            disabled={unallocatedStatPoints < 1}
+            disabled={unallocatedStatPoints - inventoryPointCost < 1}
             onClick={() => setUnallocatedStatPoints((c) => c - 1)}
           >
             -1
@@ -727,7 +734,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={unallocatedStatPoints < 1}
+                  disabled={unallocatedStatPoints - inventoryPointCost < 1}
                   onClick={() =>
                     increaseStat(field.key)}
                 >
@@ -746,11 +753,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         onCarriedWeightChange={setCarriedWeight}
         encumbranceLevel={encumbranceLevel}
         encumbrancePenaltyText={encumbrancePenaltyText}
+        inventoryWeight={inventoryWeight}
       />
 
       <InventorySection
         inventory={inventory}
         onChange={setInventory}
+        availablePoints={unallocatedStatPoints}
       />
 
       <div class="rounded border p-3 space-y-3">
@@ -905,7 +914,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       {availablePerks.map((perk) => {
                         const cost = calculatePerksCost([...perkIds, perk.id]) -
                           calculatePerksCost(perkIds);
-                        const canAfford = unallocatedStatPoints >= cost;
+                        const canAfford = (unallocatedStatPoints - inventoryPointCost) >= cost;
                         const costLabel = cost < 0
                           ? `Unlock (+${-cost} SP)`
                           : cost === 0

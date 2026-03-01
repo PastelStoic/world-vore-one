@@ -8,6 +8,8 @@ interface EncumbranceSectionProps {
   onCarriedWeightChange: (weight: number) => void;
   encumbranceLevel: EncumbranceLevel;
   encumbrancePenaltyText: string;
+  /** Minimum weight from inventory (cannot go below this) */
+  inventoryWeight?: number;
 }
 
 export default function EncumbranceSection(props: EncumbranceSectionProps) {
@@ -16,6 +18,7 @@ export default function EncumbranceSection(props: EncumbranceSectionProps) {
     onCarriedWeightChange,
     encumbranceLevel,
     encumbrancePenaltyText,
+    inventoryWeight = 0,
   } = props;
 
   return (
@@ -27,15 +30,15 @@ export default function EncumbranceSection(props: EncumbranceSectionProps) {
           <input
             class="w-1/2 border rounded px-3 py-2"
             type="number"
-            min="0"
+            min={inventoryWeight}
             step="1"
             value={String(carriedWeight)}
             onInput={(event) => {
               const parsed = Number(
                 (event.currentTarget as HTMLInputElement).value,
               );
-              if (Number.isNaN(parsed) || parsed < 0) {
-                onCarriedWeightChange(0);
+              if (Number.isNaN(parsed) || parsed < inventoryWeight) {
+                onCarriedWeightChange(inventoryWeight);
                 return;
               }
               onCarriedWeightChange(parsed);
@@ -49,6 +52,11 @@ export default function EncumbranceSection(props: EncumbranceSectionProps) {
             <strong>{encumbrancePenaltyText}</strong>
           </span>
         </div>
+        {inventoryWeight > 0 && (
+          <span class="text-xs text-gray-500 mt-1 block">
+            Inventory weight: {inventoryWeight} (minimum)
+          </span>
+        )}
       </label>
     </div>
   );

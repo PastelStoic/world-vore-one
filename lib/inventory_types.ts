@@ -4,7 +4,7 @@
 
 /**
  * An instance of a weapon in a character's inventory.
- * Tracks current ammo, attached attachments, and free accessories count.
+ * Tracks current ammo, attached attachments, and spare magazines.
  */
 export interface InventoryWeapon {
   /** Reference to a WeaponDefinition.id */
@@ -13,6 +13,11 @@ export interface InventoryWeapon {
   currentAmmo: number;
   /** Attachment IDs currently attached to this weapon */
   attachedIds: string[];
+  /**
+   * How many spare magazines this weapon has (for magazine-fed weapons).
+   * Each spare magazine = 1 weight.
+   */
+  magazines: number;
 }
 
 /**
@@ -31,45 +36,36 @@ export interface InventoryMeleeWeapon {
 
 /**
  * An instance of a piece of equipment in the inventory.
- * For charge-type items, `charges` tracks remaining uses per scene.
+ * For charge-type items, tracks total and used charges separately.
+ * Each unused charge contributes weight; used charges do not.
  */
 export interface InventoryEquipment {
   /** Reference to an EquipmentDefinition.id */
   equipmentId: string;
-  /** For charge items: how many charges purchased / remaining */
-  charges: number;
-}
-
-/**
- * An instance of an attachment that is NOT currently attached to a weapon.
- * (Sitting loose in inventory, ready to be attached.)
- * For charge-type attachments, `charges` tracks remaining.
- */
-export interface InventoryAttachment {
-  /** Reference to an AttachmentDefinition.id */
-  attachmentId: string;
-  /** For charge attachments: how many charges */
-  charges: number;
+  /** Total charges purchased (set during creation / between scenes) */
+  totalCharges: number;
+  /** How many of those charges have been used this scene */
+  usedCharges: number;
 }
 
 /**
  * A complete inventory – the items a character has.
  * `carried` = on their person (affects weight/encumbrance).
  * `stowed` = things they own but are NOT carrying.
+ *
+ * Attachments are stored on their parent weapon (weapon.attachedIds),
+ * not as loose items.
  */
 export interface CharacterInventory {
   carried: {
     weapons: InventoryWeapon[];
     meleeWeapons: InventoryMeleeWeapon[];
     equipment: InventoryEquipment[];
-    /** Loose attachments not currently on a weapon */
-    attachments: InventoryAttachment[];
   };
   stowed: {
     weapons: InventoryWeapon[];
     meleeWeapons: InventoryMeleeWeapon[];
     equipment: InventoryEquipment[];
-    attachments: InventoryAttachment[];
   };
 }
 
@@ -89,13 +85,11 @@ export function createEmptyInventory(): CharacterInventory {
       weapons: [],
       meleeWeapons: [],
       equipment: [],
-      attachments: [],
     },
     stowed: {
       weapons: [],
       meleeWeapons: [],
       equipment: [],
-      attachments: [],
     },
   };
 }
@@ -103,10 +97,7 @@ export function createEmptyInventory(): CharacterInventory {
 /**
  * Count how many "item slots" the carried inventory uses.
  * Each weapon = 1 slot. Each equipment = 1 slot.
- * Attachments and melee weapons don't consume creation slots
- * (attachments modify a weapon, melee weapons are GM-granted).
- * Charge-type items: each charge = 1 slot? No – the item itself is 1 slot,
- * charges are part of it.
+ * Melee weapons are GM-granted and don't consume creation slots.
  */
 export function countCarriedItemSlots(inv: CharacterInventory): number {
   return inv.carried.weapons.length + inv.carried.equipment.length;
@@ -133,6 +124,8 @@ export function calculateInventoryWeight(
       const aDef = lookups.getAttachment(aId);
       if (aDef) total += aDef.weight;
     }
+    // Spare magazine weight (each = 1)
+    total += w.magazines;
   }
 
   for (const mw of inv.carried.meleeWeapons) {
@@ -143,19 +136,9 @@ export function calculateInventoryWeight(
     const def = lookups.getEquipment(e.equipmentId);
     if (def) {
       if (def.isCharge) {
-        // Each charge has its own weight
-        total += def.weight * e.charges;
-      } else {
-        total += def.weight;
-      }
-    }
-  }
-
-  for (const a of inv.carried.attachments) {
-    const def = lookups.getAttachment(a.attachmentId);
-    if (def) {
-      if (def.isCharge) {
-        total += def.weight * a.charges;
+        // Only remaining (unused) charges contribute weight
+        const remaining = Math.max(0, e.totalCharges - e.usedCharges);
+        total += def.weight * remaining;
       } else {
         total += def.weight;
       }
@@ -192,6 +175,7 @@ export function calculateInventoryPointCost(
 
 /**
  * Parse an inventory from a JSON string (from form data).
+ * Backwards-compatible: reads old `charges` field as `totalCharges`.
  */
 export function parseInventory(raw: string): CharacterInventory | null {
   try {
@@ -216,6 +200,7 @@ export function parseInventory(raw: string): CharacterInventory | null {
           attachedIds: Array.isArray(w.attachedIds)
             ? (w.attachedIds as unknown[]).filter((id): id is string => typeof id === "string")
             : [],
+          magazines: typeof w.magazines === "number" ? w.magazines : 0,
         }));
       }
 
@@ -245,19 +230,12 @@ export function parseInventory(raw: string): CharacterInventory | null {
             typeof (e as Record<string, unknown>).equipmentId === "string",
         ).map((e: Record<string, unknown>) => ({
           equipmentId: String(e.equipmentId),
-          charges: typeof e.charges === "number" ? e.charges : 1,
-        }));
-      }
-
-      if (Array.isArray(src.attachments)) {
-        inv[location].attachments = src.attachments.filter(
-          (a: unknown) =>
-            a &&
-            typeof a === "object" &&
-            typeof (a as Record<string, unknown>).attachmentId === "string",
-        ).map((a: Record<string, unknown>) => ({
-          attachmentId: String(a.attachmentId),
-          charges: typeof a.charges === "number" ? a.charges : 1,
+          totalCharges: typeof e.totalCharges === "number"
+            ? e.totalCharges
+            : typeof e.charges === "number"
+            ? e.charges
+            : 1,
+          usedCharges: typeof e.usedCharges === "number" ? e.usedCharges : 0,
         }));
       }
     }

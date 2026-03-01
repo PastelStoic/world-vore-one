@@ -1,6 +1,15 @@
 import { useMemo, useState } from "preact/hooks";
 import type { CharacterDraft } from "./character_types.ts";
 import {
+  WEAPONS_BY_ID,
+  EQUIPMENT_BY_ID,
+  ATTACHMENTS_BY_ID,
+} from "../data/equipment.ts";
+import {
+  calculateInventoryWeight,
+  createEmptyInventory,
+} from "./inventory_types.ts";
+import {
   calculateEffectiveCarryCapacity,
   calculateEffectiveCharisma,
   calculateEffectiveConstitution,
@@ -14,9 +23,16 @@ import {
   type EncumbranceLevel,
 } from "./stat_calculations.ts";
 
+const weightLookups = {
+  getWeapon: (id: string) => WEAPONS_BY_ID.get(id),
+  getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
+  getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
+};
+
 export interface CharacterStatsResult {
   carriedWeight: number;
   setCarriedWeight: (weight: number) => void;
+  inventoryWeight: number;
   carryCapacity: number;
   encumbranceLevel: EncumbranceLevel;
   encumbrancePenaltyText: string;
@@ -26,9 +42,21 @@ export interface CharacterStatsResult {
 /**
  * Shared hook for computing effective stats, carry capacity, and encumbrance.
  * Used by both CharacterSheetEditor and CharacterSheetViewer.
+ *
+ * `inventoryWeight` is the minimum carried weight from equipped items.
+ * `carriedWeight` can be set higher for extra gear but never below `inventoryWeight`.
  */
 export function useCharacterStats(draft: CharacterDraft): CharacterStatsResult {
-  const [carriedWeight, setCarriedWeight] = useState(0);
+  const inv = draft.inventory ?? createEmptyInventory();
+  const inventoryWeight = calculateInventoryWeight(inv, weightLookups);
+
+  const [extraWeight, setExtraWeight] = useState(0);
+  const carriedWeight = inventoryWeight + extraWeight;
+
+  function setCarriedWeight(weight: number) {
+    // Clamp so carried weight never goes below inventory weight
+    setExtraWeight(Math.max(0, weight - inventoryWeight));
+  }
 
   const carryCapacity = calculateEffectiveCarryCapacity(draft);
   const encumbranceLevel = calculateEncumbranceLevel(
@@ -55,6 +83,7 @@ export function useCharacterStats(draft: CharacterDraft): CharacterStatsResult {
   return {
     carriedWeight,
     setCarriedWeight,
+    inventoryWeight,
     carryCapacity,
     encumbranceLevel,
     encumbrancePenaltyText,

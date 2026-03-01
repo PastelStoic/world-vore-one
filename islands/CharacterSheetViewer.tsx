@@ -21,10 +21,12 @@ interface CharacterSheetViewerProps {
   perks: PerkDefinition[];
   /** Cloudflare Images delivery URL for existing character image */
   imageUrl?: string;
+  /** Character ID for auto-saving combat state (ammo, charges, magazines) */
+  characterId?: string;
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
-  const { character, perks, imageUrl } = props;
+  const { character, perks, imageUrl, characterId } = props;
   const desc = character.description;
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
   const ownedPerks = character.perkIds.map((id) => ({
@@ -50,6 +52,9 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   } = useCharacterStats(character);
 
   const [showDescription, setShowDescription] = useState(true);
+  const [inventory, setInventory] = useState(
+    character.inventory ?? createEmptyInventory(),
+  );
 
   const isHidden = "hidden" in character &&
     (character as CharacterSheet).hidden;
@@ -217,9 +222,10 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
       />
 
       <InventorySection
-        inventory={character.inventory ?? createEmptyInventory()}
-        onChange={() => {}}
+        inventory={inventory}
+        onChange={setInventory}
         readOnly
+        characterId={characterId}
       />
 
       <div class="rounded border p-3 space-y-2">

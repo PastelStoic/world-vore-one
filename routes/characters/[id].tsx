@@ -119,6 +119,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         character={character}
         perks={PERKS}
         imageUrl={imageUrl}
+        characterId={id}
       />
     </CharacterPageLayout>
   );

@@ -244,6 +244,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
   }
 
+  // When pending approval, allow full re-allocation (no floor on decreases)
+  const statFloor = props.isPending ? 0 : undefined;
+  const canRemoveOldPerks = !!props.isPending;
+
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints - inventoryPointCost < 1) {
       return;
@@ -257,7 +261,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function decreaseStat(statKey: BaseStatKey) {
-    if (baseStats[statKey] <= initialBaseStats[statKey]) {
+    const floor = statFloor ?? initialBaseStats[statKey];
+    if (baseStats[statKey] <= floor) {
       return;
     }
 
@@ -281,7 +286,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function unbuyPerk(perkId: string) {
-    if (initialPerkIds.includes(perkId) || !perkIds.includes(perkId)) {
+    if (!canRemoveOldPerks && initialPerkIds.includes(perkId)) {
+      return;
+    }
+    if (!perkIds.includes(perkId)) {
       return;
     }
 
@@ -725,7 +733,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={baseStats[field.key] <= initialBaseStats[field.key]}
+                  disabled={baseStats[field.key] <= (statFloor ?? initialBaseStats[field.key])}
                   onClick={() =>
                     decreaseStat(field.key)}
                 >
@@ -756,12 +764,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         inventoryWeight={inventoryWeight}
       />
 
-      <InventorySection
-        inventory={inventory}
-        onChange={setInventory}
-        availablePoints={unallocatedStatPoints}
-      />
-
       <div class="rounded border p-3 space-y-3">
         <h3 class="font-semibold">Perks</h3>
         <p class="text-sm text-gray-700">
@@ -787,7 +789,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     </h5>
                     <ul class="space-y-2">
                       {group.items.map(({ id, perk }) => {
-                        const canRemove = !initialPerkIds.includes(id);
+                        const canRemove = canRemoveOldPerks || !initialPerkIds.includes(id);
                         return (
                           <li key={id}>
                             <div class="flex items-center gap-2">
@@ -838,7 +840,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <h5 class="font-medium">Other</h5>
                     <ul class="space-y-1">
                       {uncategorizedOwnedPerks.map(({ id }) => {
-                        const canRemove = !initialPerkIds.includes(id);
+                        const canRemove = canRemoveOldPerks || !initialPerkIds.includes(id);
                         return (
                           <li class="flex items-center gap-2" key={id}>
                             <span>{id}</span>
@@ -949,6 +951,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </div>
         )}
       </div>
+
+      <InventorySection
+        inventory={inventory}
+        onChange={setInventory}
+        availablePoints={unallocatedStatPoints}
+      />
 
       <button
         type="submit"

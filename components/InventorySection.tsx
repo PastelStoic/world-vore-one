@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useCallback, useRef, useState } from "preact/hooks";
 import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT,
@@ -6,6 +6,8 @@ import {
   FREE_ACCESSORIES_BY_ID,
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
+  type Nation,
+  NATIONS,
   WEAPONS,
   WEAPONS_BY_ID,
 } from "../data/equipment.ts";
@@ -35,6 +37,11 @@ interface InventorySectionProps {
   readOnly?: boolean;
   /** Available stat points for display / validation (after perks, before inventory) */
   availablePoints?: number;
+  /**
+   * Character ID for auto-saving combat state (ammo, charges, magazines).
+   * When set, changes to ammo/charges/magazines are auto-saved via PATCH.
+   */
+  characterId?: string;
 }
 
 // ─── Lookups for weight calculation ─────────────────────────────────────────
@@ -52,11 +59,12 @@ function getWeaponPointCost(id: string): number {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function InventorySection(props: InventorySectionProps) {
-  const { inventory, onChange, readOnly, availablePoints } = props;
+  const { inventory, onChange, readOnly, availablePoints, characterId } = props;
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
   const [weaponFilter, setWeaponFilter] = useState("");
+  const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
@@ -97,9 +105,36 @@ export default function InventorySection(props: InventorySectionProps) {
     return `${cost}pt`;
   }
 
+  // ── Auto-save combat state (ammo, charges, magazines) ──
+  const saveTimerRef = useRef<number | undefined>(undefined);
+  const saveCombatState = useCallback(
+    (inv: CharacterInventory) => {
+      if (!characterId) return;
+      if (saveTimerRef.current !== undefined) {
+        clearTimeout(saveTimerRef.current);
+      }
+      saveTimerRef.current = setTimeout(() => {
+        fetch(`/api/characters/${characterId}/combat-state`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inventory: inv }),
+        }).catch(() => {/* silent fail */});
+      }, 500) as unknown as number;
+    },
+    [characterId],
+  );
+
   // ── Mutation helpers ──
   function update(fn: (inv: CharacterInventory) => CharacterInventory) {
-    onChange(fn(structuredClone(inventory)));
+    const next = fn(structuredClone(inventory));
+    onChange(next);
+    return next;
+  }
+
+  /** Update that also triggers combat-state auto-save */
+  function updateCombat(fn: (inv: CharacterInventory) => CharacterInventory) {
+    const next = update(fn);
+    saveCombatState(next);
   }
 
   // -- Add weapon --
@@ -191,20 +226,21 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Toggle a charge used/unused --
+  // -- Toggle a charge used/unused (right-to-left: rightmost charge is spent first) --
   function toggleCharge(
     location: InventoryLocation,
     index: number,
     chargeIndex: number,
   ) {
-    update((inv) => {
+    updateCombat((inv) => {
       const eq = inv[location].equipment[index];
-      // chargeIndex < usedCharges means it's marking as unused (un-use from the right)
-      // chargeIndex >= usedCharges means it's marking as used
-      if (chargeIndex < eq.usedCharges) {
-        eq.usedCharges = chargeIndex;
+      const isUsed = chargeIndex >= eq.totalCharges - eq.usedCharges;
+      if (isUsed) {
+        // Restore this charge and all to its left
+        eq.usedCharges = eq.totalCharges - chargeIndex - 1;
       } else {
-        eq.usedCharges = chargeIndex + 1;
+        // Use this charge and all to its right
+        eq.usedCharges = eq.totalCharges - chargeIndex;
       }
       return inv;
     });
@@ -216,7 +252,7 @@ export default function InventorySection(props: InventorySectionProps) {
     index: number,
     ammo: number,
   ) {
-    update((inv) => {
+    updateCombat((inv) => {
       const def = WEAPONS_BY_ID.get(inv[location].weapons[index].weaponId);
       inv[location].weapons[index].currentAmmo = Math.max(
         0,
@@ -232,7 +268,7 @@ export default function InventorySection(props: InventorySectionProps) {
     index: number,
     count: number,
   ) {
-    update((inv) => {
+    updateCombat((inv) => {
       inv[location].weapons[index].magazines = Math.max(0, count);
       return inv;
     });
@@ -398,61 +434,66 @@ export default function InventorySection(props: InventorySectionProps) {
           <PerkDescription name="" description={def.gimmicks} />
         </div>
 
-        {/* Ammo tracker */}
+        {/* Ammo tracker – always editable for combat tracking */}
         <div class="flex items-center gap-2 text-sm">
           <span>Ammo:</span>
-          {readOnly ? (
-            <strong>
-              {w.currentAmmo} / {def.ammo}
-            </strong>
-          ) : (
-            <>
-              <input
-                type="number"
-                class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
-                min="0"
-                max={def.ammo}
-                value={w.currentAmmo}
-                onInput={(e) => {
-                  const val = Number((e.target as HTMLInputElement).value);
-                  if (!Number.isNaN(val)) setCurrentAmmo(location, index, val);
-                }}
-              />
-              <span class="text-xs text-gray-500">/ {def.ammo}</span>
-              <button
-                type="button"
-                class="px-1 text-xs border rounded hover:bg-gray-100"
-                onClick={() => setCurrentAmmo(location, index, def.ammo)}
-              >
-                Reload
-              </button>
-            </>
-          )}
+          <input
+            type="number"
+            class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+            min="0"
+            max={def.ammo}
+            value={w.currentAmmo}
+            onInput={(e) => {
+              const val = Number((e.target as HTMLInputElement).value);
+              if (!Number.isNaN(val)) setCurrentAmmo(location, index, val);
+            }}
+          />
+          <span class="text-xs text-gray-500">/ {def.ammo}</span>
+          <button
+            type="button"
+            class="px-1 text-xs border rounded hover:bg-gray-100"
+            onClick={() => {
+              if (hasMagazines && w.magazines > 0) {
+                // Magazine-fed reload: consume a spare magazine
+                updateCombat((inv) => {
+                  const weapon = inv[location].weapons[index];
+                  const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
+                  // If partial magazine, return it to inventory
+                  const partialReturn = weapon.currentAmmo > 0 ? 1 : 0;
+                  weapon.magazines = Math.max(0, weapon.magazines - 1 + partialReturn);
+                  weapon.currentAmmo = wDef?.ammo ?? def.ammo;
+                  return inv;
+                });
+              } else if (!hasMagazines) {
+                // Non-magazine weapon: reload normally
+                setCurrentAmmo(location, index, def.ammo);
+              }
+              // If hasMagazines but magazines === 0, do nothing
+            }}
+            disabled={hasMagazines && w.magazines <= 0}
+            title={hasMagazines && w.magazines <= 0 ? "No spare magazines" : "Reload"}
+          >
+            Reload{hasMagazines ? ` (${w.magazines} mag)` : ""}
+          </button>
         </div>
 
-        {/* Magazine tracking */}
+        {/* Magazine tracking – always editable for combat tracking */}
         {hasMagazines && magazineAccessory && (
           <div class="flex items-center gap-2 text-sm">
             <span>Spare magazines ({magazineAccessory.name}):</span>
-            {readOnly ? (
-              <strong>{w.magazines}</strong>
-            ) : (
-              <>
-                <input
-                  type="number"
-                  class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
-                  min="0"
-                  value={w.magazines}
-                  onInput={(e) => {
-                    const val = Number((e.target as HTMLInputElement).value);
-                    if (!Number.isNaN(val)) setMagazines(location, index, val);
-                  }}
-                />
-                <span class="text-xs text-gray-500">
-                  ({magazineAccessory.weight}W each)
-                </span>
-              </>
-            )}
+            <input
+              type="number"
+              class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+              min="0"
+              value={w.magazines}
+              onInput={(e) => {
+                const val = Number((e.target as HTMLInputElement).value);
+                if (!Number.isNaN(val)) setMagazines(location, index, val);
+              }}
+            />
+            <span class="text-xs text-gray-500">
+              ({magazineAccessory.weight}W each)
+            </span>
           </div>
         )}
 
@@ -573,7 +614,7 @@ export default function InventorySection(props: InventorySectionProps) {
           <PerkDescription name="" description={def.description} />
         </div>
 
-        {/* Charge tracking with checkboxes */}
+        {/* Charge tracking with checkboxes – always interactive for combat tracking */}
         {def.isCharge && (
           <div class="space-y-1 text-sm">
             <div class="flex items-center gap-2">
@@ -597,19 +638,18 @@ export default function InventorySection(props: InventorySectionProps) {
             </div>
             <div class="flex flex-wrap gap-1 ml-2">
               {Array.from({ length: eq.totalCharges }, (_, ci) => {
-                const isUsed = ci < eq.usedCharges;
+                const isUsed = ci >= eq.totalCharges - eq.usedCharges;
                 return (
                   <button
                     key={ci}
                     type="button"
-                    disabled={readOnly}
                     class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
                       isUsed
                         ? "bg-red-100 border-red-400 text-red-600"
                         : "bg-green-50 border-green-400 text-green-700"
-                    } ${readOnly ? "cursor-default" : "cursor-pointer hover:opacity-75"}`}
+                    } cursor-pointer hover:opacity-75`}
                     title={isUsed ? "Used (click to restore)" : "Available (click to use)"}
-                    onClick={() => !readOnly && toggleCharge(location, index, ci)}
+                    onClick={() => toggleCharge(location, index, ci)}
                   >
                     {isUsed ? "✕" : "●"}
                   </button>
@@ -843,6 +883,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // ── Filter available weapons/equipment ──
   const filteredWeapons = WEAPONS.filter((w) => {
+    if (nationFilter && w.nation !== nationFilter) return false;
     if (!weaponFilter) return true;
     const q = weaponFilter.toLowerCase();
     return (
@@ -932,6 +973,33 @@ export default function InventorySection(props: InventorySectionProps) {
           {/* Weapon picker */}
           {showAddWeapon && (
             <div class="space-y-1 border rounded p-2 bg-gray-50">
+              <div class="flex flex-wrap gap-1 mb-1">
+                <button
+                  type="button"
+                  class={`text-xs px-2 py-0.5 rounded border ${
+                    nationFilter === ""
+                      ? "bg-blue-100 border-blue-400 font-medium"
+                      : "hover:bg-gray-100"
+                  }`}
+                  onClick={() => setNationFilter("")}
+                >
+                  All
+                </button>
+                {NATIONS.filter((n) => n !== "Any" && n !== "N/A").map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    class={`text-xs px-2 py-0.5 rounded border ${
+                      nationFilter === n
+                        ? "bg-blue-100 border-blue-400 font-medium"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => setNationFilter(n === nationFilter ? "" : n)}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
               <input
                 type="text"
                 class="w-full border rounded px-2 py-1 text-sm"

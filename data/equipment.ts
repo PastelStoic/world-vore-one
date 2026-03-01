@@ -319,7 +319,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "bayonet",
     name: "Bayonet",
     appliesTo: "Long guns",
-    weight: 0,
+    weight: 1,
     description: `3 damage when attached to the end of a long gun; 2 damage otherwise.
 *-2d6 to shooting if attached. Usable by any rifle and most other long guns.
 *It takes 1 turn to put the bayonet on the gun, or to remove it.`,
@@ -328,7 +328,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "scope",
     name: "Scope",
     appliesTo: "Long guns",
-    weight: 0,
+    weight: 1,
     description: `*-3d6 to hit targets 9 distances away or closer.
 *-1d6 to shoot targets every 10 distances away, instead of -3d6.
 *If a weapon modifies the ranging penalty with its gimmicks, use the weapon's ranging rather than the scope's.
@@ -339,7 +339,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "bipod",
     name: "Bipod",
     appliesTo: "Long guns",
-    weight: 0,
+    weight: 1,
     description: `*-1d6 to accuracy when not set up, +2d6 when set up.
 *It takes 1 turn to put the bipod on the gun, or to remove it.`,
   },
@@ -347,7 +347,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "strong-sling",
     name: "Strong sling",
     appliesTo: "Long guns",
-    weight: 0,
+    weight: 1,
     description: `A strong sling around your person that keeps your weapon held in place should you let go of it.
 *Dropping a weapon becomes a free action and it stays with you.
 *-1d6 to STR or DEX while the weapon is dangling off of you.`,
@@ -356,7 +356,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "quickloader",
     name: "Quickloader",
     appliesTo: "Revolvers",
-    weight: 0,
+    weight: 1,
     description: `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
   },
@@ -1238,6 +1238,7 @@ Agile:
 *Reloading is instantaneous if you use a magazine. Magazines are lost when unloaded.
 *Reloads normally if you have no magazines left.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    freeAccessoryIds: ["schmidt-rubin-magazine"],
   },
   {
     id: "swiss-1882",
@@ -1282,6 +1283,14 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
     ammo: 97,
     description:
       "A drum magazine for the Lewis gun. Choose how many to bring at scene start.",
+  },
+  {
+    id: "schmidt-rubin-magazine",
+    name: "Schmidt–Rubin magazine",
+    weight: 1,
+    ammo: 6,
+    description:
+      "A detachable magazine for the Schmidt–Rubin Model 1911. Choose how many to bring at scene start.",
   },
 ];
 

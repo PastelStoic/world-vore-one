@@ -96,11 +96,16 @@ export function createEmptyInventory(): CharacterInventory {
 
 /**
  * Count how many "item slots" the carried inventory uses.
- * Each weapon = 1 slot. Each equipment = 1 slot.
+ * Each weapon = 1 slot. Each attachment on a weapon = 1 slot.
+ * Each equipment = 1 slot.
  * Melee weapons are GM-granted and don't consume creation slots.
  */
 export function countCarriedItemSlots(inv: CharacterInventory): number {
-  return inv.carried.weapons.length + inv.carried.equipment.length;
+  let slots = inv.carried.equipment.length;
+  for (const w of inv.carried.weapons) {
+    slots += 1 + w.attachedIds.length;
+  }
+  return slots;
 }
 
 /**

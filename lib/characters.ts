@@ -194,6 +194,29 @@ export async function setCharacterStatus(
   return character;
 }
 
+/**
+ * Update only the inventory on a saved character (combat state: ammo, charges, magazines).
+ * Does NOT create a snapshot – this is for in-session tracking.
+ */
+export async function updateCharacterInventory(
+  characterId: string,
+  inventory: import("./inventory_types.ts").CharacterInventory,
+) {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  character.inventory = inventory;
+  character.updatedAt = new Date().toISOString();
+
+  await kv.set([...CHARACTER_PREFIX, characterId], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
+    character,
+  );
+  return character;
+}
+
 export async function setCharacterHidden(
   characterId: string,
   hidden: boolean,

@@ -42,6 +42,8 @@ interface InventorySectionProps {
    * When set, changes to ammo/charges/magazines are auto-saved via PATCH.
    */
   characterId?: string;
+  /** The character's perk IDs – used for features like Signature Weapon */
+  perkIds?: string[];
 }
 
 // ─── Lookups for weight calculation ─────────────────────────────────────────
@@ -56,10 +58,24 @@ function getWeaponPointCost(id: string): number {
   return WEAPONS_BY_ID.get(id)?.pointCost ?? 0;
 }
 
+/**
+ * Get the point cost for a weapon taking signature weapon status into account.
+ * Restricted signature weapons cost 1pt instead of 3pt; other signature weapons are free.
+ */
+function getSignatureAdjustedPointCost(id: string, isSignature: boolean): number {
+  const baseCost = WEAPONS_BY_ID.get(id)?.pointCost ?? 0;
+  if (!isSignature) return baseCost;
+  // "If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point.
+  //  Every other weapon is free."
+  if (baseCost >= 3) return 1;
+  return 0;
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function InventorySection(props: InventorySectionProps) {
-  const { inventory, onChange, readOnly, availablePoints, characterId } = props;
+  const { inventory, onChange, readOnly, availablePoints, characterId, perkIds } = props;
+  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ?? false;
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
@@ -71,7 +87,46 @@ export default function InventorySection(props: InventorySectionProps) {
   // ── Derived ──
   const carriedSlots = countCarriedItemSlots(inventory);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
-  const inventoryPointCost = calculateInventoryPointCost(inventory, getWeaponPointCost);
+
+  // Compute inventory point cost with signature weapon adjustments
+  const inventoryPointCost = (() => {
+    // Use the signature-adjusted cost function
+    const adjustedGetCost = (id: string) => getWeaponPointCost(id);
+    let cost = calculateInventoryPointCost(inventory, adjustedGetCost);
+
+    if (hasSignatureWeaponPerk) {
+      // Recalculate with signature adjustments
+      cost = 0;
+
+      // Count carried slots, but exclude attachment slots on the signature ranged weapon
+      let adjustedSlots = 0;
+      for (const w of inventory.carried.weapons) {
+        adjustedSlots += 1; // The weapon itself is 1 slot
+        if (w.isSignatureWeapon) {
+          // Signature ranged weapon: attachments don't cost extra slots
+          // (they are free of charge per the perk)
+        } else {
+          adjustedSlots += w.attachedIds.length;
+        }
+      }
+      adjustedSlots += inventory.carried.equipment.length;
+
+      const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
+      cost += overFree * EXTRA_ITEM_POINT_COST;
+
+      // Weapon-specific costs with signature adjustment
+      for (const w of inventory.carried.weapons) {
+        cost += getSignatureAdjustedPointCost(w.weaponId, !!w.isSignatureWeapon);
+      }
+      for (const w of inventory.stowed.weapons) {
+        cost += getSignatureAdjustedPointCost(w.weaponId, !!w.isSignatureWeapon);
+      }
+    } else {
+      cost = calculateInventoryPointCost(inventory, getWeaponPointCost);
+    }
+
+    return cost;
+  })();
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
     : undefined;
@@ -135,6 +190,40 @@ export default function InventorySection(props: InventorySectionProps) {
   function updateCombat(fn: (inv: CharacterInventory) => CharacterInventory) {
     const next = update(fn);
     saveCombatState(next);
+  }
+
+  // ── Signature Weapon helpers ──
+
+  /** Clear the signature flag from ALL weapons/melee in the inventory */
+  function clearSignatureFlags(inv: CharacterInventory) {
+    for (const loc of ["carried", "stowed"] as const) {
+      for (const w of inv[loc].weapons) w.isSignatureWeapon = false;
+      for (const mw of inv[loc].meleeWeapons) mw.isSignatureWeapon = false;
+    }
+  }
+
+  /** Toggle a ranged weapon as signature */
+  function toggleSignatureWeapon(location: InventoryLocation, index: number) {
+    update((inv) => {
+      const isAlready = inv[location].weapons[index].isSignatureWeapon;
+      clearSignatureFlags(inv);
+      if (!isAlready) {
+        inv[location].weapons[index].isSignatureWeapon = true;
+      }
+      return inv;
+    });
+  }
+
+  /** Toggle a melee weapon as signature */
+  function toggleSignatureMelee(location: InventoryLocation, index: number) {
+    update((inv) => {
+      const isAlready = inv[location].meleeWeapons[index].isSignatureWeapon;
+      clearSignatureFlags(inv);
+      if (!isAlready) {
+        inv[location].meleeWeapons[index].isSignatureWeapon = true;
+      }
+      return inv;
+    });
   }
 
   // -- Add weapon --
@@ -395,22 +484,48 @@ export default function InventorySection(props: InventorySectionProps) {
       ? FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0])
       : undefined;
 
+    // Signature weapon benefits
+    const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
+    const damageDisplay = isSignature ? `${def.damage}+1` : def.damage;
+
     return (
-      <div class="border rounded p-2 space-y-1 bg-white">
+      <div class={`border rounded p-2 space-y-1 ${isSignature ? "bg-amber-50 border-amber-300" : "bg-white"}`}>
         <div class="flex items-center justify-between flex-wrap gap-1">
           <div>
+            {isSignature && (
+              <span class="text-amber-500 mr-1" title="Signature Weapon">★</span>
+            )}
             <strong>{def.name}</strong>{" "}
             <span class="text-xs text-gray-500">
-              ({def.type} · {def.nation} · W:{def.weight} · DMG:{def.damage} · ROF:{def.rateOfFire})
+              ({def.type} · {def.nation} · W:{def.weight} · DMG:{damageDisplay} · ROF:{def.rateOfFire})
             </span>
+            {isSignature && (
+              <span class="text-xs text-amber-600 ml-1 font-medium">
+                [Signature Weapon]
+              </span>
+            )}
             {def.pointCost > 0 && (
               <span class="text-xs text-amber-600 ml-1">
-                [Cost: {def.pointCost}pt]
+                [Cost: {isSignature && def.pointCost === 3 ? "1" : def.pointCost}pt]
               </span>
             )}
           </div>
           {!readOnly && (
             <div class="flex gap-1">
+              {hasSignatureWeaponPerk && (
+                <button
+                  type="button"
+                  class={`px-2 py-0.5 text-xs border rounded ${
+                    isSignature
+                      ? "bg-amber-100 border-amber-400 text-amber-700"
+                      : "hover:bg-amber-50 text-amber-600"
+                  }`}
+                  onClick={() => toggleSignatureWeapon(location, index)}
+                  title={isSignature ? "Unmark as Signature Weapon" : "Mark as Signature Weapon"}
+                >
+                  {isSignature ? "★ Signature" : "☆ Set Signature"}
+                </button>
+              )}
               <button
                 type="button"
                 class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
@@ -674,10 +789,17 @@ export default function InventorySection(props: InventorySectionProps) {
       ? "stowed"
       : "carried";
 
+    // Signature weapon benefits
+    const isSignature = mw.isSignatureWeapon && hasSignatureWeaponPerk;
+    const damageDisplay = isSignature ? `${mw.damage}+1` : String(mw.damage);
+
     return (
-      <div class="border rounded p-2 space-y-1 bg-white">
+      <div class={`border rounded p-2 space-y-1 ${isSignature ? "bg-amber-50 border-amber-300" : "bg-white"}`}>
         <div class="flex items-center justify-between flex-wrap gap-1">
           <div>
+            {isSignature && (
+              <span class="text-amber-500 mr-1" title="Signature Weapon">★</span>
+            )}
             {readOnly ? (
               <strong>{mw.name}</strong>
             ) : (
@@ -692,11 +814,30 @@ export default function InventorySection(props: InventorySectionProps) {
               />
             )}
             <span class="text-xs text-gray-500 ml-1">
-              (DMG:{mw.damage} · W:{mw.weight})
+              (DMG:{damageDisplay} · W:{mw.weight})
             </span>
+            {isSignature && (
+              <span class="text-xs text-amber-600 ml-1 font-medium">
+                [Signature Weapon · +1 extra trait]
+              </span>
+            )}
           </div>
           {!readOnly && (
             <div class="flex gap-1">
+              {hasSignatureWeaponPerk && (
+                <button
+                  type="button"
+                  class={`px-2 py-0.5 text-xs border rounded ${
+                    isSignature
+                      ? "bg-amber-100 border-amber-400 text-amber-700"
+                      : "hover:bg-amber-50 text-amber-600"
+                  }`}
+                  onClick={() => toggleSignatureMelee(location, index)}
+                  title={isSignature ? "Unmark as Signature Weapon" : "Mark as Signature Weapon"}
+                >
+                  {isSignature ? "★ Signature" : "☆ Set Signature"}
+                </button>
+              )}
               <button
                 type="button"
                 class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"

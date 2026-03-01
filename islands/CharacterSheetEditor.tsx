@@ -956,6 +956,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         inventory={inventory}
         onChange={setInventory}
         availablePoints={unallocatedStatPoints}
+        perkIds={perkIds}
       />
 
       <button

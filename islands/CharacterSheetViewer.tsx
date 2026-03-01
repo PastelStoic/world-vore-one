@@ -226,6 +226,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         onChange={setInventory}
         readOnly
         characterId={characterId}
+        perkIds={character.perkIds}
       />
 
       <div class="rounded border p-3 space-y-2">

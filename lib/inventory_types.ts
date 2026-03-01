@@ -18,6 +18,8 @@ export interface InventoryWeapon {
    * Each spare magazine = 1 weight.
    */
   magazines: number;
+  /** Whether this is the character's Signature Weapon (from the perk) */
+  isSignatureWeapon?: boolean;
 }
 
 /**
@@ -32,6 +34,8 @@ export interface InventoryMeleeWeapon {
   /** Trait IDs from MeleeTraitDefinition */
   traitIds: string[];
   description: string;
+  /** Whether this is the character's Signature Weapon (from the perk) */
+  isSignatureWeapon?: boolean;
 }
 
 /**
@@ -206,6 +210,7 @@ export function parseInventory(raw: string): CharacterInventory | null {
             ? (w.attachedIds as unknown[]).filter((id): id is string => typeof id === "string")
             : [],
           magazines: typeof w.magazines === "number" ? w.magazines : 0,
+          ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
         }));
       }
 
@@ -224,6 +229,7 @@ export function parseInventory(raw: string): CharacterInventory | null {
             ? (w.traitIds as unknown[]).filter((id): id is string => typeof id === "string")
             : [],
           description: String(w.description ?? ""),
+          ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
         }));
       }
 

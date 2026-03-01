@@ -29,7 +29,7 @@ import PerkDescription from "../components/PerkDescription.tsx";
 import InventorySection from "../components/InventorySection.tsx";
 import type { CharacterInventory } from "../lib/inventory_types.ts";
 import { calculateInventoryPointCost, createEmptyInventory } from "../lib/inventory_types.ts";
-import { WEAPONS_BY_ID } from "../data/equipment.ts";
+import { WEAPONS_BY_ID, EQUIPMENT_BY_ID, ATTACHMENTS_BY_ID } from "../data/equipment.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -103,6 +103,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const inventoryPointCost = calculateInventoryPointCost(
     inventory,
     (id) => WEAPONS_BY_ID.get(id)?.pointCost ?? 0,
+    {
+      getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
+      getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
+    },
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));

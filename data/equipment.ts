@@ -59,6 +59,8 @@ export interface WeaponDefinition {
   compatibleAttachmentIds: string[];
   /** IDs of free items that come with this weapon (e.g. Lewis magazines) */
   freeAccessoryIds?: string[];
+  /** Whether this weapon REQUIRES magazines to reload (cannot reload without one) */
+  requiresMagazines?: boolean;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────
@@ -72,6 +74,10 @@ export interface AttachmentDefinition {
   description: string;
   /** Whether buying this attachment uses the charge system */
   isCharge?: boolean;
+  /** If set, overrides the weapon's base ammo capacity when this attachment is active */
+  ammoOverride?: number;
+  /** If true, the weapon REQUIRES magazines to reload while this attachment is active */
+  requiresMagazines?: boolean;
 }
 
 // ── General equipment ───────────────────────────────────────────────────────
@@ -397,7 +403,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "lee-enfield-grenade-launcher",
     name: "Lee-Enfield: Grenade launcher",
     appliesTo: "Lee-Enfield No.1 Mk III",
-    weight: 0,
+    weight: 1,
     isCharge: true,
     description: `*Takes 3 turns to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
 *Reloading a grenade after firing takes 1 turn.
@@ -418,8 +424,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "berthier-chauchat-magazines",
     name: "Berthier M1916: Chauchat Magazines",
     appliesTo: "Berthier M1916",
-    weight: 0,
+    weight: 1,
     isCharge: true,
+    ammoOverride: 20,
+    requiresMagazines: true,
     description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
@@ -428,8 +436,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "rsc-chauchat-magazines",
     name: "RSC M1917: Chauchat Magazines",
     appliesTo: "RSC M1917",
-    weight: 0,
+    weight: 1,
     isCharge: true,
+    ammoOverride: 20,
+    requiresMagazines: true,
     description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
@@ -464,8 +474,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "thompson-drum-magazines",
     name: "Thompson: Drum magazines",
     appliesTo: "Thompson",
-    weight: 0,
+    weight: 1,
     isCharge: true,
+    ammoOverride: 50,
     description: `*Holds 50 rounds instead of the default.
 *When buying this piece of gear, you're paying for charges of it. Each charge is a drum magazine. Each charge has 1 weight.
 *Once out of charges, you must swap back into standard magazines.`,
@@ -474,8 +485,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "springfield-pedersen",
     name: "Springfield: Pedersen device",
     appliesTo: "M1903 Springfield",
-    weight: 0,
+    weight: 1,
     isCharge: true,
+    ammoOverride: 40,
+    requiresMagazines: true,
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield will deal 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
@@ -732,6 +745,7 @@ Heavy magazines:
 *If the weapon has no magazine loaded, -1 weight.`,
     compatibleAttachmentIds: ["lewis-gun-shield"],
     freeAccessoryIds: ["lewis-drum-magazine"],
+    requiresMagazines: true,
   },
 
   // ── French ──

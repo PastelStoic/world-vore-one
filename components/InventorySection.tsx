@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "preact/hooks";
 import {
+  ATTACHMENTS,
   ATTACHMENTS_BY_ID,
   EQUIPMENT,
   EQUIPMENT_BY_ID,
@@ -13,6 +14,7 @@ import {
 } from "../data/equipment.ts";
 import type {
   CharacterInventory,
+  InventoryAttachment,
   InventoryEquipment,
   InventoryMeleeWeapon,
   InventoryWeapon,
@@ -54,6 +56,11 @@ const weightLookups = {
   getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
 };
 
+const slotLookups = {
+  getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
+  getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
+};
+
 function getWeaponPointCost(id: string): number {
   return WEAPONS_BY_ID.get(id)?.pointCost ?? 0;
 }
@@ -79,20 +86,22 @@ export default function InventorySection(props: InventorySectionProps) {
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
+  const [showAddAttachment, setShowAddAttachment] = useState(false);
   const [weaponFilter, setWeaponFilter] = useState("");
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
+  const [attachmentFilter, setAttachmentFilter] = useState("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
   // ── Derived ──
-  const carriedSlots = countCarriedItemSlots(inventory);
+  const carriedSlots = countCarriedItemSlots(inventory, slotLookups);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
 
   // Compute inventory point cost with signature weapon adjustments
   const inventoryPointCost = (() => {
     // Use the signature-adjusted cost function
     const adjustedGetCost = (id: string) => getWeaponPointCost(id);
-    let cost = calculateInventoryPointCost(inventory, adjustedGetCost);
+    let cost = calculateInventoryPointCost(inventory, adjustedGetCost, slotLookups);
 
     if (hasSignatureWeaponPerk) {
       // Recalculate with signature adjustments
@@ -109,7 +118,24 @@ export default function InventorySection(props: InventorySectionProps) {
           adjustedSlots += w.attachedIds.length;
         }
       }
-      adjustedSlots += inventory.carried.equipment.length;
+      // Equipment slots: charge items count each charge as a slot
+      for (const e of inventory.carried.equipment) {
+        const def = EQUIPMENT_BY_ID.get(e.equipmentId);
+        if (def?.isCharge) {
+          adjustedSlots += e.totalCharges;
+        } else {
+          adjustedSlots += 1;
+        }
+      }
+      // Loose attachment slots
+      for (const a of inventory.carried.attachments ?? []) {
+        const def = ATTACHMENTS_BY_ID.get(a.attachmentId);
+        if (def?.isCharge) {
+          adjustedSlots += a.totalCharges;
+        } else {
+          adjustedSlots += 1;
+        }
+      }
 
       const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
       cost += overFree * EXTRA_ITEM_POINT_COST;
@@ -122,7 +148,7 @@ export default function InventorySection(props: InventorySectionProps) {
         cost += getSignatureAdjustedPointCost(w.weaponId, !!w.isSignatureWeapon);
       }
     } else {
-      cost = calculateInventoryPointCost(inventory, getWeaponPointCost);
+      cost = calculateInventoryPointCost(inventory, getWeaponPointCost, slotLookups);
     }
 
     return cost;
@@ -235,6 +261,7 @@ export default function InventorySection(props: InventorySectionProps) {
       currentAmmo: def.ammo,
       attachedIds: [],
       magazines: 0,
+      partialMagazines: [],
     };
     update((inv) => {
       inv[location].weapons.push(item);
@@ -342,11 +369,15 @@ export default function InventorySection(props: InventorySectionProps) {
     ammo: number,
   ) {
     updateCombat((inv) => {
-      const def = WEAPONS_BY_ID.get(inv[location].weapons[index].weaponId);
-      inv[location].weapons[index].currentAmmo = Math.max(
-        0,
-        Math.min(ammo, def?.ammo ?? 999),
-      );
+      const weapon = inv[location].weapons[index];
+      const def = WEAPONS_BY_ID.get(weapon.weaponId);
+      // Check for ammo override from attached attachments
+      let maxAmmo = def?.ammo ?? 999;
+      for (const aId of weapon.attachedIds) {
+        const aDef = ATTACHMENTS_BY_ID.get(aId);
+        if (aDef?.ammoOverride) maxAmmo = aDef.ammoOverride;
+      }
+      weapon.currentAmmo = Math.max(0, Math.min(ammo, maxAmmo));
       return inv;
     });
   }
@@ -363,14 +394,34 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Attach / detach attachments --
+  // -- Attach / detach attachments (moves from inventory to weapon and back) --
   function attachToWeapon(
     location: InventoryLocation,
     weaponIndex: number,
     attachmentId: string,
   ) {
     update((inv) => {
-      inv[location].weapons[weaponIndex].attachedIds.push(attachmentId);
+      const weapon = inv[location].weapons[weaponIndex];
+      // Find the attachment in the same location's inventory
+      const attIdx = inv[location].attachments.findIndex(
+        (a) => a.attachmentId === attachmentId,
+      );
+      const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+      let attInv: InventoryAttachment | undefined;
+      if (attIdx >= 0) {
+        attInv = inv[location].attachments.splice(attIdx, 1)[0];
+      }
+      weapon.attachedIds.push(attachmentId);
+
+      // For charge-based magazine attachments: convert charges into weapon magazines
+      if (attDef?.isCharge && attDef.ammoOverride && attInv) {
+        const remainingCharges = Math.max(0, attInv.totalCharges - attInv.usedCharges);
+        weapon.magazines += remainingCharges;
+        // Update current ammo to the new capacity
+        weapon.currentAmmo = attDef.ammoOverride;
+        // Clear old partial magazines since the magazine type changed
+        weapon.partialMagazines = [];
+      }
       return inv;
     });
   }
@@ -381,9 +432,74 @@ export default function InventorySection(props: InventorySectionProps) {
     attachmentId: string,
   ) {
     update((inv) => {
-      const ids = inv[location].weapons[weaponIndex].attachedIds;
+      const weapon = inv[location].weapons[weaponIndex];
+      const ids = weapon.attachedIds;
       const idx = ids.indexOf(attachmentId);
       if (idx >= 0) ids.splice(idx, 1);
+
+      const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+
+      // For charge-based magazine attachments: convert weapon magazines back to charges
+      if (attDef?.isCharge && attDef.ammoOverride) {
+        const remainingMags = weapon.magazines + (weapon.partialMagazines ?? []).length;
+        inv[location].attachments.push({
+          attachmentId,
+          totalCharges: remainingMags,
+          usedCharges: 0,
+        });
+        weapon.magazines = 0;
+        weapon.partialMagazines = [];
+        // Revert ammo to weapon default
+        const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
+        weapon.currentAmmo = Math.min(weapon.currentAmmo, wDef?.ammo ?? 999);
+      } else {
+        // Return the attachment to the same location's inventory
+        inv[location].attachments.push({
+          attachmentId,
+          totalCharges: attDef?.isCharge ? 1 : 0,
+          usedCharges: 0,
+        });
+      }
+      return inv;
+    });
+  }
+
+  // -- Add / remove loose attachment in inventory --
+  function addAttachmentToInventory(attachmentId: string, location: InventoryLocation) {
+    const def = ATTACHMENTS_BY_ID.get(attachmentId);
+    if (!def) return;
+    const item: InventoryAttachment = {
+      attachmentId,
+      totalCharges: def.isCharge ? 1 : 0,
+      usedCharges: 0,
+    };
+    update((inv) => {
+      inv[location].attachments.push(item);
+      return inv;
+    });
+    setShowAddAttachment(false);
+  }
+
+  function removeAttachment(location: InventoryLocation, index: number) {
+    update((inv) => {
+      inv[location].attachments.splice(index, 1);
+      return inv;
+    });
+  }
+
+  function moveAttachment(from: InventoryLocation, index: number, to: InventoryLocation) {
+    update((inv) => {
+      const [att] = inv[from].attachments.splice(index, 1);
+      inv[to].attachments.push(att);
+      return inv;
+    });
+  }
+
+  function setAttachmentTotalCharges(location: InventoryLocation, index: number, total: number) {
+    update((inv) => {
+      const att = inv[location].attachments[index];
+      att.totalCharges = Math.max(0, total);
+      if (att.usedCharges > att.totalCharges) att.usedCharges = att.totalCharges;
       return inv;
     });
   }
@@ -472,17 +588,50 @@ export default function InventorySection(props: InventorySectionProps) {
       ? "stowed"
       : "carried";
 
-    // Find compatible attachments not yet attached
+    // Check for ammo override from attached attachments
+    let effectiveAmmo = def.ammo;
+    let attachmentMagazineSystem = false;
+    let attachmentRequiresMags = false;
+    for (const aId of w.attachedIds) {
+      const aDef = ATTACHMENTS_BY_ID.get(aId);
+      if (aDef?.ammoOverride) {
+        effectiveAmmo = aDef.ammoOverride;
+      }
+      if (aDef?.requiresMagazines) {
+        attachmentRequiresMags = true;
+        attachmentMagazineSystem = true;
+      }
+      if (aDef?.ammoOverride && aDef?.isCharge) {
+        attachmentMagazineSystem = true;
+      }
+    }
+
+    // Find compatible attachments owned in the same location's inventory
+    const ownedAttachmentIds = new Set(
+      (inventory[location].attachments ?? []).map((a) => a.attachmentId)
+    );
     const availableAttachments = def.compatibleAttachmentIds
-      .filter((aId) => !w.attachedIds.includes(aId))
+      .filter((aId) => !w.attachedIds.includes(aId) && ownedAttachmentIds.has(aId))
       .map((aId) => ATTACHMENTS_BY_ID.get(aId))
       .filter(Boolean);
 
-    // Check if weapon uses magazines (freeAccessoryIds)
-    const hasMagazines = def.freeAccessoryIds && def.freeAccessoryIds.length > 0;
-    const magazineAccessory = hasMagazines
+    // Check if weapon uses magazines (freeAccessoryIds) or attachment-based magazine system
+    const hasFreeAccessoryMags = def.freeAccessoryIds && def.freeAccessoryIds.length > 0;
+    const hasMagazines = hasFreeAccessoryMags || attachmentMagazineSystem;
+    const magazineAccessory = hasFreeAccessoryMags
       ? FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0])
       : undefined;
+
+    // Weapon requires magazines to reload (no fallback to standard reload)
+    const weaponRequiresMags = def.requiresMagazines || attachmentRequiresMags;
+
+    // Total available mags (full + partial)
+    const totalAvailableMags = w.magazines + (w.partialMagazines ?? []).length;
+
+    // Can reload?
+    const canReload = hasMagazines
+      ? totalAvailableMags > 0 || !weaponRequiresMags
+      : true;
 
     // Signature weapon benefits
     const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
@@ -556,59 +705,88 @@ export default function InventorySection(props: InventorySectionProps) {
             type="number"
             class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
             min="0"
-            max={def.ammo}
+            max={effectiveAmmo}
             value={w.currentAmmo}
             onInput={(e) => {
               const val = Number((e.target as HTMLInputElement).value);
               if (!Number.isNaN(val)) setCurrentAmmo(location, index, val);
             }}
           />
-          <span class="text-xs text-gray-500">/ {def.ammo}</span>
+          <span class="text-xs text-gray-500">/ {effectiveAmmo}</span>
           <button
             type="button"
             class="px-1 text-xs border rounded hover:bg-gray-100"
             onClick={() => {
-              if (hasMagazines && w.magazines > 0) {
-                // Magazine-fed reload: consume a spare magazine
+              if (hasMagazines && totalAvailableMags > 0) {
+                // Magazine-fed reload: consume a spare magazine (prefer full, then best partial)
                 updateCombat((inv) => {
                   const weapon = inv[location].weapons[index];
-                  const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
-                  // If partial magazine, return it to inventory
-                  const partialReturn = weapon.currentAmmo > 0 ? 1 : 0;
-                  weapon.magazines = Math.max(0, weapon.magazines - 1 + partialReturn);
-                  weapon.currentAmmo = wDef?.ammo ?? def.ammo;
+                  const oldAmmo = weapon.currentAmmo;
+                  const partials = weapon.partialMagazines ?? [];
+
+                  if (weapon.magazines > 0) {
+                    // Use a full magazine
+                    weapon.magazines -= 1;
+                    weapon.currentAmmo = effectiveAmmo;
+                  } else if (partials.length > 0) {
+                    // Use the best partial magazine (most ammo)
+                    partials.sort((a, b) => b - a);
+                    const bestPartial = partials.shift()!;
+                    weapon.currentAmmo = bestPartial;
+                    weapon.partialMagazines = partials;
+                  }
+
+                  // Save the old magazine as a partial if it had ammo remaining
+                  if (oldAmmo > 0) {
+                    if (!weapon.partialMagazines) weapon.partialMagazines = [];
+                    weapon.partialMagazines.push(oldAmmo);
+                  }
+
                   return inv;
                 });
-              } else if (!hasMagazines) {
-                // Non-magazine weapon: reload normally
-                setCurrentAmmo(location, index, def.ammo);
+              } else if (!hasMagazines || !weaponRequiresMags) {
+                // Non-magazine weapon OR magazine weapon with standard reload fallback
+                setCurrentAmmo(location, index, effectiveAmmo);
               }
-              // If hasMagazines but magazines === 0, do nothing
             }}
-            disabled={hasMagazines && w.magazines <= 0}
-            title={hasMagazines && w.magazines <= 0 ? "No spare magazines" : "Reload"}
+            disabled={!canReload}
+            title={!canReload ? "No spare magazines" : hasMagazines ? "Reload (uses a magazine)" : "Reload"}
           >
-            Reload{hasMagazines ? ` (${w.magazines} mag)` : ""}
+            Reload{hasMagazines ? ` (${totalAvailableMags} mag)` : ""}
           </button>
         </div>
 
         {/* Magazine tracking – always editable for combat tracking */}
-        {hasMagazines && magazineAccessory && (
-          <div class="flex items-center gap-2 text-sm">
-            <span>Spare magazines ({magazineAccessory.name}):</span>
-            <input
-              type="number"
-              class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
-              min="0"
-              value={w.magazines}
-              onInput={(e) => {
-                const val = Number((e.target as HTMLInputElement).value);
-                if (!Number.isNaN(val)) setMagazines(location, index, val);
-              }}
-            />
-            <span class="text-xs text-gray-500">
-              ({magazineAccessory.weight}W each)
-            </span>
+        {hasMagazines && (
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 text-sm">
+              <span>Full magazines{magazineAccessory ? ` (${magazineAccessory.name})` : ""}:</span>
+              <input
+                type="number"
+                class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+                min="0"
+                value={w.magazines}
+                onInput={(e) => {
+                  const val = Number((e.target as HTMLInputElement).value);
+                  if (!Number.isNaN(val)) setMagazines(location, index, val);
+                }}
+              />
+              <span class="text-xs text-gray-500">
+                (1W each)
+              </span>
+            </div>
+            {/* Partial magazines list */}
+            {(w.partialMagazines ?? []).length > 0 && (
+              <div class="ml-2 text-xs text-gray-600">
+                <span class="font-medium">Partial magazines:</span>{" "}
+                {(w.partialMagazines ?? []).map((ammo, pi) => (
+                  <span key={pi} class="inline-block bg-yellow-50 border border-yellow-300 rounded px-1 mr-1">
+                    {ammo}/{effectiveAmmo} rounds
+                  </span>
+                ))}
+                <span class="text-gray-400 ml-1">({(w.partialMagazines ?? []).length}W total)</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -651,7 +829,7 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {/* Attach new attachment */}
+        {/* Attach new attachment – only shows compatible attachments owned in inventory */}
         {!readOnly && availableAttachments.length > 0 && (
           <div class="ml-2">
             <select
@@ -662,13 +840,18 @@ export default function InventorySection(props: InventorySectionProps) {
                 if (val) attachToWeapon(location, index, val);
               }}
             >
-              <option value="">+ Attach…</option>
+              <option value="">+ Attach from inventory…</option>
               {availableAttachments.map((a) => (
                 <option key={a!.id} value={a!.id}>
                   {a!.name} (W:{a!.weight})
                 </option>
               ))}
             </select>
+          </div>
+        )}
+        {!readOnly && availableAttachments.length === 0 && def.compatibleAttachmentIds.filter((aId) => !w.attachedIds.includes(aId)).length > 0 && (
+          <div class="ml-2 text-xs text-gray-400 italic">
+            Compatible attachments exist but none are in your inventory. Add them via the Attachments section below.
           </div>
         )}
       </div>
@@ -954,13 +1137,90 @@ export default function InventorySection(props: InventorySectionProps) {
     );
   }
 
+  function renderAttachment(
+    att: InventoryAttachment,
+    location: InventoryLocation,
+    index: number,
+  ) {
+    const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
+    if (!def) return <div class="text-red-500">Unknown attachment: {att.attachmentId}</div>;
+
+    const otherLocation: InventoryLocation = location === "carried" ? "stowed" : "carried";
+    const remaining = def.isCharge ? Math.max(0, att.totalCharges - att.usedCharges) : 0;
+    const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
+
+    return (
+      <div class="border rounded p-2 space-y-1 bg-white">
+        <div class="flex items-center justify-between flex-wrap gap-1">
+          <div>
+            <strong>{def.name}</strong>{" "}
+            <span class="text-xs text-gray-500">
+              (W:{currentWeight} · For: {def.appliesTo})
+            </span>
+          </div>
+          {!readOnly && (
+            <div class="flex gap-1">
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                onClick={() => moveAttachment(location, index, otherLocation)}
+              >
+                → {otherLocation === "carried" ? "Carry" : "Stow"}
+              </button>
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                onClick={() => removeAttachment(location, index)}
+              >
+                Remove
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
+          <PerkDescription name="" description={def.description} />
+        </div>
+
+        {/* Charge tracking for charge-based attachments */}
+        {def.isCharge && (
+          <div class="space-y-1 text-sm">
+            <div class="flex items-center gap-2">
+              <span>Charges:</span>
+              {!readOnly && (
+                <span class="text-xs text-gray-500">
+                  (Total:{" "}
+                  <input
+                    type="number"
+                    class="w-12 border rounded px-1 text-xs"
+                    min="0"
+                    value={att.totalCharges}
+                    onInput={(e) => {
+                      const val = Number((e.target as HTMLInputElement).value);
+                      if (!Number.isNaN(val)) setAttachmentTotalCharges(location, index, val);
+                    }}
+                  />
+                  )
+                </span>
+              )}
+            </div>
+            <div class="text-xs text-gray-500 ml-2">
+              {remaining} remaining · W:{currentWeight}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function renderInventoryBlock(location: InventoryLocation) {
     const inv = inventory[location];
     const label = location === "carried" ? "Equipment (On Person)" : "Stowed (Owned, Not Carried)";
     const isEmpty =
       inv.weapons.length === 0 &&
       inv.meleeWeapons.length === 0 &&
-      inv.equipment.length === 0;
+      inv.equipment.length === 0 &&
+      (inv.attachments ?? []).length === 0;
 
     return (
       <div class="space-y-2">
@@ -1018,6 +1278,20 @@ export default function InventorySection(props: InventorySectionProps) {
             ))}
           </div>
         )}
+
+        {/* Attachments (loose, not attached to any weapon) */}
+        {(inv.attachments ?? []).length > 0 && (
+          <div class="space-y-1">
+            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              Attachments (Unattached)
+            </h5>
+            {(inv.attachments ?? []).map((att, i) => (
+              <div key={`${location}-att-${i}`}>
+                {renderAttachment(att, location, i)}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -1037,6 +1311,12 @@ export default function InventorySection(props: InventorySectionProps) {
   const filteredEquipment = EQUIPMENT.filter((e) => {
     if (!equipmentFilter) return true;
     return e.name.toLowerCase().includes(equipmentFilter.toLowerCase());
+  });
+
+  const filteredAttachments = ATTACHMENTS.filter((a) => {
+    if (!attachmentFilter) return true;
+    const q = attachmentFilter.toLowerCase();
+    return a.name.toLowerCase().includes(q) || a.appliesTo.toLowerCase().includes(q);
   });
 
   return (
@@ -1083,6 +1363,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 setShowAddWeapon((v) => !v);
                 setShowAddEquipment(false);
                 setShowAddMelee(false);
+                setShowAddAttachment(false);
               }}
             >
               {showAddWeapon ? "Cancel" : "+ Weapon"}
@@ -1094,6 +1375,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 setShowAddEquipment((v) => !v);
                 setShowAddWeapon(false);
                 setShowAddMelee(false);
+                setShowAddAttachment(false);
               }}
             >
               {showAddEquipment ? "Cancel" : "+ Equipment"}
@@ -1102,9 +1384,22 @@ export default function InventorySection(props: InventorySectionProps) {
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
               onClick={() => {
+                setShowAddAttachment((v) => !v);
+                setShowAddWeapon(false);
+                setShowAddEquipment(false);
+                setShowAddMelee(false);
+              }}
+            >
+              {showAddAttachment ? "Cancel" : "+ Attachment"}
+            </button>
+            <button
+              type="button"
+              class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+              onClick={() => {
                 setShowAddMelee((v) => !v);
                 setShowAddWeapon(false);
                 setShowAddEquipment(false);
+                setShowAddAttachment(false);
               }}
             >
               {showAddMelee ? "Cancel" : "+ Melee Weapon"}
@@ -1247,6 +1542,49 @@ export default function InventorySection(props: InventorySectionProps) {
               >
                 Create Melee Weapon
               </button>
+            </div>
+          )}
+
+          {/* Attachment picker */}
+          {showAddAttachment && (
+            <div class="space-y-1 border rounded p-2 bg-gray-50">
+              <input
+                type="text"
+                class="w-full border rounded px-2 py-1 text-sm"
+                placeholder="Filter attachments by name or weapon…"
+                value={attachmentFilter}
+                onInput={(e) =>
+                  setAttachmentFilter((e.target as HTMLInputElement).value)}
+              />
+              {filteredAttachments.length === 0 ? (
+                <p class="text-sm text-gray-400 italic">
+                  No matching attachments.
+                </p>
+              ) : (
+                <ul class="max-h-64 overflow-y-auto space-y-1">
+                  {filteredAttachments.map((att) => (
+                    <li
+                      key={att.id}
+                      class="flex items-center justify-between text-sm"
+                    >
+                      <span>
+                        {att.name}{" "}
+                        <span class="text-xs text-gray-500">
+                          (W:{att.weight} · For: {att.appliesTo}
+                          {att.isCharge ? " · Charges" : ""})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                        onClick={() => addAttachmentToInventory(att.id, addTarget)}
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </div>

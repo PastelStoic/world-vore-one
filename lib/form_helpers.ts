@@ -1,5 +1,6 @@
 import { PERK_IDS, validatePerkRequirements } from "../data/perks.ts";
 import { type CharacterDraft, type Race } from "./character_types.ts";
+import { parseInventory } from "./inventory_types.ts";
 import {
   parseBaseStats,
   parseDescription,
@@ -31,6 +32,7 @@ export interface ParsedCharacterFields {
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
   pendingImageId: string;
+  inventory: ReturnType<typeof parseInventory>;
 }
 
 /**
@@ -59,6 +61,9 @@ export function parseCharacterFormData(
     formData.get("basedOnSnapshotId") ?? "",
   ).trim();
   const pendingImageId = String(formData.get("pendingImageId") ?? "").trim();
+  const inventory = parseInventory(
+    String(formData.get("inventory") ?? "{}"),
+  );
 
   if (!name) {
     return new Response("Name is required.", { status: 400 });
@@ -86,6 +91,7 @@ export function parseCharacterFormData(
     unallocatedStatPoints,
     basedOnSnapshotId,
     pendingImageId,
+    inventory,
   };
 }
 
@@ -104,6 +110,7 @@ export function buildAndValidateDraft(
     unallocatedStatPoints: fields.unallocatedStatPoints,
     perkIds: fields.perkIds,
     perkNotes: fields.perkNotes,
+    inventory: fields.inventory ?? undefined,
   };
 
   const progressionError = validateCharacterProgression(draft);

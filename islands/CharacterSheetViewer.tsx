@@ -13,6 +13,8 @@ import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
 import EncumbranceSection from "../components/EncumbranceSection.tsx";
 import PerkDescription from "../components/PerkDescription.tsx";
+import InventorySection from "../components/InventorySection.tsx";
+import { createEmptyInventory } from "../lib/inventory_types.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -210,6 +212,12 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         onCarriedWeightChange={setCarriedWeight}
         encumbranceLevel={encumbranceLevel}
         encumbrancePenaltyText={encumbrancePenaltyText}
+      />
+
+      <InventorySection
+        inventory={character.inventory ?? createEmptyInventory()}
+        onChange={() => {}}
+        readOnly
       />
 
       <div class="rounded border p-3 space-y-2">

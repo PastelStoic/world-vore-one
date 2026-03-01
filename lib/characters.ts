@@ -90,6 +90,7 @@ export async function upsertCharacter(
       baseStats: input.baseStats,
       unallocatedStatPoints: input.unallocatedStatPoints,
       perkIds: input.perkIds,
+      inventory: input.inventory,
     },
   };
 

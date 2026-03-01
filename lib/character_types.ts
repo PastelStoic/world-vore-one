@@ -1,3 +1,6 @@
+import type { CharacterInventory } from "./inventory_types.ts";
+import { createEmptyInventory } from "./inventory_types.ts";
+
 export const RACES = [
   "Pilzfraun",
   "Pilzherr",
@@ -117,6 +120,7 @@ export interface CharacterDraft {
   unallocatedStatPoints: number;
   perkIds: string[];
   perkNotes?: Record<string, string>;
+  inventory?: CharacterInventory;
 }
 
 export type CharacterStatus = "pending" | "approved";
@@ -196,5 +200,6 @@ export function createDefaultCharacterDraft(): CharacterDraft {
     unallocatedStatPoints: getStartingStatPoints("Baseliner"),
     perkIds: [],
     perkNotes: {},
+    inventory: createEmptyInventory(),
   };
 }

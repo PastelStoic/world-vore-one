@@ -26,6 +26,9 @@ import { useCharacterStats } from "../lib/useCharacterStats.ts";
 import OtherStatsSection from "../components/OtherStatsSection.tsx";
 import EncumbranceSection from "../components/EncumbranceSection.tsx";
 import PerkDescription from "../components/PerkDescription.tsx";
+import InventorySection from "../components/InventorySection.tsx";
+import type { CharacterInventory } from "../lib/inventory_types.ts";
+import { createEmptyInventory } from "../lib/inventory_types.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -57,6 +60,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
     props.initialCharacter.perkNotes ?? {},
   );
+  const [inventory, setInventory] = useState<CharacterInventory>(
+    props.initialCharacter.inventory ?? createEmptyInventory(),
+  );
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);
   const [showPerkPicker, setShowPerkPicker] = useState(false);
@@ -80,6 +86,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     unallocatedStatPoints,
     perkIds,
     perkNotes,
+    inventory,
   };
 
   const {
@@ -309,6 +316,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         value={JSON.stringify(perkNotes)}
       />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
+      <input
+        type="hidden"
+        name="inventory"
+        value={JSON.stringify(inventory)}
+      />
       <input
         type="hidden"
         name="unallocatedStatPoints"
@@ -734,6 +746,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         onCarriedWeightChange={setCarriedWeight}
         encumbranceLevel={encumbranceLevel}
         encumbrancePenaltyText={encumbrancePenaltyText}
+      />
+
+      <InventorySection
+        inventory={inventory}
+        onChange={setInventory}
       />
 
       <div class="rounded border p-3 space-y-3">

@@ -3,10 +3,12 @@ import { useState } from "preact/hooks";
 interface PerkDescriptionProps {
   name: string;
   description: string;
+  /** When true, the entire description is hidden behind a toggle (no preview) */
+  hideByDefault?: boolean;
 }
 
 export default function PerkDescription(
-  { name, description }: PerkDescriptionProps,
+  { name, description, hideByDefault }: PerkDescriptionProps,
 ) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -14,6 +16,30 @@ export default function PerkDescription(
   const brief = lines[0];
   const details = lines.slice(1).join("\n").trim();
   const hasDetails = details.length > 0;
+
+  if (hideByDefault) {
+    return (
+      <span>
+        {name && <strong>{name}</strong>}
+        {" "}
+        <button
+          type="button"
+          class="text-xs text-blue-600 hover:underline cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDetails((v) => !v);
+          }}
+        >
+          {showDetails ? "hide details" : "see details"}
+        </button>
+        {showDetails && (
+          <span class="block whitespace-pre-line text-gray-700 ml-2 mt-1">
+            {description}
+          </span>
+        )}
+      </span>
+    );
+  }
 
   return (
     <span>

@@ -6,7 +6,7 @@
 
 export const NATIONS = [
   "Any",
-  "N/A",
+  "Civilian",
   "Britain",
   "France",
   "Germany",
@@ -61,6 +61,8 @@ export interface WeaponDefinition {
   freeAccessoryIds?: string[];
   /** Whether this weapon REQUIRES magazines to reload (cannot reload without one) */
   requiresMagazines?: boolean;
+  /** Whether this weapon reloads one round at a time (tubular magazines, cylinders, etc.) */
+  reloadsIndividually?: boolean;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────
@@ -70,6 +72,8 @@ export interface AttachmentDefinition {
   name: string;
   /** Which weapon(s) or weapon class this attaches to (e.g. "Long guns", "Lee-Enfield") */
   appliesTo: string;
+  /** Nation this attachment belongs to (for filtering) */
+  nation: Nation;
   weight: number;
   description: string;
   /** Whether buying this attachment uses the charge system */
@@ -325,6 +329,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "bayonet",
     name: "Bayonet",
     appliesTo: "Long guns",
+    nation: "Any",
     weight: 1,
     description: `3 damage when attached to the end of a long gun; 2 damage otherwise.
 *-2d6 to shooting if attached. Usable by any rifle and most other long guns.
@@ -334,6 +339,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "scope",
     name: "Scope",
     appliesTo: "Long guns",
+    nation: "Any",
     weight: 1,
     description: `*-3d6 to hit targets 9 distances away or closer.
 *-1d6 to shoot targets every 10 distances away, instead of -3d6.
@@ -345,6 +351,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "bipod",
     name: "Bipod",
     appliesTo: "Long guns",
+    nation: "Any",
     weight: 1,
     description: `*-1d6 to accuracy when not set up, +2d6 when set up.
 *It takes 1 turn to put the bipod on the gun, or to remove it.`,
@@ -353,6 +360,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "strong-sling",
     name: "Strong sling",
     appliesTo: "Long guns",
+    nation: "Any",
     weight: 1,
     description: `A strong sling around your person that keeps your weapon held in place should you let go of it.
 *Dropping a weapon becomes a free action and it stays with you.
@@ -362,6 +370,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "quickloader",
     name: "Quickloader",
     appliesTo: "Revolvers",
+    nation: "Any",
     weight: 1,
     description: `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
@@ -372,6 +381,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "dbs-single-barrel",
     name: "Double-barrel shotgun: Single barrel",
     appliesTo: "Double-barrel shotgun",
+    nation: "Civilian",
     weight: 0,
     description: `*Modification is free.
 *Ammo is reduced to 1. Weight is reduced to 1.
@@ -381,6 +391,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "dbs-sawn-off",
     name: "Double-barrel shotgun: Sawn-off",
     appliesTo: "Double-barrel shotgun",
+    nation: "Civilian",
     weight: 0,
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
@@ -393,6 +404,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "musket-rifled",
     name: "Musket: Rifled",
     appliesTo: "Flintlock Musket",
+    nation: "Civilian",
     weight: 0,
     description: `*Replaces the 'Musket' gimmick with this gimmick instead.
 *Reloading takes 30 turns.`,
@@ -403,6 +415,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "lee-enfield-grenade-launcher",
     name: "Lee-Enfield: Grenade launcher",
     appliesTo: "Lee-Enfield No.1 Mk III",
+    nation: "Britain",
     weight: 1,
     isCharge: true,
     description: `*Takes 3 turns to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
@@ -415,6 +428,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "lewis-gun-shield",
     name: "Lewis gun: Shield",
     appliesTo: "Lewis Automatic Machine Gun",
+    nation: "Britain",
     weight: 2,
     description: `*Has 2 weight. When in cover, +2d6 to cover rolls.`,
   },
@@ -424,6 +438,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "berthier-chauchat-magazines",
     name: "Berthier M1916: Chauchat Magazines",
     appliesTo: "Berthier M1916",
+    nation: "France",
     weight: 1,
     isCharge: true,
     ammoOverride: 20,
@@ -436,6 +451,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "rsc-chauchat-magazines",
     name: "RSC M1917: Chauchat Magazines",
     appliesTo: "RSC M1917",
+    nation: "France",
     weight: 1,
     isCharge: true,
     ammoOverride: 20,
@@ -450,6 +466,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "gewehr98-smk",
     name: "Gewehr 98: Spitzgeschoss mit Kern rounds",
     appliesTo: "Gewehr 98",
+    nation: "Germany",
     weight: 0,
     isCharge: true,
     description: `*Armor piercing ammunition. Ignores damage reduction from perks and gear.
@@ -462,6 +479,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "c96-extended-stock",
     name: "C96 Mauser: Extended stock",
     appliesTo: "C96 Mauser",
+    nation: "Germany",
     weight: 0,
     description: `*It takes 1 turn to put the stock on/off.
 *While the stock is on, loses agile gimmick.
@@ -474,6 +492,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "thompson-drum-magazines",
     name: "Thompson: Drum magazines",
     appliesTo: "Thompson",
+    nation: "United States",
     weight: 1,
     isCharge: true,
     ammoOverride: 50,
@@ -485,6 +504,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "springfield-pedersen",
     name: "Springfield: Pedersen device",
     appliesTo: "M1903 Springfield",
+    nation: "United States",
     weight: 1,
     isCharge: true,
     ammoOverride: 40,
@@ -499,6 +519,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "springfield-suppressor",
     name: "Springfield: Suppressor",
     appliesTo: "M1903 Springfield",
+    nation: "United States",
     weight: 0,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
@@ -510,6 +531,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "nagant-suppressor",
     name: "Nagant-revolver: Suppressor",
     appliesTo: "Nagant M1895 Revolver",
+    nation: "Russia",
     weight: 0,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.`,
@@ -520,6 +542,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "steyr-automatic-fire",
     name: "Steyr M1912: Automatic fire",
     appliesTo: "Steyr M1912",
+    nation: "Austria-Hungary",
     weight: 0,
     description: `*Weapon gains +2 rate of fire.
 *Have -3d6 for each additional shot, instead of an accuracy buff.
@@ -529,6 +552,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "steyr-extended-magazine",
     name: "Steyr M1912: Extended magazine",
     appliesTo: "Steyr M1912",
+    nation: "Austria-Hungary",
     weight: 0,
     description: `*Holds 16 rounds instead of the default.
 *Stripper clips can only load 8 shots at a time. The magazine is not detachable.
@@ -538,6 +562,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     id: "steyr-extended-stock",
     name: "Steyr M1912: Extended stock",
     appliesTo: "Steyr M1912",
+    nation: "Austria-Hungary",
     weight: 0,
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment no longer reduces accuracy with each additional shot.
@@ -564,7 +589,7 @@ export const WEAPONS: WeaponDefinition[] = [
     name: "Colt Walker",
     type: "Black Powder Revolver",
     kind: "black-powder-revolver",
-    nation: "N/A",
+    nation: "Civilian",
     damage: "3",
     ammo: 6,
     rateOfFire: 1,
@@ -580,6 +605,7 @@ Overloaded chamber:
 *Deals 4 damage, but if there are more 1's than 6's when shooting, it explodes in your hands.
 *If it explodes, deals 4 damage to you and the gun is ruined.`,
     compatibleAttachmentIds: [],
+    reloadsIndividually: true,
   },
   {
     id: "flamethrower",
@@ -612,7 +638,7 @@ Bulky kit:
     name: "Double barrel shotgun",
     type: "Shotgun",
     kind: "shotgun",
-    nation: "N/A",
+    nation: "Civilian",
     damage: "4 / 2",
     ammo: 2,
     rateOfFire: 1,
@@ -624,13 +650,14 @@ Bulky kit:
 Trench-sweeper:
 *Cover is one tier lower if the target is at 3 distances or closer.`,
     compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off"],
+    reloadsIndividually: true,
   },
   {
     id: "flintlock-musket",
     name: "Flintlock Musket",
     type: "Flintlock Smoothbore Musket",
     kind: "flintlock-musket",
-    nation: "N/A",
+    nation: "Civilian",
     damage: "4",
     ammo: 1,
     rateOfFire: 1,
@@ -641,13 +668,14 @@ Trench-sweeper:
 Musket:
 *Takes 20 turns to reload. Accuracy penalty from ranged shooting is doubled.`,
     compatibleAttachmentIds: ["musket-rifled", ...LONG_GUN_ATTACHMENTS],
+    reloadsIndividually: true,
   },
   {
     id: "bow",
     name: "Bow",
     type: "Bow & Arrow",
     kind: "bow",
-    nation: "N/A",
+    nation: "Civilian",
     damage: "2",
     ammo: 1,
     rateOfFire: 1,
@@ -662,13 +690,14 @@ Draw and let loose:
 Utterly silent:
 *Only those 1 distance away from you can hear your bow's string. It is completely silent otherwise.`,
     compatibleAttachmentIds: [],
+    reloadsIndividually: true,
   },
   {
     id: "crossbow",
     name: "Crossbow",
     type: "Crossbow",
     kind: "crossbow",
-    nation: "N/A",
+    nation: "Civilian",
     damage: "2",
     ammo: 1,
     rateOfFire: 1,
@@ -679,6 +708,7 @@ Utterly silent:
 Utterly silent:
 *Only those 1 distance away from you can hear your crossbow's string. It is completely silent otherwise.`,
     compatibleAttachmentIds: [],
+    reloadsIndividually: true,
   },
 
   // ── British ──
@@ -717,6 +747,7 @@ Utterly silent:
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
+    reloadsIndividually: true,
   },
   {
     id: "lewis-gun",
@@ -766,6 +797,7 @@ Extra long:
 --->When fitted with a bayonet:
 *If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    reloadsIndividually: true,
   },
   {
     id: "modele-1892-revolver",
@@ -783,6 +815,7 @@ Extra long:
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
+    reloadsIndividually: true,
   },
   {
     id: "berthier-m1916",
@@ -929,6 +962,7 @@ Agile:
 Loading Gate:
 *Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
     compatibleAttachmentIds: [],
+    reloadsIndividually: true,
   },
   {
     id: "mp-18",
@@ -1004,6 +1038,7 @@ Slam fire:
 *Takes one turn to swap into this technique.
 *+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    reloadsIndividually: true,
   },
   {
     id: "m1911",
@@ -1063,6 +1098,7 @@ Tubular magazine:
 Trench-sweeper:
 *Cover is one tier lower if the target is at 3 distances or closer.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    reloadsIndividually: true,
   },
 
   // ── Japanese ──
@@ -1101,6 +1137,7 @@ Extra long:
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
+    reloadsIndividually: true,
   },
 
   // ── Russian ──
@@ -1136,6 +1173,7 @@ Cylinder:
 Loading Gate:
 *Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
     compatibleAttachmentIds: ["nagant-suppressor"],
+    reloadsIndividually: true,
   },
   {
     id: "fedorov-avtomat",
@@ -1233,6 +1271,7 @@ En-block clip:
 Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.`,
     compatibleAttachmentIds: [],
+    reloadsIndividually: true,
   },
 
   // ── Swiss ──
@@ -1270,6 +1309,7 @@ Agile:
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
+    reloadsIndividually: true,
   },
 ];
 

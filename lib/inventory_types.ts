@@ -68,6 +68,11 @@ export interface InventoryAttachment {
   totalCharges: number;
   /** How many of those charges have been used this scene */
   usedCharges: number;
+  /**
+   * Saved individual magazine ammo states when this magazine attachment is detached.
+   * Preserved so re-attaching restores the exact magazine state.
+   */
+  savedMagazineStates?: number[];
 }
 
 /**
@@ -331,8 +336,9 @@ export function parseInventory(raw: string): CharacterInventory | null {
         ).map((a: Record<string, unknown>) => ({
           attachmentId: String(a.attachmentId),
           totalCharges: typeof a.totalCharges === "number" ? a.totalCharges : 0,
-          usedCharges: typeof a.usedCharges === "number" ? a.usedCharges : 0,
-        }));
+          usedCharges: typeof a.usedCharges === "number" ? a.usedCharges : 0,          ...(Array.isArray(a.savedMagazineStates) ? {
+            savedMagazineStates: (a.savedMagazineStates as unknown[]).filter((n): n is number => typeof n === "number"),
+          } : {}),        }));
       }
     }
 

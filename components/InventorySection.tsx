@@ -91,6 +91,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
   const [attachmentFilter, setAttachmentFilter] = useState("");
+  const [attachmentNationFilter, setAttachmentNationFilter] = useState<Nation | "">("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
   // ── Derived ──
@@ -336,7 +337,7 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     update((inv) => {
       const eq = inv[location].equipment[index];
-      eq.totalCharges = Math.max(0, total);
+      eq.totalCharges = Math.max(1, total);
       if (eq.usedCharges > eq.totalCharges) eq.usedCharges = eq.totalCharges;
       return inv;
     });
@@ -416,11 +417,28 @@ export default function InventorySection(props: InventorySectionProps) {
       // For charge-based magazine attachments: convert charges into weapon magazines
       if (attDef?.isCharge && attDef.ammoOverride && attInv) {
         const remainingCharges = Math.max(0, attInv.totalCharges - attInv.usedCharges);
-        weapon.magazines += remainingCharges;
-        // Update current ammo to the new capacity
-        weapon.currentAmmo = attDef.ammoOverride;
-        // Clear old partial magazines since the magazine type changed
-        weapon.partialMagazines = [];
+
+        if (remainingCharges > 0) {
+          // Check if we have saved magazine states from a previous detach
+          if (attInv.savedMagazineStates && attInv.savedMagazineStates.length > 0) {
+            const states = [...attInv.savedMagazineStates].sort((a, b) => b - a);
+            // Load the best magazine
+            const best = states.shift()!;
+            weapon.currentAmmo = best;
+            // Separate remaining into full and partial
+            const ammoOverride = attDef.ammoOverride!;
+            const fullMags = states.filter(s => s >= ammoOverride).length;
+            const partials = states.filter(s => s < ammoOverride);
+            weapon.magazines = fullMags;
+            weapon.partialMagazines = partials;
+          } else {
+            // Fresh attach: load one magazine, rest are spare
+            weapon.currentAmmo = attDef.ammoOverride;
+            weapon.magazines = remainingCharges - 1;
+            weapon.partialMagazines = [];
+          }
+        }
+        // If remainingCharges === 0, don't change ammo or magazines
       }
       return inv;
     });
@@ -440,16 +458,32 @@ export default function InventorySection(props: InventorySectionProps) {
       const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
 
       // For charge-based magazine attachments: convert weapon magazines back to charges
+      // and save individual magazine ammo states for re-attachment
       if (attDef?.isCharge && attDef.ammoOverride) {
-        const remainingMags = weapon.magazines + (weapon.partialMagazines ?? []).length;
+        const partials = weapon.partialMagazines ?? [];
+        // Build array of all magazine ammo states:
+        // full spare magazines + partial spare magazines + the loaded magazine
+        const savedStates: number[] = [];
+        for (let i = 0; i < weapon.magazines; i++) {
+          savedStates.push(attDef.ammoOverride);
+        }
+        for (const p of partials) {
+          savedStates.push(p);
+        }
+        // Include the currently loaded magazine if it has ammo
+        if (weapon.currentAmmo > 0) {
+          savedStates.push(weapon.currentAmmo);
+        }
+
         inv[location].attachments.push({
           attachmentId,
-          totalCharges: remainingMags,
+          totalCharges: savedStates.length,
           usedCharges: 0,
+          savedMagazineStates: savedStates,
         });
         weapon.magazines = 0;
         weapon.partialMagazines = [];
-        // Revert ammo to weapon default
+        // Revert ammo to weapon default (gun is empty after removing magazine)
         const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
         weapon.currentAmmo = Math.min(weapon.currentAmmo, wDef?.ammo ?? 999);
       } else {
@@ -498,7 +532,7 @@ export default function InventorySection(props: InventorySectionProps) {
   function setAttachmentTotalCharges(location: InventoryLocation, index: number, total: number) {
     update((inv) => {
       const att = inv[location].attachments[index];
-      att.totalCharges = Math.max(0, total);
+      att.totalCharges = Math.max(1, total);
       if (att.usedCharges > att.totalCharges) att.usedCharges = att.totalCharges;
       return inv;
     });
@@ -607,8 +641,18 @@ export default function InventorySection(props: InventorySectionProps) {
     }
 
     // Find compatible attachments owned in the same location's inventory
+    // For charge-based attachments, only show if they have remaining charges
+    const ownedAttachments = (inventory[location].attachments ?? []);
     const ownedAttachmentIds = new Set(
-      (inventory[location].attachments ?? []).map((a) => a.attachmentId)
+      ownedAttachments
+        .filter((a) => {
+          const aDef = ATTACHMENTS_BY_ID.get(a.attachmentId);
+          if (aDef?.isCharge) {
+            return (a.totalCharges - a.usedCharges) > 0;
+          }
+          return true;
+        })
+        .map((a) => a.attachmentId)
     );
     const availableAttachments = def.compatibleAttachmentIds
       .filter((aId) => !w.attachedIds.includes(aId) && ownedAttachmentIds.has(aId))
@@ -628,10 +672,19 @@ export default function InventorySection(props: InventorySectionProps) {
     // Total available mags (full + partial)
     const totalAvailableMags = w.magazines + (w.partialMagazines ?? []).length;
 
+    // Check if weapon reloads individually (tubular magazine, cylinder without quickloader)
+    const hasQuickloader = w.attachedIds.includes("quickloader");
+    const reloadsIndividually = def.reloadsIndividually && !hasQuickloader;
+
+    // Weapon is at full ammo
+    const isAmmoFull = w.currentAmmo >= effectiveAmmo;
+
     // Can reload?
-    const canReload = hasMagazines
-      ? totalAvailableMags > 0 || !weaponRequiresMags
-      : true;
+    const canReload = !isAmmoFull && (
+      hasMagazines
+        ? totalAvailableMags > 0 || !weaponRequiresMags
+        : true
+    );
 
     // Signature weapon benefits
     const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
@@ -695,7 +748,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
         {/* Gimmicks */}
         <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
-          <PerkDescription name="" description={def.gimmicks} />
+          <PerkDescription name="" description={def.gimmicks} hideByDefault />
         </div>
 
         {/* Ammo tracker – always editable for combat tracking */}
@@ -715,44 +768,59 @@ export default function InventorySection(props: InventorySectionProps) {
           <span class="text-xs text-gray-500">/ {effectiveAmmo}</span>
           <button
             type="button"
-            class="px-1 text-xs border rounded hover:bg-gray-100"
+            class={`px-1 text-xs border rounded ${canReload ? "hover:bg-gray-100" : "opacity-50 cursor-not-allowed"}`}
             onClick={() => {
-              if (hasMagazines && totalAvailableMags > 0) {
-                // Magazine-fed reload: consume a spare magazine (prefer full, then best partial)
+              if (!canReload) return;
+              if (reloadsIndividually && !hasMagazines) {
+                // Individual bullet reload: add 1 round
+                setCurrentAmmo(location, index, Math.min(w.currentAmmo + 1, effectiveAmmo));
+              } else if (hasMagazines && totalAvailableMags > 0) {
+                // Magazine-fed reload: consume a full magazine
                 updateCombat((inv) => {
                   const weapon = inv[location].weapons[index];
                   const oldAmmo = weapon.currentAmmo;
-                  const partials = weapon.partialMagazines ?? [];
 
                   if (weapon.magazines > 0) {
                     // Use a full magazine
                     weapon.magazines -= 1;
                     weapon.currentAmmo = effectiveAmmo;
-                  } else if (partials.length > 0) {
-                    // Use the best partial magazine (most ammo)
-                    partials.sort((a, b) => b - a);
-                    const bestPartial = partials.shift()!;
-                    weapon.currentAmmo = bestPartial;
-                    weapon.partialMagazines = partials;
+                  } else {
+                    return inv; // No full magazines; user must pick a partial via its Load button
                   }
 
-                  // Save the old magazine as a partial if it had ammo remaining
+                  // Save the old magazine if it had ammo remaining
                   if (oldAmmo > 0) {
-                    if (!weapon.partialMagazines) weapon.partialMagazines = [];
-                    weapon.partialMagazines.push(oldAmmo);
+                    if (oldAmmo >= effectiveAmmo) {
+                      weapon.magazines += 1; // Full magazine goes back to full pool
+                    } else {
+                      if (!weapon.partialMagazines) weapon.partialMagazines = [];
+                      weapon.partialMagazines.push(oldAmmo);
+                    }
                   }
 
                   return inv;
                 });
               } else if (!hasMagazines || !weaponRequiresMags) {
-                // Non-magazine weapon OR magazine weapon with standard reload fallback
-                setCurrentAmmo(location, index, effectiveAmmo);
+                if (reloadsIndividually) {
+                  // Individual bullet reload: add 1 round
+                  setCurrentAmmo(location, index, Math.min(w.currentAmmo + 1, effectiveAmmo));
+                } else {
+                  // Full reload
+                  setCurrentAmmo(location, index, effectiveAmmo);
+                }
               }
             }}
             disabled={!canReload}
-            title={!canReload ? "No spare magazines" : hasMagazines ? "Reload (uses a magazine)" : "Reload"}
+            title={!canReload
+              ? (isAmmoFull ? "Weapon is fully loaded" : "No spare magazines")
+              : hasMagazines ? "Reload (uses a full magazine)" : reloadsIndividually ? "Load 1 round" : "Reload"}
           >
-            Reload{hasMagazines ? ` (${totalAvailableMags} mag)` : ""}
+            {reloadsIndividually && !hasMagazines
+              ? "Reload +1"
+              : hasMagazines
+                ? `Reload (${w.magazines} full mag)`
+                : "Reload"
+            }
           </button>
         </div>
 
@@ -775,16 +843,64 @@ export default function InventorySection(props: InventorySectionProps) {
                 (1W each)
               </span>
             </div>
-            {/* Partial magazines list */}
+            {/* Partial magazines list with Load and Discard buttons */}
             {(w.partialMagazines ?? []).length > 0 && (
-              <div class="ml-2 text-xs text-gray-600">
-                <span class="font-medium">Partial magazines:</span>{" "}
+              <div class="ml-2 text-xs text-gray-600 space-y-0.5">
+                <span class="font-medium">Partial magazines:</span>
                 {(w.partialMagazines ?? []).map((ammo, pi) => (
-                  <span key={pi} class="inline-block bg-yellow-50 border border-yellow-300 rounded px-1 mr-1">
-                    {ammo}/{effectiveAmmo} rounds
-                  </span>
+                  <div key={pi} class="flex items-center gap-1">
+                    <span class="inline-block bg-yellow-50 border border-yellow-300 rounded px-1">
+                      {ammo}/{effectiveAmmo} rounds
+                    </span>
+                    <button
+                      type="button"
+                      class="px-1 border rounded text-blue-600 hover:bg-blue-50"
+                      title="Load this magazine into the weapon"
+                      onClick={() => {
+                        updateCombat((inv) => {
+                          const weapon = inv[location].weapons[index];
+                          const oldAmmo = weapon.currentAmmo;
+                          const partials = weapon.partialMagazines ?? [];
+
+                          // Remove this partial magazine
+                          partials.splice(pi, 1);
+                          weapon.currentAmmo = ammo;
+                          weapon.partialMagazines = partials;
+
+                          // Save the old magazine
+                          if (oldAmmo > 0) {
+                            if (oldAmmo >= effectiveAmmo) {
+                              weapon.magazines += 1;
+                            } else {
+                              weapon.partialMagazines.push(oldAmmo);
+                            }
+                          }
+
+                          return inv;
+                        });
+                      }}
+                    >
+                      Load
+                    </button>
+                    <button
+                      type="button"
+                      class="px-1 border rounded text-red-500 hover:bg-red-50"
+                      title="Discard this partial magazine"
+                      onClick={() => {
+                        updateCombat((inv) => {
+                          const weapon = inv[location].weapons[index];
+                          const partials = weapon.partialMagazines ?? [];
+                          partials.splice(pi, 1);
+                          weapon.partialMagazines = partials;
+                          return inv;
+                        });
+                      }}
+                    >
+                      Discard
+                    </button>
+                  </div>
                 ))}
-                <span class="text-gray-400 ml-1">({(w.partialMagazines ?? []).length}W total)</span>
+                <span class="text-gray-400">({(w.partialMagazines ?? []).length}W total)</span>
               </div>
             )}
           </div>
@@ -923,7 +1039,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   <input
                     type="number"
                     class="w-12 border rounded px-1 text-xs"
-                    min="0"
+                    min="1"
                     value={eq.totalCharges}
                     onInput={(e) => {
                       const val = Number((e.target as HTMLInputElement).value);
@@ -1193,7 +1309,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   <input
                     type="number"
                     class="w-12 border rounded px-1 text-xs"
-                    min="0"
+                    min="1"
                     value={att.totalCharges}
                     onInput={(e) => {
                       const val = Number((e.target as HTMLInputElement).value);
@@ -1314,6 +1430,14 @@ export default function InventorySection(props: InventorySectionProps) {
   });
 
   const filteredAttachments = ATTACHMENTS.filter((a) => {
+    if (attachmentNationFilter) {
+      if (attachmentNationFilter === "Any") {
+        // "Generic" filter: only show attachments with nation "Any"
+        if (a.nation !== "Any") return false;
+      } else {
+        if (a.nation !== attachmentNationFilter) return false;
+      }
+    }
     if (!attachmentFilter) return true;
     const q = attachmentFilter.toLowerCase();
     return a.name.toLowerCase().includes(q) || a.appliesTo.toLowerCase().includes(q);
@@ -1421,7 +1545,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 >
                   All
                 </button>
-                {NATIONS.filter((n) => n !== "Any" && n !== "N/A").map((n) => (
+                {NATIONS.filter((n) => n !== "Any").map((n) => (
                   <button
                     key={n}
                     type="button"
@@ -1548,6 +1672,44 @@ export default function InventorySection(props: InventorySectionProps) {
           {/* Attachment picker */}
           {showAddAttachment && (
             <div class="space-y-1 border rounded p-2 bg-gray-50">
+              <div class="flex flex-wrap gap-1 mb-1">
+                <button
+                  type="button"
+                  class={`text-xs px-2 py-0.5 rounded border ${
+                    attachmentNationFilter === ""
+                      ? "bg-blue-100 border-blue-400 font-medium"
+                      : "hover:bg-gray-100"
+                  }`}
+                  onClick={() => setAttachmentNationFilter("")}
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  class={`text-xs px-2 py-0.5 rounded border ${
+                    attachmentNationFilter === "Any"
+                      ? "bg-blue-100 border-blue-400 font-medium"
+                      : "hover:bg-gray-100"
+                  }`}
+                  onClick={() => setAttachmentNationFilter(attachmentNationFilter === "Any" ? "" : "Any")}
+                >
+                  Generic
+                </button>
+                {NATIONS.filter((n) => n !== "Any").map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    class={`text-xs px-2 py-0.5 rounded border ${
+                      attachmentNationFilter === n
+                        ? "bg-blue-100 border-blue-400 font-medium"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => setAttachmentNationFilter(n === attachmentNationFilter ? "" : n)}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
               <input
                 type="text"
                 class="w-full border rounded px-2 py-1 text-sm"

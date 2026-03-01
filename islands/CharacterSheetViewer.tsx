@@ -41,6 +41,17 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     .filter((group) => group.items.length > 0);
   const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
 
+  const [showDescription, setShowDescription] = useState(true);
+  const [inventory, setInventory] = useState(
+    character.inventory ?? createEmptyInventory(),
+  );
+
+  // Build a draft that uses the local inventory state so weight/encumbrance updates live
+  const viewerDraft = {
+    ...character,
+    inventory,
+  };
+
   const {
     carriedWeight,
     setCarriedWeight,
@@ -49,12 +60,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     encumbranceLevel,
     encumbrancePenaltyText,
     effectiveByStat,
-  } = useCharacterStats(character);
-
-  const [showDescription, setShowDescription] = useState(true);
-  const [inventory, setInventory] = useState(
-    character.inventory ?? createEmptyInventory(),
-  );
+  } = useCharacterStats(viewerDraft);
 
   const isHidden = "hidden" in character &&
     (character as CharacterSheet).hidden;

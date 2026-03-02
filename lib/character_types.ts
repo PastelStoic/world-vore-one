@@ -14,7 +14,7 @@ export const ORGAN_TYPES = [
   "stomach",
   "breasts",
   "womb",
-  "dick",
+  "testicles",
   "tail",
 ] as const;
 export type OrganType = (typeof ORGAN_TYPES)[number];
@@ -23,7 +23,7 @@ export const ORGAN_LABELS: Record<OrganType, string> = {
   stomach: "Stomach",
   breasts: "Breasts",
   womb: "Womb",
-  dick: "Dick",
+  testicles: "Testicles",
   tail: "Tail",
 };
 

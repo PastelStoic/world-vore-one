@@ -190,7 +190,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `The dead remain within you after churning, awakening as your fat!
 
-*Prey must pick a bodypart ( Boobs, butt, belly, dick, balls, etc ) to live on as. They'll retain their consciousness and memories.
+*Prey must pick a bodypart ( Boobs, butt, belly, testicles, balls, etc ) to live on as. They'll retain their consciousness and memories.
 *The pred will then be able hear their living fat within their mind, and may be advised by it, if they're willing.
 *The living fat has control over the body part they inhabit: You may lactate or grow hard spontaneously, etc.
 *It takes a consitution check vs your advisor's own to control them and make them stop.

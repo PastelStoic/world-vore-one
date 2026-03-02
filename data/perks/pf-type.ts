@@ -98,7 +98,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Any investments into those stats only apply when dealing with other equally sized beings.
 *You can pass through extremely tiny openings. You cannot lift anything normal sized. 
 *You cannot escape the stomachs or grips of someone normal sized no matter how much you try.
-*You are extremely stretchy, You can take dick without issue, and you can eat ONE normal-sized person at all. 
+*You are extremely stretchy, You can take testicles without issue, and you can eat ONE normal-sized person at all. 
 *If you do manage to eat someone normal-sized, they are incapable of escaping you due to the sheer tightness.
 *Regular rules apply in regards to things similarly sized to yourself. 
 *You are capable of impregnating and being impregnated. You give no points when digested by someone normal sized.`,

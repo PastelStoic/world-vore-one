@@ -191,7 +191,7 @@ export function calculateEffectiveOrganCapacity(input: CharacterDraft) {
 /**
  * Returns the list of organs a character has based on race, sex, and perks.
  * Baseliners have no organs. Females get stomach/breasts/womb, males get
- * stomach/dick, futas get all four. Perks may grant additional organs (e.g. tail).
+ * stomach/testicles, futas get all four. Perks may grant additional organs (e.g. tail).
  */
 export function getCharacterOrgans(input: CharacterDraft): OrganType[] {
   if (input.race === "Baseliner") return [];
@@ -204,7 +204,7 @@ export function getCharacterOrgans(input: CharacterDraft): OrganType[] {
   }
 
   if (sex === "Male" || sex === "Futa") {
-    organs.push("dick");
+    organs.push("testicles");
   }
 
   for (const perkId of input.perkIds) {

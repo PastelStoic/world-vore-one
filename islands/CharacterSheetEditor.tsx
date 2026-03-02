@@ -353,6 +353,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         name="unallocatedStatPoints"
         value={String(unallocatedStatPoints)}
       />
+      {/* When identity fields are locked the fieldset is disabled and its
+          inputs are excluded from form submission, so emit a hidden input. */}
+      {lockIdentityFields && (
+        <input type="hidden" name="name" value={name} />
+      )}
 
       {lockIdentityFields && (
         <p class="text-sm text-gray-600">

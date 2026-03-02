@@ -74,6 +74,16 @@ export default define.page(async function Home(ctx) {
                               {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </span>
                           )}
+                          <form method="POST" action={`/characters/${character.id}`} class="contents">
+                            <input type="hidden" name="action" value="toggle-hidden" />
+                            <input type="hidden" name="returnTo" value="/" />
+                            <button
+                              type="submit"
+                              class="text-xs text-gray-400 hover:text-gray-700 ml-1 transition-colors"
+                            >
+                              Hide
+                            </button>
+                          </form>
                         </li>
                       ))}
                     </ul>
@@ -98,6 +108,16 @@ export default define.page(async function Home(ctx) {
                               {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </span>
                           )}
+                          <form method="POST" action={`/characters/${character.id}`} class="contents">
+                            <input type="hidden" name="action" value="toggle-hidden" />
+                            <input type="hidden" name="returnTo" value="/" />
+                            <button
+                              type="submit"
+                              class="text-xs text-gray-500 hover:text-gray-900 ml-1 underline transition-colors"
+                            >
+                              Unhide
+                            </button>
+                          </form>
                         </li>
                       ))}
                     </ul>

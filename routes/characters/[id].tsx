@@ -43,7 +43,11 @@ export const handler = define.handlers({
       await setCharacterStatus(id, "pending");
     }
 
-    return Response.redirect(new URL(`/characters/${id}`, ctx.url), 303);
+    const returnTo = formData.get("returnTo");
+    const redirectTarget = (typeof returnTo === "string" && returnTo.startsWith("/"))
+      ? returnTo
+      : `/characters/${id}`;
+    return Response.redirect(new URL(redirectTarget, ctx.url), 303);
   },
 });
 

@@ -20,6 +20,15 @@ export default define.page(async function Home(ctx) {
           </p>
         </header>
 
+        <section>
+          <a
+            href="/wiki"
+            class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            📖 Wiki
+          </a>
+        </section>
+
         {!user
           ? (
             <section>

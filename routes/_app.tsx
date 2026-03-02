@@ -11,7 +11,13 @@ export default define.page(function App({ Component, state }) {
         <title>world-vore-one</title>
       </head>
       <body>
-        <nav class="flex items-center justify-end px-4 py-2 bg-white/60 border-b">
+        <nav class="flex items-center justify-end px-4 py-2 bg-white/60 border-b gap-3">
+          <a
+            href="/wiki"
+            class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors mr-auto"
+          >
+            Wiki
+          </a>
           {user
             ? (
               <div class="flex items-center gap-3">

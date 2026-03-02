@@ -471,6 +471,16 @@ export default function InventorySection(props: InventorySectionProps) {
       }
       weapon.attachedIds.push(attachmentId);
 
+      // For charge-based non-magazine attachments: save charge data on the weapon so it
+      // survives while the attachment is equipped and can be restored on detach.
+      if (attDef?.isCharge && !attDef.ammoOverride && attInv) {
+        if (!weapon.attachmentChargeData) weapon.attachmentChargeData = {};
+        weapon.attachmentChargeData[attachmentId] = {
+          totalCharges: attInv.totalCharges,
+          usedCharges: attInv.usedCharges,
+        };
+      }
+
       // For charge-based magazine attachments: convert charges into weapon magazines
       if (attDef?.isCharge && attDef.ammoOverride && attInv) {
         const remainingCharges = Math.max(
@@ -555,12 +565,45 @@ export default function InventorySection(props: InventorySectionProps) {
         const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
         weapon.currentAmmo = Math.min(weapon.currentAmmo, wDef?.ammo ?? 999);
       } else {
-        // Return the attachment to the same location's inventory
+        // Return the attachment to the same location's inventory.
+        // For charge-based non-magazine attachments, restore the charge state that was
+        // saved when the attachment was equipped.
+        const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
         inv[location].attachments.push({
           attachmentId,
-          totalCharges: attDef?.isCharge ? 1 : 0,
-          usedCharges: 0,
+          totalCharges: savedChargeData?.totalCharges ?? (attDef?.isCharge ? 1 : 0),
+          usedCharges: savedChargeData?.usedCharges ?? 0,
         });
+        // Clean up saved state from weapon
+        if (weapon.attachmentChargeData) {
+          delete weapon.attachmentChargeData[attachmentId];
+        }
+      }
+      return inv;
+    });
+  }
+
+  // -- Toggle a charge for a non-magazine isCharge attachment currently on a weapon --
+  function toggleAttachedWeaponCharge(
+    location: InventoryLocation,
+    weaponIndex: number,
+    attachmentId: string,
+    chargeIndex: number,
+  ) {
+    updateCombat((inv) => {
+      const weapon = inv[location].weapons[weaponIndex];
+      if (!weapon.attachmentChargeData) return inv;
+      const chargeData = weapon.attachmentChargeData[attachmentId];
+      if (!chargeData) return inv;
+      const { totalCharges, usedCharges } = chargeData;
+      // Right-to-left: charges to the right are spent first
+      const usedStartIndex = totalCharges - usedCharges;
+      if (chargeIndex >= usedStartIndex) {
+        // Currently used → restore it
+        chargeData.usedCharges = Math.max(0, usedCharges - 1);
+      } else {
+        // Currently available → use it
+        chargeData.usedCharges = Math.min(totalCharges, usedCharges + 1);
       }
       return inv;
     });
@@ -1173,31 +1216,92 @@ export default function InventorySection(props: InventorySectionProps) {
             <span class="text-xs font-medium">Attachments:</span>
             {w.attachedIds.map((aId) => {
               const aDef = ATTACHMENTS_BY_ID.get(aId);
+              // Charge data for non-magazine isCharge attachments on this weapon
+              const attachedChargeData = aDef?.isCharge && !aDef.ammoOverride
+                ? w.attachmentChargeData?.[aId]
+                : undefined;
+              const attachedRemaining = attachedChargeData
+                ? Math.max(
+                  0,
+                  attachedChargeData.totalCharges - attachedChargeData.usedCharges,
+                )
+                : 0;
               return (
-                <div key={aId} class="flex items-center gap-1 text-xs">
-                  <span>
-                    {aDef?.name ?? aId}
-                    {aDef && aDef.weight > 0 && (
-                      <span class="text-gray-400">(W:{aDef.weight})</span>
-                    )}
-                  </span>
-                  {!readOnly && (
-                    <button
-                      type="button"
-                      class="px-1 border rounded text-red-500 hover:bg-red-50"
-                      onClick={() => detachFromWeapon(location, index, aId)}
-                    >
-                      Detach
-                    </button>
-                  )}
-                  {aDef && (
-                    <span class="text-xs text-gray-500 ml-1">
-                      <PerkDescription
-                        name=""
-                        description={aDef.description}
-                        hideByDefault
-                      />
+                <div key={aId} class="flex flex-col gap-0.5 text-xs">
+                  <div class="flex items-center gap-1">
+                    <span>
+                      {aDef?.name ?? aId}
+                      {aDef && aDef.weight > 0 && (
+                        <span class="text-gray-400">(W:{aDef.weight})</span>
+                      )}
                     </span>
+                    {!readOnly && (
+                      <button
+                        type="button"
+                        class="px-1 border rounded text-red-500 hover:bg-red-50"
+                        onClick={() => detachFromWeapon(location, index, aId)}
+                      >
+                        Detach
+                      </button>
+                    )}
+                    {aDef && (
+                      <span class="text-xs text-gray-500 ml-1">
+                        <PerkDescription
+                          name=""
+                          description={aDef.description}
+                          hideByDefault
+                        />
+                      </span>
+                    )}
+                  </div>
+                  {/* Charge tracking for non-magazine isCharge attachments on this weapon */}
+                  {attachedChargeData && (
+                    <div class="ml-2 space-y-0.5">
+                      <div class="flex flex-wrap gap-1">
+                        {Array.from(
+                          { length: attachedChargeData.totalCharges },
+                          (_, ci) => {
+                            const usedStartIndex =
+                              attachedChargeData.totalCharges -
+                              attachedChargeData.usedCharges;
+                            const isUsed = ci >= usedStartIndex;
+                            return (
+                              <button
+                                key={ci}
+                                type="button"
+                                class={`w-5 h-5 border rounded text-xs flex items-center justify-center ${
+                                  isUsed
+                                    ? "bg-red-100 border-red-400 text-red-600"
+                                    : "bg-green-50 border-green-400 text-green-700"
+                                } ${
+                                  readOnly
+                                    ? "cursor-default"
+                                    : "cursor-pointer hover:opacity-75"
+                                }`}
+                                title={isUsed
+                                  ? "Used (click to restore)"
+                                  : "Available (click to use)"}
+                                disabled={readOnly}
+                                onClick={() =>
+                                  !readOnly &&
+                                  toggleAttachedWeaponCharge(
+                                    location,
+                                    index,
+                                    aId,
+                                    ci,
+                                  )}
+                              >
+                                {isUsed ? "✕" : "●"}
+                              </button>
+                            );
+                          },
+                        )}
+                      </div>
+                      <div class="text-xs text-gray-500">
+                        {attachedRemaining} remaining ·{" "}
+                        {attachedChargeData.usedCharges} used
+                      </div>
+                    </div>
                   )}
                 </div>
               );

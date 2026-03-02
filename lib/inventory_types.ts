@@ -27,6 +27,11 @@ export interface InventoryWeapon {
   isSignatureWeapon?: boolean;
   /** How many reload turns have been completed toward the current reload (for multi-turn reloads) */
   reloadProgress?: number;
+  /**
+   * Charge state for isCharge attachments (without ammoOverride) that are currently attached.
+   * Keyed by attachmentId. Preserved so detaching restores the original charge data.
+   */
+  attachmentChargeData?: Record<string, { totalCharges: number; usedCharges: number }>;
 }
 
 /**

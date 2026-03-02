@@ -493,17 +493,26 @@ export default function InventorySection(props: InventorySectionProps) {
           if (
             attInv.savedMagazineStates && attInv.savedMagazineStates.length > 0
           ) {
-            const states = [...attInv.savedMagazineStates].sort((a, b) =>
-              b - a
-            );
+            const ammoOverride = attDef.ammoOverride!;
+            // Use only as many saved states as remainingCharges allows, so a
+            // manually-reduced totalCharges doesn't resurrect extra magazines.
+            const statesToUse = [...attInv.savedMagazineStates]
+              .sort((a, b) => b - a)
+              .slice(0, remainingCharges);
             // Load the best magazine
-            const best = states.shift()!;
+            const best = statesToUse.shift()!;
             weapon.currentAmmo = best;
             // Separate remaining into full and partial
-            const ammoOverride = attDef.ammoOverride!;
-            const fullMags = states.filter((s) => s >= ammoOverride).length;
-            const partials = states.filter((s) => s < ammoOverride);
-            weapon.magazines = fullMags;
+            const fullMags = statesToUse.filter((s) => s >= ammoOverride).length;
+            const partials = statesToUse.filter((s) => s < ammoOverride);
+            // If the user manually increased totalCharges beyond what savedMagazineStates
+            // recorded (e.g. bought more magazines after a detach), treat the surplus
+            // as additional full magazines so they are not silently dropped.
+            const extraFullMags = Math.max(
+              0,
+              remainingCharges - attInv.savedMagazineStates.length,
+            );
+            weapon.magazines = fullMags + extraFullMags;
             weapon.partialMagazines = partials;
           } else {
             // Fresh attach: load one magazine, rest are spare

@@ -5,7 +5,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     id: "king-s-royal-army-pf",
     name: "King's royal army",
     category: "faction",
-    requiredFaction: "Switzerland",
+    requiredFaction: "King's Royal Army",
     isFree: true,
     pointsGranted: 3,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
@@ -27,7 +27,7 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
-    requiredFaction: "Germany",
+    requiredFaction: "German Imperial Army", "The 7th Western Army", "German East African Army", "German West African Army",
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `Germany strong!
@@ -48,7 +48,7 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench raider",
     category: "faction",
-    requiredFaction: "England",
+    requiredFaction: "British Expeditionary Force (BEF)", "Canadian Expeditionary Force (CEF)", "Royal Berkshire Regiment",
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `ENGERLAAAANNDDD
@@ -69,7 +69,7 @@ Disadvantages:
     id: "harlem-hellfighter",
     name: "Harlem Hellfighter",
     category: "faction",
-    requiredFaction: "America",
+    requiredFaction:   "Harlem Hellfighters",
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `America strong!
@@ -89,7 +89,7 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
-    requiredFaction: "Mafia",
+    requiredFaction: "Italian mafia - Las Manos Apertas", "Russian mafia - Chernoye Zoloto","Irish mafia - O’Malley Syndicate",
     isFree: true,
     pointsGranted: 3,
     description:

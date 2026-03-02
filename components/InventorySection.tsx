@@ -471,9 +471,9 @@ export default function InventorySection(props: InventorySectionProps) {
       }
       weapon.attachedIds.push(attachmentId);
 
-      // For charge-based non-magazine attachments: save charge data on the weapon so it
+      // For charge-based attachments: save charge data on the weapon so totalCharges
       // survives while the attachment is equipped and can be restored on detach.
-      if (attDef?.isCharge && !attDef.ammoOverride && attInv) {
+      if (attDef?.isCharge && attInv) {
         if (!weapon.attachmentChargeData) weapon.attachmentChargeData = {};
         weapon.attachmentChargeData[attachmentId] = {
           totalCharges: attInv.totalCharges,
@@ -562,12 +562,20 @@ export default function InventorySection(props: InventorySectionProps) {
           savedStates.push(weapon.currentAmmo);
         }
 
+        // Restore the original totalCharges so that spending magazines only raises
+        // usedCharges rather than reducing totalCharges.
+        const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
+        const originalTotalCharges = savedChargeData?.totalCharges ?? savedStates.length;
+        const usedCharges = Math.max(0, originalTotalCharges - savedStates.length);
         inv[location].attachments.push({
           attachmentId,
-          totalCharges: savedStates.length,
-          usedCharges: 0,
+          totalCharges: originalTotalCharges,
+          usedCharges,
           savedMagazineStates: savedStates,
         });
+        if (weapon.attachmentChargeData) {
+          delete weapon.attachmentChargeData[attachmentId];
+        }
         weapon.magazines = 0;
         weapon.partialMagazines = [];
         // Revert ammo to weapon default (gun is empty after removing magazine)

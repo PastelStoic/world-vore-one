@@ -39,6 +39,10 @@ export const handler = define.handlers({
       await setCharacterStatus(id, "approved");
     }
 
+    if (action === "disapprove" && ctx.state.isAdmin) {
+      await setCharacterStatus(id, "pending");
+    }
+
     return Response.redirect(new URL(`/characters/${id}`, ctx.url), 303);
   },
 });
@@ -68,11 +72,20 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
     >
       <Head>
         <title>{`Character Sheet: ${character.name}`}</title>
-        <meta property="og:title" content={`Character Sheet: ${character.name}`} />
+        <meta
+          property="og:title"
+          content={`Character Sheet: ${character.name}`}
+        />
         <meta property="og:type" content="website" />
         {imageUrl && <meta property="og:image" content={imageUrl} />}
-        <meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
-        <meta name="twitter:title" content={`Character Sheet: ${character.name}`} />
+        <meta
+          name="twitter:card"
+          content={imageUrl ? "summary_large_image" : "summary"}
+        />
+        <meta
+          name="twitter:title"
+          content={`Character Sheet: ${character.name}`}
+        />
         {imageUrl && <meta name="twitter:image" content={imageUrl} />}
       </Head>
       {character.status === "pending" && (
@@ -90,6 +103,21 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
               </button>
             </form>
           )}
+        </div>
+      )}
+      {character.status !== "pending" && ctx.state.isAdmin && (
+        <div class="flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-300 rounded text-blue-800 text-sm">
+          <span class="font-medium">Approved</span>
+          <span>Disapprove to allow name/description edits again.</span>
+          <form method="POST" class="ml-auto">
+            <input type="hidden" name="action" value="disapprove" />
+            <button
+              type="submit"
+              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs"
+            >
+              Disapprove
+            </button>
+          </form>
         </div>
       )}
       {canEdit && (

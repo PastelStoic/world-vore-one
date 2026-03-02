@@ -152,13 +152,44 @@ export function countCarriedItemSlots(
     }
   }
 
-  for (const _w of inv.carried.weapons) {
-    slots += 1; // The weapon itself is 1 slot; attachments on it are free
+  for (const w of inv.carried.weapons) {
+    slots += 1; // The weapon itself is 1 slot
+    for (const attachmentId of w.attachedIds) {
+      const def = lookups?.getAttachment?.(attachmentId);
+      if (def?.isCharge) {
+        // Charge attachments consume one slot per purchased charge when loose,
+        // but while attached we track only the installed instance.
+        slots += 1;
+      } else {
+        slots += 1;
+      }
+    }
   }
 
-  // Loose attachments don't consume creation item slots
+  for (const a of inv.carried.attachments ?? []) {
+    const def = lookups?.getAttachment?.(a.attachmentId);
+    if (def?.isCharge) {
+      slots += a.totalCharges;
+    } else {
+      slots += 1;
+    }
+  }
 
   return slots;
+}
+
+export function hasMultipleCarriedBulkyEquipment(
+  inv: CharacterInventory,
+  getEquipment: (id: string) => { isBulky?: boolean } | undefined,
+): boolean {
+  let bulkyCount = 0;
+  for (const eq of inv.carried.equipment) {
+    if (getEquipment(eq.equipmentId)?.isBulky) {
+      bulkyCount += 1;
+      if (bulkyCount > 1) return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -168,8 +199,14 @@ export function calculateInventoryWeight(
   inv: CharacterInventory,
   lookups: {
     getWeapon: (id: string) => { weight: number } | undefined;
-    getEquipment: (id: string) => { weight: number; isCharge?: boolean } | undefined;
-    getAttachment: (id: string) => { weight: number; isCharge?: boolean; weightOverride?: number } | undefined;
+    getEquipment: (
+      id: string,
+    ) => { weight: number; isCharge?: boolean } | undefined;
+    getAttachment: (
+      id: string,
+    ) =>
+      | { weight: number; isCharge?: boolean; weightOverride?: number }
+      | undefined;
   },
 ): number {
   let total = 0;
@@ -285,14 +322,20 @@ export function parseInventory(raw: string): CharacterInventory | null {
           weaponId: String(w.weaponId),
           currentAmmo: typeof w.currentAmmo === "number" ? w.currentAmmo : 0,
           attachedIds: Array.isArray(w.attachedIds)
-            ? (w.attachedIds as unknown[]).filter((id): id is string => typeof id === "string")
+            ? (w.attachedIds as unknown[]).filter((id): id is string =>
+              typeof id === "string"
+            )
             : [],
           magazines: typeof w.magazines === "number" ? w.magazines : 0,
           partialMagazines: Array.isArray(w.partialMagazines)
-            ? (w.partialMagazines as unknown[]).filter((n): n is number => typeof n === "number")
+            ? (w.partialMagazines as unknown[]).filter((n): n is number =>
+              typeof n === "number"
+            )
             : [],
           ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
-          ...(typeof w.reloadProgress === "number" && w.reloadProgress > 0 ? { reloadProgress: w.reloadProgress } : {}),
+          ...(typeof w.reloadProgress === "number" && w.reloadProgress > 0
+            ? { reloadProgress: w.reloadProgress }
+            : {}),
         }));
       }
 
@@ -308,7 +351,9 @@ export function parseInventory(raw: string): CharacterInventory | null {
           damage: typeof w.damage === "number" ? w.damage : 0,
           weight: typeof w.weight === "number" ? w.weight : 1,
           traitIds: Array.isArray(w.traitIds)
-            ? (w.traitIds as unknown[]).filter((id): id is string => typeof id === "string")
+            ? (w.traitIds as unknown[]).filter((id): id is string =>
+              typeof id === "string"
+            )
             : [],
           description: String(w.description ?? ""),
           ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
@@ -341,9 +386,15 @@ export function parseInventory(raw: string): CharacterInventory | null {
         ).map((a: Record<string, unknown>) => ({
           attachmentId: String(a.attachmentId),
           totalCharges: typeof a.totalCharges === "number" ? a.totalCharges : 0,
-          usedCharges: typeof a.usedCharges === "number" ? a.usedCharges : 0,          ...(Array.isArray(a.savedMagazineStates) ? {
-            savedMagazineStates: (a.savedMagazineStates as unknown[]).filter((n): n is number => typeof n === "number"),
-          } : {}),        }));
+          usedCharges: typeof a.usedCharges === "number" ? a.usedCharges : 0,
+          ...(Array.isArray(a.savedMagazineStates)
+            ? {
+              savedMagazineStates: (a.savedMagazineStates as unknown[]).filter((
+                n,
+              ): n is number => typeof n === "number"),
+            }
+            : {}),
+        }));
       }
     }
 

@@ -1,6 +1,10 @@
 import { PERK_IDS, validatePerkRequirements } from "../data/perks.ts";
+import { EQUIPMENT_BY_ID } from "../data/equipment.ts";
 import { type CharacterDraft, type Race } from "./character_types.ts";
-import { parseInventory } from "./inventory_types.ts";
+import {
+  hasMultipleCarriedBulkyEquipment,
+  parseInventory,
+} from "./inventory_types.ts";
 import {
   parseBaseStats,
   parseDescription,
@@ -125,6 +129,19 @@ export function buildAndValidateDraft(
   );
   if (perkRequirementError) {
     return new Response(perkRequirementError, { status: 400 });
+  }
+
+  if (
+    draft.inventory &&
+    hasMultipleCarriedBulkyEquipment(
+      draft.inventory,
+      (id) => EQUIPMENT_BY_ID.get(id),
+    )
+  ) {
+    return new Response(
+      "Only one bulky equipment item can be carried at a time.",
+      { status: 400 },
+    );
   }
 
   return draft;

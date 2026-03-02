@@ -48,6 +48,12 @@ export const handler = define.handlers({
     // Race is immutable after creation — always use the existing value
     parsed.race = existing.race;
 
+    // After approval, identity fields are immutable until disapproved
+    if (!isPending) {
+      parsed.name = existing.name;
+      parsed.description = existing.description;
+    }
+
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
 

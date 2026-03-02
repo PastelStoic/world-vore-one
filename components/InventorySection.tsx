@@ -77,7 +77,11 @@ function getWeaponPointCost(id: string, perkIds?: string[]): number {
  * Get the point cost for a weapon taking signature weapon status and faction discount into account.
  * Restricted signature weapons cost 1pt instead of 3pt; other signature weapons are free.
  */
-function getSignatureAdjustedPointCost(id: string, isSignature: boolean, perkIds?: string[]): number {
+function getSignatureAdjustedPointCost(
+  id: string,
+  isSignature: boolean,
+  perkIds?: string[],
+): number {
   const def = WEAPONS_BY_ID.get(id);
   if (!def) return 0;
 
@@ -99,8 +103,16 @@ function getSignatureAdjustedPointCost(id: string, isSignature: boolean, perkIds
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function InventorySection(props: InventorySectionProps) {
-  const { inventory, onChange, readOnly, availablePoints, characterId, perkIds } = props;
-  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ?? false;
+  const {
+    inventory,
+    onChange,
+    readOnly,
+    availablePoints,
+    characterId,
+    perkIds,
+  } = props;
+  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
+    false;
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
@@ -109,51 +121,57 @@ export default function InventorySection(props: InventorySectionProps) {
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
   const [attachmentFilter, setAttachmentFilter] = useState("");
-  const [attachmentNationFilter, setAttachmentNationFilter] = useState<Nation | "">("");
+  const [attachmentNationFilter, setAttachmentNationFilter] = useState<
+    Nation | ""
+  >("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
   // ── Derived ──
   const carriedSlots = countCarriedItemSlots(inventory, slotLookups);
+  const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
+    return count + (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isBulky ? 1 : 0);
+  }, 0);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
 
   // Compute inventory point cost with signature weapon adjustments
   const inventoryPointCost = (() => {
     // Use the signature-adjusted cost function
     const adjustedGetCost = (id: string) => getWeaponPointCost(id, perkIds);
-    let cost = calculateInventoryPointCost(inventory, adjustedGetCost, slotLookups);
+    let cost = calculateInventoryPointCost(
+      inventory,
+      adjustedGetCost,
+      slotLookups,
+    );
 
     if (hasSignatureWeaponPerk) {
       // Recalculate with signature adjustments
       cost = 0;
 
-      // Count carried slots – attachments don't cost slots
-      let adjustedSlots = 0;
-      for (const _w of inventory.carried.weapons) {
-        adjustedSlots += 1; // The weapon itself is 1 slot; attachments are free
-      }
-      // Equipment slots: charge items count each charge as a slot
-      for (const e of inventory.carried.equipment) {
-        const def = EQUIPMENT_BY_ID.get(e.equipmentId);
-        if (def?.isCharge) {
-          adjustedSlots += e.totalCharges;
-        } else {
-          adjustedSlots += 1;
-        }
-      }
-      // Loose attachments don't cost slots
-
+      const adjustedSlots = countCarriedItemSlots(inventory, slotLookups);
       const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
       cost += overFree * EXTRA_ITEM_POINT_COST;
 
       // Weapon-specific costs with signature adjustment
       for (const w of inventory.carried.weapons) {
-        cost += getSignatureAdjustedPointCost(w.weaponId, !!w.isSignatureWeapon, perkIds);
+        cost += getSignatureAdjustedPointCost(
+          w.weaponId,
+          !!w.isSignatureWeapon,
+          perkIds,
+        );
       }
       for (const w of inventory.stowed.weapons) {
-        cost += getSignatureAdjustedPointCost(w.weaponId, !!w.isSignatureWeapon, perkIds);
+        cost += getSignatureAdjustedPointCost(
+          w.weaponId,
+          !!w.isSignatureWeapon,
+          perkIds,
+        );
       }
     } else {
-      cost = calculateInventoryPointCost(inventory, (id) => getWeaponPointCost(id, perkIds), slotLookups);
+      cost = calculateInventoryPointCost(
+        inventory,
+        (id) => getWeaponPointCost(id, perkIds),
+        slotLookups,
+      );
     }
 
     return cost;
@@ -164,7 +182,10 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // ── Cost computation for adding an item ──
   /** Compute how many points adding a weapon to a location would cost */
-  function weaponAddCost(weaponId: string, location: InventoryLocation): number {
+  function weaponAddCost(
+    weaponId: string,
+    location: InventoryLocation,
+  ): number {
     let cost = getWeaponPointCost(weaponId, perkIds);
     if (location === "carried") {
       if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
@@ -176,6 +197,16 @@ export default function InventorySection(props: InventorySectionProps) {
 
   /** Compute how many points adding equipment to a location would cost */
   function equipmentAddCost(location: InventoryLocation): number {
+    if (location === "carried") {
+      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
+        return EXTRA_ITEM_POINT_COST;
+      }
+    }
+    return 0;
+  }
+
+  /** Compute how many points adding an attachment to a location would cost */
+  function attachmentAddCost(location: InventoryLocation): number {
     if (location === "carried") {
       if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
         return EXTRA_ITEM_POINT_COST;
@@ -310,6 +341,9 @@ export default function InventorySection(props: InventorySectionProps) {
   function addEquipment(equipmentId: string, location: InventoryLocation) {
     const def = EQUIPMENT_BY_ID.get(equipmentId);
     if (!def) return;
+    if (location === "carried" && def.isBulky && carriedBulkyCount > 0) {
+      return;
+    }
     const item: InventoryEquipment = {
       equipmentId,
       totalCharges: def.isCharge ? 1 : 0,
@@ -337,8 +371,23 @@ export default function InventorySection(props: InventorySectionProps) {
     to: InventoryLocation,
   ) {
     update((inv) => {
-      const [eq] = inv[from].equipment.splice(index, 1);
-      inv[to].equipment.push(eq);
+      const eq = inv[from].equipment[index];
+      const def = eq ? EQUIPMENT_BY_ID.get(eq.equipmentId) : undefined;
+      if (
+        to === "carried" &&
+        def?.isBulky &&
+        inv.carried.equipment.some((existing, existingIndex) =>
+          existingIndex !== index || from !== "carried"
+            ? EQUIPMENT_BY_ID.get(existing.equipmentId)?.isBulky
+            : false
+        )
+      ) {
+        return inv;
+      }
+
+      const [moved] = inv[from].equipment.splice(index, 1);
+      if (!moved) return inv;
+      inv[to].equipment.push(moved);
       return inv;
     });
   }
@@ -415,7 +464,7 @@ export default function InventorySection(props: InventorySectionProps) {
     weaponIndex: number,
     attachmentId: string,
   ) {
-    update((inv) => {
+    updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
       // Find the attachment in the same location's inventory
       const attIdx = inv[location].attachments.findIndex(
@@ -430,19 +479,26 @@ export default function InventorySection(props: InventorySectionProps) {
 
       // For charge-based magazine attachments: convert charges into weapon magazines
       if (attDef?.isCharge && attDef.ammoOverride && attInv) {
-        const remainingCharges = Math.max(0, attInv.totalCharges - attInv.usedCharges);
+        const remainingCharges = Math.max(
+          0,
+          attInv.totalCharges - attInv.usedCharges,
+        );
 
         if (remainingCharges > 0) {
           // Check if we have saved magazine states from a previous detach
-          if (attInv.savedMagazineStates && attInv.savedMagazineStates.length > 0) {
-            const states = [...attInv.savedMagazineStates].sort((a, b) => b - a);
+          if (
+            attInv.savedMagazineStates && attInv.savedMagazineStates.length > 0
+          ) {
+            const states = [...attInv.savedMagazineStates].sort((a, b) =>
+              b - a
+            );
             // Load the best magazine
             const best = states.shift()!;
             weapon.currentAmmo = best;
             // Separate remaining into full and partial
             const ammoOverride = attDef.ammoOverride!;
-            const fullMags = states.filter(s => s >= ammoOverride).length;
-            const partials = states.filter(s => s < ammoOverride);
+            const fullMags = states.filter((s) => s >= ammoOverride).length;
+            const partials = states.filter((s) => s < ammoOverride);
             weapon.magazines = fullMags;
             weapon.partialMagazines = partials;
           } else {
@@ -454,6 +510,10 @@ export default function InventorySection(props: InventorySectionProps) {
         }
         // If remainingCharges === 0, don't change ammo or magazines
       }
+
+      if (attDef?.ammoOverride) {
+        weapon.currentAmmo = Math.min(weapon.currentAmmo, attDef.ammoOverride);
+      }
       return inv;
     });
   }
@@ -463,7 +523,7 @@ export default function InventorySection(props: InventorySectionProps) {
     weaponIndex: number,
     attachmentId: string,
   ) {
-    update((inv) => {
+    updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
       const ids = weapon.attachedIds;
       const idx = ids.indexOf(attachmentId);
@@ -513,7 +573,10 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // -- Add / remove loose attachment in inventory --
-  function addAttachmentToInventory(attachmentId: string, location: InventoryLocation) {
+  function addAttachmentToInventory(
+    attachmentId: string,
+    location: InventoryLocation,
+  ) {
     const def = ATTACHMENTS_BY_ID.get(attachmentId);
     if (!def) return;
     const item: InventoryAttachment = {
@@ -535,7 +598,11 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  function moveAttachment(from: InventoryLocation, index: number, to: InventoryLocation) {
+  function moveAttachment(
+    from: InventoryLocation,
+    index: number,
+    to: InventoryLocation,
+  ) {
     update((inv) => {
       const [att] = inv[from].attachments.splice(index, 1);
       inv[to].attachments.push(att);
@@ -543,11 +610,17 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  function setAttachmentTotalCharges(location: InventoryLocation, index: number, total: number) {
+  function setAttachmentTotalCharges(
+    location: InventoryLocation,
+    index: number,
+    total: number,
+  ) {
     update((inv) => {
       const att = inv[location].attachments[index];
       att.totalCharges = Math.max(1, total);
-      if (att.usedCharges > att.totalCharges) att.usedCharges = att.totalCharges;
+      if (att.usedCharges > att.totalCharges) {
+        att.usedCharges = att.totalCharges;
+      }
       return inv;
     });
   }
@@ -630,7 +703,9 @@ export default function InventorySection(props: InventorySectionProps) {
     index: number,
   ) {
     const def = WEAPONS_BY_ID.get(w.weaponId);
-    if (!def) return <div class="text-red-500">Unknown weapon: {w.weaponId}</div>;
+    if (!def) {
+      return <div class="text-red-500">Unknown weapon: {w.weaponId}</div>;
+    }
 
     const otherLocation: InventoryLocation = location === "carried"
       ? "stowed"
@@ -660,7 +735,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
     // Find compatible attachments owned in the same location's inventory
     // For charge-based attachments, only show if they have remaining charges
-    const ownedAttachments = (inventory[location].attachments ?? []);
+    const ownedAttachments = inventory[location].attachments ?? [];
     const ownedAttachmentIds = new Set(
       ownedAttachments
         .filter((a) => {
@@ -670,15 +745,18 @@ export default function InventorySection(props: InventorySectionProps) {
           }
           return true;
         })
-        .map((a) => a.attachmentId)
+        .map((a) => a.attachmentId),
     );
     const availableAttachments = def.compatibleAttachmentIds
-      .filter((aId) => !w.attachedIds.includes(aId) && ownedAttachmentIds.has(aId))
+      .filter((aId) =>
+        !w.attachedIds.includes(aId) && ownedAttachmentIds.has(aId)
+      )
       .map((aId) => ATTACHMENTS_BY_ID.get(aId))
       .filter(Boolean);
 
     // Check if weapon uses magazines (freeAccessoryIds) or attachment-based magazine system
-    const hasFreeAccessoryMags = def.freeAccessoryIds && def.freeAccessoryIds.length > 0;
+    const hasFreeAccessoryMags = def.freeAccessoryIds &&
+      def.freeAccessoryIds.length > 0;
     const hasMagazines = hasFreeAccessoryMags || attachmentMagazineSystem;
     const magazineAccessory = hasFreeAccessoryMags
       ? FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0])
@@ -699,9 +777,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
     // Can reload?
     const canReload = !isAmmoFull && (
-      hasMagazines
-        ? totalAvailableMags > 0 || !weaponRequiresMags
-        : true
+      hasMagazines ? totalAvailableMags > 0 || !weaponRequiresMags : true
     );
 
     // Multi-turn reload tracking
@@ -720,15 +796,22 @@ export default function InventorySection(props: InventorySectionProps) {
     const damageDisplay = isSignature ? `${def.damage}+1` : def.damage;
 
     return (
-      <div class={`border rounded p-2 space-y-1 ${isSignature ? "bg-amber-50 border-amber-300" : "bg-white"}`}>
+      <div
+        class={`border rounded p-2 space-y-1 ${
+          isSignature ? "bg-amber-50 border-amber-300" : "bg-white"
+        }`}
+      >
         <div class="flex items-center justify-between flex-wrap gap-1">
           <div>
             {isSignature && (
-              <span class="text-amber-500 mr-1" title="Signature Weapon">★</span>
+              <span class="text-amber-500 mr-1" title="Signature Weapon">
+                ★
+              </span>
             )}
             <strong>{def.name}</strong>{" "}
             <span class="text-xs text-gray-500">
-              ({def.type} · {def.nation} · W:{effectiveWeight} · DMG:{damageDisplay} · ROF:{def.rateOfFire})
+              ({def.type} · {def.nation} · W:{effectiveWeight}{" "}
+              · DMG:{damageDisplay} · ROF:{def.rateOfFire})
             </span>
             {isSignature && (
               <span class="text-xs text-amber-600 ml-1 font-medium">
@@ -737,7 +820,9 @@ export default function InventorySection(props: InventorySectionProps) {
             )}
             {def.pointCost > 0 && (
               <span class="text-xs text-amber-600 ml-1">
-                [Cost: {isSignature ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds) : getWeaponPointCost(w.weaponId, perkIds)}pt]
+                [Cost: {isSignature
+                  ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
+                  : getWeaponPointCost(w.weaponId, perkIds)}pt]
               </span>
             )}
           </div>
@@ -752,7 +837,9 @@ export default function InventorySection(props: InventorySectionProps) {
                       : "hover:bg-amber-50 text-amber-600"
                   }`}
                   onClick={() => toggleSignatureWeapon(location, index)}
-                  title={isSignature ? "Unmark as Signature Weapon" : "Mark as Signature Weapon"}
+                  title={isSignature
+                    ? "Unmark as Signature Weapon"
+                    : "Mark as Signature Weapon"}
                 >
                   {isSignature ? "★ Signature" : "☆ Set Signature"}
                 </button>
@@ -797,7 +884,11 @@ export default function InventorySection(props: InventorySectionProps) {
           <span class="text-xs text-gray-500">/ {effectiveAmmo}</span>
           <button
             type="button"
-            class={`px-1 text-xs border rounded ${canReload || isReloading ? "hover:bg-gray-100" : "opacity-50 cursor-not-allowed"} ${isReloading ? "bg-yellow-50 border-yellow-400" : ""}`}
+            class={`px-1 text-xs border rounded ${
+              canReload || isReloading
+                ? "hover:bg-gray-100"
+                : "opacity-50 cursor-not-allowed"
+            } ${isReloading ? "bg-yellow-50 border-yellow-400" : ""}`}
             onClick={() => {
               if (!canReload && !isReloading) return;
 
@@ -811,7 +902,10 @@ export default function InventorySection(props: InventorySectionProps) {
                     // Reload complete!
                     weapon.reloadProgress = 0;
                     if (reloadsIndividually && !hasMagazines) {
-                      weapon.currentAmmo = Math.min(weapon.currentAmmo + 1, effectiveAmmo);
+                      weapon.currentAmmo = Math.min(
+                        weapon.currentAmmo + 1,
+                        effectiveAmmo,
+                      );
                     } else if (hasMagazines && totalAvailableMags > 0) {
                       const oldAmmo = weapon.currentAmmo;
                       if (weapon.magazines > 0) {
@@ -822,13 +916,18 @@ export default function InventorySection(props: InventorySectionProps) {
                         if (oldAmmo >= effectiveAmmo) {
                           weapon.magazines += 1;
                         } else {
-                          if (!weapon.partialMagazines) weapon.partialMagazines = [];
+                          if (!weapon.partialMagazines) {
+                            weapon.partialMagazines = [];
+                          }
                           weapon.partialMagazines.push(oldAmmo);
                         }
                       }
                     } else if (!hasMagazines || !weaponRequiresMags) {
                       if (reloadsIndividually) {
-                        weapon.currentAmmo = Math.min(weapon.currentAmmo + 1, effectiveAmmo);
+                        weapon.currentAmmo = Math.min(
+                          weapon.currentAmmo + 1,
+                          effectiveAmmo,
+                        );
                       } else {
                         weapon.currentAmmo = effectiveAmmo;
                       }
@@ -844,7 +943,11 @@ export default function InventorySection(props: InventorySectionProps) {
               // Single-turn reload (original behavior)
               if (reloadsIndividually && !hasMagazines) {
                 // Individual bullet reload: add 1 round
-                setCurrentAmmo(location, index, Math.min(w.currentAmmo + 1, effectiveAmmo));
+                setCurrentAmmo(
+                  location,
+                  index,
+                  Math.min(w.currentAmmo + 1, effectiveAmmo),
+                );
               } else if (hasMagazines && totalAvailableMags > 0) {
                 // Magazine-fed reload: consume a full magazine
                 updateCombat((inv) => {
@@ -864,7 +967,9 @@ export default function InventorySection(props: InventorySectionProps) {
                     if (oldAmmo >= effectiveAmmo) {
                       weapon.magazines += 1; // Full magazine goes back to full pool
                     } else {
-                      if (!weapon.partialMagazines) weapon.partialMagazines = [];
+                      if (!weapon.partialMagazines) {
+                        weapon.partialMagazines = [];
+                      }
                       weapon.partialMagazines.push(oldAmmo);
                     }
                   }
@@ -874,7 +979,11 @@ export default function InventorySection(props: InventorySectionProps) {
               } else if (!hasMagazines || !weaponRequiresMags) {
                 if (reloadsIndividually) {
                   // Individual bullet reload: add 1 round
-                  setCurrentAmmo(location, index, Math.min(w.currentAmmo + 1, effectiveAmmo));
+                  setCurrentAmmo(
+                    location,
+                    index,
+                    Math.min(w.currentAmmo + 1, effectiveAmmo),
+                  );
                 } else {
                   // Full reload
                   setCurrentAmmo(location, index, effectiveAmmo);
@@ -885,23 +994,26 @@ export default function InventorySection(props: InventorySectionProps) {
             title={isReloading
               ? `Reloading: ${reloadProgress}/${effectiveReloadTurns} turns`
               : !canReload
-                ? (isAmmoFull ? "Weapon is fully loaded" : "No spare magazines")
-                : hasMagazines ? "Reload (uses a full magazine)" : reloadsIndividually ? "Load 1 round" : "Reload"}
+              ? (isAmmoFull ? "Weapon is fully loaded" : "No spare magazines")
+              : hasMagazines
+              ? "Reload (uses a full magazine)"
+              : reloadsIndividually
+              ? "Load 1 round"
+              : "Reload"}
           >
             {isReloading
               ? `Reloading… ${reloadProgress}/${effectiveReloadTurns} turns`
               : effectiveReloadTurns > 1
-                ? (reloadsIndividually && !hasMagazines
-                  ? `Reload +1 (${effectiveReloadTurns} turns)`
-                  : hasMagazines
-                    ? `Reload (${w.magazines} full mag · ${effectiveReloadTurns} turns)`
-                    : `Reload (${effectiveReloadTurns} turns)`)
-                : (reloadsIndividually && !hasMagazines
-                  ? "Reload +1"
-                  : hasMagazines
-                    ? `Reload (${w.magazines} full mag)`
-                    : "Reload")
-            }
+              ? (reloadsIndividually && !hasMagazines
+                ? `Reload +1 (${effectiveReloadTurns} turns)`
+                : hasMagazines
+                ? `Reload (${w.magazines} full mag · ${effectiveReloadTurns} turns)`
+                : `Reload (${effectiveReloadTurns} turns)`)
+              : (reloadsIndividually && !hasMagazines
+                ? "Reload +1"
+                : hasMagazines
+                ? `Reload (${w.magazines} full mag)`
+                : "Reload")}
           </button>
           {isReloading && (
             <button
@@ -924,7 +1036,11 @@ export default function InventorySection(props: InventorySectionProps) {
         {hasMagazines && (
           <div class="space-y-1">
             <div class="flex items-center gap-2 text-sm">
-              <span>Full magazines{magazineAccessory ? ` (${magazineAccessory.name})` : ""}:</span>
+              <span>
+                Full magazines{magazineAccessory
+                  ? ` (${magazineAccessory.name})`
+                  : ""}:
+              </span>
               <input
                 type="number"
                 class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
@@ -996,7 +1112,9 @@ export default function InventorySection(props: InventorySectionProps) {
                     </button>
                   </div>
                 ))}
-                <span class="text-gray-400">({(w.partialMagazines ?? []).length}W total)</span>
+                <span class="text-gray-400">
+                  ({(w.partialMagazines ?? []).length}W total)
+                </span>
               </div>
             )}
           </div>
@@ -1013,21 +1131,23 @@ export default function InventorySection(props: InventorySectionProps) {
                   <span>
                     {aDef?.name ?? aId}
                     {aDef && aDef.weight > 0 && (
-                      <span class="text-gray-400"> (W:{aDef.weight})</span>
+                      <span class="text-gray-400">(W:{aDef.weight})</span>
                     )}
                   </span>
-                  {!readOnly && (
-                    <button
-                      type="button"
-                      class="px-1 border rounded text-red-500 hover:bg-red-50"
-                      onClick={() => detachFromWeapon(location, index, aId)}
-                    >
-                      Detach
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    class="px-1 border rounded text-red-500 hover:bg-red-50"
+                    onClick={() => detachFromWeapon(location, index, aId)}
+                  >
+                    Detach
+                  </button>
                   {aDef && (
                     <span class="text-xs text-gray-500 ml-1">
-                      <PerkDescription name="" description={aDef.description} hideByDefault />
+                      <PerkDescription
+                        name=""
+                        description={aDef.description}
+                        hideByDefault
+                      />
                     </span>
                   )}
                 </div>
@@ -1037,7 +1157,7 @@ export default function InventorySection(props: InventorySectionProps) {
         )}
 
         {/* Attach new attachment – only shows compatible attachments owned in inventory */}
-        {!readOnly && availableAttachments.length > 0 && (
+        {availableAttachments.length > 0 && (
           <div class="ml-2">
             <select
               class="text-xs border rounded px-1 py-0.5"
@@ -1056,11 +1176,16 @@ export default function InventorySection(props: InventorySectionProps) {
             </select>
           </div>
         )}
-        {!readOnly && availableAttachments.length === 0 && def.compatibleAttachmentIds.filter((aId) => !w.attachedIds.includes(aId)).length > 0 && (
-          <div class="ml-2 text-xs text-gray-400 italic">
-            Compatible attachments exist but none are in your inventory. Add them via the Attachments section below.
-          </div>
-        )}
+        {availableAttachments.length === 0 &&
+          def.compatibleAttachmentIds.filter((aId) =>
+              !w.attachedIds.includes(aId)
+            ).length > 0 &&
+          (
+            <div class="ml-2 text-xs text-gray-400 italic">
+              Compatible attachments exist but none are in your inventory. Add
+              them via the Attachments section below.
+            </div>
+          )}
       </div>
     );
   }
@@ -1072,7 +1197,9 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     const def = EQUIPMENT_BY_ID.get(eq.equipmentId);
     if (!def) {
-      return <div class="text-red-500">Unknown equipment: {eq.equipmentId}</div>;
+      return (
+        <div class="text-red-500">Unknown equipment: {eq.equipmentId}</div>
+      );
     }
 
     const otherLocation: InventoryLocation = location === "carried"
@@ -1082,9 +1209,12 @@ export default function InventorySection(props: InventorySectionProps) {
     const remaining = def.isCharge
       ? Math.max(0, eq.totalCharges - eq.usedCharges)
       : 0;
-    const currentWeight = def.isCharge
-      ? def.weight * remaining
-      : def.weight;
+    const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
+    const canMoveToOther = !(
+      otherLocation === "carried" &&
+      def.isBulky &&
+      carriedBulkyCount > 0
+    );
 
     return (
       <div class="border rounded p-2 space-y-1 bg-white">
@@ -1092,15 +1222,20 @@ export default function InventorySection(props: InventorySectionProps) {
           <div>
             <strong>{def.name}</strong>{" "}
             <span class="text-xs text-gray-500">
-              (W:{currentWeight}{def.isBulky ? " · Bulky" : ""})
+              (W:{currentWeight}
+              {def.isBulky ? " · Bulky" : ""})
             </span>
           </div>
           {!readOnly && (
             <div class="flex gap-1">
               <button
                 type="button"
-                class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => moveEquipment(location, index, otherLocation)}
+                disabled={!canMoveToOther}
+                title={!canMoveToOther
+                  ? "Only one bulky kit can be carried at a time"
+                  : undefined}
               >
                 → {otherLocation === "carried" ? "Carry" : "Stow"}
               </button>
@@ -1116,7 +1251,11 @@ export default function InventorySection(props: InventorySectionProps) {
         </div>
 
         <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
-          <PerkDescription name="" description={def.description} hideByDefault />
+          <PerkDescription
+            name=""
+            description={def.description}
+            hideByDefault
+          />
         </div>
 
         {/* Charge tracking with checkboxes – always interactive for combat tracking */}
@@ -1134,7 +1273,9 @@ export default function InventorySection(props: InventorySectionProps) {
                     value={eq.totalCharges}
                     onInput={(e) => {
                       const val = Number((e.target as HTMLInputElement).value);
-                      if (!Number.isNaN(val)) setTotalCharges(location, index, val);
+                      if (!Number.isNaN(val)) {
+                        setTotalCharges(location, index, val);
+                      }
                     }}
                   />
                   )
@@ -1153,7 +1294,9 @@ export default function InventorySection(props: InventorySectionProps) {
                         ? "bg-red-100 border-red-400 text-red-600"
                         : "bg-green-50 border-green-400 text-green-700"
                     } cursor-pointer hover:opacity-75`}
-                    title={isUsed ? "Used (click to restore)" : "Available (click to use)"}
+                    title={isUsed
+                      ? "Used (click to restore)"
+                      : "Available (click to use)"}
                     onClick={() => toggleCharge(location, index, ci)}
                   >
                     {isUsed ? "✕" : "●"}
@@ -1184,15 +1327,19 @@ export default function InventorySection(props: InventorySectionProps) {
     const damageDisplay = isSignature ? `${mw.damage}+1` : String(mw.damage);
 
     return (
-      <div class={`border rounded p-2 space-y-1 ${isSignature ? "bg-amber-50 border-amber-300" : "bg-white"}`}>
+      <div
+        class={`border rounded p-2 space-y-1 ${
+          isSignature ? "bg-amber-50 border-amber-300" : "bg-white"
+        }`}
+      >
         <div class="flex items-center justify-between flex-wrap gap-1">
           <div>
             {isSignature && (
-              <span class="text-amber-500 mr-1" title="Signature Weapon">★</span>
+              <span class="text-amber-500 mr-1" title="Signature Weapon">
+                ★
+              </span>
             )}
-            {readOnly ? (
-              <strong>{mw.name}</strong>
-            ) : (
+            {readOnly ? <strong>{mw.name}</strong> : (
               <input
                 type="text"
                 class="border rounded px-1 py-0.5 text-sm font-bold"
@@ -1223,7 +1370,9 @@ export default function InventorySection(props: InventorySectionProps) {
                       : "hover:bg-amber-50 text-amber-600"
                   }`}
                   onClick={() => toggleSignatureMelee(location, index)}
-                  title={isSignature ? "Unmark as Signature Weapon" : "Mark as Signature Weapon"}
+                  title={isSignature
+                    ? "Unmark as Signature Weapon"
+                    : "Mark as Signature Weapon"}
                 >
                   {isSignature ? "★ Signature" : "☆ Set Signature"}
                 </button>
@@ -1281,64 +1430,71 @@ export default function InventorySection(props: InventorySectionProps) {
         )}
 
         {/* Description */}
-        {readOnly ? (
-          mw.description && (
-            <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
-              {mw.description}
-            </div>
+        {readOnly
+          ? (
+            mw.description && (
+              <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
+                {mw.description}
+              </div>
+            )
           )
-        ) : (
-          <textarea
-            class="w-full text-xs border rounded px-2 py-1"
-            placeholder="Weapon description…"
-            rows={2}
-            value={mw.description}
-            onInput={(e) =>
-              updateMeleeWeapon(location, index, {
-                description: (e.target as HTMLTextAreaElement).value,
-              })}
-          />
-        )}
+          : (
+            <textarea
+              class="w-full text-xs border rounded px-2 py-1"
+              placeholder="Weapon description…"
+              rows={2}
+              value={mw.description}
+              onInput={(e) =>
+                updateMeleeWeapon(location, index, {
+                  description: (e.target as HTMLTextAreaElement).value,
+                })}
+            />
+          )}
 
         {/* Melee traits */}
         <div class="space-y-0.5">
           <span class="text-xs font-medium">Traits:</span>
-          {readOnly ? (
-            mw.traitIds.length > 0 ? (
-              <ul class="ml-2 text-xs space-y-0.5">
-                {mw.traitIds.map((tid) => {
-                  const trait = MELEE_TRAITS_BY_ID.get(tid);
+          {readOnly
+            ? (
+              mw.traitIds.length > 0
+                ? (
+                  <ul class="ml-2 text-xs space-y-0.5">
+                    {mw.traitIds.map((tid) => {
+                      const trait = MELEE_TRAITS_BY_ID.get(tid);
+                      return (
+                        <li key={tid}>
+                          <strong>{trait?.name ?? tid}:</strong>{" "}
+                          {trait?.description ?? ""}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )
+                : <span class="text-xs text-gray-400 ml-1">None</span>
+            )
+            : (
+              <div class="ml-2 flex flex-wrap gap-1">
+                {MELEE_TRAITS.map((trait) => {
+                  const active = mw.traitIds.includes(trait.id);
                   return (
-                    <li key={tid}>
-                      <strong>{trait?.name ?? tid}:</strong>{" "}
-                      {trait?.description ?? ""}
-                    </li>
+                    <button
+                      key={trait.id}
+                      type="button"
+                      class={`text-xs px-1.5 py-0.5 rounded border ${
+                        active
+                          ? "bg-blue-100 border-blue-400"
+                          : "hover:bg-gray-50"
+                      }`}
+                      title={trait.description}
+                      onClick={() =>
+                        toggleMeleeTrait(location, index, trait.id)}
+                    >
+                      {trait.name}
+                    </button>
                   );
                 })}
-              </ul>
-            ) : (
-              <span class="text-xs text-gray-400 ml-1">None</span>
-            )
-          ) : (
-            <div class="ml-2 flex flex-wrap gap-1">
-              {MELEE_TRAITS.map((trait) => {
-                const active = mw.traitIds.includes(trait.id);
-                return (
-                  <button
-                    key={trait.id}
-                    type="button"
-                    class={`text-xs px-1.5 py-0.5 rounded border ${
-                      active ? "bg-blue-100 border-blue-400" : "hover:bg-gray-50"
-                    }`}
-                    title={trait.description}
-                    onClick={() => toggleMeleeTrait(location, index, trait.id)}
-                  >
-                    {trait.name}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+              </div>
+            )}
         </div>
       </div>
     );
@@ -1350,10 +1506,18 @@ export default function InventorySection(props: InventorySectionProps) {
     index: number,
   ) {
     const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
-    if (!def) return <div class="text-red-500">Unknown attachment: {att.attachmentId}</div>;
+    if (!def) {
+      return (
+        <div class="text-red-500">Unknown attachment: {att.attachmentId}</div>
+      );
+    }
 
-    const otherLocation: InventoryLocation = location === "carried" ? "stowed" : "carried";
-    const remaining = def.isCharge ? Math.max(0, att.totalCharges - att.usedCharges) : 0;
+    const otherLocation: InventoryLocation = location === "carried"
+      ? "stowed"
+      : "carried";
+    const remaining = def.isCharge
+      ? Math.max(0, att.totalCharges - att.usedCharges)
+      : 0;
     const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
 
     return (
@@ -1386,7 +1550,11 @@ export default function InventorySection(props: InventorySectionProps) {
         </div>
 
         <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
-          <PerkDescription name="" description={def.description} hideByDefault />
+          <PerkDescription
+            name=""
+            description={def.description}
+            hideByDefault
+          />
         </div>
 
         {/* Charge tracking for charge-based attachments */}
@@ -1404,7 +1572,9 @@ export default function InventorySection(props: InventorySectionProps) {
                     value={att.totalCharges}
                     onInput={(e) => {
                       const val = Number((e.target as HTMLInputElement).value);
-                      if (!Number.isNaN(val)) setAttachmentTotalCharges(location, index, val);
+                      if (!Number.isNaN(val)) {
+                        setAttachmentTotalCharges(location, index, val);
+                      }
                     }}
                   />
                   )
@@ -1422,9 +1592,10 @@ export default function InventorySection(props: InventorySectionProps) {
 
   function renderInventoryBlock(location: InventoryLocation) {
     const inv = inventory[location];
-    const label = location === "carried" ? "Equipment (On Person)" : "Stowed (Owned, Not Carried)";
-    const isEmpty =
-      inv.weapons.length === 0 &&
+    const label = location === "carried"
+      ? "Equipment (On Person)"
+      : "Stowed (Owned, Not Carried)";
+    const isEmpty = inv.weapons.length === 0 &&
       inv.meleeWeapons.length === 0 &&
       inv.equipment.length === 0 &&
       (inv.attachments ?? []).length === 0;
@@ -1440,9 +1611,7 @@ export default function InventorySection(props: InventorySectionProps) {
           )}
         </h4>
 
-        {isEmpty && (
-          <p class="text-sm text-gray-400 italic">No items.</p>
-        )}
+        {isEmpty && <p class="text-sm text-gray-400 italic">No items.</p>}
 
         {/* Weapons */}
         {inv.weapons.length > 0 && (
@@ -1538,7 +1707,8 @@ export default function InventorySection(props: InventorySectionProps) {
     }
     if (!attachmentFilter) return true;
     const q = attachmentFilter.toLowerCase();
-    return a.name.toLowerCase().includes(q) || a.appliesTo.toLowerCase().includes(q);
+    return a.name.toLowerCase().includes(q) ||
+      a.appliesTo.toLowerCase().includes(q);
   });
 
   return (
@@ -1546,8 +1716,13 @@ export default function InventorySection(props: InventorySectionProps) {
       <h3 class="font-semibold">
         Inventory
         {pointsAfterInventory != null && (
-          <span class={`text-sm font-normal ml-2 ${pointsAfterInventory < 0 ? "text-red-600" : "text-gray-500"}`}>
-            (Inventory cost: {inventoryPointCost}pt · Remaining: {pointsAfterInventory}pt)
+          <span
+            class={`text-sm font-normal ml-2 ${
+              pointsAfterInventory < 0 ? "text-red-600" : "text-gray-500"
+            }`}
+          >
+            (Inventory cost: {inventoryPointCost}pt · Remaining:{" "}
+            {pointsAfterInventory}pt)
           </span>
         )}
       </h3>
@@ -1666,45 +1841,54 @@ export default function InventorySection(props: InventorySectionProps) {
                 onInput={(e) =>
                   setWeaponFilter((e.target as HTMLInputElement).value)}
               />
-              {filteredWeapons.length === 0 ? (
-                <p class="text-sm text-gray-400 italic">No matching weapons.</p>
-              ) : (
-                <ul class="max-h-64 overflow-y-auto space-y-1">
-                  {filteredWeapons.map((w) => {
-                    const addCost = weaponAddCost(w.id, addTarget);
-                    return (
-                      <li
-                        key={w.id}
-                        class="text-sm border-b border-gray-100 pb-1"
-                      >
-                        <div class="flex items-center justify-between">
-                          <span>
-                            {w.name}{" "}
-                            <span class="text-xs text-gray-500">
-                              ({w.type} · {w.nation} · W:{w.weight} · DMG:{w.damage})
-                            </span>
-                            {w.pointCost > 0 && (
-                              <span class="text-xs text-amber-600 ml-1">
-                                [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
+              {filteredWeapons.length === 0
+                ? (
+                  <p class="text-sm text-gray-400 italic">
+                    No matching weapons.
+                  </p>
+                )
+                : (
+                  <ul class="max-h-64 overflow-y-auto space-y-1">
+                    {filteredWeapons.map((w) => {
+                      const addCost = weaponAddCost(w.id, addTarget);
+                      return (
+                        <li
+                          key={w.id}
+                          class="text-sm border-b border-gray-100 pb-1"
+                        >
+                          <div class="flex items-center justify-between">
+                            <span>
+                              {w.name}{" "}
+                              <span class="text-xs text-gray-500">
+                                ({w.type} · {w.nation} · W:{w.weight}{" "}
+                                · DMG:{w.damage})
                               </span>
-                            )}
-                          </span>
-                          <button
-                            type="button"
-                            class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
-                            onClick={() => addWeapon(w.id, addTarget)}
-                          >
-                            Add ({costLabel(addCost)})
-                          </button>
-                        </div>
-                        <div class="text-xs text-gray-600 ml-2">
-                          <PerkDescription name="" description={w.gimmicks} hideByDefault />
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                              {w.pointCost > 0 && (
+                                <span class="text-xs text-amber-600 ml-1">
+                                  [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
+                                </span>
+                              )}
+                            </span>
+                            <button
+                              type="button"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                              onClick={() => addWeapon(w.id, addTarget)}
+                            >
+                              Add ({costLabel(addCost)})
+                            </button>
+                          </div>
+                          <div class="text-xs text-gray-600 ml-2">
+                            <PerkDescription
+                              name=""
+                              description={w.gimmicks}
+                              hideByDefault
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
             </div>
           )}
 
@@ -1719,44 +1903,56 @@ export default function InventorySection(props: InventorySectionProps) {
                 onInput={(e) =>
                   setEquipmentFilter((e.target as HTMLInputElement).value)}
               />
-              {filteredEquipment.length === 0 ? (
-                <p class="text-sm text-gray-400 italic">
-                  No matching equipment.
-                </p>
-              ) : (
-                <ul class="space-y-1">
-                  {filteredEquipment.map((eq) => {
-                    const addCost = equipmentAddCost(addTarget);
-                    return (
-                      <li
-                        key={eq.id}
-                        class="text-sm border-b border-gray-100 pb-1"
-                      >
-                        <div class="flex items-center justify-between">
-                          <span>
-                            {eq.name}{" "}
-                            <span class="text-xs text-gray-500">
-                              (W:{eq.weight}
-                              {eq.isCharge ? " · Charges" : ""}
-                              {eq.isBulky ? " · Bulky" : ""})
+              {filteredEquipment.length === 0
+                ? (
+                  <p class="text-sm text-gray-400 italic">
+                    No matching equipment.
+                  </p>
+                )
+                : (
+                  <ul class="space-y-1">
+                    {filteredEquipment.map((eq) => {
+                      const addCost = equipmentAddCost(addTarget);
+                      const cannotCarryBulky = addTarget === "carried" &&
+                        eq.isBulky && carriedBulkyCount > 0;
+                      return (
+                        <li
+                          key={eq.id}
+                          class="text-sm border-b border-gray-100 pb-1"
+                        >
+                          <div class="flex items-center justify-between">
+                            <span>
+                              {eq.name}{" "}
+                              <span class="text-xs text-gray-500">
+                                (W:{eq.weight}
+                                {eq.isCharge ? " · Charges" : ""}
+                                {eq.isBulky ? " · Bulky" : ""})
+                              </span>
                             </span>
-                          </span>
-                          <button
-                            type="button"
-                            class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
-                            onClick={() => addEquipment(eq.id, addTarget)}
-                          >
-                            Add ({costLabel(addCost)})
-                          </button>
-                        </div>
-                        <div class="text-xs text-gray-600 ml-2">
-                          <PerkDescription name="" description={eq.description} hideByDefault />
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                            <button
+                              type="button"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                              onClick={() => addEquipment(eq.id, addTarget)}
+                              disabled={cannotCarryBulky}
+                              title={cannotCarryBulky
+                                ? "Only one bulky kit can be carried at a time"
+                                : undefined}
+                            >
+                              Add ({costLabel(addCost)})
+                            </button>
+                          </div>
+                          <div class="text-xs text-gray-600 ml-2">
+                            <PerkDescription
+                              name=""
+                              description={eq.description}
+                              hideByDefault
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
             </div>
           )}
 
@@ -1799,7 +1995,10 @@ export default function InventorySection(props: InventorySectionProps) {
                       ? "bg-blue-100 border-blue-400 font-medium"
                       : "hover:bg-gray-100"
                   }`}
-                  onClick={() => setAttachmentNationFilter(attachmentNationFilter === "Any" ? "" : "Any")}
+                  onClick={() =>
+                    setAttachmentNationFilter(
+                      attachmentNationFilter === "Any" ? "" : "Any",
+                    )}
                 >
                   Generic
                 </button>
@@ -1812,7 +2011,10 @@ export default function InventorySection(props: InventorySectionProps) {
                         ? "bg-blue-100 border-blue-400 font-medium"
                         : "hover:bg-gray-100"
                     }`}
-                    onClick={() => setAttachmentNationFilter(n === attachmentNationFilter ? "" : n)}
+                    onClick={() =>
+                      setAttachmentNationFilter(
+                        n === attachmentNationFilter ? "" : n,
+                      )}
                   >
                     {n}
                   </button>
@@ -1826,40 +2028,50 @@ export default function InventorySection(props: InventorySectionProps) {
                 onInput={(e) =>
                   setAttachmentFilter((e.target as HTMLInputElement).value)}
               />
-              {filteredAttachments.length === 0 ? (
-                <p class="text-sm text-gray-400 italic">
-                  No matching attachments.
-                </p>
-              ) : (
-                <ul class="max-h-64 overflow-y-auto space-y-1">
-                  {filteredAttachments.map((att) => (
-                    <li
-                      key={att.id}
-                      class="text-sm border-b border-gray-100 pb-1"
-                    >
-                      <div class="flex items-center justify-between">
-                        <span>
-                          {att.name}{" "}
-                          <span class="text-xs text-gray-500">
-                            (W:{att.weight} · For: {att.appliesTo}
-                            {att.isCharge ? " · Charges" : ""})
-                          </span>
-                        </span>
-                        <button
-                          type="button"
-                          class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
-                          onClick={() => addAttachmentToInventory(att.id, addTarget)}
+              {filteredAttachments.length === 0
+                ? (
+                  <p class="text-sm text-gray-400 italic">
+                    No matching attachments.
+                  </p>
+                )
+                : (
+                  <ul class="max-h-64 overflow-y-auto space-y-1">
+                    {filteredAttachments.map((att) => {
+                      const addCost = attachmentAddCost(addTarget);
+                      return (
+                        <li
+                          key={att.id}
+                          class="text-sm border-b border-gray-100 pb-1"
                         >
-                          Add
-                        </button>
-                      </div>
-                      <div class="text-xs text-gray-600 ml-2">
-                        <PerkDescription name="" description={att.description} hideByDefault />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                          <div class="flex items-center justify-between">
+                            <span>
+                              {att.name}{" "}
+                              <span class="text-xs text-gray-500">
+                                (W:{att.weight} · For: {att.appliesTo}
+                                {att.isCharge ? " · Charges" : ""})
+                              </span>
+                            </span>
+                            <button
+                              type="button"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                              onClick={() =>
+                                addAttachmentToInventory(att.id, addTarget)}
+                            >
+                              Add ({costLabel(addCost)})
+                            </button>
+                          </div>
+                          <div class="text-xs text-gray-600 ml-2">
+                            <PerkDescription
+                              name=""
+                              description={att.description}
+                              hideByDefault
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
             </div>
           )}
         </div>

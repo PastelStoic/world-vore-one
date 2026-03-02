@@ -28,8 +28,15 @@ import EncumbranceSection from "../components/EncumbranceSection.tsx";
 import PerkDescription from "../components/PerkDescription.tsx";
 import InventorySection from "../components/InventorySection.tsx";
 import type { CharacterInventory } from "../lib/inventory_types.ts";
-import { calculateInventoryPointCost, createEmptyInventory } from "../lib/inventory_types.ts";
-import { WEAPONS_BY_ID, EQUIPMENT_BY_ID, ATTACHMENTS_BY_ID } from "../data/equipment.ts";
+import {
+  calculateInventoryPointCost,
+  createEmptyInventory,
+} from "../lib/inventory_types.ts";
+import {
+  ATTACHMENTS_BY_ID,
+  EQUIPMENT_BY_ID,
+  WEAPONS_BY_ID,
+} from "../data/equipment.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -251,6 +258,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   // When pending approval, allow full re-allocation (no floor on decreases)
   const statFloor = props.isPending ? 0 : undefined;
   const canRemoveOldPerks = !!props.isPending;
+  const lockIdentityFields = props.action === "update" && !props.isPending;
 
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints - inventoryPointCost < 1) {
@@ -346,349 +354,367 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         value={String(unallocatedStatPoints)}
       />
 
-      <label class="block">
-        <span class="block font-medium mb-1">Name</span>
-        <input
-          class="w-full border rounded px-3 py-2"
-          name="name"
-          type="text"
-          value={name}
-          onInput={(event) =>
-            setName(event.currentTarget.value)}
-          required
-        />
-      </label>
+      {lockIdentityFields && (
+        <p class="text-sm text-gray-600">
+          Name and description are locked after approval. An admin must
+          disapprove the character to change them.
+        </p>
+      )}
 
-      <div class="rounded border p-3 space-y-3">
-        <button
-          type="button"
-          class="font-semibold text-blue-600 hover:underline cursor-pointer"
-          onClick={() =>
-            setShowDescription((v) => !v)}
-        >
-          Description {showDescription ? "▲" : "▼"}
-        </button>
-        {showDescription && (
-          <>
-            <label class="block">
-              <span class="block font-medium mb-1">Race</span>
-              <select
-                class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                name="race"
-                value={race}
-                disabled={props.action === "update"}
-                onInput={(event) => {
-                  const newRace = event.currentTarget
-                    .value as CharacterDraft["race"];
-                  const pointsDiff = getStartingStatPoints(newRace) -
-                    getStartingStatPoints(race);
-                  setRace(newRace);
-                  setUnallocatedStatPoints((current) => current + pointsDiff);
-                }}
-              >
-                {getRacesForSex(description.sex).map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-            </label>
+      <fieldset
+        disabled={lockIdentityFields}
+        class="space-y-4 disabled:opacity-70"
+      >
+        <label class="block">
+          <span class="block font-medium mb-1">Name</span>
+          <input
+            class="w-full border rounded px-3 py-2"
+            name="name"
+            type="text"
+            value={name}
+            onInput={(event) =>
+              setName(event.currentTarget.value)}
+            required
+          />
+        </label>
 
-            <label class="block">
-              <span class="block font-medium mb-1">Sex</span>
-              <select
-                class="w-full border rounded px-3 py-2"
-                value={description.sex}
-                onInput={(event) => {
-                  const newSex = event.currentTarget.value as Sex;
-                  updateDescription("sex", newSex);
-                  // Swap gendered race name to match new sex
-                  setRace((prev) =>
-                    mapRaceForSex(prev, newSex)
-                  );
-                }}
-              >
-                {SEX_OPTIONS.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-            </label>
-
-            {isPilzRace(race) && (
-              <label class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={description.isTemplate}
+        <div class="rounded border p-3 space-y-3">
+          <button
+            type="button"
+            class="font-semibold text-blue-600 hover:underline cursor-pointer"
+            onClick={() =>
+              setShowDescription((v) => !v)}
+          >
+            Description {showDescription ? "▲" : "▼"}
+          </button>
+          {showDescription && (
+            <>
+              <label class="block">
+                <span class="block font-medium mb-1">Race</span>
+                <select
+                  class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  name="race"
+                  value={race}
                   disabled={props.action === "update"}
+                  onInput={(event) => {
+                    const newRace = event.currentTarget
+                      .value as CharacterDraft["race"];
+                    const pointsDiff = getStartingStatPoints(newRace) -
+                      getStartingStatPoints(race);
+                    setRace(newRace);
+                    setUnallocatedStatPoints((current) => current + pointsDiff);
+                  }}
+                >
+                  {getRacesForSex(description.sex).map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label class="block">
+                <span class="block font-medium mb-1">Sex</span>
+                <select
+                  class="w-full border rounded px-3 py-2"
+                  value={description.sex}
+                  onInput={(event) => {
+                    const newSex = event.currentTarget.value as Sex;
+                    updateDescription("sex", newSex);
+                    // Swap gendered race name to match new sex
+                    setRace((prev) =>
+                      mapRaceForSex(prev, newSex)
+                    );
+                  }}
+                >
+                  {SEX_OPTIONS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+
+              {isPilzRace(race) && (
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={description.isTemplate}
+                    disabled={props.action === "update"}
+                    onChange={(event) =>
+                      updateDescription(
+                        "isTemplate",
+                        event.currentTarget.checked,
+                      )}
+                    class={props.action === "update"
+                      ? "opacity-60 cursor-not-allowed"
+                      : ""}
+                  />
+                  <span class="font-medium">Is a template</span>
+                </label>
+              )}
+
+              <label class="block">
+                <span class="block font-medium mb-1">Country of Origin</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  value={description.countryOfOrigin}
+                  onInput={(event) =>
+                    updateDescription(
+                      "countryOfOrigin",
+                      event.currentTarget.value,
+                    )}
+                />
+              </label>
+
+              <label class="block">
+                <span class="block font-medium mb-1">Faction</span>
+                <select
+                  class="w-full border rounded px-3 py-2"
+                  value={description.faction}
                   onChange={(event) =>
                     updateDescription(
-                      "isTemplate",
-                      event.currentTarget.checked,
+                      "faction",
+                      (event.target as HTMLSelectElement).value,
                     )}
-                  class={props.action === "update"
-                    ? "opacity-60 cursor-not-allowed"
-                    : ""}
-                />
-                <span class="font-medium">Is a template</span>
-              </label>
-            )}
-
-            <label class="block">
-              <span class="block font-medium mb-1">Country of Origin</span>
-              <input
-                class="w-full border rounded px-3 py-2"
-                type="text"
-                value={description.countryOfOrigin}
-                onInput={(event) =>
-                  updateDescription(
-                    "countryOfOrigin",
-                    event.currentTarget.value,
-                  )}
-              />
-            </label>
-
-            <label class="block">
-              <span class="block font-medium mb-1">Faction</span>
-              <select
-                class="w-full border rounded px-3 py-2"
-                value={description.faction}
-                onChange={(event) =>
-                  updateDescription(
-                    "faction",
-                    (event.target as HTMLSelectElement).value,
-                  )}
-              >
-                <option value="">— None —</option>
-                {FACTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-            </label>
-
-            <label class="block">
-              <span class="block font-medium mb-1">Role</span>
-              <input
-                class="w-full border rounded px-3 py-2"
-                type="text"
-                placeholder="Cook, politician, soldier, sapper, conscript, etc."
-                value={description.role}
-                onInput={(event) =>
-                  updateDescription("role", event.currentTarget.value)}
-              />
-            </label>
-
-            {description.role.toLowerCase() === "soldier" && (
-              <label class="block">
-                <span class="block font-medium mb-1">Subfaction</span>
-                <input
-                  class="w-full border rounded px-3 py-2"
-                  type="text"
-                  value={description.subfaction}
-                  onInput={(event) =>
-                    updateDescription("subfaction", event.currentTarget.value)}
-                />
-              </label>
-            )}
-
-            <label class="block">
-              <span class="block font-medium mb-1">Age</span>
-              <input
-                class="w-full border rounded px-3 py-2"
-                type="text"
-                placeholder={isPilzRace(race)
-                  ? "Biological age is 21 by default. Include chronological age."
-                  : "Must be 18+. Include chronological age (year 1923)."}
-                value={description.age}
-                onInput={(event) =>
-                  updateDescription("age", event.currentTarget.value)}
-              />
-            </label>
-
-            <label class="block">
-              <span class="block font-medium mb-1">Date of Birth</span>
-              <input
-                class="w-full border rounded px-3 py-2"
-                type="text"
-                placeholder="M/D/Y — Year is mandatory, month and day are optional"
-                value={description.dateOfBirth}
-                onInput={(event) =>
-                  updateDescription("dateOfBirth", event.currentTarget.value)}
-              />
-            </label>
-
-            <div class="grid grid-cols-2 gap-3">
-              <label class="block">
-                <span class="block font-medium mb-1">Height</span>
-                <input
-                  class="w-full border rounded px-3 py-2"
-                  type="text"
-                  value={description.height}
-                  onInput={(event) =>
-                    updateDescription("height", event.currentTarget.value)}
-                />
+                >
+                  <option value="">— None —</option>
+                  {FACTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+                </select>
               </label>
 
               <label class="block">
-                <span class="block font-medium mb-1">Weight</span>
+                <span class="block font-medium mb-1">Role</span>
                 <input
                   class="w-full border rounded px-3 py-2"
                   type="text"
-                  value={description.weight}
+                  placeholder="Cook, politician, soldier, sapper, conscript, etc."
+                  value={description.role}
                   onInput={(event) =>
-                    updateDescription("weight", event.currentTarget.value)}
+                    updateDescription("role", event.currentTarget.value)}
                 />
               </label>
-            </div>
 
-            <p class="text-sm text-gray-500 italic">
-              The appearance fields below may be left blank if using an image to
-              represent your character.
-            </p>
-
-            <div class="rounded border p-3 space-y-2 bg-gray-50">
-              <h4 class="font-medium">Character Image</h4>
-              {currentImageUrl && (
-                <div class="space-y-2">
-                  <img
-                    src={currentImageUrl}
-                    alt={`${name} character image`}
-                    class="max-w-xs rounded border"
+              {description.role.toLowerCase() === "soldier" && (
+                <label class="block">
+                  <span class="block font-medium mb-1">Subfaction</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.subfaction}
+                    onInput={(event) =>
+                      updateDescription(
+                        "subfaction",
+                        event.currentTarget.value,
+                      )}
                   />
-                  <button
-                    type="button"
-                    class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                </label>
+              )}
+
+              <label class="block">
+                <span class="block font-medium mb-1">Age</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  placeholder={isPilzRace(race)
+                    ? "Biological age is 21 by default. Include chronological age."
+                    : "Must be 18+. Include chronological age (year 1923)."}
+                  value={description.age}
+                  onInput={(event) =>
+                    updateDescription("age", event.currentTarget.value)}
+                />
+              </label>
+
+              <label class="block">
+                <span class="block font-medium mb-1">Date of Birth</span>
+                <input
+                  class="w-full border rounded px-3 py-2"
+                  type="text"
+                  placeholder="M/D/Y — Year is mandatory, month and day are optional"
+                  value={description.dateOfBirth}
+                  onInput={(event) =>
+                    updateDescription("dateOfBirth", event.currentTarget.value)}
+                />
+              </label>
+
+              <div class="grid grid-cols-2 gap-3">
+                <label class="block">
+                  <span class="block font-medium mb-1">Height</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.height}
+                    onInput={(event) =>
+                      updateDescription("height", event.currentTarget.value)}
+                  />
+                </label>
+
+                <label class="block">
+                  <span class="block font-medium mb-1">Weight</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.weight}
+                    onInput={(event) =>
+                      updateDescription("weight", event.currentTarget.value)}
+                  />
+                </label>
+              </div>
+
+              <p class="text-sm text-gray-500 italic">
+                The appearance fields below may be left blank if using an image
+                to represent your character.
+              </p>
+
+              <div class="rounded border p-3 space-y-2 bg-gray-50">
+                <h4 class="font-medium">Character Image</h4>
+                {currentImageUrl && (
+                  <div class="space-y-2">
+                    <img
+                      src={currentImageUrl}
+                      alt={`${name} character image`}
+                      class="max-w-xs rounded border"
+                    />
+                    <button
+                      type="button"
+                      class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                      disabled={imageUploading}
+                      onClick={handleImageDelete}
+                    >
+                      Remove Image
+                    </button>
+                  </div>
+                )}
+                <label class="block">
+                  <span class="block text-sm mb-1">
+                    {currentImageUrl ? "Replace image:" : "Upload an image:"}
+                  </span>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    class="block text-sm"
                     disabled={imageUploading}
-                    onClick={handleImageDelete}
-                  >
-                    Remove Image
-                  </button>
-                </div>
-              )}
-              <label class="block">
-                <span class="block text-sm mb-1">
-                  {currentImageUrl ? "Replace image:" : "Upload an image:"}
-                </span>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  class="block text-sm"
-                  disabled={imageUploading}
-                  onChange={(event) => {
-                    const file = event.currentTarget.files?.[0];
-                    if (file) handleImageUpload(file);
-                  }}
-                />
-              </label>
-              {imageUploading && (
-                <p class="text-sm text-blue-600">Uploading…</p>
-              )}
-              {imageError && <p class="text-sm text-red-600">{imageError}</p>}
-            </div>
+                    onChange={(event) => {
+                      const file = event.currentTarget.files?.[0];
+                      if (file) handleImageUpload(file);
+                    }}
+                  />
+                </label>
+                {imageUploading && (
+                  <p class="text-sm text-blue-600">Uploading…</p>
+                )}
+                {imageError && <p class="text-sm text-red-600">{imageError}</p>}
+              </div>
 
-            <div class="grid grid-cols-2 gap-3">
-              <label class="block">
-                <span class="block font-medium mb-1">Skin Color</span>
-                <input
-                  class="w-full border rounded px-3 py-2"
-                  type="text"
-                  value={description.skinColor}
-                  onInput={(event) =>
-                    updateDescription("skinColor", event.currentTarget.value)}
-                />
-              </label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="block">
+                  <span class="block font-medium mb-1">Skin Color</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.skinColor}
+                    onInput={(event) =>
+                      updateDescription("skinColor", event.currentTarget.value)}
+                  />
+                </label>
 
-              <label class="block">
-                <span class="block font-medium mb-1">Hair Color</span>
-                <input
-                  class="w-full border rounded px-3 py-2"
-                  type="text"
-                  value={description.hairColor}
-                  onInput={(event) =>
-                    updateDescription("hairColor", event.currentTarget.value)}
-                />
-              </label>
+                <label class="block">
+                  <span class="block font-medium mb-1">Hair Color</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.hairColor}
+                    onInput={(event) =>
+                      updateDescription("hairColor", event.currentTarget.value)}
+                  />
+                </label>
 
-              <label class="block">
-                <span class="block font-medium mb-1">Eye Color</span>
-                <input
-                  class="w-full border rounded px-3 py-2"
-                  type="text"
-                  value={description.eyeColor}
-                  onInput={(event) =>
-                    updateDescription("eyeColor", event.currentTarget.value)}
-                />
-              </label>
+                <label class="block">
+                  <span class="block font-medium mb-1">Eye Color</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.eyeColor}
+                    onInput={(event) =>
+                      updateDescription("eyeColor", event.currentTarget.value)}
+                  />
+                </label>
+
+                <label class="block">
+                  <span class="block font-medium mb-1">Ethnicity</span>
+                  <input
+                    class="w-full border rounded px-3 py-2"
+                    type="text"
+                    value={description.ethnicity}
+                    onInput={(event) =>
+                      updateDescription("ethnicity", event.currentTarget.value)}
+                  />
+                </label>
+              </div>
 
               <label class="block">
-                <span class="block font-medium mb-1">Ethnicity</span>
+                <span class="block font-medium mb-1">Body Type</span>
                 <input
                   class="w-full border rounded px-3 py-2"
                   type="text"
-                  value={description.ethnicity}
+                  value={description.bodyType}
                   onInput={(event) =>
-                    updateDescription("ethnicity", event.currentTarget.value)}
+                    updateDescription("bodyType", event.currentTarget.value)}
                 />
               </label>
-            </div>
 
-            <label class="block">
-              <span class="block font-medium mb-1">Body Type</span>
-              <input
-                class="w-full border rounded px-3 py-2"
-                type="text"
-                value={description.bodyType}
-                onInput={(event) =>
-                  updateDescription("bodyType", event.currentTarget.value)}
-              />
-            </label>
+              <label class="block">
+                <span class="block font-medium mb-1">General Appearance</span>
+                <textarea
+                  class="w-full border rounded px-3 py-2"
+                  rows={3}
+                  value={description.generalAppearance}
+                  onInput={(event) =>
+                    updateDescription(
+                      "generalAppearance",
+                      event.currentTarget.value,
+                    )}
+                />
+              </label>
 
-            <label class="block">
-              <span class="block font-medium mb-1">General Appearance</span>
-              <textarea
-                class="w-full border rounded px-3 py-2"
-                rows={3}
-                value={description.generalAppearance}
-                onInput={(event) =>
-                  updateDescription(
-                    "generalAppearance",
-                    event.currentTarget.value,
-                  )}
-              />
-            </label>
+              <label class="block">
+                <span class="block font-medium mb-1">General Health</span>
+                <textarea
+                  class="w-full border rounded px-3 py-2"
+                  rows={3}
+                  placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
+                  value={description.generalHealth}
+                  onInput={(event) =>
+                    updateDescription(
+                      "generalHealth",
+                      event.currentTarget.value,
+                    )}
+                />
+              </label>
 
-            <label class="block">
-              <span class="block font-medium mb-1">General Health</span>
-              <textarea
-                class="w-full border rounded px-3 py-2"
-                rows={3}
-                placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
-                value={description.generalHealth}
-                onInput={(event) =>
-                  updateDescription("generalHealth", event.currentTarget.value)}
-              />
-            </label>
+              <label class="block">
+                <span class="block font-medium mb-1">Personality</span>
+                <textarea
+                  class="w-full border rounded px-3 py-2"
+                  rows={3}
+                  value={description.personality}
+                  onInput={(event) =>
+                    updateDescription("personality", event.currentTarget.value)}
+                />
+              </label>
 
-            <label class="block">
-              <span class="block font-medium mb-1">Personality</span>
-              <textarea
-                class="w-full border rounded px-3 py-2"
-                rows={3}
-                value={description.personality}
-                onInput={(event) =>
-                  updateDescription("personality", event.currentTarget.value)}
-              />
-            </label>
-
-            <label class="block">
-              <span class="block font-medium mb-1">Biography</span>
-              <textarea
-                class="w-full border rounded px-3 py-2"
-                rows={5}
-                value={description.biography}
-                onInput={(event) =>
-                  updateDescription("biography", event.currentTarget.value)}
-              />
-            </label>
-          </>
-        )}
-      </div>
+              <label class="block">
+                <span class="block font-medium mb-1">Biography</span>
+                <textarea
+                  class="w-full border rounded px-3 py-2"
+                  rows={5}
+                  value={description.biography}
+                  onInput={(event) =>
+                    updateDescription("biography", event.currentTarget.value)}
+                />
+              </label>
+            </>
+          )}
+        </div>
+      </fieldset>
 
       {props.action === "update" && !props.isPending && (
         <label class="block">
@@ -708,7 +734,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-gray-700 flex items-center gap-2">
-          Unallocated stat points: <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
+          Unallocated stat points:{" "}
+          <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
           <button
             type="button"
             class="px-2 py-1 border rounded disabled:opacity-40"
@@ -726,7 +753,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           </button>
         </p>
         <ul class="space-y-2">
-          {BASE_STAT_FIELDS.filter((field) => race !== "Baseliner" || field.key !== "digestionStrength").map((field) => (
+          {BASE_STAT_FIELDS.filter((field) =>
+            race !== "Baseliner" || field.key !== "digestionStrength"
+          ).map((field) => (
             <li class="flex items-center justify-between gap-2" key={field.key}>
               <span class="text-sm">{field.label}</span>
               <span class="text-sm">
@@ -737,7 +766,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={baseStats[field.key] <= (statFloor ?? initialBaseStats[field.key])}
+                  disabled={baseStats[field.key] <=
+                    (statFloor ?? initialBaseStats[field.key])}
                   onClick={() =>
                     decreaseStat(field.key)}
                 >
@@ -793,7 +823,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     </h5>
                     <ul class="space-y-2">
                       {group.items.map(({ id, perk }) => {
-                        const canRemove = canRemoveOldPerks || !initialPerkIds.includes(id);
+                        const canRemove = canRemoveOldPerks ||
+                          !initialPerkIds.includes(id);
                         return (
                           <li key={id}>
                             <div class="flex items-center gap-2">
@@ -844,7 +875,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <h5 class="font-medium">Other</h5>
                     <ul class="space-y-1">
                       {uncategorizedOwnedPerks.map(({ id }) => {
-                        const canRemove = canRemoveOldPerks || !initialPerkIds.includes(id);
+                        const canRemove = canRemoveOldPerks ||
+                          !initialPerkIds.includes(id);
                         return (
                           <li class="flex items-center gap-2" key={id}>
                             <span>{id}</span>
@@ -920,7 +952,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       {availablePerks.map((perk) => {
                         const cost = calculatePerksCost([...perkIds, perk.id]) -
                           calculatePerksCost(perkIds);
-                        const canAfford = (unallocatedStatPoints - inventoryPointCost) >= cost;
+                        const canAfford =
+                          (unallocatedStatPoints - inventoryPointCost) >= cost;
                         const costLabel = cost < 0
                           ? `Unlock (+${-cost} SP)`
                           : cost === 0

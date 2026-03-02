@@ -33,7 +33,7 @@ export const FACTIONS = [
   "Cemaat Janissaries",
   "New Ottoman Army",
   "The 7th Western Army",
-  "King's Royal Army,
+  "King's Royal Army",
   "German East African Army",
   "German West African Army",
   "German Eastern European Garrison",

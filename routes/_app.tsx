@@ -1,4 +1,5 @@
 import { define } from "../utils.ts";
+import DarkModeToggle from "../islands/DarkModeToggle.tsx";
 
 export default define.page(function App({ Component, state }) {
   const user = state.user;
@@ -11,10 +12,11 @@ export default define.page(function App({ Component, state }) {
         <title>world-vore-one</title>
       </head>
       <body>
-        <nav class="flex items-center justify-end px-4 py-2 bg-white/60 border-b gap-3">
+        <nav class="flex items-center justify-end px-4 py-2 bg-white/60 dark:bg-gray-900/80 border-b dark:border-gray-700 gap-3">
+          <DarkModeToggle />
           <a
             href="/wiki"
-            class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors mr-auto"
+            class="text-sm px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors mr-auto"
           >
             Wiki
           </a>
@@ -24,7 +26,7 @@ export default define.page(function App({ Component, state }) {
                 {state.isAdmin && (
                   <a
                     href="/admin"
-                    class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+                    class="text-sm px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     Admin
                   </a>
@@ -32,7 +34,7 @@ export default define.page(function App({ Component, state }) {
                 <span class="text-sm font-medium">{user.username}</span>
                 <a
                   href="/auth/logout"
-                  class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+                  class="text-sm px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   Logout
                 </a>
@@ -41,7 +43,7 @@ export default define.page(function App({ Component, state }) {
             : (
               <a
                 href="/auth/discord"
-                class="text-sm px-3 py-1 border rounded hover:bg-gray-100 transition-colors"
+                class="text-sm px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 Login with Discord
               </a>

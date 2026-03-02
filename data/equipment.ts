@@ -59,10 +59,14 @@ export interface WeaponDefinition {
   compatibleAttachmentIds: string[];
   /** IDs of free items that come with this weapon (e.g. Lewis magazines) */
   freeAccessoryIds?: string[];
+  /** Faction perk IDs that grant a discount (restricted → 1pt instead of 3pt) */
+  discountFactionPerkIds?: string[];
   /** Whether this weapon REQUIRES magazines to reload (cannot reload without one) */
   requiresMagazines?: boolean;
   /** Whether this weapon reloads one round at a time (tubular magazines, cylinders, etc.) */
   reloadsIndividually?: boolean;
+  /** How many turns it takes to reload (default: 1). If > 1, reload button must be pressed that many times. */
+  reloadTurns?: number;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────
@@ -80,8 +84,12 @@ export interface AttachmentDefinition {
   isCharge?: boolean;
   /** If set, overrides the weapon's base ammo capacity when this attachment is active */
   ammoOverride?: number;
+  /** If set, overrides the weapon's base weight when this attachment is active */
+  weightOverride?: number;
   /** If true, the weapon REQUIRES magazines to reload while this attachment is active */
   requiresMagazines?: boolean;
+  /** If set, overrides the weapon's reloadTurns when this attachment is active */
+  reloadTurnsOverride?: number;
 }
 
 // ── General equipment ───────────────────────────────────────────────────────
@@ -383,6 +391,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
+    ammoOverride: 1,
+    weightOverride: 1,
     description: `*Modification is free.
 *Ammo is reduced to 1. Weight is reduced to 1.
 *Can be used alongside this weapon's other attachments.`,
@@ -406,6 +416,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Flintlock Musket",
     nation: "Civilian",
     weight: 0,
+    reloadTurnsOverride: 30,
     description: `*Replaces the 'Musket' gimmick with this gimmick instead.
 *Reloading takes 30 turns.`,
   },
@@ -554,6 +565,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 0,
+    ammoOverride: 16,
     description: `*Holds 16 rounds instead of the default.
 *Stripper clips can only load 8 shots at a time. The magazine is not detachable.
 *May be used alongside the other attachments of this weapon.`,
@@ -606,6 +618,7 @@ Overloaded chamber:
 *If it explodes, deals 4 damage to you and the gun is ruined.`,
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
+    reloadTurns: 4,
   },
   {
     id: "flamethrower",
@@ -669,6 +682,7 @@ Musket:
 *Takes 20 turns to reload. Accuracy penalty from ranged shooting is doubled.`,
     compatibleAttachmentIds: ["musket-rifled", ...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
+    reloadTurns: 20,
   },
   {
     id: "bow",
@@ -776,7 +790,9 @@ Heavy magazines:
 *If the weapon has no magazine loaded, -1 weight.`,
     compatibleAttachmentIds: ["lewis-gun-shield"],
     freeAccessoryIds: ["lewis-drum-magazine"],
+    discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     requiresMagazines: true,
+    reloadTurns: 3,
   },
 
   // ── French ──
@@ -875,6 +891,7 @@ Jams frequently:
       ...LONG_GUN_ATTACHMENTS,
       "rsc-chauchat-magazines",
     ],
+    reloadTurns: 2,
   },
   {
     id: "chauchat",
@@ -979,6 +996,7 @@ Loading Gate:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'stormtrooper' factional perk only need to pay 1.`,
     compatibleAttachmentIds: [],
+    discountFactionPerkIds: ["sturmtruppen"],
   },
 
   // ── American ──
@@ -1016,6 +1034,7 @@ Loading Gate:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only need to pay 1.`,
     compatibleAttachmentIds: ["thompson-drum-magazines"],
+    discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
   },
   {
     id: "winchester-1897",
@@ -1098,6 +1117,7 @@ Tubular magazine:
 Trench-sweeper:
 *Cover is one tier lower if the target is at 3 distances or closer.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadsIndividually: true,
   },
 

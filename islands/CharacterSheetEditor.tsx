@@ -874,7 +874,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               class="px-2 py-1 border rounded"
               onClick={() => setShowPerkPicker((current) => !current)}
             >
-              Add Perk
+              {showPerkPicker ? "Cancel" : "Add Perk"}
             </button>
             {showPerkPicker && (
               <div class="space-y-2">

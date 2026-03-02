@@ -43,7 +43,7 @@ export default function PerkDescription(
 
   return (
     <span>
-      <strong>{name}</strong>: {brief}
+      {name ? <><strong>{name}</strong>: </> : null}{brief}
       {hasDetails && (
         <>
           {" "}

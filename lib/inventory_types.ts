@@ -25,6 +25,8 @@ export interface InventoryWeapon {
   partialMagazines: number[];
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** How many reload turns have been completed toward the current reload (for multi-turn reloads) */
+  reloadProgress?: number;
 }
 
 /**
@@ -150,19 +152,11 @@ export function countCarriedItemSlots(
     }
   }
 
-  for (const w of inv.carried.weapons) {
-    slots += 1 + w.attachedIds.length;
+  for (const _w of inv.carried.weapons) {
+    slots += 1; // The weapon itself is 1 slot; attachments on it are free
   }
 
-  // Loose attachments in inventory
-  for (const a of inv.carried.attachments ?? []) {
-    const def = lookups?.getAttachment?.(a.attachmentId);
-    if (def?.isCharge) {
-      slots += a.totalCharges; // Each charge = 1 slot
-    } else {
-      slots += 1;
-    }
-  }
+  // Loose attachments don't consume creation item slots
 
   return slots;
 }
@@ -175,14 +169,24 @@ export function calculateInventoryWeight(
   lookups: {
     getWeapon: (id: string) => { weight: number } | undefined;
     getEquipment: (id: string) => { weight: number; isCharge?: boolean } | undefined;
-    getAttachment: (id: string) => { weight: number; isCharge?: boolean } | undefined;
+    getAttachment: (id: string) => { weight: number; isCharge?: boolean; weightOverride?: number } | undefined;
   },
 ): number {
   let total = 0;
 
   for (const w of inv.carried.weapons) {
     const def = lookups.getWeapon(w.weaponId);
-    if (def) total += def.weight;
+    if (def) {
+      // Check for weight override from attached attachments
+      let weaponWeight = def.weight;
+      for (const aId of w.attachedIds) {
+        const aDef = lookups.getAttachment(aId);
+        if (aDef && aDef.weightOverride != null) {
+          weaponWeight = aDef.weightOverride;
+        }
+      }
+      total += weaponWeight;
+    }
     // Attached attachment weight
     for (const aId of w.attachedIds) {
       const aDef = lookups.getAttachment(aId);
@@ -288,6 +292,7 @@ export function parseInventory(raw: string): CharacterInventory | null {
             ? (w.partialMagazines as unknown[]).filter((n): n is number => typeof n === "number")
             : [],
           ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
+          ...(typeof w.reloadProgress === "number" && w.reloadProgress > 0 ? { reloadProgress: w.reloadProgress } : {}),
         }));
       }
 

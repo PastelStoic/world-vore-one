@@ -45,8 +45,10 @@ export const handler = define.handlers({
       return new Response("Forbidden", { status: 403 });
     }
 
-    // Race is immutable after creation — always use the existing value
-    parsed.race = existing.race;
+    // Race is immutable after approval, but can be changed while the character is pending
+    if (!isPending) {
+      parsed.race = existing.race;
+    }
 
     // After approval, identity fields are immutable until disapproved
     if (!isPending) {

@@ -395,14 +395,37 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   name="race"
                   value={race}
-                  disabled={props.action === "update"}
+                  disabled={lockIdentityFields}
                   onInput={(event) => {
                     const newRace = event.currentTarget
                       .value as CharacterDraft["race"];
                     const pointsDiff = getStartingStatPoints(newRace) -
                       getStartingStatPoints(race);
+                    // Remove perks that require the old race but not the new one
+                    const keptPerkIds = perkIds.filter((id) => {
+                      const perk = PERKS_BY_ID.get(id);
+                      if (
+                        perk?.requiredRaces &&
+                        !perk.requiredRaces.includes(newRace)
+                      ) return false;
+                      return true;
+                    });
+                    const perkRefund = calculatePerksCost(perkIds) -
+                      calculatePerksCost(keptPerkIds);
+                    if (keptPerkIds.length !== perkIds.length) {
+                      setPerkNotes((current) => {
+                        const next = { ...current };
+                        for (const id of perkIds) {
+                          if (!keptPerkIds.includes(id)) delete next[id];
+                        }
+                        return next;
+                      });
+                      setPerkIds(keptPerkIds);
+                    }
                     setRace(newRace);
-                    setUnallocatedStatPoints((current) => current + pointsDiff);
+                    setUnallocatedStatPoints((current) =>
+                      current + pointsDiff + perkRefund
+                    );
                   }}
                 >
                   {getRacesForSex(description.sex).map((option) => (
@@ -436,13 +459,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   <input
                     type="checkbox"
                     checked={description.isTemplate}
-                    disabled={props.action === "update"}
+                    disabled={lockIdentityFields}
                     onChange={(event) =>
                       updateDescription(
                         "isTemplate",
                         event.currentTarget.checked,
                       )}
-                    class={props.action === "update"
+                    class={lockIdentityFields
                       ? "opacity-60 cursor-not-allowed"
                       : ""}
                   />

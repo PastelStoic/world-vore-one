@@ -22,7 +22,7 @@ import type {
 import {
   calculateInventoryPointCost,
   calculateInventoryWeight,
-  countCarriedItemSlots,
+  countAllItemSlots,
   CREATION_FREE_ITEM_SLOTS,
   EXTRA_ITEM_POINT_COST,
 } from "../lib/inventory_types.ts";
@@ -127,7 +127,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
   // ── Derived ──
-  const carriedSlots = countCarriedItemSlots(inventory, slotLookups);
+  const allSlots = countAllItemSlots(inventory, slotLookups);
   const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
     return count + (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isBulky ? 1 : 0);
   }, 0);
@@ -147,7 +147,7 @@ export default function InventorySection(props: InventorySectionProps) {
       // Recalculate with signature adjustments
       cost = 0;
 
-      const adjustedSlots = countCarriedItemSlots(inventory, slotLookups);
+      const adjustedSlots = countAllItemSlots(inventory, slotLookups);
       const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
       cost += overFree * EXTRA_ITEM_POINT_COST;
 
@@ -184,33 +184,27 @@ export default function InventorySection(props: InventorySectionProps) {
   /** Compute how many points adding a weapon to a location would cost */
   function weaponAddCost(
     weaponId: string,
-    location: InventoryLocation,
+    _location: InventoryLocation,
   ): number {
     let cost = getWeaponPointCost(weaponId, perkIds);
-    if (location === "carried") {
-      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
-        cost += EXTRA_ITEM_POINT_COST;
-      }
+    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
+      cost += EXTRA_ITEM_POINT_COST;
     }
     return cost;
   }
 
   /** Compute how many points adding equipment to a location would cost */
-  function equipmentAddCost(location: InventoryLocation): number {
-    if (location === "carried") {
-      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
-        return EXTRA_ITEM_POINT_COST;
-      }
+  function equipmentAddCost(_location: InventoryLocation): number {
+    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
+      return EXTRA_ITEM_POINT_COST;
     }
     return 0;
   }
 
   /** Compute how many points adding an attachment to a location would cost */
-  function attachmentAddCost(location: InventoryLocation): number {
-    if (location === "carried") {
-      if (carriedSlots >= CREATION_FREE_ITEM_SLOTS) {
-        return EXTRA_ITEM_POINT_COST;
-      }
+  function attachmentAddCost(_location: InventoryLocation): number {
+    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
+      return EXTRA_ITEM_POINT_COST;
     }
     return 0;
   }
@@ -625,6 +619,24 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
+  // -- Toggle an attachment charge used/unused (same logic as equipment toggleCharge) --
+  function toggleAttachmentCharge(
+    location: InventoryLocation,
+    index: number,
+    chargeIndex: number,
+  ) {
+    updateCombat((inv) => {
+      const att = inv[location].attachments[index];
+      const isUsed = chargeIndex >= att.totalCharges - att.usedCharges;
+      if (isUsed) {
+        att.usedCharges = att.totalCharges - chargeIndex - 1;
+      } else {
+        att.usedCharges = att.totalCharges - chargeIndex;
+      }
+      return inv;
+    });
+  }
+
   // -- Add melee weapon --
   function addMeleeWeapon(location: InventoryLocation) {
     const item: InventoryMeleeWeapon = {
@@ -714,6 +726,8 @@ export default function InventorySection(props: InventorySectionProps) {
     // Check for ammo override from attached attachments
     let effectiveAmmo = def.ammo;
     let effectiveWeight = def.weight;
+    let effectiveDamage: string | number = def.damage;
+    let effectiveRateOfFire = def.rateOfFire;
     let attachmentMagazineSystem = false;
     let attachmentRequiresMags = false;
     for (const aId of w.attachedIds) {
@@ -723,6 +737,12 @@ export default function InventorySection(props: InventorySectionProps) {
       }
       if (aDef?.weightOverride != null) {
         effectiveWeight = aDef.weightOverride;
+      }
+      if (aDef?.damageOverride != null) {
+        effectiveDamage = aDef.damageOverride;
+      }
+      if (aDef?.rateOfFireBonus != null) {
+        effectiveRateOfFire += aDef.rateOfFireBonus;
       }
       if (aDef?.requiresMagazines) {
         attachmentRequiresMags = true;
@@ -788,12 +808,18 @@ export default function InventorySection(props: InventorySectionProps) {
         effectiveReloadTurns = aDef.reloadTurnsOverride;
       }
     }
+    // C96 Mauser: "Wasteful reload" — 2 turns when rounds remain in magazine, 1 turn when empty
+    if (def.id === "c96-mauser" && w.currentAmmo > 0) {
+      effectiveReloadTurns = 2;
+    }
     const reloadProgress = w.reloadProgress ?? 0;
     const isReloading = reloadProgress > 0;
 
     // Signature weapon benefits
     const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
-    const damageDisplay = isSignature ? `${def.damage}+1` : def.damage;
+    const damageDisplay = isSignature
+      ? `${effectiveDamage}+1`
+      : String(effectiveDamage);
 
     return (
       <div
@@ -811,7 +837,7 @@ export default function InventorySection(props: InventorySectionProps) {
             <strong>{def.name}</strong>{" "}
             <span class="text-xs text-gray-500">
               ({def.type} · {def.nation} · W:{effectiveWeight}{" "}
-              · DMG:{damageDisplay} · ROF:{def.rateOfFire})
+              · DMG:{damageDisplay} · ROF:{effectiveRateOfFire})
             </span>
             {isSignature && (
               <span class="text-xs text-amber-600 ml-1 font-medium">
@@ -1030,6 +1056,27 @@ export default function InventorySection(props: InventorySectionProps) {
               Cancel
             </button>
           )}
+          {/* Standard reload option: for magazine-fed weapons that can also reload without a magazine */}
+          {hasMagazines && !weaponRequiresMags && !isAmmoFull && !isReloading && (
+            <button
+              type="button"
+              class="px-1 text-xs border rounded hover:bg-gray-100"
+              title="Reload without consuming a magazine (standard reload)"
+              onClick={() => {
+                if (reloadsIndividually) {
+                  setCurrentAmmo(
+                    location,
+                    index,
+                    Math.min(w.currentAmmo + 1, effectiveAmmo),
+                  );
+                } else {
+                  setCurrentAmmo(location, index, effectiveAmmo);
+                }
+              }}
+            >
+              Reload (standard)
+            </button>
+          )}
         </div>
 
         {/* Magazine tracking – always editable for combat tracking */}
@@ -1134,13 +1181,15 @@ export default function InventorySection(props: InventorySectionProps) {
                       <span class="text-gray-400">(W:{aDef.weight})</span>
                     )}
                   </span>
-                  <button
-                    type="button"
-                    class="px-1 border rounded text-red-500 hover:bg-red-50"
-                    onClick={() => detachFromWeapon(location, index, aId)}
-                  >
-                    Detach
-                  </button>
+                  {!readOnly && (
+                    <button
+                      type="button"
+                      class="px-1 border rounded text-red-500 hover:bg-red-50"
+                      onClick={() => detachFromWeapon(location, index, aId)}
+                    >
+                      Detach
+                    </button>
+                  )}
                   {aDef && (
                     <span class="text-xs text-gray-500 ml-1">
                       <PerkDescription
@@ -1157,7 +1206,7 @@ export default function InventorySection(props: InventorySectionProps) {
         )}
 
         {/* Attach new attachment – only shows compatible attachments owned in inventory */}
-        {availableAttachments.length > 0 && (
+        {!readOnly && availableAttachments.length > 0 && (
           <div class="ml-2">
             <select
               class="text-xs border rounded px-1 py-0.5"
@@ -1176,7 +1225,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </select>
           </div>
         )}
-        {availableAttachments.length === 0 &&
+        {!readOnly && availableAttachments.length === 0 &&
           def.compatibleAttachmentIds.filter((aId) =>
               !w.attachedIds.includes(aId)
             ).length > 0 &&
@@ -1581,8 +1630,30 @@ export default function InventorySection(props: InventorySectionProps) {
                 </span>
               )}
             </div>
+            <div class="flex flex-wrap gap-1 ml-2">
+              {Array.from({ length: att.totalCharges }, (_, ci) => {
+                const isUsed = ci >= att.totalCharges - att.usedCharges;
+                return (
+                  <button
+                    key={ci}
+                    type="button"
+                    class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
+                      isUsed
+                        ? "bg-red-100 border-red-400 text-red-600"
+                        : "bg-green-50 border-green-400 text-green-700"
+                    } cursor-pointer hover:opacity-75`}
+                    title={isUsed
+                      ? "Used (click to restore)"
+                      : "Available (click to use)"}
+                    onClick={() => toggleAttachmentCharge(location, index, ci)}
+                  >
+                    {isUsed ? "✕" : "●"}
+                  </button>
+                );
+              })}
+            </div>
             <div class="text-xs text-gray-500 ml-2">
-              {remaining} remaining · W:{currentWeight}
+              {remaining} remaining · {att.usedCharges} used · W:{currentWeight}
             </div>
           </div>
         )}

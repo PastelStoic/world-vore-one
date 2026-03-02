@@ -90,6 +90,10 @@ export interface AttachmentDefinition {
   requiresMagazines?: boolean;
   /** If set, overrides the weapon's reloadTurns when this attachment is active */
   reloadTurnsOverride?: number;
+  /** If set, overrides the weapon's base damage when this attachment is active */
+  damageOverride?: number;
+  /** If set, adds this value to the weapon's rate of fire when this attachment is active */
+  rateOfFireBonus?: number;
 }
 
 // ── General equipment ───────────────────────────────────────────────────────
@@ -520,6 +524,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     isCharge: true,
     ammoOverride: 40,
     requiresMagazines: true,
+    damageOverride: 2,
+    rateOfFireBonus: 1,
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield will deal 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
@@ -555,6 +561,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 0,
+    rateOfFireBonus: 2,
     description: `*Weapon gains +2 rate of fire.
 *Have -3d6 for each additional shot, instead of an accuracy buff.
 *May be used alongside the other attachments of this weapon.`,

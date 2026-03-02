@@ -178,6 +178,48 @@ export function countCarriedItemSlots(
   return slots;
 }
 
+/**
+ * Count item slots across BOTH carried AND stowed inventory.
+ * Used for the shared free-item budget (3 free slots total, regardless of location).
+ */
+export function countAllItemSlots(
+  inv: CharacterInventory,
+  lookups?: {
+    getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
+    getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
+  },
+): number {
+  let slots = countCarriedItemSlots(inv, lookups);
+
+  // Count stowed items the same way as carried
+  for (const e of inv.stowed.equipment) {
+    const def = lookups?.getEquipment?.(e.equipmentId);
+    if (def?.isCharge) {
+      slots += e.totalCharges;
+    } else {
+      slots += 1;
+    }
+  }
+
+  for (const w of inv.stowed.weapons) {
+    slots += 1;
+    for (const _attachmentId of w.attachedIds) {
+      slots += 1;
+    }
+  }
+
+  for (const a of inv.stowed.attachments ?? []) {
+    const def = lookups?.getAttachment?.(a.attachmentId);
+    if (def?.isCharge) {
+      slots += a.totalCharges;
+    } else {
+      slots += 1;
+    }
+  }
+
+  return slots;
+}
+
 export function hasMultipleCarriedBulkyEquipment(
   inv: CharacterInventory,
   getEquipment: (id: string) => { isBulky?: boolean } | undefined,
@@ -280,7 +322,7 @@ export function calculateInventoryPointCost(
     getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
   },
 ): number {
-  const totalSlots = countCarriedItemSlots(inv, slotLookups);
+  const totalSlots = countAllItemSlots(inv, slotLookups);
   const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
 
   // Slot cost

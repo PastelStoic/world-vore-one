@@ -66,7 +66,7 @@ function applyStatCap(value: number, cap: number | undefined): number {
 }
 
 function applyEncumbrancePenalty(value: number, level: EncumbranceLevel) {
-  return Math.max(0, value - level);
+  return Math.max(1, value - level);
 }
 
 export function calculateEncumbranceLevel(
@@ -121,25 +121,25 @@ export function calculateEffectiveDexterity(
 export function calculateEffectiveConstitution(input: CharacterDraft) {
   const effective = input.baseStats.constitution +
     getBaseStatBonus(input, "constitution");
-  return applyStatCap(effective, getStatCap(input, "constitution"));
+  return Math.max(1, applyStatCap(effective, getStatCap(input, "constitution")));
 }
 
 export function calculateEffectiveIntelligence(input: CharacterDraft) {
   const effective = input.baseStats.intelligence +
     getBaseStatBonus(input, "intelligence");
-  return applyStatCap(effective, getStatCap(input, "intelligence"));
+  return Math.max(1, applyStatCap(effective, getStatCap(input, "intelligence")));
 }
 
 export function calculateEffectiveCharisma(input: CharacterDraft) {
   const effective = input.baseStats.charisma +
     getBaseStatBonus(input, "charisma");
-  return applyStatCap(effective, getStatCap(input, "charisma"));
+  return Math.max(1, applyStatCap(effective, getStatCap(input, "charisma")));
 }
 
 export function calculateEffectiveEscapeTraining(input: CharacterDraft) {
   const effective = input.baseStats.escapeTraining +
     getBaseStatBonus(input, "escapeTraining");
-  return applyStatCap(effective, getStatCap(input, "escapeTraining"));
+  return Math.max(1, applyStatCap(effective, getStatCap(input, "escapeTraining")));
 }
 
 export function calculateEffectiveDigestionStrength(input: CharacterDraft) {
@@ -155,7 +155,7 @@ export function calculateEffectiveDigestionResilience(input: CharacterDraft) {
     getBaseStatBonus(input, "digestionResilience");
   const multiplier = getMultiplier(input, "digestionResilienceMultiplier");
   const effective = base * multiplier;
-  return applyStatCap(effective, getStatCap(input, "digestionResilience"));
+  return Math.max(1, applyStatCap(effective, getStatCap(input, "digestionResilience")));
 }
 
 export function calculateBaseHealth(input: CharacterDraft) {

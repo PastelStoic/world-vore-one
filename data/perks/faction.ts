@@ -27,7 +27,7 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
-    requiredFaction: "German Imperial Army", "The 7th Western Army", "German East African Army", "German West African Army",
+    requiredFaction: ["German Imperial Army", "The 7th Western Army", "German East African Army", "German West African Army",],
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `Germany strong!
@@ -48,7 +48,7 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench raider",
     category: "faction",
-    requiredFaction: "British Expeditionary Force (BEF)", "Canadian Expeditionary Force (CEF)", "Royal Berkshire Regiment",
+    requiredFaction: ["British Expeditionary Force (BEF)", "Canadian Expeditionary Force (CEF)", "Royal Berkshire Regiment"],
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `ENGERLAAAANNDDD
@@ -89,7 +89,7 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
-    requiredFaction: "Italian mafia - Las Manos Apertas", "Russian mafia - Chernoye Zoloto","Irish mafia - O’Malley Syndicate",
+    requiredFaction: ["Italian mafia - Las Manos Apertas", "Russian mafia - Chernoye Zoloto","Irish mafia - O’Malley Syndicate"],
     isFree: true,
     pointsGranted: 3,
     description:

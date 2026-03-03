@@ -19,6 +19,7 @@ export {
   calculatePerksCost,
   parseBaseStats,
   parseDescription,
+  parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
   parseRace,

@@ -21,6 +21,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     id: "pilzherr-femboy",
     name: "Pilzherr (FEMBOY)",
     category: "pf-type",
+    canDisguise: true,
     requiredRaces: ["Pilzherr", "Tierherr"],
     lockCategory: "pilzherr-type",
     description: `You are a MALE PF! You look just like a girl though.

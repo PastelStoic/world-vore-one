@@ -58,7 +58,7 @@ export interface PerkDefinition {
   modifiers?: PerkModifiers;
   requiredRaces?: Race[];
   requiredSex?: Sex[];
-  requiredFaction?: Faction;
+  requiredFaction?: Faction | Faction[];
   lockCategory?: string;
   /** When true, this perk costs nothing and doesn't consume the first-perk freebie. */
   isFree?: boolean;
@@ -68,6 +68,8 @@ export interface PerkDefinition {
   customInput?: string;
   /** Perk IDs that cannot be taken alongside this perk (mutual exclusion). */
   excludesPerks?: string[];
+  /** When true, the owner can disguise this perk as a different perk on their sheet. */
+  canDisguise?: boolean;
 }
 
 export const PERKS: PerkDefinition[] = [

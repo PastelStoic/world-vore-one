@@ -83,6 +83,26 @@ export function parsePerkNotes(raw: string): Record<string, string> {
   }
 }
 
+export function parsePerkDisguises(raw: string): Record<string, string> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const disguises: Record<string, string> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === "string" && value.trim()) {
+        disguises[key] = value.trim();
+      }
+    }
+    return disguises;
+  } catch {
+    return {};
+  }
+}
+
 export function parseDescription(raw: string): CharacterDescription | null {
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;

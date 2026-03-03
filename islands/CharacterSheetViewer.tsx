@@ -23,23 +23,45 @@ interface CharacterSheetViewerProps {
   imageUrl?: string;
   /** Character ID for auto-saving combat state (ammo, charges, magazines) */
   characterId?: string;
+  /** Whether the viewer can see the real identity of disguised perks (owner/admin). */
+  canSeeDisguisedPerks?: boolean;
+  /** Perk IDs to show for display only (not used in stat calculations). */
+  displayOnlyPerkIds?: string[];
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
-  const { character, perks, imageUrl, characterId } = props;
+  const {
+    character,
+    perks,
+    imageUrl,
+    characterId,
+    canSeeDisguisedPerks = false,
+    displayOnlyPerkIds = [],
+  } = props;
   const desc = character.description;
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
   const ownedPerks = character.perkIds.map((id) => ({
     id,
     perk: perksById.get(id),
+    displayOnly: false,
   }));
+
+  // Merge display-only perks (fake perks shown to non-owners in place of disguised ones).
+  const allDisplayPerks = [
+    ...ownedPerks,
+    ...displayOnlyPerkIds.map((id) => ({
+      id,
+      perk: perksById.get(id),
+      displayOnly: true,
+    })),
+  ];
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
-      items: ownedPerks.filter((item) => item.perk?.category === category),
+      items: allDisplayPerks.filter((item) => item.perk?.category === category),
     }))
     .filter((group) => group.items.length > 0);
-  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
+  const uncategorizedOwnedPerks = allDisplayPerks.filter((item) => !item.perk);
 
   const [showDescription, setShowDescription] = useState(true);
   const [inventory, setInventory] = useState(
@@ -237,7 +259,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Perks</h3>
-        {character.perkIds.length === 0
+        {allDisplayPerks.length === 0
           ? <p class="text-sm text-gray-700">No perks unlocked.</p>
           : (
             <div class="space-y-3 text-sm">
@@ -247,7 +269,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                     {PERK_CATEGORY_LABELS[group.category]}
                   </h4>
                   <ul class="list-disc list-inside">
-                    {group.items.map(({ id, perk }) => (
+                    {group.items.map(({ id, perk, displayOnly }) => (
                       <li key={id}>
                         {perk
                           ? (
@@ -257,7 +279,21 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                             />
                           )
                           : id}
-                        {character.perkNotes?.[id] && (
+                        {/* Owner/admin: show which perk this is disguised as */}
+                        {canSeeDisguisedPerks &&
+                          character.perkDisguises?.[id] && (() => {
+                            const fakePerk = perksById.get(
+                              character.perkDisguises![id],
+                            );
+                            return (
+                              <span class="block ml-5 text-purple-600 italic text-xs">
+                                Disguised as: {fakePerk?.name ??
+                                  character.perkDisguises![id]}
+                              </span>
+                            );
+                          })()}
+                        {/* Show perk notes (but not for display-only fake perks) */}
+                        {!displayOnly && character.perkNotes?.[id] && (
                           <span class="block ml-5 text-gray-600 italic">
                             {character.perkNotes[id]}
                           </span>

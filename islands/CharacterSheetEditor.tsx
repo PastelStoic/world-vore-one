@@ -68,6 +68,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
     props.initialCharacter.perkNotes ?? {},
   );
+  const [perkDisguises, setPerkDisguises] = useState<Record<string, string>>(
+    props.initialCharacter.perkDisguises ?? {},
+  );
   const [inventory, setInventory] = useState<CharacterInventory>(
     props.initialCharacter.inventory ?? createEmptyInventory(),
   );
@@ -94,6 +97,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     unallocatedStatPoints,
     perkIds,
     perkNotes,
+    perkDisguises,
     inventory,
   };
 
@@ -139,8 +143,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.requiredSex && !perk.requiredSex.includes(description.sex)) {
       return false;
     }
-    if (perk.requiredFaction && perk.requiredFaction !== description.faction) {
-      return false;
+    if (perk.requiredFaction) {
+      const factions = Array.isArray(perk.requiredFaction)
+        ? perk.requiredFaction
+        : [perk.requiredFaction];
+      if (!factions.includes(description.faction as typeof factions[number])) {
+        return false;
+      }
     }
     if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
       return false;
@@ -313,6 +322,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       delete next[perkId];
       return next;
     });
+    setPerkDisguises((current) => {
+      const next = { ...current };
+      delete next[perkId];
+      return next;
+    });
     setUnallocatedStatPoints((current) => current + refund);
   }
 
@@ -341,6 +355,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         type="hidden"
         name="perkNotes"
         value={JSON.stringify(perkNotes)}
+      />
+      <input
+        type="hidden"
+        name="perkDisguises"
+        value={JSON.stringify(perkDisguises)}
       />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
@@ -891,6 +910,44 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   }));
                                 }}
                               />
+                            )}
+                            {perk?.canDisguise && (
+                              <div class="mt-1">
+                                <label class="text-xs text-gray-600">
+                                  Disguise as:
+                                </label>
+                                <select
+                                  class="ml-2 border rounded px-2 py-1 text-sm"
+                                  value={perkDisguises[id] ?? ""}
+                                  onChange={(e) => {
+                                    const value =
+                                      (e.target as HTMLSelectElement).value;
+                                    setPerkDisguises((current) => {
+                                      if (!value) {
+                                        const next = { ...current };
+                                        delete next[id];
+                                        return next;
+                                      }
+                                      return { ...current, [id]: value };
+                                    });
+                                  }}
+                                >
+                                  <option value="">
+                                    (no disguise)
+                                  </option>
+                                  {props.perks
+                                    .filter((p) =>
+                                      p.id !== id &&
+                                      !p.canDisguise &&
+                                      !p.isFree
+                                    )
+                                    .map((p) => (
+                                      <option key={p.id} value={p.id}>
+                                        {p.name}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
                             )}
                           </li>
                         );

@@ -62,6 +62,25 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
   const user = ctx.state.user;
   const isOwner = user !== null && character.userId === user.id;
   const canEdit = isOwner || ctx.state.isAdmin;
+  const canSeeDisguisedPerks = isOwner || !!ctx.state.isAdmin;
+
+  // For non-owners/non-admins, swap disguised perks with their fake versions.
+  // The fake perk IDs go into displayOnlyPerkIds (shown but not used for stats).
+  let viewCharacter = character;
+  let displayOnlyPerkIds: string[] = [];
+
+  if (!canSeeDisguisedPerks && character.perkDisguises) {
+    const disguises = character.perkDisguises;
+    const filteredPerkIds = character.perkIds.filter(
+      (id) => !(id in disguises),
+    );
+    displayOnlyPerkIds = Object.values(disguises);
+    viewCharacter = {
+      ...character,
+      perkIds: filteredPerkIds,
+      perkDisguises: undefined,
+    };
+  }
 
   const justSaved = ctx.url.searchParams.get("saved") === "1";
   const imageUrl = character.imageId
@@ -148,10 +167,12 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       )}
       {justSaved && <p class="text-green-700">Character saved.</p>}
       <CharacterSheetViewer
-        character={character}
+        character={viewCharacter}
         perks={PERKS}
         imageUrl={imageUrl}
         characterId={id}
+        canSeeDisguisedPerks={canSeeDisguisedPerks}
+        displayOnlyPerkIds={displayOnlyPerkIds}
       />
     </CharacterPageLayout>
   );

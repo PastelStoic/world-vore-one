@@ -143,6 +143,8 @@ export interface CharacterDraft {
   unallocatedStatPoints: number;
   perkIds: string[];
   perkNotes?: Record<string, string>;
+  /** Maps a disguisable perk ID to the fake perk ID it appears as to non-owners. */
+  perkDisguises?: Record<string, string>;
   inventory?: CharacterInventory;
 }
 

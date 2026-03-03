@@ -8,6 +8,7 @@ import {
 import {
   parseBaseStats,
   parseDescription,
+  parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
   parseRace,
@@ -33,6 +34,7 @@ export interface ParsedCharacterFields {
   baseStats: NonNullable<ReturnType<typeof parseBaseStats>>;
   perkIds: NonNullable<ReturnType<typeof parsePerkIds>>;
   perkNotes: Record<string, string>;
+  perkDisguises: Record<string, string>;
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
   pendingImageId: string;
@@ -57,6 +59,9 @@ export function parseCharacterFormData(
   const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
   const perkNotes = parsePerkNotes(
     String(formData.get("perkNotes") ?? "{}"),
+  );
+  const perkDisguises = parsePerkDisguises(
+    String(formData.get("perkDisguises") ?? "{}"),
   );
   const unallocatedStatPoints = parseNonNegativeInt(
     formData.get("unallocatedStatPoints"),
@@ -92,6 +97,7 @@ export function parseCharacterFormData(
     baseStats,
     perkIds,
     perkNotes,
+    perkDisguises,
     unallocatedStatPoints,
     basedOnSnapshotId,
     pendingImageId,
@@ -114,6 +120,9 @@ export function buildAndValidateDraft(
     unallocatedStatPoints: fields.unallocatedStatPoints,
     perkIds: fields.perkIds,
     perkNotes: fields.perkNotes,
+    perkDisguises: Object.keys(fields.perkDisguises).length > 0
+      ? fields.perkDisguises
+      : undefined,
     inventory: fields.inventory ?? undefined,
   };
 

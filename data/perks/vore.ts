@@ -63,7 +63,7 @@ export const VORE_PERKS: PerkDefinition[] = [
 *You may control how harsh or how nice the environment inside you is. 
 *You may choose how the fat of your prey is allocated within your body. 
 
-*You may move a person from one organ to another immediately as an action, it is a contested STR vs STR check.
+*You may move a person from one organ to another immediately as an action, it is a contested STR vs Escape Training check.
 *The organs must be connected, no sending prey from your stomach into your tits or womb!
 *Your control gives you +1d6 to keeping prey down.
 *You can choose where someone with the living-fat-advisor perk ends up in, and you can stop their shenanigans at will.`,

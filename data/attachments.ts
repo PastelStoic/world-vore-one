@@ -164,7 +164,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "C96 Mauser: Extended stock",
     appliesTo: "C96 Mauser",
     nation: "Germany",
-    weight: 0,
+    weight: 1,
     description: `*It takes 1 turn to put the stock on/off.
 *While the stock is on, loses agile gimmick.
 *Holstering and unholstering this weapon takes an additional turn.
@@ -206,7 +206,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Springfield: Suppressor",
     appliesTo: "M1903 Springfield",
     nation: "United States",
-    weight: 0,
+    weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
 *May be used alongside the Pedersen device.`,
@@ -218,7 +218,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Nagant-revolver: Suppressor",
     appliesTo: "Nagant M1895 Revolver",
     nation: "Russia",
-    weight: 0,
+    weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.`,
   },
@@ -229,7 +229,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Automatic fire",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 0,
+    weight: 1,
     rateOfFireBonus: 2,
     description: `*Weapon gains +2 rate of fire.
 *Have -3d6 for each additional shot, instead of an accuracy buff.
@@ -240,7 +240,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Extended magazine",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 0,
+    weight: 1,
     ammoOverride: 16,
     description: `*Holds 16 rounds instead of the default.
 *Stripper clips can only load 8 shots at a time. The magazine is not detachable.
@@ -251,7 +251,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Extended stock",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 0,
+    weight: 1,
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment no longer reduces accuracy with each additional shot.
 *Holstering and unholstering this weapon takes an additional turn.`,

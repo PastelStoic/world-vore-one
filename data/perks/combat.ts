@@ -178,7 +178,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `You have a knack for keeping yourself alive, at the cost of your teammates. You don't live long by being a dummy.
 
-*When targetted by enemies attacks, you may pull an ally in the same distance as you into the way.
+*When being attacked, you may pull an ally in the same distance as you into the way. Does not apply for ambushes.
 *If your ally is willing, they take all of the damage in your stead.
 *If your ally is unwilling, you may do a STR vs STR contested check against them. On a success, they take all of the damage in your stead.
 *You may only protect yourself from a single attack per round, and it is a free action.`,

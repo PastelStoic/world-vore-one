@@ -762,7 +762,7 @@ Agile:
     freeAccessoryIds: ["schmidt-rubin-magazine"],
   },
   {
-    id: "swiss-1882",
+    id: "ordonnanzrevolver-1882",
     name: "Ordonnanzrevolver 1882",
     type: "Double-action revolver",
     kind: "double-action-revolver",

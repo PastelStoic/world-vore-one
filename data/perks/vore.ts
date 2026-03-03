@@ -148,13 +148,9 @@ export const VORE_PERKS: PerkDefinition[] = [
     category: "vore",
     requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
     description: `You transform other people into strength for yourself.
- 
----->If you have eaten UNWILLING PREY:
-*When successfully digesting someone in their entirety, you gain an additional point from digesting them.
-*The whole proccess must be done by you. If they were softened up by someone else's enzymes, perk does not apply.
-*If you digest someone in their entirety and they were at full HP when swallowed, you also gain one of their perks.
-*The damage prey takes must be caused solely by your enzymes, perks such as Crusher forfeit the perk gain.
-*If the prey is damaged by any means other than your enzymes, you forfeit the perk gain.`,
+
+*When digesting prey, you gain an additional point, whether it was willing or unwilling vore.
+*The whole proccess must be done by you. If they were softened up by someone else's enzymes, perk does not apply.`,
   },
   {
     id: "crusher",

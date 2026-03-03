@@ -196,7 +196,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     damageOverride: 2,
     rateOfFireBonus: 1,
     description: `*It takes 3 turns to put the pedersen on/off.
-*The Springfield will deal 2 damage instead of 3.
+*The Springfield deals 2 damage up to 5 distances away. At distance 6 or beyond, deals only 1 damage.
 *The Springfield gains +1 rate of fire.
 *The Springfield has 40 rounds whilst the device is on.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 40 round magazine. Each charge has 1 weight.`,

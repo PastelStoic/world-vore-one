@@ -44,16 +44,16 @@ export default function EncumbranceSection(props: EncumbranceSectionProps) {
               onCarriedWeightChange(parsed);
             }}
           />
-          <span class="text-sm text-gray-700 whitespace-nowrap">
+          <span class="text-sm text-base-content whitespace-nowrap">
             Encumbrance:{" "}
             <strong>{getEncumbranceLabel(encumbranceLevel)}</strong>
           </span>
-          <span class="text-sm text-gray-700 whitespace-nowrap">
+          <span class="text-sm text-base-content whitespace-nowrap">
             <strong>{encumbrancePenaltyText}</strong>
           </span>
         </div>
         {inventoryWeight > 0 && (
-          <span class="text-xs text-gray-500 mt-1 block">
+          <span class="text-xs text-base-content/60 mt-1 block">
             Inventory weight: {inventoryWeight} (minimum)
           </span>
         )}

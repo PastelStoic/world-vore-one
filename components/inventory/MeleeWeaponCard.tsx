@@ -44,13 +44,13 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   return (
     <div
       class={`border rounded p-2 space-y-1 ${
-        isSignature ? "bg-amber-50 border-amber-300" : "bg-white"
+        isSignature ? "bg-warning/10 border-warning/50" : "bg-base-100"
       }`}
     >
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           {isSignature && (
-            <span class="text-amber-500 mr-1" title="Signature Weapon">
+            <span class="text-warning mr-1" title="Signature Weapon">
               ★
             </span>
           )}
@@ -65,11 +65,11 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                 })}
             />
           )}
-          <span class="text-xs text-gray-500 ml-1">
+          <span class="text-xs text-base-content/60 ml-1">
             (DMG:{damageDisplay} · W:{mw.weight})
           </span>
           {isSignature && (
-            <span class="text-xs text-amber-600 ml-1 font-medium">
+            <span class="text-xs text-warning ml-1 font-medium">
               [Signature Weapon · +1 extra trait]
             </span>
           )}
@@ -81,8 +81,8 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                 type="button"
                 class={`px-2 py-0.5 text-xs border rounded ${
                   isSignature
-                    ? "bg-amber-100 border-amber-400 text-amber-700"
-                    : "hover:bg-amber-50 text-amber-600"
+                    ? "bg-warning/20 border-warning/60 text-warning"
+                    : "hover:bg-warning/10 text-warning"
                 }`}
                 onClick={() => onToggleSignature(location, index)}
                 title={isSignature
@@ -94,14 +94,14 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
             )}
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
               onClick={() => onMove(location, index, otherLocation)}
             >
               → {otherLocation === "carried" ? "Carry" : "Stow"}
             </button>
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => onRemove(location, index)}
             >
               Remove
@@ -148,7 +148,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
       {readOnly
         ? (
           mw.description && (
-            <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
+            <div class="text-xs text-base-content/70 whitespace-pre-line ml-2">
               {mw.description}
             </div>
           )
@@ -185,7 +185,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                   })}
                 </ul>
               )
-              : <span class="text-xs text-gray-400 ml-1">None</span>
+              : <span class="text-xs text-base-content/50 ml-1">None</span>
           )
           : (
             <div class="ml-2 flex flex-wrap gap-1">
@@ -197,8 +197,8 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                     type="button"
                     class={`text-xs px-1.5 py-0.5 rounded border ${
                       active
-                        ? "bg-blue-100 border-blue-400"
-                        : "hover:bg-gray-50"
+                        ? "bg-primary/20 border-primary/70"
+                        : "hover:bg-base-200"
                     }`}
                     title={trait.description}
                     onClick={() =>

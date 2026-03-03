@@ -23,7 +23,7 @@ export default function DarkModeToggle() {
     <button
       onClick={toggle}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
-      class="text-sm px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors select-none"
+      class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors select-none"
       aria-label="Toggle dark mode"
     >
       {dark ? "☀️" : "🌙"}

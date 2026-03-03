@@ -737,18 +737,18 @@ export default function InventorySection(props: InventorySectionProps) {
         <h4 class="font-medium text-sm">
           {label}
           {location === "carried" && (
-            <span class="text-xs text-gray-500 ml-2">
+            <span class="text-xs text-base-content/60 ml-2">
               (Weight: {totalWeight})
             </span>
           )}
         </h4>
 
-        {isEmpty && <p class="text-sm text-gray-400 italic">No items.</p>}
+        {isEmpty && <p class="text-sm text-base-content/50 italic">No items.</p>}
 
         {/* Weapons */}
         {inv.weapons.length > 0 && (
           <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Weapons
             </h5>
             {inv.weapons.map((w, i) => (
@@ -779,7 +779,7 @@ export default function InventorySection(props: InventorySectionProps) {
         {/* Melee weapons */}
         {inv.meleeWeapons.length > 0 && (
           <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Melee Weapons
             </h5>
             {inv.meleeWeapons.map((mw, i) => (
@@ -804,7 +804,7 @@ export default function InventorySection(props: InventorySectionProps) {
         {/* Equipment */}
         {inv.equipment.length > 0 && (
           <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Equipment
             </h5>
             {inv.equipment.map((eq, i) => (
@@ -828,7 +828,7 @@ export default function InventorySection(props: InventorySectionProps) {
         {/* Attachments (loose, not attached to any weapon) */}
         {(inv.attachments ?? []).length > 0 && (
           <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Attachments (Unattached)
             </h5>
             {(inv.attachments ?? []).map((att, i) => (
@@ -897,7 +897,7 @@ export default function InventorySection(props: InventorySectionProps) {
         {pointsAfterInventory != null && (
           <span
             class={`text-sm font-normal ml-2 ${
-              pointsAfterInventory < 0 ? "text-red-600" : "text-gray-500"
+              pointsAfterInventory < 0 ? "text-error" : "text-base-content/60"
             }`}
           >
             (Inventory cost: {inventoryPointCost}pt · Remaining:{" "}
@@ -934,7 +934,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </div>
             <button
               type="button"
-              class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => {
                 setShowAddWeapon((v) => !v);
                 setShowAddEquipment(false);
@@ -946,7 +946,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </button>
             <button
               type="button"
-              class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => {
                 setShowAddEquipment((v) => !v);
                 setShowAddWeapon(false);
@@ -958,7 +958,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </button>
             <button
               type="button"
-              class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => {
                 setShowAddAttachment((v) => !v);
                 setShowAddWeapon(false);
@@ -970,7 +970,7 @@ export default function InventorySection(props: InventorySectionProps) {
             </button>
             <button
               type="button"
-              class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => {
                 setShowAddMelee((v) => !v);
                 setShowAddWeapon(false);
@@ -984,14 +984,14 @@ export default function InventorySection(props: InventorySectionProps) {
 
           {/* Weapon picker */}
           {showAddWeapon && (
-            <div class="space-y-1 border rounded p-2 bg-gray-50">
+            <div class="space-y-1 border rounded p-2 bg-base-200">
               <div class="flex flex-wrap gap-1 mb-1">
                 <button
                   type="button"
                   class={`text-xs px-2 py-0.5 rounded border ${
                     nationFilter === ""
-                      ? "bg-blue-100 border-blue-400 font-medium"
-                      : "hover:bg-gray-100"
+                      ? "bg-primary/20 border-primary/70 font-medium"
+                      : "hover:bg-base-200"
                   }`}
                   onClick={() => setNationFilter("")}
                 >
@@ -1003,8 +1003,8 @@ export default function InventorySection(props: InventorySectionProps) {
                     type="button"
                     class={`text-xs px-2 py-0.5 rounded border ${
                       nationFilter === n
-                        ? "bg-blue-100 border-blue-400 font-medium"
-                        : "hover:bg-gray-100"
+                        ? "bg-primary/20 border-primary/70 font-medium"
+                        : "hover:bg-base-200"
                     }`}
                     onClick={() => setNationFilter(n === nationFilter ? "" : n)}
                   >
@@ -1022,7 +1022,7 @@ export default function InventorySection(props: InventorySectionProps) {
               />
               {filteredWeapons.length === 0
                 ? (
-                  <p class="text-sm text-gray-400 italic">
+                  <p class="text-sm text-base-content/50 italic">
                     No matching weapons.
                   </p>
                 )
@@ -1038,25 +1038,25 @@ export default function InventorySection(props: InventorySectionProps) {
                           <div class="flex items-center justify-between">
                             <span>
                               {w.name}{" "}
-                              <span class="text-xs text-gray-500">
+                              <span class="text-xs text-base-content/60">
                                 ({w.type} · {w.nation} · W:{w.weight}{" "}
                                 · DMG:{w.damage})
                               </span>
                               {w.pointCost > 0 && (
-                                <span class="text-xs text-amber-600 ml-1">
+                                <span class="text-xs text-warning ml-1">
                                   [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
                                 </span>
                               )}
                             </span>
                             <button
                               type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
                               onClick={() => addWeapon(w.id, addTarget)}
                             >
                               Add ({costLabel(addCost)})
                             </button>
                           </div>
-                          <div class="text-xs text-gray-600 ml-2">
+                          <div class="text-xs text-base-content/70 ml-2">
                             <PerkDescription
                               name=""
                               description={w.gimmicks}
@@ -1073,7 +1073,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
           {/* Equipment picker */}
           {showAddEquipment && (
-            <div class="space-y-1 border rounded p-2 bg-gray-50">
+            <div class="space-y-1 border rounded p-2 bg-base-200">
               <input
                 type="text"
                 class="w-full border rounded px-2 py-1 text-sm"
@@ -1084,7 +1084,7 @@ export default function InventorySection(props: InventorySectionProps) {
               />
               {filteredEquipment.length === 0
                 ? (
-                  <p class="text-sm text-gray-400 italic">
+                  <p class="text-sm text-base-content/50 italic">
                     No matching equipment.
                   </p>
                 )
@@ -1102,7 +1102,7 @@ export default function InventorySection(props: InventorySectionProps) {
                           <div class="flex items-center justify-between">
                             <span>
                               {eq.name}{" "}
-                              <span class="text-xs text-gray-500">
+                              <span class="text-xs text-base-content/60">
                                 (W:{eq.weight}
                                 {eq.isCharge ? " · Charges" : ""}
                                 {eq.isBulky ? " · Bulky" : ""})
@@ -1110,7 +1110,7 @@ export default function InventorySection(props: InventorySectionProps) {
                             </span>
                             <button
                               type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200 disabled:opacity-40 disabled:cursor-not-allowed"
                               onClick={() => addEquipment(eq.id, addTarget)}
                               disabled={cannotCarryBulky}
                               title={cannotCarryBulky
@@ -1120,7 +1120,7 @@ export default function InventorySection(props: InventorySectionProps) {
                               Add ({costLabel(addCost)})
                             </button>
                           </div>
-                          <div class="text-xs text-gray-600 ml-2">
+                          <div class="text-xs text-base-content/70 ml-2">
                             <PerkDescription
                               name=""
                               description={eq.description}
@@ -1137,14 +1137,14 @@ export default function InventorySection(props: InventorySectionProps) {
 
           {/* Melee weapon creator */}
           {showAddMelee && (
-            <div class="border rounded p-2 bg-gray-50 space-y-1">
-              <p class="text-sm text-gray-600">
+            <div class="border rounded p-2 bg-base-200 space-y-1">
+              <p class="text-sm text-base-content/70">
                 Create a new melee weapon template. You can customize its name,
                 damage, weight, and traits after adding it.
               </p>
               <button
                 type="button"
-                class="px-2 py-1 text-sm border rounded hover:bg-gray-100"
+                class="px-2 py-1 text-sm border rounded hover:bg-base-200"
                 onClick={() => addMeleeWeapon(addTarget)}
               >
                 Create Melee Weapon
@@ -1154,14 +1154,14 @@ export default function InventorySection(props: InventorySectionProps) {
 
           {/* Attachment picker */}
           {showAddAttachment && (
-            <div class="space-y-1 border rounded p-2 bg-gray-50">
+            <div class="space-y-1 border rounded p-2 bg-base-200">
               <div class="flex flex-wrap gap-1 mb-1">
                 <button
                   type="button"
                   class={`text-xs px-2 py-0.5 rounded border ${
                     attachmentNationFilter === ""
-                      ? "bg-blue-100 border-blue-400 font-medium"
-                      : "hover:bg-gray-100"
+                      ? "bg-primary/20 border-primary/70 font-medium"
+                      : "hover:bg-base-200"
                   }`}
                   onClick={() => setAttachmentNationFilter("")}
                 >
@@ -1171,8 +1171,8 @@ export default function InventorySection(props: InventorySectionProps) {
                   type="button"
                   class={`text-xs px-2 py-0.5 rounded border ${
                     attachmentNationFilter === "Any"
-                      ? "bg-blue-100 border-blue-400 font-medium"
-                      : "hover:bg-gray-100"
+                      ? "bg-primary/20 border-primary/70 font-medium"
+                      : "hover:bg-base-200"
                   }`}
                   onClick={() =>
                     setAttachmentNationFilter(
@@ -1187,8 +1187,8 @@ export default function InventorySection(props: InventorySectionProps) {
                     type="button"
                     class={`text-xs px-2 py-0.5 rounded border ${
                       attachmentNationFilter === n
-                        ? "bg-blue-100 border-blue-400 font-medium"
-                        : "hover:bg-gray-100"
+                        ? "bg-primary/20 border-primary/70 font-medium"
+                        : "hover:bg-base-200"
                     }`}
                     onClick={() =>
                       setAttachmentNationFilter(
@@ -1209,7 +1209,7 @@ export default function InventorySection(props: InventorySectionProps) {
               />
               {filteredAttachments.length === 0
                 ? (
-                  <p class="text-sm text-gray-400 italic">
+                  <p class="text-sm text-base-content/50 italic">
                     No matching attachments.
                   </p>
                 )
@@ -1225,21 +1225,21 @@ export default function InventorySection(props: InventorySectionProps) {
                           <div class="flex items-center justify-between">
                             <span>
                               {att.name}{" "}
-                              <span class="text-xs text-gray-500">
+                              <span class="text-xs text-base-content/60">
                                 (W:{att.weight} · For: {att.appliesTo}
                                 {att.isCharge ? " · Charges" : ""})
                               </span>
                             </span>
                             <button
                               type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
                               onClick={() =>
                                 addAttachmentToInventory(att.id, addTarget)}
                             >
                               Add ({costLabel(addCost)})
                             </button>
                           </div>
-                          <div class="text-xs text-gray-600 ml-2">
+                          <div class="text-xs text-base-content/70 ml-2">
                             <PerkDescription
                               name=""
                               description={att.description}

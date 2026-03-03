@@ -24,7 +24,7 @@ export default function PerkDescription(
         {" "}
         <button
           type="button"
-          class="text-xs text-blue-600 hover:underline cursor-pointer"
+          class="text-xs text-primary hover:underline cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             setShowDetails((v) => !v);
@@ -33,7 +33,7 @@ export default function PerkDescription(
           {showDetails ? "hide details" : "see details"}
         </button>
         {showDetails && (
-          <span class="block whitespace-pre-line text-gray-700 ml-2 mt-1">
+          <span class="block whitespace-pre-line text-base-content ml-2 mt-1">
             {description}
           </span>
         )}
@@ -49,7 +49,7 @@ export default function PerkDescription(
           {" "}
           <button
             type="button"
-            class="text-xs text-blue-600 hover:underline cursor-pointer"
+            class="text-xs text-primary hover:underline cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               setShowDetails((v) => !v);
@@ -58,7 +58,7 @@ export default function PerkDescription(
             {showDetails ? "hide details" : "see details"}
           </button>
           {showDetails && (
-            <span class="block whitespace-pre-line text-gray-700 ml-2 mt-1">
+            <span class="block whitespace-pre-line text-base-content ml-2 mt-1">
               {details}
             </span>
           )}

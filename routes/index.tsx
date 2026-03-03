@@ -15,7 +15,7 @@ export default define.page(async function Home(ctx) {
       <div class="max-w-3xl mx-auto space-y-6">
         <header>
           <h1 class="text-3xl font-bold">World Vore One Character Sheet</h1>
-          <p class="text-gray-700">
+          <p class="text-base-content">
             Create and edit tabletop characters using stat and perk points.
           </p>
         </header>
@@ -23,7 +23,7 @@ export default define.page(async function Home(ctx) {
         <section>
           <a
             href="/wiki"
-            class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+            class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
           >
             📖 Wiki
           </a>
@@ -32,7 +32,7 @@ export default define.page(async function Home(ctx) {
         {!user
           ? (
             <section>
-              <p class="text-gray-700">
+              <p class="text-base-content">
                 Please{" "}
                 <a href="/auth/discord" class="underline font-medium">
                   log in with Discord
@@ -45,15 +45,15 @@ export default define.page(async function Home(ctx) {
             <section class="space-y-4">
               <a
                 href="/characters/new"
-                class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+                class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
               >
                 Create Character
               </a>
 
-              <div class="border rounded-lg p-4 bg-white/80">
+              <div class="border rounded-lg p-4 bg-base-100/80">
                 <h2 class="text-xl font-semibold mb-2">Characters</h2>
                 {characters.length === 0
-                  ? <p class="text-gray-700">No characters yet.</p>
+                  ? <p class="text-base-content">No characters yet.</p>
                   : (
                     <ul class="space-y-2">
                       {characters.map((character) => (
@@ -65,12 +65,12 @@ export default define.page(async function Home(ctx) {
                             {character.name}
                           </a>
                           {character.status === "pending" && (
-                            <span class="text-sm text-yellow-700">
+                            <span class="text-sm text-warning">
                               Pending
                             </span>
                           )}
                           {character.updatedAt && (
-                            <span class="text-xs text-gray-500 ml-auto">
+                            <span class="text-xs text-base-content/60 ml-auto">
                               {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </span>
                           )}
@@ -79,7 +79,7 @@ export default define.page(async function Home(ctx) {
                             <input type="hidden" name="returnTo" value="/" />
                             <button
                               type="submit"
-                              class="text-xs text-gray-400 hover:text-gray-700 ml-1 transition-colors"
+                              class="text-xs text-base-content/50 hover:text-base-content/80 ml-1 transition-colors"
                             >
                               Hide
                             </button>
@@ -90,7 +90,7 @@ export default define.page(async function Home(ctx) {
                   )}
                 {hiddenCharacters.length > 0 && (
                   <details class="mt-4">
-                    <summary class="cursor-pointer text-gray-600 hover:text-gray-900">
+                    <summary class="cursor-pointer text-base-content/70 hover:text-base-content">
                       Show hidden characters ({hiddenCharacters.length})
                     </summary>
                     <ul class="space-y-2 mt-2">
@@ -102,9 +102,9 @@ export default define.page(async function Home(ctx) {
                           >
                             {character.name}
                           </a>
-                          <span class="text-sm text-red-600">Hidden</span>
+                          <span class="text-sm text-error">Hidden</span>
                           {character.updatedAt && (
-                            <span class="text-xs text-gray-500 ml-auto">
+                            <span class="text-xs text-base-content/60 ml-auto">
                               {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                             </span>
                           )}
@@ -113,7 +113,7 @@ export default define.page(async function Home(ctx) {
                             <input type="hidden" name="returnTo" value="/" />
                             <button
                               type="submit"
-                              class="text-xs text-gray-500 hover:text-gray-900 ml-1 underline transition-colors"
+                              class="text-xs text-base-content/60 hover:text-base-content ml-1 underline transition-colors"
                             >
                               Unhide
                             </button>

@@ -331,7 +331,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   return (
-    <form method="POST" class="space-y-4 border rounded-lg p-4 bg-white/80">
+    <form method="POST" class="space-y-4 border rounded-lg p-4 bg-base-100/80">
       <h2 class="text-xl font-semibold">{props.title}</h2>
       <input type="hidden" name="action" value={props.action} />
       {props.action === "update" && props.characterId && (
@@ -379,7 +379,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       )}
 
       {lockIdentityFields && (
-        <p class="text-sm text-gray-600">
+        <p class="text-sm text-base-content/70">
           Name and description are locked after approval. An admin must
           disapprove the character to change them.
         </p>
@@ -405,7 +405,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <div class="rounded border p-3 space-y-3">
           <button
             type="button"
-            class="font-semibold text-blue-600 hover:underline cursor-pointer"
+            class="font-semibold text-primary hover:underline cursor-pointer"
             onClick={() =>
               setShowDescription((v) => !v)}
           >
@@ -605,12 +605,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 </label>
               </div>
 
-              <p class="text-sm text-gray-500 italic">
+              <p class="text-sm text-base-content/60 italic">
                 The appearance fields below may be left blank if using an image
                 to represent your character.
               </p>
 
-              <div class="rounded border p-3 space-y-2 bg-gray-50">
+              <div class="rounded border p-3 space-y-2 bg-base-200">
                 <h4 class="font-medium">Character Image</h4>
                 {currentImageUrl && (
                   <div class="space-y-2">
@@ -621,7 +621,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     />
                     <button
                       type="button"
-                      class="px-2 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                      class="px-2 py-1 text-sm border rounded text-error hover:bg-error/10"
                       disabled={imageUploading}
                       onClick={handleImageDelete}
                     >
@@ -646,9 +646,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   />
                 </label>
                 {imageUploading && (
-                  <p class="text-sm text-blue-600">Uploading…</p>
+                  <p class="text-sm text-primary">Uploading…</p>
                 )}
-                {imageError && <p class="text-sm text-red-600">{imageError}</p>}
+                {imageError && <p class="text-sm text-error">{imageError}</p>}
               </div>
 
               <div class="grid grid-cols-2 gap-3">
@@ -780,7 +780,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
-        <p class="text-sm text-gray-700 flex items-center gap-2">
+        <p class="text-sm text-base-content flex items-center gap-2">
           Unallocated stat points:{" "}
           <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
           <button
@@ -847,7 +847,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
       <div class="rounded border p-3 space-y-3">
         <h3 class="font-semibold">Perks</h3>
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-base-content">
           Perks cost {PERK_COST_STAT_POINTS} stat points each. {(() => {
             const paidPerkCount =
               perkIds.filter((id) => !PERKS_BY_ID.get(id)?.isFree).length;
@@ -860,7 +860,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <div>
           <h4 class="font-medium">Owned Perks</h4>
           {perkIds.length === 0
-            ? <p class="text-sm text-gray-700">No perks unlocked.</p>
+            ? <p class="text-sm text-base-content">No perks unlocked.</p>
             : (
               <div class="space-y-3 text-sm">
                 {ownedPerkGroups.map((group) => (
@@ -888,7 +888,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                               {canRemove && (
                                 <button
                                   type="button"
-                                  class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                                  class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
                                   onClick={() => unbuyPerk(id)}
                                 >
                                   Remove
@@ -913,7 +913,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             )}
                             {perk?.canDisguise && (
                               <div class="mt-1">
-                                <label class="text-xs text-gray-600">
+                                <label class="text-xs text-base-content/70">
                                   Disguise as:
                                 </label>
                                 <select
@@ -968,7 +968,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             {canRemove && (
                               <button
                                 type="button"
-                                class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+                                class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
                                 onClick={() => unbuyPerk(id)}
                               >
                                 Remove
@@ -1028,7 +1028,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 </div>
                 {availablePerks.length === 0
                   ? (
-                    <p class="text-sm text-gray-500 italic">
+                    <p class="text-sm text-base-content/60 italic">
                       No matching perks found.
                     </p>
                   )
@@ -1083,7 +1083,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
       <button
         type="submit"
-        class="px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+        class="px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
       >
         {props.submitLabel}
       </button>

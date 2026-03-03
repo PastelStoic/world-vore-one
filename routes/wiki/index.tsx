@@ -9,9 +9,9 @@ export default define.page(function WikiIndex() {
       </Head>
       <div class="max-w-3xl mx-auto space-y-6">
         <header>
-          <a href="/" class="text-sm text-blue-700 hover:underline">← Home</a>
+          <a href="/" class="text-sm text-primary hover:underline">← Home</a>
           <h1 class="text-3xl font-bold mt-2">Wiki</h1>
-          <p class="text-gray-700">
+          <p class="text-base-content">
             Reference pages for game rules, perks, and equipment.
           </p>
         </header>
@@ -19,10 +19,10 @@ export default define.page(function WikiIndex() {
         <div class="grid gap-4 sm:grid-cols-2">
           <a
             href="/wiki/perks"
-            class="block border rounded-lg p-5 bg-white/80 hover:bg-white transition-colors shadow-sm"
+            class="block border rounded-lg p-5 bg-base-100/80 hover:bg-base-100 transition-colors shadow-sm"
           >
             <h2 class="text-xl font-semibold mb-1">Perks</h2>
-            <p class="text-gray-600 text-sm">
+            <p class="text-base-content/70 text-sm">
               All available perks organised by category: combat, vore, smut,
               gimmick, PF type, faction, and negative perks.
             </p>
@@ -30,10 +30,10 @@ export default define.page(function WikiIndex() {
 
           <a
             href="/wiki/weapons"
-            class="block border rounded-lg p-5 bg-white/80 hover:bg-white transition-colors shadow-sm"
+            class="block border rounded-lg p-5 bg-base-100/80 hover:bg-base-100 transition-colors shadow-sm"
           >
             <h2 class="text-xl font-semibold mb-1">Weapons</h2>
-            <p class="text-gray-600 text-sm">
+            <p class="text-base-content/70 text-sm">
               Statistics and gimmicks for every ranged weapon in the game,
               grouped by weapon type.
             </p>
@@ -41,10 +41,10 @@ export default define.page(function WikiIndex() {
 
           <a
             href="/wiki/equipment"
-            class="block border rounded-lg p-5 bg-white/80 hover:bg-white transition-colors shadow-sm"
+            class="block border rounded-lg p-5 bg-base-100/80 hover:bg-base-100 transition-colors shadow-sm"
           >
             <h2 class="text-xl font-semibold mb-1">Equipment & Attachments</h2>
-            <p class="text-gray-600 text-sm">
+            <p class="text-base-content/70 text-sm">
               General gear, weapon attachments, melee weapons, and melee weapon
               traits.
             </p>

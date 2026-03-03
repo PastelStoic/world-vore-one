@@ -15,7 +15,7 @@ export default define.page(async function AdminPage(ctx) {
         <div class="max-w-3xl mx-auto space-y-4">
           <a href="/" class="underline">← Back to Home</a>
           <h1 class="text-2xl font-bold">Admin</h1>
-          <p class="text-gray-700">
+          <p class="text-base-content">
             Please{" "}
             <a href="/auth/discord" class="underline font-medium">
               log in with Discord

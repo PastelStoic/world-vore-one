@@ -33,7 +33,7 @@ export default function AttachmentCard(props: AttachmentCardProps) {
   const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
   if (!def) {
     return (
-      <div class="text-red-500">Unknown attachment: {att.attachmentId}</div>
+      <div class="text-error">Unknown attachment: {att.attachmentId}</div>
     );
   }
 
@@ -46,11 +46,11 @@ export default function AttachmentCard(props: AttachmentCardProps) {
   const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
 
   return (
-    <div class="border rounded p-2 space-y-1 bg-white">
+    <div class="border rounded p-2 space-y-1 bg-base-100">
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           <strong>{def.name}</strong>{" "}
-          <span class="text-xs text-gray-500">
+          <span class="text-xs text-base-content/60">
             (W:{currentWeight} · For: {def.appliesTo})
           </span>
         </div>
@@ -58,14 +58,14 @@ export default function AttachmentCard(props: AttachmentCardProps) {
           <div class="flex gap-1">
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
               onClick={() => onMove(location, index, otherLocation)}
             >
               → {otherLocation === "carried" ? "Carry" : "Stow"}
             </button>
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => onRemove(location, index)}
             >
               Remove
@@ -74,7 +74,7 @@ export default function AttachmentCard(props: AttachmentCardProps) {
         )}
       </div>
 
-      <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
+      <div class="text-xs text-base-content/70 whitespace-pre-line ml-2">
         <PerkDescription
           name=""
           description={def.description}
@@ -88,7 +88,7 @@ export default function AttachmentCard(props: AttachmentCardProps) {
           <div class="flex items-center gap-2">
             <span>Charges:</span>
             {!readOnly && (
-              <span class="text-xs text-gray-500">
+              <span class="text-xs text-base-content/60">
                 (Total:{" "}
                 <input
                   type="number"
@@ -115,8 +115,8 @@ export default function AttachmentCard(props: AttachmentCardProps) {
                   type="button"
                   class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
                     isUsed
-                      ? "bg-red-100 border-red-400 text-red-600"
-                      : "bg-green-50 border-green-400 text-green-700"
+                      ? "bg-error/20 border-error/70 text-error"
+                      : "bg-success/10 border-success/70 text-success"
                   } cursor-pointer hover:opacity-75`}
                   title={isUsed
                     ? "Used (click to restore)"
@@ -128,7 +128,7 @@ export default function AttachmentCard(props: AttachmentCardProps) {
               );
             })}
           </div>
-          <div class="text-xs text-gray-500 ml-2">
+          <div class="text-xs text-base-content/60 ml-2">
             {remaining} remaining · {att.usedCharges} used · W:{currentWeight}
           </div>
         </div>

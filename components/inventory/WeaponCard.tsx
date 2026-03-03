@@ -73,7 +73,7 @@ export default function WeaponCard(props: WeaponCardProps) {
 
   const def = WEAPONS_BY_ID.get(w.weaponId);
   if (!def) {
-    return <div class="text-red-500">Unknown weapon: {w.weaponId}</div>;
+    return <div class="text-error">Unknown weapon: {w.weaponId}</div>;
   }
 
   const otherLocation: InventoryLocation = location === "carried"
@@ -181,28 +181,28 @@ export default function WeaponCard(props: WeaponCardProps) {
   return (
     <div
       class={`border rounded p-2 space-y-1 ${
-        isSignature ? "bg-amber-50 border-amber-300" : "bg-white"
+        isSignature ? "bg-warning/10 border-warning/50" : "bg-base-100"
       }`}
     >
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           {isSignature && (
-            <span class="text-amber-500 mr-1" title="Signature Weapon">
+            <span class="text-warning mr-1" title="Signature Weapon">
               ★
             </span>
           )}
           <strong>{def.name}</strong>{" "}
-          <span class="text-xs text-gray-500">
+          <span class="text-xs text-base-content/60">
             ({def.type} · {def.nation} · W:{effectiveWeight}{" "}
             · DMG:{damageDisplay} · ROF:{effectiveRateOfFire})
           </span>
           {isSignature && (
-            <span class="text-xs text-amber-600 ml-1 font-medium">
+            <span class="text-xs text-warning ml-1 font-medium">
               [Signature Weapon]
             </span>
           )}
           {def.pointCost > 0 && (
-            <span class="text-xs text-amber-600 ml-1">
+            <span class="text-xs text-warning ml-1">
               [Cost: {isSignature
                 ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
                 : getWeaponPointCost(w.weaponId, perkIds)}pt]
@@ -216,8 +216,8 @@ export default function WeaponCard(props: WeaponCardProps) {
                 type="button"
                 class={`px-2 py-0.5 text-xs border rounded ${
                   isSignature
-                    ? "bg-amber-100 border-amber-400 text-amber-700"
-                    : "hover:bg-amber-50 text-amber-600"
+                    ? "bg-warning/20 border-warning/60 text-warning"
+                    : "hover:bg-warning/10 text-warning"
                 }`}
                 onClick={() => props.onToggleSignature(location, index)}
                 title={isSignature
@@ -229,14 +229,14 @@ export default function WeaponCard(props: WeaponCardProps) {
             )}
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-gray-100"
+              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
               onClick={() => props.onMove(location, index, otherLocation)}
             >
               → {otherLocation === "carried" ? "Carry" : "Stow"}
             </button>
             <button
               type="button"
-              class="px-2 py-0.5 text-xs border rounded text-red-600 hover:bg-red-50"
+              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => props.onRemove(location, index)}
             >
               Remove
@@ -246,7 +246,7 @@ export default function WeaponCard(props: WeaponCardProps) {
       </div>
 
       {/* Gimmicks */}
-      <div class="text-xs text-gray-600 whitespace-pre-line ml-2">
+      <div class="text-xs text-base-content/70 whitespace-pre-line ml-2">
         <PerkDescription name="" description={def.gimmicks} hideByDefault />
       </div>
 
@@ -264,14 +264,14 @@ export default function WeaponCard(props: WeaponCardProps) {
             if (!Number.isNaN(val)) props.onSetAmmo(location, index, val);
           }}
         />
-        <span class="text-xs text-gray-500">/ {effectiveAmmo}</span>
+        <span class="text-xs text-base-content/60">/ {effectiveAmmo}</span>
         <button
           type="button"
           class={`px-1 text-xs border rounded ${
             canReload || isReloading
-              ? "hover:bg-gray-100"
+              ? "hover:bg-base-200"
               : "opacity-50 cursor-not-allowed"
-          } ${isReloading ? "bg-yellow-50 border-yellow-400" : ""}`}
+          } ${isReloading ? "bg-warning/10 border-warning/60" : ""}`}
           onClick={() => {
             if (!canReload && !isReloading) return;
 
@@ -401,7 +401,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         {isReloading && (
           <button
             type="button"
-            class="px-1 text-xs border rounded text-red-500 hover:bg-red-50"
+            class="px-1 text-xs border rounded text-error hover:bg-error/10"
             title="Cancel reload"
             onClick={() => {
               props.onUpdateCombat((inv) => {
@@ -417,7 +417,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         {hasMagazines && !weaponRequiresMags && !isAmmoFull && !isReloading && (
           <button
             type="button"
-            class="px-1 text-xs border rounded hover:bg-gray-100"
+            class="px-1 text-xs border rounded hover:bg-base-200"
             title="Reload without consuming a magazine (standard reload)"
             onClick={() => {
               if (reloadsIndividually) {
@@ -455,22 +455,22 @@ export default function WeaponCard(props: WeaponCardProps) {
                 if (!Number.isNaN(val)) props.onSetMagazines(location, index, val);
               }}
             />
-            <span class="text-xs text-gray-500">
+            <span class="text-xs text-base-content/60">
               (1W each)
             </span>
           </div>
           {/* Partial magazines list with Load and Discard buttons */}
           {(w.partialMagazines ?? []).length > 0 && (
-            <div class="ml-2 text-xs text-gray-600 space-y-0.5">
+            <div class="ml-2 text-xs text-base-content/70 space-y-0.5">
               <span class="font-medium">Partial magazines:</span>
               {(w.partialMagazines ?? []).map((ammo, pi) => (
                 <div key={pi} class="flex items-center gap-1">
-                  <span class="inline-block bg-yellow-50 border border-yellow-300 rounded px-1">
+                  <span class="inline-block bg-warning/10 border border-warning/50 rounded px-1">
                     {ammo}/{effectiveAmmo} rounds
                   </span>
                   <button
                     type="button"
-                    class="px-1 border rounded text-blue-600 hover:bg-blue-50"
+                    class="px-1 border rounded text-primary hover:bg-primary/10"
                     title="Load this magazine into the weapon"
                     onClick={() => {
                       props.onUpdateCombat((inv) => {
@@ -500,7 +500,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                   </button>
                   <button
                     type="button"
-                    class="px-1 border rounded text-red-500 hover:bg-red-50"
+                    class="px-1 border rounded text-error hover:bg-error/10"
                     title="Discard this partial magazine"
                     onClick={() => {
                       props.onUpdateCombat((inv) => {
@@ -516,7 +516,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                   </button>
                 </div>
               ))}
-              <span class="text-gray-400">
+              <span class="text-base-content/50">
                 ({(w.partialMagazines ?? []).length}W total)
               </span>
             </div>
@@ -546,20 +546,20 @@ export default function WeaponCard(props: WeaponCardProps) {
                   <span>
                     {aDef?.name ?? aId}
                     {aDef && aDef.weight > 0 && (
-                      <span class="text-gray-400">(W:{aDef.weight})</span>
+                      <span class="text-base-content/50">(W:{aDef.weight})</span>
                     )}
                   </span>
                   {!readOnly && (
                     <button
                       type="button"
-                      class="px-1 border rounded text-red-500 hover:bg-red-50"
+                      class="px-1 border rounded text-error hover:bg-error/10"
                       onClick={() => props.onDetach(location, index, aId)}
                     >
                       Detach
                     </button>
                   )}
                   {aDef && (
-                    <span class="text-xs text-gray-500 ml-1">
+                    <span class="text-xs text-base-content/60 ml-1">
                       <PerkDescription
                         name=""
                         description={aDef.description}
@@ -585,8 +585,8 @@ export default function WeaponCard(props: WeaponCardProps) {
                               type="button"
                               class={`w-5 h-5 border rounded text-xs flex items-center justify-center ${
                                 isUsed
-                                  ? "bg-red-100 border-red-400 text-red-600"
-                                  : "bg-green-50 border-green-400 text-green-700"
+                                  ? "bg-error/20 border-error/70 text-error"
+                                  : "bg-success/10 border-success/70 text-success"
                               } ${
                                 readOnly
                                   ? "cursor-default"
@@ -611,7 +611,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                         },
                       )}
                     </div>
-                    <div class="text-xs text-gray-500">
+                    <div class="text-xs text-base-content/60">
                       {attachedRemaining} remaining ·{" "}
                       {attachedChargeData.usedCharges} used
                     </div>
@@ -648,7 +648,7 @@ export default function WeaponCard(props: WeaponCardProps) {
             !w.attachedIds.includes(aId)
           ).length > 0 &&
         (
-          <div class="ml-2 text-xs text-gray-400 italic">
+          <div class="ml-2 text-xs text-base-content/50 italic">
             Compatible attachments exist but none are in your inventory. Add
             them via the Attachments section below.
           </div>

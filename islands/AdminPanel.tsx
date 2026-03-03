@@ -204,7 +204,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   if (!isAdmin.value && !hasAdmins.value) {
     return (
       <div class="space-y-4">
-        <p class="text-gray-700">
+        <p class="text-base-content">
           No admin accounts exist yet. As the site owner, you can make yourself
           the first admin.
         </p>
@@ -212,12 +212,12 @@ export default function AdminPanel(props: AdminPanelProps) {
           type="button"
           onClick={bootstrap}
           disabled={bootstrapping.value}
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          class="px-4 py-2 bg-primary text-primary-content rounded hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           {bootstrapping.value ? "Setting up…" : "Become Admin"}
         </button>
         {bootstrapError.value && (
-          <p class="text-red-600">{bootstrapError.value}</p>
+          <p class="text-error">{bootstrapError.value}</p>
         )}
       </div>
     );
@@ -226,7 +226,7 @@ export default function AdminPanel(props: AdminPanelProps) {
   // Not admin but admins exist → access denied
   if (!isAdmin.value) {
     return (
-      <p class="text-red-600">
+      <p class="text-error">
         You do not have admin access. Ask an existing admin to grant you access.
       </p>
     );
@@ -259,7 +259,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             type="button"
             onClick={searchCharacters}
             disabled={searchLoading.value}
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            class="px-4 py-2 bg-primary text-primary-content rounded hover:bg-primary/90 disabled:opacity-50 transition-colors"
           >
             {searchLoading.value ? "Searching…" : "Search"}
           </button>
@@ -268,7 +268,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         {characters.value.length > 0 && (
           <div class="border rounded-lg overflow-hidden">
             <table class="w-full text-sm">
-              <thead class="bg-gray-100">
+              <thead class="bg-base-200">
                 <tr>
                   <th class="text-left px-3 py-2">Name</th>
                   <th class="text-left px-3 py-2">Race</th>
@@ -279,11 +279,11 @@ export default function AdminPanel(props: AdminPanelProps) {
               </thead>
               <tbody>
                 {characters.value.map((c) => (
-                  <tr key={c.id} class="border-t hover:bg-gray-50">
+                  <tr key={c.id} class="border-t hover:bg-base-200">
                     <td class="px-3 py-2">
                       <a
                         href={`/characters/${c.id}`}
-                        class="underline text-blue-600"
+                        class="underline text-primary"
                       >
                         {c.name}
                       </a>
@@ -295,13 +295,13 @@ export default function AdminPanel(props: AdminPanelProps) {
                           <button
                             type="button"
                             onClick={() => approveCharacter(c.id)}
-                            class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-green-100 hover:text-green-800 hover:border-green-300 transition-colors"
+                            class="px-2 py-1 text-xs bg-warning/20 text-warning border border-warning/50 rounded hover:bg-success/20 hover:text-success hover:border-success/50 transition-colors"
                           >
                             Pending — Approve
                           </button>
                         )
                         : (
-                          <span class="text-xs text-green-700">Approved</span>
+                          <span class="text-xs text-success">Approved</span>
                         )}
                     </td>
                     <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
@@ -328,8 +328,8 @@ export default function AdminPanel(props: AdminPanelProps) {
             }}
             class={`px-3 py-1.5 border rounded text-sm transition-colors ${
               filterPendingOnly.value
-                ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-                : "bg-white hover:bg-gray-50"
+                ? "bg-warning/20 border-warning text-warning"
+                : "bg-base-100 hover:bg-base-200"
             }`}
           >
             {filterPendingOnly.value ? "✓ Pending Only" : "Pending Only"}
@@ -342,8 +342,8 @@ export default function AdminPanel(props: AdminPanelProps) {
             }}
             class={`px-3 py-1.5 border rounded text-sm transition-colors ${
               filterIncludeHidden.value
-                ? "bg-gray-200 border-gray-400"
-                : "bg-white hover:bg-gray-50"
+                ? "bg-base-200 border-base-300"
+                : "bg-base-100 hover:bg-base-200"
             }`}
           >
             {filterIncludeHidden.value ? "✓ Include Hidden" : "Include Hidden"}
@@ -352,7 +352,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             type="button"
             onClick={loadAllCharacters}
             disabled={allCharsLoading.value}
-            class="px-3 py-1.5 border rounded text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            class="px-3 py-1.5 border rounded text-sm bg-primary text-primary-content hover:bg-primary/90 disabled:opacity-50 transition-colors"
           >
             {allCharsLoading.value ? "Loading…" : allCharsLoaded.value ? "Refresh" : "Load"}
           </button>
@@ -360,13 +360,13 @@ export default function AdminPanel(props: AdminPanelProps) {
 
         {allCharsLoaded.value && (
           <>
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-base-content/60">
               {allCharacters.value.length} character{allCharacters.value.length !== 1 ? "s" : ""} found
             </p>
             {allCharacters.value.length > 0 && (
               <div class="border rounded-lg overflow-hidden">
                 <table class="w-full text-sm">
-                  <thead class="bg-gray-100">
+                  <thead class="bg-base-200">
                     <tr>
                       <th class="text-left px-3 py-2">Name</th>
                       <th class="text-left px-3 py-2">Race</th>
@@ -378,16 +378,16 @@ export default function AdminPanel(props: AdminPanelProps) {
                   </thead>
                   <tbody>
                     {allCharacters.value.map((c) => (
-                      <tr key={c.id} class={`border-t hover:bg-gray-50 ${c.hidden ? "opacity-50" : ""}`}>
+                      <tr key={c.id} class={`border-t hover:bg-base-200 ${c.hidden ? "opacity-50" : ""}`}>
                         <td class="px-3 py-2">
                           <a
                             href={`/characters/${c.id}`}
-                            class="underline text-blue-600"
+                            class="underline text-primary"
                           >
                             {c.name}
                           </a>
                           {c.hidden && (
-                            <span class="ml-1 text-xs text-gray-500">(hidden)</span>
+                            <span class="ml-1 text-xs text-base-content/50">(hidden)</span>
                           )}
                         </td>
                         <td class="px-3 py-2">{c.race}</td>
@@ -397,13 +397,13 @@ export default function AdminPanel(props: AdminPanelProps) {
                               <button
                                 type="button"
                                 onClick={() => approveCharacter(c.id)}
-                                class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-green-100 hover:text-green-800 hover:border-green-300 transition-colors"
+                                class="px-2 py-1 text-xs bg-warning/20 text-warning border border-warning/50 rounded hover:bg-success/20 hover:text-success hover:border-success/50 transition-colors"
                               >
                                 Pending — Approve
                               </button>
                             )
                             : (
-                              <span class="text-xs text-green-700">Approved</span>
+                              <span class="text-xs text-success">Approved</span>
                             )}
                         </td>
                         <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
@@ -436,7 +436,7 @@ export default function AdminPanel(props: AdminPanelProps) {
         {admins.value.length > 0 && (
           <div class="border rounded-lg overflow-hidden">
             <table class="w-full text-sm">
-              <thead class="bg-gray-100">
+              <thead class="bg-base-200">
                 <tr>
                   <th class="text-left px-3 py-2">Username</th>
                   <th class="text-left px-3 py-2">User ID</th>
@@ -445,7 +445,7 @@ export default function AdminPanel(props: AdminPanelProps) {
               </thead>
               <tbody>
                 {admins.value.map((a) => (
-                  <tr key={a.userId} class="border-t hover:bg-gray-50">
+                  <tr key={a.userId} class="border-t hover:bg-base-200">
                     <td class="px-3 py-2">{a.username}</td>
                     <td class="px-3 py-2 font-mono text-xs">{a.userId}</td>
                     <td class="px-3 py-2">
@@ -453,7 +453,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                         type="button"
                         onClick={() =>
                           removeAdminUser(a.userId)}
-                        class="text-red-600 hover:underline text-xs"
+                        class="text-error hover:underline text-xs"
                       >
                         Remove
                       </button>
@@ -467,7 +467,7 @@ export default function AdminPanel(props: AdminPanelProps) {
 
         <div class="flex gap-2 items-end">
           <div class="flex-1 space-y-1">
-            <label class="text-xs text-gray-600">Discord User ID</label>
+            <label class="text-xs text-base-content/60">Discord User ID</label>
             <input
               type="text"
               placeholder="e.g. 123456789012345678"
@@ -480,7 +480,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             />
           </div>
           <div class="flex-1 space-y-1">
-            <label class="text-xs text-gray-600">Username (optional)</label>
+            <label class="text-xs text-base-content/60">Username (optional)</label>
             <input
               type="text"
               placeholder="Display name"
@@ -495,13 +495,13 @@ export default function AdminPanel(props: AdminPanelProps) {
           <button
             type="button"
             onClick={addAdmin}
-            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            class="px-4 py-2 bg-success text-success-content rounded hover:bg-success/90 transition-colors"
           >
             Add Admin
           </button>
         </div>
         {adminError.value && (
-          <p class="text-red-600 text-sm">{adminError.value}</p>
+          <p class="text-error text-sm">{adminError.value}</p>
         )}
       </section>
     </div>

@@ -113,7 +113,7 @@ export default define.page<typeof handler>(
         backHref={`/characters/${characterId}/versions`}
         backLabel="Back to Previous Versions"
       >
-        <div class="border rounded p-4 bg-white/80 space-y-3">
+        <div class="border rounded p-4 bg-base-100/80 space-y-3">
           <h1 class="text-2xl font-bold">{draft.name}</h1>
           <p>
             <strong>Timestamp:</strong> {snapshot.timestamp}
@@ -241,7 +241,7 @@ export default define.page<typeof handler>(
             </label>
             <button
               type="submit"
-              class="px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+              class="px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
             >
               Set as Current Version
             </button>

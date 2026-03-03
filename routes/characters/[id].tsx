@@ -112,7 +112,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         {imageUrl && <meta name="twitter:image" content={imageUrl} />}
       </Head>
       {character.status === "pending" && (
-        <div class="flex items-center gap-3 px-3 py-2 bg-yellow-50 border border-yellow-300 rounded text-yellow-800 text-sm">
+        <div class="flex items-center gap-3 px-3 py-2 bg-warning/10 border border-warning/50 rounded text-warning text-sm">
           <span class="font-medium">Pending Approval</span>
           <span>This character is awaiting admin approval.</span>
           {ctx.state.isAdmin && (
@@ -120,7 +120,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
               <input type="hidden" name="action" value="approve" />
               <button
                 type="submit"
-                class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs"
+                class="px-3 py-1 bg-success text-primary-content rounded hover:bg-success/90 transition-colors text-xs"
               >
                 Approve
               </button>
@@ -129,14 +129,14 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         </div>
       )}
       {character.status !== "pending" && ctx.state.isAdmin && (
-        <div class="flex items-center gap-3 px-3 py-2 bg-blue-50 border border-blue-300 rounded text-blue-800 text-sm">
+        <div class="flex items-center gap-3 px-3 py-2 bg-primary/10 border border-primary/50 rounded text-primary text-sm">
           <span class="font-medium">Approved</span>
           <span>Disapprove to allow name/description edits again.</span>
           <form method="POST" class="ml-auto">
             <input type="hidden" name="action" value="disapprove" />
             <button
               type="submit"
-              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs"
+              class="px-3 py-1 bg-primary text-primary-content rounded hover:bg-primary/90 transition-colors text-xs"
             >
               Disapprove
             </button>
@@ -147,7 +147,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         <div class="flex gap-4">
           <a
             href={`/characters/${id}/edit`}
-            class="inline-block px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 transition-colors"
+            class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
           >
             Edit Character
           </a>
@@ -158,14 +158,14 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
             <input type="hidden" name="action" value="toggle-hidden" />
             <button
               type="submit"
-              class="underline text-gray-600 hover:text-gray-900 cursor-pointer"
+              class="underline text-base-content/70 hover:text-base-content cursor-pointer"
             >
               {character.hidden ? "Unhide Character" : "Hide Character"}
             </button>
           </form>
         </div>
       )}
-      {justSaved && <p class="text-green-700">Character saved.</p>}
+      {justSaved && <p class="text-success">Character saved.</p>}
       <CharacterSheetViewer
         character={viewCharacter}
         perks={PERKS}

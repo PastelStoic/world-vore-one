@@ -29,15 +29,15 @@ export default define.page(async function CharacterVersionsPage(ctx) {
       <h1 class="text-2xl font-bold">Previous Versions</h1>
 
       {olderSnapshots.length === 0
-        ? <p class="text-gray-700">No previous snapshots yet.</p>
+        ? <p class="text-base-content">No previous snapshots yet.</p>
         : (
           <ul class="space-y-3">
             {olderSnapshots.map((snapshot) => (
               <li
                 key={snapshot.snapshotId}
-                class="border rounded p-3 bg-white/80"
+                class="border rounded p-3 bg-base-100/80"
               >
-                <p class="text-sm text-gray-700">{snapshot.timestamp}</p>
+                <p class="text-sm text-base-content">{snapshot.timestamp}</p>
                 <p class="font-medium">{snapshot.changelog}</p>
                 <a
                   href={`/characters/${characterId}/versions/${snapshot.snapshotId}`}

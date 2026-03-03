@@ -58,9 +58,9 @@ export default define.page(function WikiWeapons() {
       </Head>
       <div class="max-w-4xl mx-auto space-y-8">
         <header>
-          <a href="/wiki" class="text-sm text-blue-700 hover:underline">← Wiki</a>
+          <a href="/wiki" class="text-sm text-primary hover:underline">← Wiki</a>
           <h1 class="text-3xl font-bold mt-2">Weapons</h1>
-          <p class="text-gray-700">
+          <p class="text-base-content">
             All ranged (and melee-category) weapons, grouped by type.
           </p>
         </header>
@@ -77,26 +77,26 @@ export default define.page(function WikiWeapons() {
                 {weapons.map((weapon) => (
                   <details
                     key={weapon.id}
-                    class="border rounded-lg bg-white/80 px-4 py-2"
+                    class="border rounded-lg bg-base-100/80 px-4 py-2"
                   >
                     <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
                       <span class="font-semibold">{weapon.name}</span>
-                      <span class="text-xs text-gray-500">{weapon.nation}</span>
-                      <span class="ml-auto flex items-center gap-3 text-xs text-gray-600 shrink-0">
+                      <span class="text-xs text-base-content/60">{weapon.nation}</span>
+                      <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
                         <span>DMG: {weapon.damage}</span>
                         <span>Ammo: {weapon.ammo}</span>
                         <span>RoF: {weapon.rateOfFire}</span>
                         <span>Wt: {weapon.weight}</span>
                         {weapon.pointCost !== 0 && (
-                          <span class={weapon.pointCost === 3 ? "text-red-600 font-medium" : "text-orange-600"}>
+                          <span class={weapon.pointCost === 3 ? "text-error font-medium" : "text-warning"}>
                             {pointCostLabel(weapon.pointCost)}
                           </span>
                         )}
-                        <span class="text-gray-400">▶ details</span>
+                        <span class="text-base-content/50">▶ details</span>
                       </span>
                     </summary>
-                    <div class="mt-2 text-sm text-gray-700 space-y-1 border-t pt-2">
-                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-gray-600">
+                    <div class="mt-2 text-sm text-base-content space-y-1 border-t pt-2">
+                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-base-content/70">
                         <div><span class="font-medium">Damage:</span> {weapon.damage}</div>
                         <div><span class="font-medium">Ammo:</span> {weapon.ammo}</div>
                         <div><span class="font-medium">Rate of fire:</span> {weapon.rateOfFire}</div>
@@ -115,19 +115,19 @@ export default define.page(function WikiWeapons() {
                         )}
                       </div>
                       {weapon.requiresMagazines && (
-                        <p class="text-xs text-amber-700">
+                        <p class="text-xs text-warning">
                           Requires magazines to reload.
                         </p>
                       )}
                       {weapon.reloadsIndividually && (
-                        <p class="text-xs text-amber-700">
+                        <p class="text-xs text-warning">
                           Reloads one round at a time.
                         </p>
                       )}
                       {weapon.gimmicks && (
                         <div class="mt-1">
                           <span class="text-xs font-medium">Gimmicks: </span>
-                          <span class="text-xs whitespace-pre-line text-gray-600">
+                          <span class="text-xs whitespace-pre-line text-base-content/70">
                             {weapon.gimmicks}
                           </span>
                         </div>

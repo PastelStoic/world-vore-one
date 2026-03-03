@@ -1,19 +1,14 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+@plugin "daisyui"{
+   themes: light --default, dark --prefersdark;
+ }
 
-@layer base {
-  html.dark {
-    color-scheme: dark;
-    background-color: rgb(17, 24, 39);
-    color: rgb(229, 231, 235);
-  }
-}
 .fresh-gradient {
-  background-color: rgb(134, 239, 172);
+  background-color: color-mix(in oklch, var(--color-success) 50%, var(--color-base-100));
   background-image: linear-gradient(
     to right bottom,
-    rgb(219, 234, 254),
-    rgb(187, 247, 208),
-    rgb(254, 249, 195)
+    color-mix(in oklch, var(--color-primary) 30%, var(--color-base-100)),
+    color-mix(in oklch, var(--color-success) 30%, var(--color-base-100)),
+    color-mix(in oklch, var(--color-warning) 30%, var(--color-base-100))
   );
 }

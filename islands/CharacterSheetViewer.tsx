@@ -88,11 +88,11 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     (character as CharacterSheet).hidden;
 
   return (
-    <div class="border rounded-lg p-4 bg-white/80 space-y-4">
+    <div class="border rounded-lg p-4 bg-base-100/80 space-y-4">
       <h2 class="text-2xl font-bold">
         {character.name}
         {isHidden && (
-          <span class="ml-2 text-base font-semibold text-red-600">Hidden</span>
+          <span class="ml-2 text-base font-semibold text-error">Hidden</span>
         )}
       </h2>
 
@@ -109,7 +109,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
       <div class="rounded border p-3 space-y-1">
         <button
           type="button"
-          class="font-semibold text-blue-600 hover:underline cursor-pointer"
+          class="font-semibold text-primary hover:underline cursor-pointer"
           onClick={() => setShowDescription((v) => !v)}
         >
           Description {showDescription ? "▲" : "▼"}
@@ -223,7 +223,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-base-content">
           Unallocated stat points:{" "}
           <strong>{character.unallocatedStatPoints}</strong>
         </p>
@@ -260,7 +260,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Perks</h3>
         {allDisplayPerks.length === 0
-          ? <p class="text-sm text-gray-700">No perks unlocked.</p>
+          ? <p class="text-sm text-base-content">No perks unlocked.</p>
           : (
             <div class="space-y-3 text-sm">
               {ownedPerkGroups.map((group) => (
@@ -294,7 +294,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                           })()}
                         {/* Show perk notes (but not for display-only fake perks) */}
                         {!displayOnly && character.perkNotes?.[id] && (
-                          <span class="block ml-5 text-gray-600 italic">
+                          <span class="block ml-5 text-base-content/70 italic">
                             {character.perkNotes[id]}
                           </span>
                         )}

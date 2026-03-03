@@ -690,6 +690,40 @@ En-block clip:
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
+    id: "Beretta-Modelo-1918",
+    name: 'Beretta Modelo 1918',
+    type: "Semiautomatic rifle",
+    kind: "semiautomatic-rifle",
+    nation: "Italy",
+    damage: "3",
+    ammo: 25,
+    rateOfFire: 2,
+    weight: 2,
+    pointCost: 1,
+    gimmicks: `Overhead magazine:
+*The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
+*If you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.`,
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+  },
+  {
+    id: "Carabinetta-Automatica-O.V.P",
+    name: 'Carabinetta Automatica "O.V.P"',
+    type: "SMG",
+    kind: "smg",
+    nation: "Italy",
+    damage: "3",
+    ammo: 25,
+    rateOfFire: 4,
+    weight: 2,
+    pointCost: 3,
+    gimmicks: `Restricted:
+*Prized and rare weapon. Must pay 3 points to have it.
+Overhead magazine:
+*The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
+*If you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.`,
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+  },
+  {
     id: "bodeo-1889",
     name: "Bodeo Model 1889 revolver",
     type: "Double-action revolver",
@@ -729,7 +763,7 @@ Agile:
   },
   {
     id: "swiss-1882",
-    name: "Swiss 1882",
+    name: "Ordonnanzrevolver 1882",
     type: "Double-action revolver",
     kind: "double-action-revolver",
     nation: "Switzerland",

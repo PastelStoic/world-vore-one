@@ -57,6 +57,9 @@ export const FACTIONS = [
   "Imperial House of Japan",
   "Tokugawa Clan",
   "The Kurokawa Sect (黒川教団) – The Black River Sect",
+  "Japanese Mainland",
+  "American Mainland",
+  "Canadian Mainand",
 ] as const;
 export type Faction = (typeof FACTIONS)[number];
 

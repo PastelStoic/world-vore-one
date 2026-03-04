@@ -90,7 +90,10 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     category: "negative",
     isFree: true,
     pointsGranted: 4,
-    customInput: "Locked stat and description of your condition",
+    customInput: "Description of your condition",
+    upgradable: true,
+    maxRanks: 5,
+    requiresStatChoice: ["strength", "dexterity", "constitution", "intelligence", "charisma"],
     description:
       `You have some type of health condition that is completely crippling in some way or another.
 

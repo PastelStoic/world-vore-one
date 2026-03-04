@@ -146,6 +146,12 @@ export interface CharacterDraft {
   unallocatedStatPoints: number;
   perkIds: string[];
   perkNotes?: Record<string, string>;
+  /** Per-rank free-text notes for upgradable perks with customInput (index 0 = rank 1). */
+  perkUpgradeNotes?: Record<string, string[]>;
+  /** Per-rank stat selections for perks with requiresStatChoice (index 0 = rank 1). */
+  perkStatChoices?: Record<string, BaseStatKey[]>;
+  /** Rank of each owned upgradable perk (how many times it has been taken). Defaults to 1. */
+  perkRanks?: Record<string, number>;
   /** Maps a disguisable perk ID to the fake perk ID it appears as to non-owners. */
   perkDisguises?: Record<string, string>;
   inventory?: CharacterInventory;

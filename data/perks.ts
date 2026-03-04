@@ -70,6 +70,15 @@ export interface PerkDefinition {
   excludesPerks?: string[];
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
+  /** When true, this perk can be taken multiple times, stacking its effects. */
+  upgradable?: boolean;
+  /** Maximum number of times this perk can be taken (undefined = no limit). */
+  maxRanks?: number;
+  /**
+   * When set, the player must select one stat from this list per rank.
+   * Prevents the same stat from being chosen twice across ranks of the same perk.
+   */
+  requiresStatChoice?: BaseStatKey[];
 }
 
 export const PERKS: PerkDefinition[] = [

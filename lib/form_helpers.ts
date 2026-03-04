@@ -11,6 +11,9 @@ import {
   parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
+  parsePerkRanks,
+  parsePerkStatChoices,
+  parsePerkUpgradeNotes,
   parseRace,
   validateCharacterProgression,
 } from "./characters.ts";
@@ -34,6 +37,9 @@ export interface ParsedCharacterFields {
   baseStats: NonNullable<ReturnType<typeof parseBaseStats>>;
   perkIds: NonNullable<ReturnType<typeof parsePerkIds>>;
   perkNotes: Record<string, string>;
+  perkUpgradeNotes: Record<string, string[]>;
+  perkStatChoices: Record<string, ReturnType<typeof parsePerkStatChoices>[string]>;
+  perkRanks: Record<string, number>;
   perkDisguises: Record<string, string>;
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
@@ -60,8 +66,15 @@ export function parseCharacterFormData(
   const perkNotes = parsePerkNotes(
     String(formData.get("perkNotes") ?? "{}"),
   );
+  const perkUpgradeNotes = parsePerkUpgradeNotes(
+    String(formData.get("perkUpgradeNotes") ?? "{}"),
+  );
   const perkDisguises = parsePerkDisguises(
     String(formData.get("perkDisguises") ?? "{}"),
+  );
+  // perkRanks is parsed after perkIds so we can scope it to owned perks
+  const perkStatChoices = parsePerkStatChoices(
+    String(formData.get("perkStatChoices") ?? "{}"),
   );
   const unallocatedStatPoints = parseNonNegativeInt(
     formData.get("unallocatedStatPoints"),
@@ -88,6 +101,11 @@ export function parseCharacterFormData(
     return new Response("Invalid perk id in payload.", { status: 400 });
   }
 
+  const perkRanks = parsePerkRanks(
+    String(formData.get("perkRanks") ?? "{}"),
+    perkIds,
+  );
+
   return {
     name,
     action,
@@ -97,6 +115,9 @@ export function parseCharacterFormData(
     baseStats,
     perkIds,
     perkNotes,
+    perkUpgradeNotes,
+    perkStatChoices,
+    perkRanks,
     perkDisguises,
     unallocatedStatPoints,
     basedOnSnapshotId,
@@ -120,6 +141,15 @@ export function buildAndValidateDraft(
     unallocatedStatPoints: fields.unallocatedStatPoints,
     perkIds: fields.perkIds,
     perkNotes: fields.perkNotes,
+    perkUpgradeNotes: Object.keys(fields.perkUpgradeNotes).length > 0
+      ? fields.perkUpgradeNotes
+      : undefined,
+    perkStatChoices: Object.keys(fields.perkStatChoices).length > 0
+      ? fields.perkStatChoices
+      : undefined,
+    perkRanks: Object.keys(fields.perkRanks).length > 0
+      ? fields.perkRanks
+      : undefined,
     perkDisguises: Object.keys(fields.perkDisguises).length > 0
       ? fields.perkDisguises
       : undefined,

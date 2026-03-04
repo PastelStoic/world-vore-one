@@ -38,7 +38,11 @@ function getMultiplier(
 
   for (const perkId of input.perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
-    multiplier *= perk?.modifiers?.[key] ?? 1;
+    const mod = perk?.modifiers?.[key] ?? 1;
+    if (mod !== 1) {
+      const rank = input.perkRanks?.[perkId] ?? 1;
+      multiplier *= Math.pow(mod, rank);
+    }
   }
 
   return multiplier;
@@ -55,6 +59,13 @@ function getStatCap(
     const perkCap = perk?.modifiers?.statCaps?.[statKey];
     if (perkCap !== undefined) {
       cap = cap === undefined ? perkCap : Math.min(cap, perkCap);
+    }
+    // Perks with requiresStatChoice lock each chosen stat at 1
+    if (perk?.requiresStatChoice) {
+      const choices = input.perkStatChoices?.[perkId] ?? [];
+      if ((choices as string[]).includes(statKey)) {
+        cap = cap === undefined ? 1 : Math.min(cap, 1);
+      }
     }
   }
 

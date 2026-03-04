@@ -22,6 +22,9 @@ export {
   parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
+  parsePerkRanks,
+  parsePerkStatChoices,
+  parsePerkUpgradeNotes,
   parseRace,
   validateCharacterProgression,
 } from "./character_parsing.ts";

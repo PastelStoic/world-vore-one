@@ -4,6 +4,7 @@
 
 import {
   BASE_STAT_FIELDS,
+  type BaseStatKey,
   type BaseStats,
   type CharacterDescription,
   type CharacterDraft,
@@ -83,6 +84,91 @@ export function parsePerkNotes(raw: string): Record<string, string> {
   }
 }
 
+export function parsePerkUpgradeNotes(
+  raw: string,
+): Record<string, string[]> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, string[]> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (Array.isArray(value)) {
+        result[key] = value.map((v) =>
+          typeof v === "string" ? v : ""
+        );
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
+export function parsePerkStatChoices(
+  raw: string,
+): Record<string, BaseStatKey[]> {
+  const VALID_STAT_KEYS: BaseStatKey[] = [
+    "strength",
+    "dexterity",
+    "constitution",
+    "intelligence",
+    "charisma",
+    "escapeTraining",
+    "digestionStrength",
+    "digestionResilience",
+  ];
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, BaseStatKey[]> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (Array.isArray(value)) {
+        const choices = value.filter((v): v is BaseStatKey =>
+          typeof v === "string" && (VALID_STAT_KEYS as string[]).includes(v)
+        );
+        if (choices.length > 0) result[key] = choices;
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
+export function parsePerkRanks(
+  raw: string,
+  ownedPerkIds: string[],
+): Record<string, number> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, number> = {};
+    for (const perkId of ownedPerkIds) {
+      const val = (parsed as Record<string, unknown>)[perkId];
+      if (
+        typeof val === "number" && Number.isInteger(val) && val >= 1
+      ) {
+        result[perkId] = val;
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 export function parsePerkDisguises(raw: string): Record<string, string> {
   try {
     const parsed = JSON.parse(raw);
@@ -145,7 +231,10 @@ export function parseDescription(raw: string): CharacterDescription | null {
   }
 }
 
-export function calculatePerksCost(perkIds: string[]): number {
+export function calculatePerksCost(
+  perkIds: string[],
+  perkRanks?: Record<string, number>,
+): number {
   if (perkIds.length <= 0) return 0;
 
   let paidPerkCount = 0;
@@ -153,9 +242,10 @@ export function calculatePerksCost(perkIds: string[]): number {
 
   for (const perkId of perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
-    totalPointsGranted += perk?.pointsGranted ?? 0;
+    const rank = perkRanks?.[perkId] ?? 1;
+    totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
     if (!perk?.isFree) {
-      paidPerkCount++;
+      paidPerkCount += rank;
     }
   }
 
@@ -182,7 +272,7 @@ export function validateCharacterProgression(
     return "Base stats cannot go below their default values.";
   }
 
-  const spentOnPerks = calculatePerksCost(input.perkIds);
+  const spentOnPerks = calculatePerksCost(input.perkIds, input.perkRanks);
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 
   if (totalUsed < getStartingStatPoints(input.race)) {

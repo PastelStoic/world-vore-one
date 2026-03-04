@@ -3,6 +3,7 @@ import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
   type PerkDefinition,
+  PERKS_BY_ID,
 } from "../data/perks.ts";
 import {
   BASE_STAT_FIELDS,
@@ -269,7 +270,16 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                     {PERK_CATEGORY_LABELS[group.category]}
                   </h4>
                   <ul class="list-disc list-inside">
-                    {group.items.map(({ id, perk, displayOnly }) => (
+                    {group.items.map(({ id, perk, displayOnly }) => {
+                      const rank = character.perkRanks?.[id] ?? 1;
+                      const perkDef = perk
+                        ? PERKS_BY_ID.get(id)
+                        : undefined;
+                      const statLabelMap = BASE_STAT_FIELDS.reduce(
+                        (m, f) => { m[f.key] = f.label; return m; },
+                        {} as Record<string, string>,
+                      );
+                      return (
                       <li key={id}>
                         {perk
                           ? (
@@ -279,6 +289,11 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                             />
                           )
                           : id}
+                        {perkDef?.upgradable && rank > 1 && (
+                          <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
+                            Rank {rank}
+                          </span>
+                        )}
                         {/* Owner/admin: show which perk this is disguised as */}
                         {canSeeDisguisedPerks &&
                           character.perkDisguises?.[id] && (() => {
@@ -292,14 +307,48 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                               </span>
                             );
                           })()}
-                        {/* Show perk notes (but not for display-only fake perks) */}
-                        {!displayOnly && character.perkNotes?.[id] && (
+                        {/* Per-rank notes for upgradable perks */}
+                        {!displayOnly && perkDef?.upgradable && (
+                          <div class="ml-5 space-y-0.5">
+                            {Array.from({ length: rank }, (_, ri) => {
+                              const statKey =
+                                character.perkStatChoices?.[id]?.[ri];
+                              const note =
+                                character.perkUpgradeNotes?.[id]?.[ri] ??
+                                (ri === 0 ? character.perkNotes?.[id] : undefined);
+                              if (!statKey && !note) return null;
+                              return (
+                                <div
+                                  key={ri}
+                                  class="text-xs text-base-content/70 italic"
+                                >
+                                  {rank > 1 && (
+                                    <span class="font-semibold not-italic">
+                                      Rank {ri + 1}:{" "}
+                                    </span>
+                                  )}
+                                  {statKey && (
+                                    <span class="text-warning not-italic">
+                                      [{statLabelMap[statKey] ?? statKey} locked]
+                                      {note ? " — " : ""}
+                                    </span>
+                                  )}
+                                  {note}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {/* Show legacy perk notes for non-upgradable perks */}
+                        {!displayOnly && !perkDef?.upgradable &&
+                          character.perkNotes?.[id] && (
                           <span class="block ml-5 text-base-content/70 italic">
                             {character.perkNotes[id]}
                           </span>
                         )}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 </div>
               ))}

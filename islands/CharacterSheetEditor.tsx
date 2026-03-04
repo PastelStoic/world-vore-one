@@ -61,12 +61,33 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [initialBaseStats] = useState(props.initialCharacter.baseStats);
   const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
   const [initialPerkIds] = useState(props.initialCharacter.perkIds);
+  const [initialPerkRanks] = useState(props.initialCharacter.perkRanks ?? {});
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
     props.initialCharacter.unallocatedStatPoints,
   );
   const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
     props.initialCharacter.perkNotes ?? {},
+  );
+  const [perkUpgradeNotes, setPerkUpgradeNotes] = useState<
+    Record<string, string[]>
+  >(() => {
+    const result = { ...(props.initialCharacter.perkUpgradeNotes ?? {}) };
+    // Migrate existing perkNotes entries for upgradable perks
+    for (const perkId of props.initialCharacter.perkIds) {
+      const perk = PERKS_BY_ID.get(perkId);
+      if (perk?.upgradable && perk.customInput && !result[perkId]) {
+        const oldNote = props.initialCharacter.perkNotes?.[perkId];
+        if (oldNote) result[perkId] = [oldNote];
+      }
+    }
+    return result;
+  });
+  const [perkStatChoices, setPerkStatChoices] = useState<
+    Record<string, BaseStatKey[]>
+  >(props.initialCharacter.perkStatChoices ?? {});
+  const [perkRanks, setPerkRanks] = useState<Record<string, number>>(
+    props.initialCharacter.perkRanks ?? {},
   );
   const [perkDisguises, setPerkDisguises] = useState<Record<string, string>>(
     props.initialCharacter.perkDisguises ?? {},
@@ -97,6 +118,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     unallocatedStatPoints,
     perkIds,
     perkNotes,
+    perkRanks: Object.keys(perkRanks).length > 0 ? perkRanks : undefined,
+    perkStatChoices: Object.keys(perkStatChoices).length > 0
+      ? perkStatChoices
+      : undefined,
     perkDisguises,
     inventory,
   };
@@ -298,12 +323,27 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perkIds.includes(perkId)) return;
 
     const newPerkIds = [...perkIds, perkId];
-    const cost = calculatePerksCost(newPerkIds) - calculatePerksCost(perkIds);
+    const cost = calculatePerksCost(newPerkIds, perkRanks) -
+      calculatePerksCost(perkIds, perkRanks);
 
     if (unallocatedStatPoints - inventoryPointCost < cost) return;
 
     setPerkIds(newPerkIds);
     setUnallocatedStatPoints((current) => current - cost);
+
+    // Initialize per-rank data for upgradable perks
+    const perk = perksById.get(perkId);
+    if (perk?.upgradable) {
+      if (perk.customInput) {
+        setPerkUpgradeNotes((current) => ({ ...current, [perkId]: [""] }));
+      }
+      if (perk.requiresStatChoice) {
+        setPerkStatChoices((current) => ({
+          ...current,
+          [perkId]: ["" as BaseStatKey],
+        }));
+      }
+    }
   }
 
   function unbuyPerk(perkId: string) {
@@ -315,9 +355,25 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
 
     const newPerkIds = perkIds.filter((id) => id !== perkId);
-    const refund = calculatePerksCost(perkIds) - calculatePerksCost(newPerkIds);
+    const refund = calculatePerksCost(perkIds, perkRanks) -
+      calculatePerksCost(newPerkIds, perkRanks);
     setPerkIds(newPerkIds);
     setPerkNotes((current) => {
+      const next = { ...current };
+      delete next[perkId];
+      return next;
+    });
+    setPerkUpgradeNotes((current) => {
+      const next = { ...current };
+      delete next[perkId];
+      return next;
+    });
+    setPerkStatChoices((current) => {
+      const next = { ...current };
+      delete next[perkId];
+      return next;
+    });
+    setPerkRanks((current) => {
       const next = { ...current };
       delete next[perkId];
       return next;
@@ -328,6 +384,68 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       return next;
     });
     setUnallocatedStatPoints((current) => current + refund);
+  }
+
+  function upgradePerk(perkId: string) {
+    const perk = perksById.get(perkId);
+    if (!perk?.upgradable) return;
+    const currentRank = perkRanks[perkId] ?? 1;
+    if (perk.maxRanks !== undefined && currentRank >= perk.maxRanks) return;
+
+    const newRanks = { ...perkRanks, [perkId]: currentRank + 1 };
+    const upgradeCost = calculatePerksCost(perkIds, newRanks) -
+      calculatePerksCost(perkIds, perkRanks);
+
+    if (unallocatedStatPoints - inventoryPointCost < upgradeCost) return;
+
+    setPerkRanks(newRanks);
+    setUnallocatedStatPoints((current) => current - upgradeCost);
+
+    if (perk.customInput) {
+      setPerkUpgradeNotes((current) => ({
+        ...current,
+        [perkId]: [...(current[perkId] ?? [""]), ""],
+      }));
+    }
+    if (perk.requiresStatChoice) {
+      setPerkStatChoices((current) => ({
+        ...current,
+        [perkId]: [...(current[perkId] ?? ["" as BaseStatKey]), "" as BaseStatKey],
+      }));
+    }
+  }
+
+  function downgradePerk(perkId: string) {
+    const perk = perksById.get(perkId);
+    if (!perk?.upgradable) return;
+    const currentRank = perkRanks[perkId] ?? 1;
+
+    if (currentRank <= 1) {
+      unbuyPerk(perkId);
+      return;
+    }
+
+    const newRanks = { ...perkRanks, [perkId]: currentRank - 1 };
+    const refund = calculatePerksCost(perkIds, perkRanks) -
+      calculatePerksCost(perkIds, newRanks);
+
+    setPerkRanks(newRanks);
+    setUnallocatedStatPoints((current) => current + refund);
+
+    if (perk.customInput) {
+      setPerkUpgradeNotes((current) => {
+        const notes = [...(current[perkId] ?? [])];
+        notes.pop();
+        return { ...current, [perkId]: notes };
+      });
+    }
+    if (perk.requiresStatChoice) {
+      setPerkStatChoices((current) => {
+        const choices = [...(current[perkId] ?? [])];
+        choices.pop();
+        return { ...current, [perkId]: choices };
+      });
+    }
   }
 
   return (
@@ -355,6 +473,21 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         type="hidden"
         name="perkNotes"
         value={JSON.stringify(perkNotes)}
+      />
+      <input
+        type="hidden"
+        name="perkUpgradeNotes"
+        value={JSON.stringify(perkUpgradeNotes)}
+      />
+      <input
+        type="hidden"
+        name="perkStatChoices"
+        value={JSON.stringify(perkStatChoices)}
+      />
+      <input
+        type="hidden"
+        name="perkRanks"
+        value={JSON.stringify(perkRanks)}
       />
       <input
         type="hidden"
@@ -434,16 +567,33 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       ) return false;
                       return true;
                     });
-                    const perkRefund = calculatePerksCost(perkIds) -
-                      calculatePerksCost(keptPerkIds);
+                    const keptRanks = Object.fromEntries(
+                      Object.entries(perkRanks).filter(([id]) =>
+                        keptPerkIds.includes(id)
+                      ),
+                    );
+                    const perkRefund = calculatePerksCost(perkIds, perkRanks) -
+                      calculatePerksCost(keptPerkIds, keptRanks);
                     if (keptPerkIds.length !== perkIds.length) {
+                      const removedIds = perkIds.filter((id) =>
+                        !keptPerkIds.includes(id)
+                      );
                       setPerkNotes((current) => {
                         const next = { ...current };
-                        for (const id of perkIds) {
-                          if (!keptPerkIds.includes(id)) delete next[id];
-                        }
+                        for (const id of removedIds) delete next[id];
                         return next;
                       });
+                      setPerkUpgradeNotes((current) => {
+                        const next = { ...current };
+                        for (const id of removedIds) delete next[id];
+                        return next;
+                      });
+                      setPerkStatChoices((current) => {
+                        const next = { ...current };
+                        for (const id of removedIds) delete next[id];
+                        return next;
+                      });
+                      setPerkRanks(keptRanks);
                       setPerkIds(keptPerkIds);
                     }
                     setRace(newRace);
@@ -849,9 +999,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <h3 class="font-semibold">Perks</h3>
         <p class="text-sm text-base-content">
           Perks cost {PERK_COST_STAT_POINTS} stat points each. {(() => {
-            const paidPerkCount =
-              perkIds.filter((id) => !PERKS_BY_ID.get(id)?.isFree).length;
-            return paidPerkCount === 0
+            const paidPerkInstances = perkIds
+              .filter((id) => !PERKS_BY_ID.get(id)?.isFree)
+              .reduce((sum, id) => sum + (perkRanks[id] ?? 1), 0);
+            return paidPerkInstances === 0
               ? <strong>First perk is free!</strong>
               : null;
           })()}
@@ -872,9 +1023,45 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       {group.items.map(({ id, perk }) => {
                         const canRemove = canRemoveOldPerks ||
                           !initialPerkIds.includes(id);
+                        const currentRank = perkRanks[id] ?? 1;
+                        const isUpgradable = perk?.upgradable ?? false;
+                        const initialRank = initialPerkRanks[id] ??
+                          (initialPerkIds.includes(id) ? 1 : 0);
+                        const canDowngrade = isUpgradable &&
+                          (canRemoveOldPerks || currentRank > initialRank);
+                        const chosenStats = (perkStatChoices[id] ?? []) as BaseStatKey[];
+                        const hasUnsatisfiedStatChoices =
+                          perk?.requiresStatChoice
+                            ? chosenStats.length < currentRank ||
+                              chosenStats.some((s) => !s)
+                            : false;
+                        const hasRemainingStats = !perk?.requiresStatChoice ||
+                          (perk.requiresStatChoice ?? []).some(
+                            (s) => !chosenStats.includes(s as BaseStatKey),
+                          );
+                        const canUpgrade = isUpgradable &&
+                          (perk?.maxRanks === undefined ||
+                            currentRank < perk.maxRanks) &&
+                          !hasUnsatisfiedStatChoices &&
+                          hasRemainingStats;
+                        const upgradeRanks = {
+                          ...perkRanks,
+                          [id]: currentRank + 1,
+                        };
+                        const upgradeCost = canUpgrade
+                          ? calculatePerksCost(perkIds, upgradeRanks) -
+                            calculatePerksCost(perkIds, perkRanks)
+                          : 0;
+                        const canAffordUpgrade =
+                          (unallocatedStatPoints - inventoryPointCost) >=
+                          upgradeCost;
+                        const statLabelMap = BASE_STAT_FIELDS.reduce(
+                          (m, f) => { m[f.key] = f.label; return m; },
+                          {} as Record<string, string>,
+                        );
                         return (
                           <li key={id}>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
                               <span>
                                 {perk
                                   ? (
@@ -884,7 +1071,34 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                     />
                                   )
                                   : id}
+                                {isUpgradable && currentRank > 1 && (
+                                  <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
+                                    Rank {currentRank}
+                                  </span>
+                                )}
                               </span>
+                              {isUpgradable && canUpgrade && canAffordUpgrade && (
+                                <button
+                                  type="button"
+                                  class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
+                                  onClick={() => upgradePerk(id)}
+                                >
+                                  Upgrade{upgradeCost < 0
+                                    ? ` (+${-upgradeCost} SP)`
+                                    : upgradeCost === 0
+                                    ? " (Free)"
+                                    : ` (${upgradeCost} SP)`}
+                                </button>
+                              )}
+                              {canDowngrade && (
+                                <button
+                                  type="button"
+                                  class="px-2 py-0.5 text-xs border rounded text-warning hover:bg-warning/10"
+                                  onClick={() => downgradePerk(id)}
+                                >
+                                  {currentRank > 1 ? "Downgrade" : "Remove"}
+                                </button>
+                              )}
                               {canRemove && (
                                 <button
                                   type="button"
@@ -895,7 +1109,101 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </button>
                               )}
                             </div>
-                            {perk?.customInput && (
+                            {/* Upgradable perk: per-rank inputs */}
+                            {isUpgradable &&
+                              (perk?.requiresStatChoice || perk?.customInput) && (
+                              <div class="mt-1 space-y-1">
+                                {Array.from({ length: currentRank }, (_, ri) => {
+                                  const chosenForRank = chosenStats[ri];
+                                  const usedByOthers = chosenStats.filter(
+                                    (_, i) => i !== ri,
+                                  );
+                                  return (
+                                    <div
+                                      key={ri}
+                                      class="border rounded px-2 py-1 text-xs space-y-1"
+                                    >
+                                      <span class="font-semibold text-xs">
+                                        Rank {ri + 1}
+                                      </span>
+                                      {perk?.requiresStatChoice && (
+                                        <div>
+                                          <label class="text-xs text-base-content/70 mr-1">
+                                            Locked stat:
+                                          </label>
+                                          <select
+                                            class="border rounded px-1 py-0.5 text-xs"
+                                            value={chosenForRank ?? ""}
+                                            onChange={(e) => {
+                                              const val =
+                                                (e.target as HTMLSelectElement)
+                                                  .value as BaseStatKey;
+                                              setPerkStatChoices((current) => {
+                                                const choices = [
+                                                  ...(current[id] ??
+                                                    Array(currentRank).fill(
+                                                      "" as BaseStatKey,
+                                                    )),
+                                                ];
+                                                choices[ri] = val;
+                                                return {
+                                                  ...current,
+                                                  [id]: choices,
+                                                };
+                                              });
+                                            }}
+                                          >
+                                            <option value="">
+                                              — Select stat —
+                                            </option>
+                                            {(perk.requiresStatChoice ?? [])
+                                              .filter(
+                                                (s) =>
+                                                  !usedByOthers.includes(
+                                                    s as BaseStatKey,
+                                                  ) ||
+                                                  s === chosenForRank,
+                                              )
+                                              .map((s) => (
+                                                <option key={s} value={s}>
+                                                  {statLabelMap[s] ?? s}
+                                                </option>
+                                              ))}
+                                          </select>
+                                        </div>
+                                      )}
+                                      {perk?.customInput && (
+                                        <input
+                                          type="text"
+                                          class="w-full border rounded px-2 py-1 text-xs"
+                                          placeholder={perk.customInput}
+                                          value={(perkUpgradeNotes[id] ??
+                                            [])[ri] ?? ""}
+                                          onInput={(e) => {
+                                            const value =
+                                              (e.target as HTMLInputElement)
+                                                .value;
+                                            setPerkUpgradeNotes((current) => {
+                                              const notes = [
+                                                ...(current[id] ??
+                                                  Array(currentRank).fill("")),
+                                              ];
+                                              notes[ri] = value;
+                                              return {
+                                                ...current,
+                                                [id]: notes,
+                                              };
+                                            });
+                                          }}
+                                        />
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {/* Non-upgradable perk: single note input */}
+                            {!isUpgradable && perk?.customInput && (
                               <input
                                 type="text"
                                 class="mt-1 w-full border rounded px-2 py-1 text-sm"
@@ -1035,8 +1343,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   : (
                     <ul class="space-y-2">
                       {availablePerks.map((perk) => {
-                        const cost = calculatePerksCost([...perkIds, perk.id]) -
-                          calculatePerksCost(perkIds);
+                        const cost = calculatePerksCost([...perkIds, perk.id], perkRanks) -
+                          calculatePerksCost(perkIds, perkRanks);
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;
                         const costLabel = cost < 0

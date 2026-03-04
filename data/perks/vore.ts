@@ -79,6 +79,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     modifiers: {
       organCapacityMultiplier: 3,
     },
+    upgradable: true,
   },
   {
     id: "inescapable",

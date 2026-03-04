@@ -4,8 +4,8 @@
  }
 
 /* Fix native select/option background in dark mode */
-[data-theme="dark"] select,
-[data-theme="dark"] select option {
+.dark select,
+.dark select option {
   background-color: var(--color-base-200);
   color: var(--color-base-content);
 }

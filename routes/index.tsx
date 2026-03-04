@@ -1,6 +1,6 @@
 import { Head } from "fresh/runtime";
-import { define } from "../utils.ts";
-import { listCharacters } from "../lib/characters.ts";
+import { define } from "@/utils.ts";
+import { listCharacters } from "@/lib/characters.ts";
 export default define.page(async function Home(ctx) {
   const user = ctx.state.user;
   const allCharacters = user ? await listCharacters(user.id) : [];

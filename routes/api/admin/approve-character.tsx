@@ -1,5 +1,5 @@
-import { define } from "../../../utils.ts";
-import { getCharacter, setCharacterStatus } from "../../../lib/characters.ts";
+import { define } from "@/utils.ts";
+import { getCharacter, setCharacterStatus } from "@/lib/characters.ts";
 
 export const handler = define.handlers({
   /** Admin-only: approve a pending character. */

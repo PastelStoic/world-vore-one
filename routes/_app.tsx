@@ -1,5 +1,5 @@
-import { define } from "../utils.ts";
-import DarkModeToggle from "../islands/DarkModeToggle.tsx";
+import { define } from "@/utils.ts";
+import DarkModeToggle from "@/islands/DarkModeToggle.tsx";
 
 export default define.page(function App({ Component, state }) {
   const user = state.user;

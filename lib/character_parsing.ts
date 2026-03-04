@@ -17,7 +17,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "./character_types.ts";
-import { PERKS_BY_ID } from "../data/perks.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
 
 export function parseRace(rawRace: string): Race {
   if (RACES.includes(rawRace as Race)) {

@@ -1,17 +1,17 @@
-import { define } from "../../../utils.ts";
-import CharacterSheetEditor from "../../../islands/CharacterSheetEditor.tsx";
-import { PERKS } from "../../../data/perks.ts";
+import { define } from "@/utils.ts";
+import CharacterSheetEditor from "@/islands/CharacterSheetEditor.tsx";
+import { PERKS } from "@/data/perks.ts";
 import {
   getCharacter,
   upsertCharacter,
   upsertCharacterDirect,
-} from "../../../lib/characters.ts";
+} from "@/lib/characters.ts";
 import {
   buildAndValidateDraft,
   parseCharacterFormData,
-} from "../../../lib/form_helpers.ts";
-import { cfImageUrl } from "../../api/characters/[id]/image.tsx";
-import CharacterPageLayout from "../../../components/CharacterPageLayout.tsx";
+} from "@/lib/form_helpers.ts";
+import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
+import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {

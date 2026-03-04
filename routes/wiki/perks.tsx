@@ -1,10 +1,10 @@
 import { Head } from "fresh/runtime";
-import { define } from "../../utils.ts";
+import { define } from "@/utils.ts";
 import {
   PERKS,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
-} from "../../data/perks.ts";
+} from "@/data/perks.ts";
 
 export default define.page(function WikiPerks() {
   return (

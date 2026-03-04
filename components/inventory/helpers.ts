@@ -6,7 +6,7 @@ import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT_BY_ID,
   WEAPONS_BY_ID,
-} from "../../data/equipment.ts";
+} from "@/data/equipment.ts";
 
 export type InventoryLocation = "carried" | "stowed";
 

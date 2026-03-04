@@ -1,5 +1,3 @@
-import { getKv } from "./kv.ts";
-
 // ── Discord OAuth2 config ──────────────────────────────────────────
 
 const DISCORD_CLIENT_ID = Deno.env.get("DISCORD_CLIENT_ID") ?? "";
@@ -29,8 +27,7 @@ interface SessionData {
 const SESSION_PREFIX = ["sessions"] as const;
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export async function createSession(user: SessionUser): Promise<string> {
-  const kv = await getKv();
+export async function createSession(kv: Deno.Kv, user: SessionUser): Promise<string> {
   const sessionId = crypto.randomUUID();
   const data: SessionData = {
     user,
@@ -43,9 +40,9 @@ export async function createSession(user: SessionUser): Promise<string> {
 }
 
 export async function getSession(
+  kv: Deno.Kv,
   sessionId: string,
 ): Promise<SessionUser | null> {
-  const kv = await getKv();
   const entry = await kv.get<SessionData>([...SESSION_PREFIX, sessionId]);
   if (!entry.value) return null;
   if (entry.value.expiresAt < Date.now()) {
@@ -55,8 +52,7 @@ export async function getSession(
   return entry.value.user;
 }
 
-export async function deleteSession(sessionId: string): Promise<void> {
-  const kv = await getKv();
+export async function deleteSession(kv: Deno.Kv, sessionId: string): Promise<void> {
   await kv.delete([...SESSION_PREFIX, sessionId]);
 }
 

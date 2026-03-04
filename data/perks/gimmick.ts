@@ -1,4 +1,4 @@
-import type { PerkDefinition } from "../perks.ts";
+import type { PerkDefinition } from "@/data/perks.ts";
 
 export const GIMMICK_PERKS: PerkDefinition[] = [
   {

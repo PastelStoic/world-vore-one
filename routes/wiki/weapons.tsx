@@ -1,6 +1,6 @@
 import { Head } from "fresh/runtime";
-import { define } from "../../utils.ts";
-import { WEAPONS, type WeaponKind } from "../../data/equipment.ts";
+import { define } from "@/utils.ts";
+import { WEAPONS, type WeaponKind } from "@/data/equipment.ts";
 
 const KIND_LABELS: Record<WeaponKind, string> = {
   "bolt-action-rifle": "Bolt-action Rifles",

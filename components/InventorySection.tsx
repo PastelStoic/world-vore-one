@@ -8,21 +8,21 @@ import {
   NATIONS,
   WEAPONS,
   WEAPONS_BY_ID,
-} from "../data/equipment.ts";
+} from "@/data/equipment.ts";
 import type {
   CharacterInventory,
   InventoryAttachment,
   InventoryEquipment,
   InventoryMeleeWeapon,
   InventoryWeapon,
-} from "../lib/inventory_types.ts";
+} from "@/lib/inventory_types.ts";
 import {
   calculateInventoryPointCost,
   calculateInventoryWeight,
   countAllItemSlots,
   CREATION_FREE_ITEM_SLOTS,
   EXTRA_ITEM_POINT_COST,
-} from "../lib/inventory_types.ts";
+} from "@/lib/inventory_types.ts";
 import PerkDescription from "./PerkDescription.tsx";
 import WeaponCard from "./inventory/WeaponCard.tsx";
 import EquipmentCard from "./inventory/EquipmentCard.tsx";

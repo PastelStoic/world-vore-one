@@ -1,7 +1,7 @@
 import {
   type EncumbranceLevel,
   getEncumbranceLabel,
-} from "../lib/stat_calculations.ts";
+} from "@/lib/stat_calculations.ts";
 
 interface EncumbranceSectionProps {
   carriedWeight: number;

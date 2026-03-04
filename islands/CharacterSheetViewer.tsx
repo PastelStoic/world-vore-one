@@ -4,18 +4,18 @@ import {
   PERK_CATEGORY_ORDER,
   type PerkDefinition,
   PERKS_BY_ID,
-} from "../data/perks.ts";
+} from "@/data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type CharacterDraft,
   type CharacterSheet,
-} from "../lib/character_types.ts";
-import { useCharacterStats } from "../lib/useCharacterStats.ts";
-import OtherStatsSection from "../components/OtherStatsSection.tsx";
-import EncumbranceSection from "../components/EncumbranceSection.tsx";
-import PerkDescription from "../components/PerkDescription.tsx";
-import InventorySection from "../components/InventorySection.tsx";
-import { createEmptyInventory } from "../lib/inventory_types.ts";
+} from "@/lib/character_types.ts";
+import { useCharacterStats } from "@/lib/useCharacterStats.ts";
+import OtherStatsSection from "@/components/OtherStatsSection.tsx";
+import EncumbranceSection from "@/components/EncumbranceSection.tsx";
+import PerkDescription from "@/components/PerkDescription.tsx";
+import InventorySection from "@/components/InventorySection.tsx";
+import { createEmptyInventory } from "@/lib/inventory_types.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;

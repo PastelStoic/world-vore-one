@@ -4,7 +4,7 @@ import {
   WEAPONS_BY_ID,
   EQUIPMENT_BY_ID,
   ATTACHMENTS_BY_ID,
-} from "../data/equipment.ts";
+} from "@/data/equipment.ts";
 import {
   calculateInventoryWeight,
   createEmptyInventory,

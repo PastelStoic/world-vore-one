@@ -1,9 +1,9 @@
-import { ORGAN_LABELS } from "../lib/character_types.ts";
-import type { CharacterDraft } from "../lib/character_types.ts";
+import { ORGAN_LABELS } from "@/lib/character_types.ts";
+import type { CharacterDraft } from "@/lib/character_types.ts";
 import {
   calculateEffectiveHealth,
   calculateOrganCapacities,
-} from "../lib/stat_calculations.ts";
+} from "@/lib/stat_calculations.ts";
 
 interface OtherStatsSectionProps {
   draft: CharacterDraft;

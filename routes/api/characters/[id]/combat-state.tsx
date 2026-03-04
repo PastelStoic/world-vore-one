@@ -1,6 +1,6 @@
-import { define } from "../../../../utils.ts";
-import { getCharacter, updateCharacterInventory } from "../../../../lib/characters.ts";
-import { parseInventory } from "../../../../lib/inventory_types.ts";
+import { define } from "@/utils.ts";
+import { getCharacter, updateCharacterInventory } from "@/lib/characters.ts";
+import { parseInventory } from "@/lib/inventory_types.ts";
 
 export const handler = define.handlers({
   async PATCH(ctx) {

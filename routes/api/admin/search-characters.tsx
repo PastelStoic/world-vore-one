@@ -1,5 +1,5 @@
-import { define } from "../../../utils.ts";
-import { listCharacters } from "../../../lib/characters.ts";
+import { define } from "@/utils.ts";
+import { listCharacters } from "@/lib/characters.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {

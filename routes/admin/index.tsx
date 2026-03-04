@@ -1,7 +1,7 @@
 import { Head } from "fresh/runtime";
-import { define } from "../../utils.ts";
-import { anyAdminsExist } from "../../lib/admin.ts";
-import AdminPanel from "../../islands/AdminPanel.tsx";
+import { define } from "@/utils.ts";
+import { anyAdminsExist } from "@/lib/admin.ts";
+import AdminPanel from "@/islands/AdminPanel.tsx";
 
 export default define.page(async function AdminPage(ctx) {
   const user = ctx.state.user;

@@ -1,4 +1,4 @@
-import { define } from "../../../utils.ts";
+import { define } from "@/utils.ts";
 
 const CF_ACCOUNT_ID = Deno.env.get("CLOUDFLARE_ACCOUNT_ID") ?? "";
 const CF_IMAGES_TOKEN = Deno.env.get("CLOUDFLARE_IMAGES_API_TOKEN") ?? "";

@@ -1,4 +1,4 @@
-import { PERKS_BY_ID } from "../data/perks.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
 import type { BaseStatKey, CharacterDraft, OrganType } from "./character_types.ts";
 
 export const ENCUMBRANCE_LEVELS = [

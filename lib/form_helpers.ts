@@ -1,5 +1,5 @@
-import { PERK_IDS, validatePerkRequirements } from "../data/perks.ts";
-import { EQUIPMENT_BY_ID } from "../data/equipment.ts";
+import { PERK_IDS, validatePerkRequirements } from "@/data/perks.ts";
+import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
 import { type CharacterDraft, type Race } from "./character_types.ts";
 import {
   hasMultipleCarriedBulkyEquipment,

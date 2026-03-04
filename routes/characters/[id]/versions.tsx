@@ -1,9 +1,9 @@
-import { define } from "../../../utils.ts";
+import { define } from "@/utils.ts";
 import {
   getCharacter,
   listCharacterSnapshots,
-} from "../../../lib/characters.ts";
-import CharacterPageLayout from "../../../components/CharacterPageLayout.tsx";
+} from "@/lib/characters.ts";
+import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 
 export default define.page(async function CharacterVersionsPage(ctx) {
   const characterId = ctx.params.id;

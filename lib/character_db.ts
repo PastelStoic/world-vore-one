@@ -9,7 +9,6 @@ import type {
   CharacterStatus,
 } from "./character_types.ts";
 import type { CharacterInventory } from "./inventory_types.ts";
-import { getKv } from "./kv.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
 const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
@@ -17,7 +16,7 @@ const CHARACTER_SNAPSHOT_PREFIX = ["character_snapshots"] as const;
 const CHARACTER_SNAPSHOT_BY_ID_PREFIX = ["character_snapshots_by_id"] as const;
 
 export async function listCharacters(userId?: string) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const characters: CharacterSheet[] = [];
 
   if (userId) {
@@ -49,7 +48,7 @@ export async function listCharacters(userId?: string) {
 }
 
 export async function getCharacter(id: string) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const entry = await kv.get<CharacterSheet>([...CHARACTER_PREFIX, id]);
   return entry.value;
 }
@@ -59,7 +58,7 @@ export async function upsertCharacter(
   changelog: string,
   options?: { basedOnSnapshotId?: string },
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
   const snapshotId = crypto.randomUUID();
@@ -119,7 +118,7 @@ export async function setCharacterImageId(
   characterId: string,
   imageId: string | null,
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const character = await getCharacter(characterId);
   if (!character) return null;
 
@@ -145,7 +144,7 @@ export async function setCharacterImageId(
 export async function upsertCharacterDirect(
   input: CharacterDraft & Pick<CharacterSheet, "id" | "userId"> & { status?: CharacterStatus },
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
 
@@ -171,7 +170,7 @@ export async function setCharacterStatus(
   characterId: string,
   status: CharacterStatus,
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const character = await getCharacter(characterId);
   if (!character) return null;
 
@@ -194,7 +193,7 @@ export async function updateCharacterInventory(
   characterId: string,
   inventory: CharacterInventory,
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const character = await getCharacter(characterId);
   if (!character) return null;
 
@@ -213,7 +212,7 @@ export async function setCharacterHidden(
   characterId: string,
   hidden: boolean,
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const character = await getCharacter(characterId);
   if (!character) return null;
 
@@ -233,7 +232,7 @@ export async function setCharacterHidden(
 }
 
 export async function listCharacterSnapshots(characterId: string) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const snapshots: CharacterSnapshot[] = [];
 
   for await (
@@ -254,7 +253,7 @@ export async function getCharacterSnapshot(
   characterId: string,
   snapshotId: string,
 ) {
-  const kv = await getKv();
+  const kv = await Deno.openKv();
   const entry = await kv.get<CharacterSnapshot>([
     ...CHARACTER_SNAPSHOT_BY_ID_PREFIX,
     characterId,

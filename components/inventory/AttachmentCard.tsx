@@ -2,9 +2,9 @@
 // AttachmentCard – renders a loose (unattached) attachment in the inventory
 // ---------------------------------------------------------------------------
 
-import type { InventoryAttachment } from "../../lib/inventory_types.ts";
-import { ATTACHMENTS_BY_ID } from "../../data/equipment.ts";
-import PerkDescription from "../PerkDescription.tsx";
+import type { InventoryAttachment } from "@/lib/inventory_types.ts";
+import { ATTACHMENTS_BY_ID } from "@/data/equipment.ts";
+import PerkDescription from "@/components/PerkDescription.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 
 interface AttachmentCardProps {

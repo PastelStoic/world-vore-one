@@ -1,5 +1,5 @@
-import { define } from "../../../utils.ts";
-import { buildDiscordAuthUrl } from "../../../lib/auth.ts";
+import { define } from "@/utils.ts";
+import { buildDiscordAuthUrl } from "@/lib/auth.ts";
 
 export const handler = define.handlers({
   GET(_ctx) {

@@ -5,7 +5,7 @@ import {
   type PerkCategory,
   type PerkDefinition,
   PERKS_BY_ID,
-} from "../data/perks.ts";
+} from "@/data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
@@ -20,23 +20,23 @@ import {
   PERK_COST_STAT_POINTS,
   type Sex,
   SEX_OPTIONS,
-} from "../lib/character_types.ts";
-import { calculatePerksCost } from "../lib/characters.ts";
-import { useCharacterStats } from "../lib/useCharacterStats.ts";
-import OtherStatsSection from "../components/OtherStatsSection.tsx";
-import EncumbranceSection from "../components/EncumbranceSection.tsx";
-import PerkDescription from "../components/PerkDescription.tsx";
-import InventorySection from "../components/InventorySection.tsx";
-import type { CharacterInventory } from "../lib/inventory_types.ts";
+} from "@/lib/character_types.ts";
+import { calculatePerksCost } from "@/lib/characters.ts";
+import { useCharacterStats } from "@/lib/useCharacterStats.ts";
+import OtherStatsSection from "@/components/OtherStatsSection.tsx";
+import EncumbranceSection from "@/components/EncumbranceSection.tsx";
+import PerkDescription from "@/components/PerkDescription.tsx";
+import InventorySection from "@/components/InventorySection.tsx";
+import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import {
   calculateInventoryPointCost,
   createEmptyInventory,
-} from "../lib/inventory_types.ts";
+} from "@/lib/inventory_types.ts";
 import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT_BY_ID,
   WEAPONS_BY_ID,
-} from "../data/equipment.ts";
+} from "@/data/equipment.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";

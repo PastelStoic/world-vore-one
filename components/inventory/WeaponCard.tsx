@@ -1,13 +1,13 @@
 import type {
   CharacterInventory,
   InventoryWeapon,
-} from "../../lib/inventory_types.ts";
+} from "@/lib/inventory_types.ts";
 import {
   ATTACHMENTS_BY_ID,
   FREE_ACCESSORIES_BY_ID,
   WEAPONS_BY_ID,
-} from "../../data/equipment.ts";
-import PerkDescription from "../PerkDescription.tsx";
+} from "@/data/equipment.ts";
+import PerkDescription from "@/components/PerkDescription.tsx";
 import {
   type InventoryLocation,
   getWeaponPointCost,

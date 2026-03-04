@@ -1,11 +1,11 @@
-import { define } from "../../../../utils.ts";
-import { PERKS_BY_ID } from "../../../../data/perks.ts";
-import { BASE_STAT_FIELDS, ORGAN_LABELS } from "../../../../lib/character_types.ts";
+import { define } from "@/utils.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
+import { BASE_STAT_FIELDS, ORGAN_LABELS } from "@/lib/character_types.ts";
 import {
   getCharacter,
   getCharacterSnapshot,
   upsertCharacter,
-} from "../../../../lib/characters.ts";
+} from "@/lib/characters.ts";
 import {
   calculateEffectiveCarryCapacity,
   calculateEffectiveCharisma,
@@ -18,8 +18,8 @@ import {
   calculateEffectiveIntelligence,
   calculateEffectiveStrength,
   calculateOrganCapacities,
-} from "../../../../lib/stat_calculations.ts";
-import CharacterPageLayout from "../../../../components/CharacterPageLayout.tsx";
+} from "@/lib/stat_calculations.ts";
+import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {

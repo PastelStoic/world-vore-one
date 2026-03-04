@@ -1,14 +1,14 @@
 import { Head } from "fresh/runtime";
-import { define } from "../../utils.ts";
-import CharacterSheetViewer from "../../islands/CharacterSheetViewer.tsx";
-import { PERKS } from "../../data/perks.ts";
+import { define } from "@/utils.ts";
+import CharacterSheetViewer from "@/islands/CharacterSheetViewer.tsx";
+import { PERKS } from "@/data/perks.ts";
 import {
   getCharacter,
   setCharacterHidden,
   setCharacterStatus,
-} from "../../lib/characters.ts";
-import { cfImageUrl } from "../api/characters/[id]/image.tsx";
-import CharacterPageLayout from "../../components/CharacterPageLayout.tsx";
+} from "@/lib/characters.ts";
+import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
+import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {

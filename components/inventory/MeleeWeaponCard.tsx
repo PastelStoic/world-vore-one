@@ -2,8 +2,8 @@
 // MeleeWeaponCard – renders a melee weapon in the inventory
 // ---------------------------------------------------------------------------
 
-import type { InventoryMeleeWeapon } from "../../lib/inventory_types.ts";
-import { MELEE_TRAITS, MELEE_TRAITS_BY_ID } from "../../data/equipment.ts";
+import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
+import { MELEE_TRAITS, MELEE_TRAITS_BY_ID } from "@/data/equipment.ts";
 import type { InventoryLocation } from "./helpers.ts";
 
 interface MeleeWeaponCardProps {

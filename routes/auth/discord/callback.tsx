@@ -1,10 +1,10 @@
-import { define } from "../../../utils.ts";
+import { define } from "@/utils.ts";
 import {
   createSession,
   exchangeCodeForToken,
   fetchDiscordUser,
   setSessionCookie,
-} from "../../../lib/auth.ts";
+} from "@/lib/auth.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
@@ -25,7 +25,8 @@ export const handler = define.handlers({
       return new Response("Failed to fetch Discord user.", { status: 400 });
     }
 
-    const sessionId = await createSession(discordUser);
+    const kv = await Deno.openKv();
+    const sessionId = await createSession(kv, discordUser);
     const headers = new Headers({ location: "/" });
     setSessionCookie(headers, sessionId);
     return new Response(null, { status: 302, headers });

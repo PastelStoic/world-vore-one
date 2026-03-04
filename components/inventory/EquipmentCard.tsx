@@ -2,9 +2,9 @@
 // EquipmentCard – renders a single equipment item in the inventory
 // ---------------------------------------------------------------------------
 
-import type { InventoryEquipment } from "../../lib/inventory_types.ts";
-import { EQUIPMENT_BY_ID } from "../../data/equipment.ts";
-import PerkDescription from "../PerkDescription.tsx";
+import type { InventoryEquipment } from "@/lib/inventory_types.ts";
+import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
+import PerkDescription from "@/components/PerkDescription.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 
 interface EquipmentCardProps {

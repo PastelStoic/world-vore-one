@@ -1,11 +1,11 @@
 import { Head } from "fresh/runtime";
-import { define } from "../../utils.ts";
+import { define } from "@/utils.ts";
 import {
   ATTACHMENTS,
   EQUIPMENT,
   FREE_ACCESSORIES,
   MELEE_TRAITS,
-} from "../../data/equipment.ts";
+} from "@/data/equipment.ts";
 
 export default define.page(function WikiEquipment() {
   return (

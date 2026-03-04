@@ -3,6 +3,13 @@
    themes: light --default, dark --prefersdark;
  }
 
+/* Fix native select/option background in dark mode */
+[data-theme="dark"] select,
+[data-theme="dark"] select option {
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+}
+
 .fresh-gradient {
   background-color: color-mix(in oklch, var(--color-success) 50%, var(--color-base-100));
   background-image: linear-gradient(

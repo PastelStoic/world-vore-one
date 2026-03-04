@@ -75,6 +75,12 @@ export interface PerkDefinition {
   /** Maximum number of times this perk can be taken (undefined = no limit). */
   maxRanks?: number;
   /**
+   * Perk IDs that are automatically granted when this perk is taken.
+   * Included perks cost nothing, cannot be removed independently, and are
+   * removed automatically when this perk is removed.
+   */
+  includesPerks?: string[];
+  /**
    * When set, the player must select one stat from this list per rank.
    * Prevents the same stat from being chosen twice across ranks of the same perk.
    */

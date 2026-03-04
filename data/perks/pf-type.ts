@@ -111,6 +111,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     customInput: "Good boy or bad boy?",
+    includesPerks: ["runner"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -130,6 +131,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["runner"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -147,6 +149,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["milky", "heavy", "unreal-capacity"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -169,6 +172,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["hauling-meat"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -228,6 +232,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     excludesPerks: ["defender", "baiter", "runner"],
+    includesPerks: ["tough", "heavy"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -247,6 +252,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["tough", "authoritarian"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -268,6 +274,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["danger-sense", "runner", "survivor"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -290,6 +297,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     excludesPerks: ["open-ended-tail", "open-ended-tail-mouthless"],
+    includesPerks: ["natural-predator"],
     description:
       `You have animal genes in you, making you stronger in certain areas.
 

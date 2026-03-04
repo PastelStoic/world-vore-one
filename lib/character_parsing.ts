@@ -231,12 +231,28 @@ export function parseDescription(raw: string): CharacterDescription | null {
   }
 }
 
+/**
+ * Returns the set of perk IDs that are automatically granted by other perks in
+ * the given list. Derived perks cost nothing and are tied to their source perk.
+ */
+export function getDerivedPerkIds(perkIds: string[]): Set<string> {
+  const derived = new Set<string>();
+  for (const perkId of perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    for (const includedId of perk?.includesPerks ?? []) {
+      derived.add(includedId);
+    }
+  }
+  return derived;
+}
+
 export function calculatePerksCost(
   perkIds: string[],
   perkRanks?: Record<string, number>,
 ): number {
   if (perkIds.length <= 0) return 0;
 
+  const derived = getDerivedPerkIds(perkIds);
   let paidPerkCount = 0;
   let totalPointsGranted = 0;
 
@@ -244,7 +260,7 @@ export function calculatePerksCost(
     const perk = PERKS_BY_ID.get(perkId);
     const rank = perkRanks?.[perkId] ?? 1;
     totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
-    if (!perk?.isFree) {
+    if (!perk?.isFree && !derived.has(perkId)) {
       paidPerkCount += rank;
     }
   }

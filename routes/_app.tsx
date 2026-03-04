@@ -12,7 +12,7 @@ export default define.page(function App({ Component, state }) {
         <title>world-vore-one</title>
       </head>
       <body>
-        <nav class="flex items-center justify-end px-4 py-2 bg-base-100/60 bg-base-300/80 border-b dark:border-base-300 gap-3">
+        <nav class="flex items-center justify-end px-4 py-2 bg-base-300/80 border-b dark:border-base-300 gap-3">
           <DarkModeToggle />
           <a
             href="/wiki"

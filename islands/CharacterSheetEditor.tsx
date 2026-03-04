@@ -21,7 +21,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "@/lib/character_types.ts";
-import { calculatePerksCost } from "@/lib/characters.ts";
+import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
@@ -146,6 +146,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
+  const derivedPerkIds = getDerivedPerkIds(perkIds);
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
   const ownedLockCategories = new Set(
     ownedPerks
@@ -162,6 +163,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   const eligiblePerks = props.perks.filter((perk) => {
     if (perkIds.includes(perk.id)) return false;
+    if (derivedPerkIds.has(perk.id)) return false;
     if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
       return false;
     }
@@ -322,7 +324,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   function buyPerk(perkId: string) {
     if (perkIds.includes(perkId)) return;
 
-    const newPerkIds = [...perkIds, perkId];
+    const perk = perksById.get(perkId);
+    const includedIds = (perk?.includesPerks ?? []).filter((id) =>
+      !perkIds.includes(id)
+    );
+    const newPerkIds = [...perkIds, perkId, ...includedIds];
     const cost = calculatePerksCost(newPerkIds, perkRanks) -
       calculatePerksCost(perkIds, perkRanks);
 
@@ -332,7 +338,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setUnallocatedStatPoints((current) => current - cost);
 
     // Initialize per-rank data for upgradable perks
-    const perk = perksById.get(perkId);
     if (perk?.upgradable) {
       if (perk.customInput) {
         setPerkUpgradeNotes((current) => ({ ...current, [perkId]: [""] }));
@@ -354,33 +359,44 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       return;
     }
 
-    const newPerkIds = perkIds.filter((id) => id !== perkId);
+    // Determine which included perks should also be removed (those that are no
+    // longer derived from any remaining source perk)
+    const perk = perksById.get(perkId);
+    const perkIdsWithoutSource = perkIds.filter((id) => id !== perkId);
+    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource);
+    const orphanedIds = (perk?.includesPerks ?? []).filter(
+      (id) => !stillDerived.has(id),
+    );
+    const newPerkIds = perkIdsWithoutSource.filter(
+      (id) => !orphanedIds.includes(id),
+    );
     const refund = calculatePerksCost(perkIds, perkRanks) -
       calculatePerksCost(newPerkIds, perkRanks);
     setPerkIds(newPerkIds);
+    const allRemovedIds = [perkId, ...orphanedIds];
     setPerkNotes((current) => {
       const next = { ...current };
-      delete next[perkId];
+      for (const id of allRemovedIds) delete next[id];
       return next;
     });
     setPerkUpgradeNotes((current) => {
       const next = { ...current };
-      delete next[perkId];
+      for (const id of allRemovedIds) delete next[id];
       return next;
     });
     setPerkStatChoices((current) => {
       const next = { ...current };
-      delete next[perkId];
+      for (const id of allRemovedIds) delete next[id];
       return next;
     });
     setPerkRanks((current) => {
       const next = { ...current };
-      delete next[perkId];
+      for (const id of allRemovedIds) delete next[id];
       return next;
     });
     setPerkDisguises((current) => {
       const next = { ...current };
-      delete next[perkId];
+      for (const id of allRemovedIds) delete next[id];
       return next;
     });
     setUnallocatedStatPoints((current) => current + refund);
@@ -1021,8 +1037,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     </h5>
                     <ul class="space-y-2">
                       {group.items.map(({ id, perk }) => {
-                        const canRemove = canRemoveOldPerks ||
-                          !initialPerkIds.includes(id);
+                        const isDerived = derivedPerkIds.has(id);
+                        const sourcePerk = isDerived
+                          ? ownedPerks.find((op) =>
+                            op.perk?.includesPerks?.includes(id)
+                          )?.perk
+                          : undefined;
+                        const canRemove = !isDerived && (canRemoveOldPerks ||
+                          !initialPerkIds.includes(id));
                         const currentRank = perkRanks[id] ?? 1;
                         const isUpgradable = perk?.upgradable ?? false;
                         const initialRank = initialPerkRanks[id] ??
@@ -1071,6 +1093,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                     />
                                   )
                                   : id}
+                                {isDerived && sourcePerk && (
+                                  <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
+                                    included by {sourcePerk.name}
+                                  </span>
+                                )}
                                 {isUpgradable && currentRank > 1 && (
                                   <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
                                     Rank {currentRank}

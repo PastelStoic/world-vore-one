@@ -358,6 +358,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (!perkIds.includes(perkId)) {
       return;
     }
+    // Prevent removing a perk that is still derived from another active perk
+    if (derivedPerkIds.has(perkId)) {
+      return;
+    }
 
     // Determine which included perks should also be removed (those that are no
     // longer derived from any remaining source perk)
@@ -437,6 +441,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const currentRank = perkRanks[perkId] ?? 1;
 
     if (currentRank <= 1) {
+      // Don't allow removing a perk that is derived from another active perk
+      if (derivedPerkIds.has(perkId)) return;
       unbuyPerk(perkId);
       return;
     }
@@ -1050,7 +1056,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         const initialRank = initialPerkRanks[id] ??
                           (initialPerkIds.includes(id) ? 1 : 0);
                         const canDowngrade = isUpgradable &&
-                          (canRemoveOldPerks || currentRank > initialRank);
+                          (canRemoveOldPerks || currentRank > initialRank) &&
+                          // Derived perks cannot be downgraded below rank 1
+                          (!isDerived || currentRank > 1);
                         const chosenStats = (perkStatChoices[id] ?? []) as BaseStatKey[];
                         const hasUnsatisfiedStatChoices =
                           perk?.requiresStatChoice

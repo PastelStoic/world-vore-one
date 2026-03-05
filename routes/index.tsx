@@ -118,7 +118,6 @@ export default define.page(async function Home(ctx) {
               </div>
             </section>
           )}
-      </div>
     </PageShell>
   );
 });

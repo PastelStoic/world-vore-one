@@ -184,7 +184,6 @@ export default define.page(function WikiEquipment() {
             ))}
           </div>
         </section>
-      </div>
     </PageShell>
   );
 });

@@ -140,7 +140,6 @@ export default define.page(function WikiWeapons() {
             </section>
           );
         })}
-      </div>
     </PageShell>
   );
 });

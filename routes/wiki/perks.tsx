@@ -102,7 +102,6 @@ export default define.page(function WikiPerks() {
             </section>
           );
         })}
-      </div>
     </PageShell>
   );
 });

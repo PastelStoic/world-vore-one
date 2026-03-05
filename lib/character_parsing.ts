@@ -233,7 +233,8 @@ export function parseDescription(raw: string): CharacterDescription | null {
 
 /**
  * Returns the set of perk IDs that are automatically granted by other perks in
- * the given list. Derived perks cost nothing and are tied to their source perk.
+ * the given list. Derived perks are tied to their source perk; rank 1 is free,
+ * and extra ranks (if any) are costed normally.
  */
 export function getDerivedPerkIds(perkIds: string[]): Set<string> {
   const derived = new Set<string>();
@@ -260,9 +261,14 @@ export function calculatePerksCost(
     const perk = PERKS_BY_ID.get(perkId);
     const rank = perkRanks?.[perkId] ?? 1;
     totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
-    if (!perk?.isFree && !derived.has(perkId)) {
-      paidPerkCount += rank;
+    if (perk?.isFree) continue;
+
+    if (derived.has(perkId)) {
+      paidPerkCount += Math.max(0, rank - 1);
+      continue;
     }
+
+    paidPerkCount += rank;
   }
 
   // First paid perk is free, subsequent paid perks cost PERK_COST_STAT_POINTS each

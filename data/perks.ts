@@ -76,8 +76,9 @@ export interface PerkDefinition {
   maxRanks?: number;
   /**
    * Perk IDs that are automatically granted when this perk is taken.
-   * Included perks cost nothing, cannot be removed independently, and are
-   * removed automatically when this perk is removed.
+    * Included perks grant rank 1 for free, cannot be removed independently,
+    * and are removed automatically when this perk is removed.
+    * Any additional ranks beyond the included first rank use normal perk costs.
    */
   includesPerks?: string[];
   /**

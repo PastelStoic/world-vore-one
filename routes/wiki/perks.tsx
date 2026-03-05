@@ -5,16 +5,17 @@ import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
 } from "@/data/perks.ts";
+import { PageShell } from "@/components/PageShell.tsx";
+import { BackLink } from "@/components/BackLink.tsx";
 
 export default define.page(function WikiPerks() {
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
+    <PageShell innerClass="space-y-8">
       <Head>
         <title>Perks – Wiki – World Vore One</title>
       </Head>
-      <div class="max-w-3xl mx-auto space-y-8">
         <header>
-          <a href="/wiki" class="text-sm text-primary hover:underline">← Wiki</a>
+          <BackLink href="/wiki">← Wiki</BackLink>
           <h1 class="text-3xl font-bold mt-2">Perks</h1>
           <p class="text-base-content">
             All perks available when building a character, organised by
@@ -102,6 +103,6 @@ export default define.page(function WikiPerks() {
           );
         })}
       </div>
-    </div>
+    </PageShell>
   );
 });

@@ -6,16 +6,17 @@ import {
   FREE_ACCESSORIES,
   MELEE_TRAITS,
 } from "@/data/equipment.ts";
+import { PageShell } from "@/components/PageShell.tsx";
+import { BackLink } from "@/components/BackLink.tsx";
 
 export default define.page(function WikiEquipment() {
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
+    <PageShell maxWidth="4xl" innerClass="space-y-10">
       <Head>
         <title>Equipment – Wiki – World Vore One</title>
       </Head>
-      <div class="max-w-4xl mx-auto space-y-10">
         <header>
-          <a href="/wiki" class="text-sm text-primary hover:underline">← Wiki</a>
+          <BackLink href="/wiki">← Wiki</BackLink>
           <h1 class="text-3xl font-bold mt-2">Equipment &amp; Attachments</h1>
           <p class="text-base-content">
             General gear, weapon attachments, free accessories, and melee weapon
@@ -184,6 +185,6 @@ export default define.page(function WikiEquipment() {
           </div>
         </section>
       </div>
-    </div>
+    </PageShell>
   );
 });

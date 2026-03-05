@@ -1,6 +1,7 @@
 // deno-lint-ignore-file react-no-danger
 import { define } from "@/utils.ts";
 import DarkModeToggle from "@/islands/DarkModeToggle.tsx";
+import { NavLink } from "@/components/NavLink.tsx";
 
 export default define.page(function App({ Component, state }) {
   const user = state.user;
@@ -22,39 +23,19 @@ export default define.page(function App({ Component, state }) {
       <body>
         <nav class="flex items-center justify-end px-4 py-2 bg-base-300/80 border-b border-base-300 gap-3">
           <DarkModeToggle />
-          <a
-            href="/wiki"
-            class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors mr-auto"
-          >
-            Wiki
-          </a>
+          <NavLink href="/wiki" class="mr-auto">Wiki</NavLink>
           {user
             ? (
               <div class="flex items-center gap-3">
                 {state.isAdmin && (
-                  <a
-                    href="/admin"
-                    class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
-                  >
-                    Admin
-                  </a>
+                  <NavLink href="/admin">Admin</NavLink>
                 )}
                 <span class="text-sm font-medium">{user.username}</span>
-                <a
-                  href="/auth/logout"
-                  class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
-                >
-                  Logout
-                </a>
+                <NavLink href="/auth/logout">Logout</NavLink>
               </div>
             )
             : (
-              <a
-                href="/auth/discord"
-                class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
-              >
-                Login with Discord
-              </a>
+              <NavLink href="/auth/discord">Login with Discord</NavLink>
             )}
         </nav>
         <Component />

@@ -28,6 +28,7 @@ import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
+import { Button } from "@/components/Button.tsx";
 import {
   calculateInventoryPointCost,
   createEmptyInventory,
@@ -1424,12 +1425,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         perkIds={perkIds}
       />
 
-      <button
-        type="submit"
-        class="px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
-      >
-        {props.submitLabel}
-      </button>
+      <Button type="submit">{props.submitLabel}</Button>
     </form>
   );
 }

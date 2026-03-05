@@ -9,6 +9,7 @@ import {
 } from "@/lib/characters.ts";
 import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
+import { ButtonLink } from "@/components/Button.tsx";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -145,12 +146,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       )}
       {canEdit && (
         <div class="flex gap-4">
-          <a
-            href={`/characters/${id}/edit`}
-            class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
-          >
-            Edit Character
-          </a>
+          <ButtonLink href={`/characters/${id}/edit`}>Edit Character</ButtonLink>
           <a href={`/characters/${id}/versions`} class="underline self-center">
             Previous Versions
           </a>

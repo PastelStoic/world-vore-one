@@ -6,6 +6,7 @@ import {
   getCharacterSnapshot,
   upsertCharacter,
 } from "@/lib/characters.ts";
+import { Button } from "@/components/Button.tsx";
 import {
   calculateEffectiveCarryCapacity,
   calculateEffectiveCharisma,
@@ -239,12 +240,7 @@ export default define.page<typeof handler>(
                 required
               />
             </label>
-            <button
-              type="submit"
-              class="px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
-            >
-              Set as Current Version
-            </button>
+            <Button type="submit">Set as Current Version</Button>
           </form>
 
           <div>

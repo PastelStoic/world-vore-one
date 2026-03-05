@@ -1,6 +1,9 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import { listCharacters } from "@/lib/characters.ts";
+import { PageShell } from "@/components/PageShell.tsx";
+import { ButtonLink } from "@/components/Button.tsx";
+import { formatDate } from "@/lib/format.ts";
 export default define.page(async function Home(ctx) {
   const user = ctx.state.user;
   const allCharacters = user ? await listCharacters(user.id) : [];
@@ -8,11 +11,10 @@ export default define.page(async function Home(ctx) {
   const hiddenCharacters = allCharacters.filter((c) => c.hidden);
 
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
+    <PageShell>
       <Head>
         <title>World Vore One Character Sheet</title>
       </Head>
-      <div class="max-w-3xl mx-auto space-y-6">
         <header>
           <h1 class="text-3xl font-bold">World Vore One Character Sheet</h1>
           <p class="text-base-content">
@@ -21,12 +23,7 @@ export default define.page(async function Home(ctx) {
         </header>
 
         <section>
-          <a
-            href="/wiki"
-            class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
-          >
-            📖 Wiki
-          </a>
+          <ButtonLink href="/wiki">📖 Wiki</ButtonLink>
         </section>
 
         {!user
@@ -43,12 +40,7 @@ export default define.page(async function Home(ctx) {
           )
           : (
             <section class="space-y-4">
-              <a
-                href="/characters/new"
-                class="inline-block px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
-              >
-                Create Character
-              </a>
+              <ButtonLink href="/characters/new">Create Character</ButtonLink>
 
               <div class="border rounded-lg p-4 bg-base-100/80">
                 <h2 class="text-xl font-semibold mb-2">Characters</h2>
@@ -71,7 +63,7 @@ export default define.page(async function Home(ctx) {
                           )}
                           {character.updatedAt && (
                             <span class="text-xs text-base-content/60 ml-auto">
-                              {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              {formatDate(character.updatedAt)}
                             </span>
                           )}
                           <form method="POST" action={`/characters/${character.id}`} class="contents">
@@ -105,7 +97,7 @@ export default define.page(async function Home(ctx) {
                           <span class="text-sm text-error">Hidden</span>
                           {character.updatedAt && (
                             <span class="text-xs text-base-content/60 ml-auto">
-                              {new Date(character.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              {formatDate(character.updatedAt)}
                             </span>
                           )}
                           <form method="POST" action={`/characters/${character.id}`} class="contents">
@@ -127,6 +119,6 @@ export default define.page(async function Home(ctx) {
             </section>
           )}
       </div>
-    </div>
+    </PageShell>
   );
 });

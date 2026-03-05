@@ -1,6 +1,8 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import { WEAPONS, type WeaponKind } from "@/data/equipment.ts";
+import { PageShell } from "@/components/PageShell.tsx";
+import { BackLink } from "@/components/BackLink.tsx";
 
 const KIND_LABELS: Record<WeaponKind, string> = {
   "bolt-action-rifle": "Bolt-action Rifles",
@@ -52,13 +54,12 @@ function pointCostLabel(cost: number): string {
 
 export default define.page(function WikiWeapons() {
   return (
-    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
+    <PageShell maxWidth="4xl" innerClass="space-y-8">
       <Head>
         <title>Weapons – Wiki – World Vore One</title>
       </Head>
-      <div class="max-w-4xl mx-auto space-y-8">
         <header>
-          <a href="/wiki" class="text-sm text-primary hover:underline">← Wiki</a>
+          <BackLink href="/wiki">← Wiki</BackLink>
           <h1 class="text-3xl font-bold mt-2">Weapons</h1>
           <p class="text-base-content">
             All ranged (and melee-category) weapons, grouped by type.
@@ -140,6 +141,6 @@ export default define.page(function WikiWeapons() {
           );
         })}
       </div>
-    </div>
+    </PageShell>
   );
 });

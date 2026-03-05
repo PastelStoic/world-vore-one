@@ -43,7 +43,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description: `Lady luck favours you in particular! 
 
 *You have a pool of 6 dice, which, in a single scene, may be applied into whatever you want. 
-*You may choose how many dice to use - you don't need to use all three at once! 
+*You may choose how many dice to use - you don't need to use all three at once!
+*You may only roll extra dice once; no rolling them 1 by 1 to minmax usage!
 *The dice only regenerate once the scene is over and a new one starts. You can roll the dice before or after another roll.
 *You may burn 2 dice in order to get the effects of another luck related perk ( scrounger, explosive intolerant, etc )
 *The effects only apply in the same turn they were called upon.`,

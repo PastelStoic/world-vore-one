@@ -154,7 +154,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You may get this perk even if it pushes you past your encumbrance level.
 *You have a shield, or equivalent, which has 2 weight and is considered a makeshift weapon.
 *You may use a one-handed melee weapon OR one-handed firearm whilst holding the shield, but you have -3d6 to attack with them
-*If at distance 0 with any number of teammates, as an action you may protect them, forcing the enemy to target you instead. 
+*If at distance 0 with any number of teammates, as an action you may protect any number of them, forcing the enemy to target you instead. 
 *If you're holding your shield, you take -2 damage. You must be facing the target, or there is no reduction.
 *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
   },

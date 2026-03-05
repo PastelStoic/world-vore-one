@@ -921,7 +921,7 @@ export default function InventorySection(props: InventorySectionProps) {
             <div>
               <label class="text-xs mr-1">Add to:</label>
               <select
-                class="text-xs border rounded px-1 py-0.5"
+                class="select text-xs border rounded px-1 py-0.5"
                 value={addTarget}
                 onChange={(e) =>
                   setAddTarget(

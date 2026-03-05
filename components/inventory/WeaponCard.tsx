@@ -627,7 +627,7 @@ export default function WeaponCard(props: WeaponCardProps) {
       {!readOnly && availableAttachments.length > 0 && (
         <div class="ml-2">
           <select
-            class="text-xs border rounded px-1 py-0.5"
+            class="select text-xs border rounded px-1 py-0.5"
             value=""
             onChange={(e) => {
               const val = (e.target as HTMLSelectElement).value;

@@ -571,7 +571,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Race</span>
                 <select
-                  class="w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  class="select w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   name="race"
                   value={race}
                   disabled={lockIdentityFields}
@@ -633,7 +633,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Sex</span>
                 <select
-                  class="w-full border rounded px-3 py-2"
+                  class="select w-full border rounded px-3 py-2"
                   value={description.sex}
                   onInput={(event) => {
                     const newSex = event.currentTarget.value as Sex;
@@ -672,7 +672,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Country of Origin</span>
                 <input
-                  class="w-full border rounded px-3 py-2"
+                  class="input w-full border rounded px-3 py-2"
                   type="text"
                   value={description.countryOfOrigin}
                   onInput={(event) =>
@@ -686,7 +686,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Faction</span>
                 <select
-                  class="w-full border rounded px-3 py-2"
+                  class="select w-full border rounded px-3 py-2"
                   value={description.faction}
                   onChange={(event) =>
                     updateDescription(
@@ -702,7 +702,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Role</span>
                 <input
-                  class="w-full border rounded px-3 py-2"
+                  class="input w-full border rounded px-3 py-2"
                   type="text"
                   placeholder="Cook, politician, soldier, sapper, conscript, etc."
                   value={description.role}
@@ -715,7 +715,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Subfaction</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.subfaction}
                     onInput={(event) =>
@@ -730,7 +730,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Age</span>
                 <input
-                  class="w-full border rounded px-3 py-2"
+                  class="input w-full border rounded px-3 py-2"
                   type="text"
                   placeholder={isPilzRace(race)
                     ? "Biological age is 21 by default. Include chronological age."
@@ -744,7 +744,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Date of Birth</span>
                 <input
-                  class="w-full border rounded px-3 py-2"
+                  class="input w-full border rounded px-3 py-2"
                   type="text"
                   placeholder="M/D/Y — Year is mandatory, month and day are optional"
                   value={description.dateOfBirth}
@@ -757,7 +757,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Height</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.height}
                     onInput={(event) =>
@@ -768,7 +768,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Weight</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.weight}
                     onInput={(event) =>
@@ -827,7 +827,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Skin Color</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.skinColor}
                     onInput={(event) =>
@@ -838,7 +838,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Hair Color</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.hairColor}
                     onInput={(event) =>
@@ -849,7 +849,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Eye Color</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.eyeColor}
                     onInput={(event) =>
@@ -860,7 +860,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <label class="block">
                   <span class="block font-medium mb-1">Ethnicity</span>
                   <input
-                    class="w-full border rounded px-3 py-2"
+                    class="input w-full border rounded px-3 py-2"
                     type="text"
                     value={description.ethnicity}
                     onInput={(event) =>
@@ -872,7 +872,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Body Type</span>
                 <input
-                  class="w-full border rounded px-3 py-2"
+                  class="input w-full border rounded px-3 py-2"
                   type="text"
                   value={description.bodyType}
                   onInput={(event) =>
@@ -883,7 +883,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">General Appearance</span>
                 <textarea
-                  class="w-full border rounded px-3 py-2"
+                  class="textarea w-full border rounded px-3 py-2"
                   rows={3}
                   value={description.generalAppearance}
                   onInput={(event) =>
@@ -897,7 +897,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">General Health</span>
                 <textarea
-                  class="w-full border rounded px-3 py-2"
+                  class="textarea w-full border rounded px-3 py-2"
                   rows={3}
                   placeholder="Permanent factors: scars, missing limbs, mental conditions, etc."
                   value={description.generalHealth}
@@ -912,7 +912,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Personality</span>
                 <textarea
-                  class="w-full border rounded px-3 py-2"
+                  class="textarea w-full border rounded px-3 py-2"
                   rows={3}
                   value={description.personality}
                   onInput={(event) =>
@@ -923,7 +923,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <label class="block">
                 <span class="block font-medium mb-1">Biography</span>
                 <textarea
-                  class="w-full border rounded px-3 py-2"
+                  class="textarea w-full border rounded px-3 py-2"
                   rows={5}
                   value={description.biography}
                   onInput={(event) =>
@@ -939,7 +939,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         <label class="block">
           <span class="block font-medium mb-1">Changelog</span>
           <input
-            class="w-full border rounded px-3 py-2"
+            class="input w-full border rounded px-3 py-2"
             name="changelog"
             type="text"
             value={changelog}
@@ -1167,7 +1167,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                             Locked stat:
                                           </label>
                                           <select
-                                            class="border rounded px-1 py-0.5 text-xs"
+                                            class="select border rounded px-1 py-0.5 text-xs"
                                             value={chosenForRank ?? ""}
                                             onChange={(e) => {
                                               const val =
@@ -1260,7 +1260,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   Disguise as:
                                 </label>
                                 <select
-                                  class="ml-2 border rounded px-2 py-1 text-sm"
+                                  class="select ml-2 border rounded px-2 py-1 text-sm"
                                   value={perkDisguises[id] ?? ""}
                                   onChange={(e) => {
                                     const value =
@@ -1340,7 +1340,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
                   <select
-                    class="border rounded px-2 py-1 text-sm"
+                    class="select border rounded px-2 py-1 text-sm"
                     value={perkCategoryFilter}
                     onChange={(e) =>
                       setPerkCategoryFilter(

@@ -112,6 +112,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     lockCategory: "tierfraun-type",
     customInput: "Good boy or bad boy?",
     includesPerks: ["runner"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -124,6 +125,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Pick one:
 ->You are a 'good boy' ( +3 charisma to entertain/enthrall someone ).
 ->You are a 'bad boy' ( +3 charisma to intimidate/scare someone ).`,
+    modifiers: {
+      baseStatBonuses: { charisma: 2, intelligence: 1 },
+    },
   },
   {
     id: "tierfraun-felines-vulpines",
@@ -132,6 +136,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["runner"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -142,6 +147,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Have the 'runner' perk from Combat perks.
 *Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.
 *Enemies always fall prey to your ambushes, and you always succeed in stealth, unless a perk would prevent this.`,
+    modifiers: {
+      baseStatBonuses: { dexterity: 2, intelligence: 1 },
+    },
   },
   {
     id: "tierfraun-bovines",
@@ -150,6 +158,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["milky", "heavy", "unreal-capacity"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -165,6 +174,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Your organ capacity is not increased by the four stomachs, your skin can only stretch so far!
 *A escape success makes them climb back up a stomach and resets the fail counter. 
 *Prey must climb back into the first stomach to escape.`,
+    modifiers: {
+      baseStatBonuses: { constitution: 2, strength: 1 },
+    },
   },
   {
     id: "tierfraun-centaurs-cervines",
@@ -173,6 +185,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["hauling-meat"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -184,6 +197,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You have the 'Hauling-meat' perk from Vore Perks.
 *In combat, you may move up to 3 distances in a single turn.
 *Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.`,
+    modifiers: {
+      baseStatBonuses: { strength: 2, constitution: 1 },
+    },
   },
   {
     id: "tierfraun-sealife",
@@ -191,6 +207,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -204,6 +221,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You can withstand the temperatures and pressure of the seas up to a kilometer deep
 *You can cover long distances in the water. You can cross the english channel, the mediterranean, and other such bodies.
 *You cannot cross whole oceans.`,
+    modifiers: {
+      baseStatBonuses: { strength: 1, dexterity: 1, constitution: 1 },
+    },
   },
   {
     id: "tierfraun-avian",
@@ -211,6 +231,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -224,6 +245,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You have 4d6 cover when in the air, due to being hard to hit.
 *While flying, you may move up to two distances per turn.
 *You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,
+    modifiers: {
+      baseStatBonuses: { dexterity: 2, charisma: 1 },
+    },
   },
   {
     id: "tierfraun-lizards",
@@ -233,6 +257,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     lockCategory: "tierfraun-type",
     excludesPerks: ["defender", "baiter", "runner"],
     includesPerks: ["tough", "heavy"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -245,6 +270,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You have the Heavy perk from Vore Perks.
 *You are always last in initiative, regardless of any modifiers.
 *You may not get the following perks: Defender, Baiter and Runner.`,
+    modifiers: {
+      baseStatBonuses: { constitution: 3 },
+    },
   },
   {
     id: "tierfraun-hefties",
@@ -253,6 +281,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["tough", "authoritarian"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -267,6 +296,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Double your pred's penalties from being immobilized.
 *You should taller and bulkier than average - you're huge!
 *You can handle weapons that require bipods without issues. Ignore the penalty from not being set up.`,
+    modifiers: {
+      baseStatBonuses: { constitution: 2, strength: 1 },
+    },
   },
   {
     id: "tierfraun-leporines",
@@ -275,6 +307,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["danger-sense", "runner", "survivor"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -289,6 +322,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 ->Foxhole: It is considered medium cover (4d6).
 ->Burrow: You cannot shoot or be shot at. Enemies must enter the burrow in order to melee you.
 *Takes 1 turn to go inside or outside of your groundworks.`,
+    modifiers: {
+      baseStatBonuses: { dexterity: 2, escapeTraining: 3 },
+    },
   },
   {
     id: "tierfraun-lamias",
@@ -298,6 +334,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     lockCategory: "tierfraun-type",
     excludesPerks: ["open-ended-tail", "open-ended-tail-mouthless"],
     includesPerks: ["natural-predator"],
+    pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 
@@ -313,6 +350,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 ->Should they succeed, they crawl back into the first stomach, but can be sent back into the tail if they fail another escape attempt.
 *Jungle and swampy terrain does not affect you - you can climb trees and move around freely.`,
     modifiers: {
+      baseStatBonuses: { strength: 3 },
       grantsOrgans: ["tail"],
       organCapacityMultipliers: { tail: 3 },
     },

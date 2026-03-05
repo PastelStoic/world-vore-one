@@ -46,8 +46,12 @@ export default define.page(function WikiPerks() {
                           {perk.name}
                           {perk.pointsGranted
                             ? (
-                              <span class="ml-2 text-xs text-success font-normal">
-                                +{perk.pointsGranted} pts
+                              <span
+                                class={`ml-2 text-xs font-normal ${perk.pointsGranted > 0 ? "text-success" : "text-error"}`}
+                              >
+                                {perk.pointsGranted > 0
+                                  ? `+${perk.pointsGranted}`
+                                  : `${perk.pointsGranted}`} pts
                               </span>
                             )
                             : null}

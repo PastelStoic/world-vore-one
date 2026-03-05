@@ -1,21 +1,28 @@
 import { useEffect, useState } from "preact/hooks";
 
+function getInitialDark(): boolean {
+  const stored = localStorage.getItem("darkMode");
+  if (stored !== null) return stored === "true";
+  return globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function applyTheme(dark: boolean) {
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+}
+
 export default function DarkModeToggle() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("darkMode");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches;
-    const enabled = stored !== null ? stored === "true" : prefersDark;
+    const enabled = getInitialDark();
     setDark(enabled);
-    document.documentElement.classList.toggle("dark", enabled);
+    applyTheme(enabled);
   }, []);
 
   function toggle() {
     const next = !dark;
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
+    applyTheme(next);
     localStorage.setItem("darkMode", String(next));
   }
 
@@ -23,7 +30,7 @@ export default function DarkModeToggle() {
     <button
       onClick={toggle}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
-      class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors select-none"
+      class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors select-none"
       aria-label="Toggle dark mode"
     >
       {dark ? "☀️" : "🌙"}

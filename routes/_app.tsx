@@ -1,3 +1,4 @@
+// deno-lint-ignore-file react-no-danger
 import { define } from "@/utils.ts";
 import DarkModeToggle from "@/islands/DarkModeToggle.tsx";
 
@@ -10,13 +11,20 @@ export default define.page(function App({ Component, state }) {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>world-vore-one</title>
+        {/* Set theme before first paint to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              `(function(){var s=localStorage.getItem('darkMode');var d=s!==null?s==='true':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',d?'dark':'light');})();`,
+          }}
+        />
       </head>
       <body>
-        <nav class="flex items-center justify-end px-4 py-2 bg-base-300/80 border-b dark:border-base-300 gap-3">
+        <nav class="flex items-center justify-end px-4 py-2 bg-base-300/80 border-b border-base-300 gap-3">
           <DarkModeToggle />
           <a
             href="/wiki"
-            class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors mr-auto"
+            class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors mr-auto"
           >
             Wiki
           </a>
@@ -26,7 +34,7 @@ export default define.page(function App({ Component, state }) {
                 {state.isAdmin && (
                   <a
                     href="/admin"
-                    class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors"
+                    class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
                   >
                     Admin
                   </a>
@@ -34,7 +42,7 @@ export default define.page(function App({ Component, state }) {
                 <span class="text-sm font-medium">{user.username}</span>
                 <a
                   href="/auth/logout"
-                  class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors"
+                  class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
                 >
                   Logout
                 </a>
@@ -43,7 +51,7 @@ export default define.page(function App({ Component, state }) {
             : (
               <a
                 href="/auth/discord"
-                class="text-sm px-3 py-1 border rounded hover:bg-base-200 dark:hover:bg-base-200 transition-colors"
+                class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors"
               >
                 Login with Discord
               </a>

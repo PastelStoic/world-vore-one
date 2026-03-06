@@ -95,6 +95,16 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     description: `A suit covered in local debris and greenery, making it very hard to spot you!
 *When doing stealth checks and ambushes, you gain an additional 3d6, provided it fits the location you're in.`,
   },
+  {
+  id: "cyanide-pill",
+  name: "Cyanide pill",
+  weight: 1,
+  description: `A tiny cyanide pill, which guarantees death if ingested.
+*You have a tiny cyanide pill on your person, hidden away in some tiny compartment.
+*It takes one action to pull the pill out, and another to swallow it.
+*Once swallowed, you die within 3 turns. This cannot be stopped in any way.
+*Alternatively, feed it to someone else somehow. That's what a sane person would do.`,
+  },
 ];
 
 export const EQUIPMENT_BY_ID = new Map(

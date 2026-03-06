@@ -123,19 +123,19 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "buckler-shield",
     name: "Buckler shield",
     description:
-      "Tiny shield that helps defending you in melee. You may hold this weapon and the 'duelling' trait will still work. Enemies have -1d6 to hit you.",
+      "You may hold this weapon and the 'duelling' trait will still work. Enemies have -1d6 to hit you.",
   },
   {
     id: "shield",
     name: "Shield",
     description:
-      "A moderately sized shield, among the most common types used during medieval times. Kite, round, square, there's many kinds. Enemies have -3d6 to hit you.",
+      "Enemies have -3d6 to hit you.",
   },
   {
     id: "board-shield",
     name: "Board shield",
     description:
-      "A massive board shield, when placed on the ground, it reaches all the way to your chin. Enemies have -6d6 to hit you. Can be planted onto the ground, serving as 2d6 cover.",
+      "Enemies have -6d6 to hit you. Can be planted onto the ground, serving as 2d6 cover.",
   },
 ];
 

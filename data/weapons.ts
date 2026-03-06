@@ -166,7 +166,9 @@ Utterly silent:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Mad-minute technique:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Mad-minute technique:
 *Takes one turn to swap into this technique.
 *+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
     compatibleAttachmentIds: [
@@ -185,7 +187,9 @@ Utterly silent:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
@@ -203,7 +207,9 @@ Cylinder:
     rateOfFire: 10,
     weight: 4,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only pay 1.
 Heavy-machinegun:
@@ -215,8 +221,7 @@ Multi-target:
 *One bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.
 Heavy magazines:
 *Choose how many additional magazines to bring. Each magazine has 1 weight. Declare at scene start.
-*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.
-*If the weapon has no magazine loaded, -1 weight.`,
+*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`
     compatibleAttachmentIds: ["lewis-gun-shield"],
     freeAccessoryIds: ["lewis-drum-magazine"],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
@@ -236,7 +241,9 @@ Heavy magazines:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Tubular magazine:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Tubular magazine:
 *Reloads each bullet individually, taking 1 turn per bullet.
 Extra long:
 --->When fitted with a bayonet:
@@ -255,7 +262,9 @@ Extra long:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
@@ -273,7 +282,9 @@ Cylinder:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Half-Agile:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Half-Agile:
 *Can be fired even at distance 0 with -3d6 to accuracy. Can be unholstered and holstered at no action cost.
 Short rifle:
 --->When fitted with a bayonet:
@@ -294,8 +305,8 @@ Short rifle:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.`,
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.`,
     compatibleAttachmentIds: [],
   },
   {
@@ -309,8 +320,8 @@ Short rifle:
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
 Walking fire:
 *Takes one turn to swap into this technique.
 *-3d6 to shooting. May move and fire as part of the same action.
@@ -333,8 +344,8 @@ Jams frequently:
     rateOfFire: 4,
     weight: 3,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
 Light-machinegun:
 *Comes with a bipod but gains no benefit from it.
 *Automatic fire whilst not set up awards a -1d6 for every shot fired.`,

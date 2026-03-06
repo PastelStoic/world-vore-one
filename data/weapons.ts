@@ -21,7 +21,9 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Black Powder:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Black Powder:
 *Makes a huge cloud of smelly gunpowder smoke after firing, giving away your position immediately.
 Extremely slow reload:
 *Takes 4 turns to load a single bullet. Each bullet must be reloaded individually. Cannot use a speedloader.
@@ -45,7 +47,9 @@ Overloaded chamber:
     rateOfFire: 1,
     weight: 3,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 Canister:
 *Choose how many additional canisters of fuel to bring. Each canister has 1 weight. Declare at scene start.
@@ -71,7 +75,9 @@ Bulky kit:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Double barrel Shotgun:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Double barrel Shotgun:
 *Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
 *Loads each shell individually, 1 shell per turn.
 Trench-sweeper:
@@ -93,7 +99,9 @@ Double-fire:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Extra long:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Extra long:
 *If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.
 Musket:
 *Takes 20 turns to reload. Accuracy penalty from ranged shooting is doubled.`,
@@ -112,7 +120,9 @@ Musket:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Recoverable ammo:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Recoverable ammo:
 *At combat end, all arrows can be recovered.
 Draw and let loose:
 *To fire this weapon, it must be prepared: A turn has to be spent pulling the string, and it may only be fired in the next.
@@ -134,7 +144,9 @@ Utterly silent:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Recoverable ammo:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Recoverable ammo:
 *At combat end, all bolts can be recovered.
 Utterly silent:
 *Only those 1 distance away from you can hear your crossbow's string. It is completely silent otherwise.`,

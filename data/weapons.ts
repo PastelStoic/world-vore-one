@@ -221,7 +221,7 @@ Multi-target:
 *One bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.
 Heavy magazines:
 *Choose how many additional magazines to bring. Each magazine has 1 weight. Declare at scene start.
-*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`
+*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`,
     compatibleAttachmentIds: ["lewis-gun-shield"],
     freeAccessoryIds: ["lewis-drum-magazine"],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],

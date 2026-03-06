@@ -35,17 +35,14 @@ export interface InventoryWeapon {
 }
 
 /**
- * An instance of a melee weapon (custom-created by the GM).
+ * An instance of a melee weapon in a character's inventory.
+ * References a premade MeleeWeaponTemplate by ID.
  */
 export interface InventoryMeleeWeapon {
   /** A unique instance id (UUID) */
   instanceId: string;
-  name: string;
-  damage: number;
-  weight: number;
-  /** Trait IDs from MeleeTraitDefinition */
-  traitIds: string[];
-  description: string;
+  /** Reference to a MeleeWeaponTemplate.id */
+  meleeWeaponId: string;
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
   /** If set, this item was granted by the named perk and cannot be removed manually */

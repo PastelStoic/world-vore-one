@@ -418,11 +418,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           for (const grant of p?.grantsMeleeWeapons ?? []) {
             newInv.carried.meleeWeapons.push({
               instanceId: crypto.randomUUID(),
-              name: grant.name,
-              damage: grant.damage,
-              weight: grant.weight,
-              traitIds: [...grant.traitIds],
-              description: grant.description,
+              meleeWeaponId: grant.meleeWeaponId,
               isSignatureWeapon: true,
               perkGranted: id,
             });

@@ -4,6 +4,7 @@ import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT,
   EQUIPMENT_BY_ID,
+  MELEE_WEAPONS,
   type Nation,
   NATIONS,
   WEAPONS,
@@ -78,6 +79,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const [attachmentNationFilter, setAttachmentNationFilter] = useState<
     Nation | ""
   >("");
+  const [meleeFilter, setMeleeFilter] = useState("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
   // ── Derived ──
@@ -651,15 +653,11 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Add melee weapon --
-  function addMeleeWeapon(location: InventoryLocation) {
+  // -- Add melee weapon by premade ID --
+  function addMeleeWeapon(meleeWeaponId: string, location: InventoryLocation) {
     const item: InventoryMeleeWeapon = {
       instanceId: crypto.randomUUID(),
-      name: "New Melee Weapon",
-      damage: 2,
-      weight: 1,
-      traitIds: [],
-      description: "",
+      meleeWeaponId,
     };
     update((inv) => {
       inv[location].meleeWeapons.push(item);
@@ -685,38 +683,6 @@ export default function InventorySection(props: InventorySectionProps) {
     update((inv) => {
       const [mw] = inv[from].meleeWeapons.splice(index, 1);
       inv[to].meleeWeapons.push(mw);
-      return inv;
-    });
-  }
-
-  // -- Update melee weapon fields --
-  function updateMeleeWeapon(
-    location: InventoryLocation,
-    index: number,
-    patch: Partial<InventoryMeleeWeapon>,
-  ) {
-    update((inv) => {
-      inv[location].meleeWeapons[index] = {
-        ...inv[location].meleeWeapons[index],
-        ...patch,
-      };
-      return inv;
-    });
-  }
-
-  // -- Toggle melee trait --
-  function toggleMeleeTrait(
-    location: InventoryLocation,
-    index: number,
-    traitId: string,
-  ) {
-    update((inv) => {
-      const mw = inv[location].meleeWeapons[index];
-      if (mw.traitIds.includes(traitId)) {
-        mw.traitIds = mw.traitIds.filter((t) => t !== traitId);
-      } else {
-        mw.traitIds.push(traitId);
-      }
       return inv;
     });
   }
@@ -794,8 +760,6 @@ export default function InventorySection(props: InventorySectionProps) {
                   onToggleSignature={toggleSignatureMelee}
                   onMove={moveMeleeWeapon}
                   onRemove={removeMeleeWeapon}
-                  onUpdate={updateMeleeWeapon}
-                  onToggleTrait={toggleMeleeTrait}
                 />
               </div>
             ))}
@@ -874,6 +838,11 @@ export default function InventorySection(props: InventorySectionProps) {
   const filteredEquipment = EQUIPMENT.filter((e) => {
     if (!equipmentFilter) return true;
     return e.name.toLowerCase().includes(equipmentFilter.toLowerCase());
+  });
+
+  const filteredMeleeWeapons = MELEE_WEAPONS.filter((mw) => {
+    if (!meleeFilter) return true;
+    return mw.name.toLowerCase().includes(meleeFilter.toLowerCase());
   });
 
   const filteredAttachments = ATTACHMENTS.filter((a) => {
@@ -1138,20 +1107,58 @@ export default function InventorySection(props: InventorySectionProps) {
             </div>
           )}
 
-          {/* Melee weapon creator */}
+          {/* Melee weapon picker */}
           {showAddMelee && (
-            <div class="border rounded p-2 bg-base-200 space-y-1">
-              <p class="text-sm text-base-content/70">
-                Create a new melee weapon template. You can customize its name,
-                damage, weight, and traits after adding it.
-              </p>
-              <button
-                type="button"
-                class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-                onClick={() => addMeleeWeapon(addTarget)}
-              >
-                Create Melee Weapon
-              </button>
+            <div class="space-y-1 border rounded p-2 bg-base-200">
+              <input
+                type="text"
+                class="w-full border rounded px-2 py-1 text-sm"
+                placeholder="Filter melee weapons by name…"
+                value={meleeFilter}
+                onInput={(e) =>
+                  setMeleeFilter((e.target as HTMLInputElement).value)}
+              />
+              {filteredMeleeWeapons.length === 0
+                ? (
+                  <p class="text-sm text-base-content/50 italic">
+                    No matching melee weapons.
+                  </p>
+                )
+                : (
+                  <ul class="max-h-64 overflow-y-auto space-y-1">
+                    {filteredMeleeWeapons.map((mw) => (
+                      <li
+                        key={mw.id}
+                        class="text-sm border-b border-gray-100 pb-1"
+                      >
+                        <div class="flex items-center justify-between">
+                          <span>
+                            {mw.name}{" "}
+                            <span class="text-xs text-base-content/60">
+                              (DMG:{mw.damage} · W:{mw.weight})
+                            </span>
+                          </span>
+                          <button
+                            type="button"
+                            class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                            onClick={() => addMeleeWeapon(mw.id, addTarget)}
+                          >
+                            Add
+                          </button>
+                        </div>
+                        {mw.description && (
+                          <div class="text-xs text-base-content/70 ml-2">
+                            <PerkDescription
+                              name=""
+                              description={mw.description}
+                              hideByDefault
+                            />
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
             </div>
           )}
 

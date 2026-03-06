@@ -58,19 +58,13 @@ export function parseInventory(raw: string): CharacterInventory | null {
           (w: unknown) =>
             w &&
             typeof w === "object" &&
-            typeof (w as Record<string, unknown>).instanceId === "string",
+            typeof (w as Record<string, unknown>).instanceId === "string" &&
+            typeof (w as Record<string, unknown>).meleeWeaponId === "string",
         ).map((w: Record<string, unknown>): InventoryMeleeWeapon => ({
           instanceId: String(w.instanceId),
-          name: String(w.name ?? ""),
-          damage: typeof w.damage === "number" ? w.damage : 0,
-          weight: typeof w.weight === "number" ? w.weight : 1,
-          traitIds: Array.isArray(w.traitIds)
-            ? (w.traitIds as unknown[]).filter((id): id is string =>
-              typeof id === "string"
-            )
-            : [],
-          description: String(w.description ?? ""),
+          meleeWeaponId: String(w.meleeWeaponId),
           ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
+          ...(typeof w.perkGranted === "string" ? { perkGranted: w.perkGranted } : {}),
         }));
       }
 

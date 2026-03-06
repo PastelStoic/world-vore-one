@@ -162,13 +162,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *If you're holding your shield, you take -2 damage. You must be facing the target, or there is no reduction.
 *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
     grantsMeleeWeapons: [
-      {
-        name: "Shield",
-        damage: 1,
-        weight: 2,
-        traitIds: ["one-handed"],
-        description: "Defender's shield. -2 damage when facing the attacker.",
-      },
+      { meleeWeaponId: "shield" },
     ],
   },
   {

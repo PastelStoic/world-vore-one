@@ -59,11 +59,8 @@ export interface PerkGrantedEquipment {
 }
 
 export interface PerkGrantedMeleeWeapon {
-  name: string;
-  damage: number;
-  weight: number;
-  traitIds: string[];
-  description: string;
+  /** Reference to a MeleeWeaponTemplate.id */
+  meleeWeaponId: string;
 }
 
 export interface PerkDefinition {

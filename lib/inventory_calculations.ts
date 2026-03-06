@@ -122,6 +122,7 @@ export function calculateInventoryWeight(
   inv: CharacterInventory,
   lookups: {
     getWeapon: (id: string) => { weight: number } | undefined;
+    getMeleeWeapon: (id: string) => { weight: number } | undefined;
     getEquipment: (
       id: string,
     ) => { weight: number; isCharge?: boolean } | undefined;
@@ -159,7 +160,8 @@ export function calculateInventoryWeight(
   }
 
   for (const mw of inv.carried.meleeWeapons) {
-    total += mw.weight;
+    const def = lookups.getMeleeWeapon(mw.meleeWeaponId);
+    if (def) total += def.weight;
   }
 
   for (const e of inv.carried.equipment) {

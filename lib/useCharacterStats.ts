@@ -4,6 +4,7 @@ import {
   WEAPONS_BY_ID,
   EQUIPMENT_BY_ID,
   ATTACHMENTS_BY_ID,
+  MELEE_WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import {
   calculateInventoryWeight,
@@ -25,6 +26,7 @@ import {
 
 const weightLookups = {
   getWeapon: (id: string) => WEAPONS_BY_ID.get(id),
+  getMeleeWeapon: (id: string) => MELEE_WEAPONS_BY_ID.get(id),
   getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
   getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
 };

@@ -75,7 +75,9 @@ Bulky kit:
 *Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
 *Loads each shell individually, 1 shell per turn.
 Trench-sweeper:
-*Cover is one tier lower if the target is at 3 distances or closer.`,
+*Cover is one tier lower if the target is at 3 distances or closer.
+Double-fire:
+*-3d6 to shooting, gains +1 rate of fire, and does not gain accuracy benefits from the fastened fire.`,
     compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off"],
     reloadsIndividually: true,
   },

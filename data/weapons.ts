@@ -457,7 +457,9 @@ Restricted:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Reliable:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Reliable:
 *No debuff from having a bayonet attached. Does not break easily, maintenance isn't difficult, mud is no problem.`,
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
@@ -476,7 +478,9 @@ Restricted:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only need to pay 1.`,
     compatibleAttachmentIds: ["thompson-drum-magazines"],
@@ -493,7 +497,9 @@ Restricted:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Shotgun:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Shotgun:
 *Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
 Tubular magazine:
 *Reloads each shell individually, taking 1 turn per shell.
@@ -516,8 +522,8 @@ Slam fire:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.`,
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.`,
     compatibleAttachmentIds: [],
   },
   {
@@ -531,8 +537,8 @@ Slam fire:
     rateOfFire: 4,
     weight: 3,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
 Light-machinegun:
 *Comes with a bipod but gains no benefit from it.
 *Automatic fire whilst not set up awards a -1d6 for every shot fired.
@@ -553,7 +559,9 @@ Select fire:
     rateOfFire: 2,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only need to pay 1.
 Shotgun:
@@ -579,7 +587,9 @@ Trench-sweeper:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `6mm Arisaka:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+6mm Arisaka:
 *The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.
 *Deal 2 damage at distance 16 or beyond.
 Extra long:
@@ -598,7 +608,9 @@ Extra long:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,
@@ -618,7 +630,9 @@ Cylinder:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Extra long:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Extra long:
 --->When fitted with a bayonet:
 *If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
@@ -634,7 +648,9 @@ Cylinder:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Loading Gate:
 *Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
@@ -652,7 +668,9 @@ Loading Gate:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 6mm Arisaka:
 *The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.
@@ -672,7 +690,9 @@ Loading Gate:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Half-Agile:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Half-Agile:
 *Can be fired even at distance 0 with -3d6 to accuracy. Can be unholstered and holstered at no action cost.
 Short rifle:
 --->When fitted with a bayonet:
@@ -693,8 +713,8 @@ En-block clip:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.`,
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.`,
     compatibleAttachmentIds: [
       "steyr-automatic-fire",
       "steyr-extended-magazine",
@@ -714,7 +734,9 @@ En-block clip:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `En-block clip:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+En-block clip:
 --->When the rifle is empty:
 *Reloading can be done at no action cost. Shooting on the same turn awards -3d6 to accuracy.
 6.5mm Carcano:
@@ -732,7 +754,9 @@ En-block clip:
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    gimmicks: `Overhead magazine:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Overhead magazine:
 *The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
 *If you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
@@ -748,7 +772,9 @@ En-block clip:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 Overhead magazine:
 *The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
@@ -766,7 +792,9 @@ Overhead magazine:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Loading Gate:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Loading Gate:
 *Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.
 Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.`,
@@ -786,7 +814,9 @@ Agile:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Magazine-fed:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Magazine-fed:
 *Each magazine has 1 weight; choose how many magazines to bring at the start of a scene.
 *Reloading is instantaneous if you use a magazine. Magazines are lost when unloaded.
 *Reloads normally if you have no magazines left.`,
@@ -804,7 +834,9 @@ Agile:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Cylinder:
 *Reloads each bullet individually, taking 1 turn per bullet.`,

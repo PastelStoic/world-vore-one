@@ -240,7 +240,7 @@ export const VORE_PERKS: PerkDefinition[] = [
 *You can stuff someone up to 5 times their organ-capacity. 
 *For every point past their limit, they take 1 damage every turn. This can kill.
 *Your target can try to regurgitate the contents of their stomach. 
-*If they're grappled by you, you can stop regurtitation, by using your own strength, plus the modifiers in this perk up above.`,
+*If they're grappled by you, you can stop regurgitation as a free action, it is a contested STR vs STR check plus the modifiers in this perk up above.`,
   },
   {
     id: "last-ditch-escapee",

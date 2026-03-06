@@ -158,7 +158,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You may get this perk even if it pushes you past your encumbrance level.
 *You have a shield, or equivalent, which has 2 weight and is considered a makeshift weapon.
 *You may use a one-handed melee weapon OR one-handed firearm whilst holding the shield, but you have -3d6 to attack with them
-*If at distance 0 with any number of teammates, as an action you may protect them, forcing the enemy to target you instead.
+*If at distance 0 with any number of teammates, as an action you may protect any number of them, forcing the enemy to target you instead. 
 *If you're holding your shield, you take -2 damage. You must be facing the target, or there is no reduction.
 *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
     grantsMeleeWeapons: [
@@ -191,10 +191,11 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `You have a knack for keeping yourself alive, at the cost of your teammates. You don't live long by being a dummy.
 
-*When being attacked, you may pull an ally in the same distance as you into the way. Does not apply for ambushes.
+*When being attacked, you may pull an ally in the same distance as you into the way. Does not apply if you were ambushed.
+*You may only protect yourself from a single attack per round, and it is a free action.
+*Your ally may be pulled before or after you perform your cover/defense roll. If your ally is incapacitated, you must be actively holding them to use them as cover.
 *If your ally is willing, they take all of the damage in your stead.
 *If your ally is unwilling, you may do a STR vs STR contested check against them. On a success, they take all of the damage in your stead.
-*You may only protect yourself from a single attack per round, and it is a free action.
 *Officers and higher-ups can punish you for this behavior; it is great cowardice and poor conduct!`,
   },
 ];

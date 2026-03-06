@@ -66,6 +66,7 @@ export default function InventorySection(props: InventorySectionProps) {
   } = props;
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
+  const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const [showAddWeapon, setShowAddWeapon] = useState(false);
   const [showAddEquipment, setShowAddEquipment] = useState(false);
   const [showAddMelee, setShowAddMelee] = useState(false);
@@ -942,7 +943,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 setShowAddAttachment(false);
               }}
             >
-              {showAddWeapon ? "Cancel" : "+ Weapon"}
+              {showAddWeapon ? "Cancel" : hasWeaponMaster ? "Armory" : "+ Weapon"}
             </button>
             <button
               type="button"
@@ -1053,7 +1054,9 @@ export default function InventorySection(props: InventorySectionProps) {
                               class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
                               onClick={() => addWeapon(w.id, addTarget)}
                             >
-                              Add ({costLabel(addCost)})
+                              {hasWeaponMaster
+                                ? `Withdraw (${costLabel(addCost)})`
+                                : `Add (${costLabel(addCost)})`}
                             </button>
                           </div>
                           <div class="text-xs text-base-content/70 ml-2">

@@ -125,7 +125,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     id: "bushwacka",
     name: "Bushwacka'",
     category: "gimmick",
-    description: `You live in the Bush, and live off of the land! 
+    description: `You live in the Bush, and live off of the land!
 
 *You have a "survivalist's kit" from the equipment list. It has no weight and does not have the 'bulky kit' gimmick.
 *It always returns to you through one means or another, but you can be separated from it temporarily.
@@ -133,6 +133,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Your kit has the tools to hunt said sustenance and prepare it into something that is edible/drinkable.
 *You never run out the resources to hunt and prepare your sustenance as long as you have your kit.
 *This does not mean you know your way around the place - just that nature won't kill you.`,
+    grantsEquipment: [
+      { equipmentId: "survivalists-kit", weightOverride: 0, isBulkyOverride: false },
+    ],
   },
   {
     id: "authoritarian",

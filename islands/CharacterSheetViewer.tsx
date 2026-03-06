@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
@@ -7,6 +7,7 @@ import {
 } from "@/data/perks.ts";
 import {
   BASE_STAT_FIELDS,
+  type BaseStatKey,
   type CharacterDraft,
   type CharacterSheet,
 } from "@/lib/character_types.ts";
@@ -228,16 +229,33 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
           Unallocated stat points:{" "}
           <strong>{character.unallocatedStatPoints}</strong>
         </p>
+        {(() => {
+          // Compute addiction-affected stats
+          const addictionAffectedStats = new Set<BaseStatKey>();
+          if (character.perkIds.includes("crippling-addiction")) {
+            const mainStats: BaseStatKey[] = ["strength", "dexterity", "constitution", "intelligence", "charisma"];
+            const maxValue = Math.max(...mainStats.map(k => character.baseStats[k]));
+            for (const k of mainStats) {
+              if (character.baseStats[k] === maxValue) addictionAffectedStats.add(k);
+            }
+          }
+          return (
         <ul class="space-y-1 text-sm">
           {BASE_STAT_FIELDS.filter((field) => character.race !== "Baseliner" || field.key !== "digestionStrength").map((field, idx) => (
             <li key={field.key}>
               {idx === 5 && <br /> /* Gap between regular and vore stats */}
-              {field.label}: Base{" "}
+              {field.label}
+              {addictionAffectedStats.has(field.key) && (
+                <span class="ml-1 text-xs font-semibold text-error">[Addiction]</span>
+              )}
+              : Base{" "}
               <strong>{character.baseStats[field.key]}</strong> | Effective{" "}
               <strong>{effectiveByStat[field.key]}</strong>
             </li>
           ))}
         </ul>
+          );
+        })()}
       </div>
 
       <OtherStatsSection draft={character} carryCapacity={carryCapacity} />

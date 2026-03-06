@@ -22,6 +22,7 @@ export default function OtherStatsSection(props: OtherStatsSectionProps) {
   const milkyCharges = hasMilky
     ? 1 + calculateEffectiveConstitution(draft)
     : null;
+  const hasLucky = draft.perkIds.includes("lucky");
 
   return (
     <div class="rounded border p-3 space-y-2">
@@ -36,6 +37,11 @@ export default function OtherStatsSection(props: OtherStatsSectionProps) {
         {milkyCharges !== null && (
           <li>
             Milky Charges: <strong>{milkyCharges}</strong>
+          </li>
+        )}
+        {hasLucky && (
+          <li>
+            Lucky Charges: <strong>6</strong>
           </li>
         )}
         {organCapacities.length > 0 && (

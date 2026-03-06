@@ -126,12 +126,16 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `A Sapper is a military engineer of sorts. You build fortifications and do general groundworks of the sort.
 
-*You have a no-weight entrenching gear AND an explosives kit which are not considered 'bulky kits' thanks to this perk. 
+*You have a no-weight entrenching gear AND an explosives kit which are not considered 'bulky kits' thanks to this perk.
 *They always return to you through one means or another, but you can be separated from them temporarily.
-*Your entrenching gear allows you to build cover worth 6d6 in 3 turns. 
+*Your entrenching gear allows you to build cover worth 6d6 in 3 turns.
 *If you have additional resources in-scene AND preparation time, you can create cover worth 8d6
 *Destroying fortifications with explosives, cutting barbed wire, breaking down walls, you do it in one turn, without fail.
 *Sapper extends to vehicles as well, you can repair, modify and upgrade vehicles without fail.`,
+    grantsEquipment: [
+      { equipmentId: "entrenching-gear", weightOverride: 0, isBulkyOverride: false },
+      { equipmentId: "explosives-kit", weightOverride: 0, isBulkyOverride: false },
+    ],
   },
   {
     id: "baiter",
@@ -154,9 +158,18 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You may get this perk even if it pushes you past your encumbrance level.
 *You have a shield, or equivalent, which has 2 weight and is considered a makeshift weapon.
 *You may use a one-handed melee weapon OR one-handed firearm whilst holding the shield, but you have -3d6 to attack with them
-*If at distance 0 with any number of teammates, as an action you may protect them, forcing the enemy to target you instead. 
+*If at distance 0 with any number of teammates, as an action you may protect them, forcing the enemy to target you instead.
 *If you're holding your shield, you take -2 damage. You must be facing the target, or there is no reduction.
 *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
+    grantsMeleeWeapons: [
+      {
+        name: "Shield",
+        damage: 1,
+        weight: 2,
+        traitIds: ["one-handed"],
+        description: "Defender's shield. -2 damage when facing the attacker.",
+      },
+    ],
   },
   {
     id: "weapon-master",

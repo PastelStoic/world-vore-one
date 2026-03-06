@@ -48,7 +48,7 @@ function getMultiplier(
   return multiplier;
 }
 
-function getStatCap(
+export function getStatCap(
   input: CharacterDraft,
   statKey: BaseStatKey,
 ): number | undefined {

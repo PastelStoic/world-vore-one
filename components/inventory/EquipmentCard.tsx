@@ -4,6 +4,7 @@
 
 import type { InventoryEquipment } from "@/lib/inventory_types.ts";
 import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 
@@ -43,15 +44,21 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     ? "stowed"
     : "carried";
 
+  const effectiveWeight = eq.weightOverride ?? def.weight;
+  const effectiveBulky = eq.isBulkyOverride ?? def.isBulky;
   const remaining = def.isCharge
     ? Math.max(0, eq.totalCharges - eq.usedCharges)
     : 0;
-  const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
+  const currentWeight = def.isCharge ? effectiveWeight * remaining : effectiveWeight;
   const canMoveToOther = !(
     otherLocation === "carried" &&
-    def.isBulky &&
+    effectiveBulky &&
     carriedBulkyCount > 0
   );
+  const isPerkGranted = !!eq.perkGranted;
+  const grantingPerkName = isPerkGranted
+    ? PERKS_BY_ID.get(eq.perkGranted!)?.name ?? eq.perkGranted
+    : null;
 
   return (
     <div class="border rounded p-2 space-y-1 bg-base-100">
@@ -60,10 +67,15 @@ export default function EquipmentCard(props: EquipmentCardProps) {
           <strong>{def.name}</strong>{" "}
           <span class="text-xs text-base-content/60">
             (W:{currentWeight}
-            {def.isBulky ? " · Bulky" : ""})
+            {effectiveBulky ? " · Bulky" : ""})
           </span>
+          {isPerkGranted && (
+            <span class="ml-1 text-xs font-semibold text-primary">
+              [{grantingPerkName}]
+            </span>
+          )}
         </div>
-        {!readOnly && (
+        {!readOnly && !isPerkGranted && (
           <div class="flex gap-1">
             <button
               type="button"

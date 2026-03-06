@@ -48,6 +48,8 @@ export interface InventoryMeleeWeapon {
   description: string;
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** If set, this item was granted by the named perk and cannot be removed manually */
+  perkGranted?: string;
 }
 
 /**
@@ -62,6 +64,12 @@ export interface InventoryEquipment {
   totalCharges: number;
   /** How many of those charges have been used this scene */
   usedCharges: number;
+  /** If set, this item was granted by the named perk and cannot be removed manually */
+  perkGranted?: string;
+  /** Weight override from the granting perk (e.g. 0 for sapper equipment) */
+  weightOverride?: number;
+  /** Bulky override from the granting perk (e.g. false for sapper equipment) */
+  isBulkyOverride?: boolean;
 }
 
 /**

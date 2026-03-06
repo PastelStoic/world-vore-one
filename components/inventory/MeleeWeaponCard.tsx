@@ -4,6 +4,7 @@
 
 import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
 import { MELEE_TRAITS, MELEE_TRAITS_BY_ID } from "@/data/equipment.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
 import type { InventoryLocation } from "./helpers.ts";
 
 interface MeleeWeaponCardProps {
@@ -40,6 +41,10 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   // Signature weapon benefits
   const isSignature = mw.isSignatureWeapon && hasSignatureWeaponPerk;
   const damageDisplay = isSignature ? `${mw.damage}+1` : String(mw.damage);
+  const isPerkGranted = !!mw.perkGranted;
+  const grantingPerkName = isPerkGranted
+    ? PERKS_BY_ID.get(mw.perkGranted!)?.name ?? mw.perkGranted
+    : null;
 
   return (
     <div
@@ -73,8 +78,13 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
               [Signature Weapon · +1 extra trait]
             </span>
           )}
+          {isPerkGranted && (
+            <span class="ml-1 text-xs font-semibold text-primary">
+              [{grantingPerkName}]
+            </span>
+          )}
         </div>
-        {!readOnly && (
+        {!readOnly && !isPerkGranted && (
           <div class="flex gap-1">
             {hasSignatureWeaponPerk && (
               <button

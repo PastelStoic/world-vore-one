@@ -61,8 +61,11 @@ export function parseCharacterFormData(
   const description = parseDescription(
     String(formData.get("description") ?? "{}"),
   );
-  const baseStats = parseBaseStats(String(formData.get("baseStats") ?? ""));
   const perkIds = parsePerkIds(String(formData.get("perkIds") ?? ""));
+  const baseStats = parseBaseStats(
+    String(formData.get("baseStats") ?? ""),
+    perkIds ?? undefined,
+  );
   const perkNotes = parsePerkNotes(
     String(formData.get("perkNotes") ?? "{}"),
   );

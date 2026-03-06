@@ -234,13 +234,32 @@ export default function WeaponCard(props: WeaponCardProps) {
             >
               → {otherLocation === "carried" ? "Carry" : "Stow"}
             </button>
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-              onClick={() => props.onRemove(location, index)}
-            >
-              Remove
-            </button>
+            {props.perkIds?.includes("weapon-master") ? (
+              <>
+                <button
+                  type="button"
+                  class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
+                  onClick={() => props.onRemove(location, index)}
+                >
+                  Return to armory
+                </button>
+                <button
+                  type="button"
+                  class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+                  onClick={() => props.onRemove(location, index)}
+                >
+                  Lost
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+                onClick={() => props.onRemove(location, index)}
+              >
+                Remove
+              </button>
+            )}
           </div>
         )}
       </div>

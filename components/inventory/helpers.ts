@@ -28,6 +28,11 @@ export const slotLookups = {
 export function getWeaponPointCost(id: string, perkIds?: string[]): number {
   const def = WEAPONS_BY_ID.get(id);
   if (!def) return 0;
+  // Weapon Master: non-restricted weapons are free, restricted cost 1pt
+  if (perkIds?.includes("weapon-master")) {
+    if (def.pointCost >= 3) return 1; // Restricted still costs 1pt
+    return 0; // Everything else is free from the armory
+  }
   // Apply faction discount: restricted weapons cost 1pt if character has a matching faction perk
   if (def.pointCost >= 3 && def.discountFactionPerkIds && perkIds) {
     if (def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))) {

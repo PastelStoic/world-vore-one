@@ -6,11 +6,14 @@ export const VORE_PERKS: PerkDefinition[] = [
     name: "Survivor",
     category: "vore",
     description:
-      `You have survived many stomachs before, or otherwise you're naturally good at escaping them! 
+      `You have survived many stomachs before, or otherwise you're naturally good at escaping them!
 
 *You roll an extra 4d6 to avoid being eaten and gain +4 to your escape training stat.
 *Gain +3 escape attempts OR set your escape attempts to an exact 3; whichever would benefit you more when ingested.
 *Ignores any perks that'd prevent you from doing escape attempts, regardless of conditions.`,
+    modifiers: {
+      baseStatBonuses: { escapeTraining: 4 },
+    },
   },
   {
     id: "natural-predator",
@@ -259,37 +262,22 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "open-ended-tail",
     name: "Open ended tail",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Tierfraun", "Tierherr"],
+    customInput: "Normal or mouthless?",
     modifiers: {
       grantsOrgans: ["tail"],
     },
     description:
       `Through some sort of strange mutation, your tail isn't normal - it's fleshy, stretchy, and opens near the end!
 
----->Perk requirement: Must be a tierfraun with a tail.
-*This perk gives you a special tail may be used to carry things, but it cannot manipulate them.
-*It can be used to eat prey without grappling first AND from 1 distance away; it can fit 2 prey by default and digests by default. 
+*This perk gives you a special tail that may be used to carry things, but it cannot manipulate them.
+*It can be used to eat prey without grappling first AND from 1 distance away; it can fit 2 prey by default and digests by default.
 *The tail leads straight into the stomach.
-*After 2 escape attempts, prey may be pushed into the stomach. 
-*It is constantly dripping acid from the tip, making you easy to track`,
-  },
-  {
-    id: "open-ended-tail-mouthless",
-    name: "Open ended tail (MOUTHLESS)",
-    category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
-    modifiers: {
-      grantsOrgans: ["tail"],
-    },
-    description: `You do not have a mouth! You must eat through your tail!
+*After 2 escape attempts, prey may be pushed into the stomach.
+*It is constantly dripping acid from the tip, making you easy to track.
 
----->Perk requirement: Must be a tierfraun with a tail.
-*Variation of the Open-ended tail perk. You have no mouth; you cannot vocalize any sounds and cannot eat normally.
-*Once prey is brought to your stomach, they must escape into the tail, as escaping through your mouth is impossible.
-*This perk gives you a special tail may be used to carry things, but it cannot manipulate them.
-*It can be used to eat prey without grappling first AND from 1 distance away; it can fit 2 prey by default and digests by default. 
-*The tail leads straight into the stomach.
-*After 2 escape attempts, prey may be pushed into the stomach. 
-*It is constantly dripping acid from the tip, making you easy to track`,
+---->MOUTHLESS VARIANT: If you pick the mouthless variant:
+*You have no mouth; you cannot vocalize any sounds and cannot eat normally.
+*Once prey is brought to your stomach, they must escape into the tail, as escaping through your mouth is impossible.`,
   },
 ];

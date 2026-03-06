@@ -1,4 +1,4 @@
-import { useRef, useState } from "preact/hooks";
+import { useMemo, useRef, useState } from "preact/hooks";
 import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
@@ -23,6 +23,7 @@ import {
 } from "@/lib/character_types.ts";
 import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
+import { getStatCap } from "@/lib/stat_calculations.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
@@ -297,8 +298,33 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const canRemoveOldPerks = !!props.isPending;
   const lockIdentityFields = props.action === "update" && !props.isPending;
 
+  // Compute stat caps from perks (e.g. Speisfraun caps STR/DEX to 1)
+  const statCaps = useMemo(() => {
+    const caps: Partial<Record<BaseStatKey, number>> = {};
+    for (const field of BASE_STAT_FIELDS) {
+      const cap = getStatCap(draft, field.key);
+      if (cap !== undefined) caps[field.key] = cap;
+    }
+    return caps;
+  }, [draft.perkIds, draft.perkStatChoices]);
+
+  function getStatFloor(statKey: BaseStatKey): number {
+    const baseFloor = statFloor ?? initialBaseStats[statKey];
+    // digestionStrength can go to -4 with extremely-inefficient-digestion perk
+    if (statKey === "digestionStrength" && perkIds.includes("extremely-inefficient-digestion")) {
+      return Math.max(-4, baseFloor);
+    }
+    // All other stats: minimum of 1
+    return Math.max(1, baseFloor);
+  }
+
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints - inventoryPointCost < 1) {
+      return;
+    }
+    // Respect stat caps on base stats
+    const cap = statCaps[statKey];
+    if (cap !== undefined && baseStats[statKey] >= cap) {
       return;
     }
 
@@ -310,7 +336,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function decreaseStat(statKey: BaseStatKey) {
-    const floor = statFloor ?? initialBaseStats[statKey];
+    const floor = getStatFloor(statKey);
     if (baseStats[statKey] <= floor) {
       return;
     }
@@ -338,6 +364,23 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkIds(newPerkIds);
     setUnallocatedStatPoints((current) => current - cost);
 
+    // Enforce stat caps from the new perk (e.g. Speisfraun caps STR/DEX to 1)
+    if (perk?.modifiers?.statCaps) {
+      let refundedPoints = 0;
+      const newBaseStats = { ...baseStats };
+      for (const [statKey, cap] of Object.entries(perk.modifiers.statCaps)) {
+        const key = statKey as BaseStatKey;
+        if (newBaseStats[key] > cap) {
+          refundedPoints += newBaseStats[key] - cap;
+          newBaseStats[key] = cap;
+        }
+      }
+      if (refundedPoints > 0) {
+        setBaseStats(newBaseStats);
+        setUnallocatedStatPoints((current) => current + refundedPoints);
+      }
+    }
+
     // Initialize per-rank data for upgradable perks
     if (perk?.upgradable) {
       if (perk.customInput) {
@@ -349,6 +392,44 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           [perkId]: ["" as BaseStatKey],
         }));
       }
+    }
+
+    // Auto-add perk-granted equipment and melee weapons
+    const allNewPerks = [perkId, ...includedIds];
+    const hasGrantedItems = allNewPerks.some((id) => {
+      const p = perksById.get(id);
+      return (p?.grantsEquipment?.length ?? 0) > 0 || (p?.grantsMeleeWeapons?.length ?? 0) > 0;
+    });
+    if (hasGrantedItems) {
+      setInventory((inv) => {
+        const newInv = structuredClone(inv);
+        for (const id of allNewPerks) {
+          const p = perksById.get(id);
+          for (const grant of p?.grantsEquipment ?? []) {
+            newInv.carried.equipment.push({
+              equipmentId: grant.equipmentId,
+              totalCharges: 0,
+              usedCharges: 0,
+              perkGranted: id,
+              weightOverride: grant.weightOverride,
+              isBulkyOverride: grant.isBulkyOverride,
+            });
+          }
+          for (const grant of p?.grantsMeleeWeapons ?? []) {
+            newInv.carried.meleeWeapons.push({
+              instanceId: crypto.randomUUID(),
+              name: grant.name,
+              damage: grant.damage,
+              weight: grant.weight,
+              traitIds: [...grant.traitIds],
+              description: grant.description,
+              isSignatureWeapon: true,
+              perkGranted: id,
+            });
+          }
+        }
+        return newInv;
+      });
     }
   }
 
@@ -405,6 +486,20 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       return next;
     });
     setUnallocatedStatPoints((current) => current + refund);
+
+    // Remove perk-granted items from inventory
+    setInventory((inv) => {
+      const newInv = structuredClone(inv);
+      for (const location of ["carried", "stowed"] as const) {
+        newInv[location].equipment = newInv[location].equipment.filter(
+          (e) => !allRemovedIds.includes(e.perkGranted ?? ""),
+        );
+        newInv[location].meleeWeapons = newInv[location].meleeWeapons.filter(
+          (mw) => !allRemovedIds.includes(mw.perkGranted ?? ""),
+        );
+      }
+      return newInv;
+    });
   }
 
   function upgradePerk(perkId: string) {
@@ -953,6 +1048,18 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
+        {(() => {
+          // Compute addiction-affected stats (highest of the 5 main stats)
+          const addictionAffectedStats = new Set<BaseStatKey>();
+          if (perkIds.includes("crippling-addiction")) {
+            const mainStats: BaseStatKey[] = ["strength", "dexterity", "constitution", "intelligence", "charisma"];
+            const maxValue = Math.max(...mainStats.map(k => baseStats[k]));
+            for (const k of mainStats) {
+              if (baseStats[k] === maxValue) addictionAffectedStats.add(k);
+            }
+          }
+          return (
+            <>
         <p class="text-sm text-base-content flex items-center gap-2">
           Unallocated stat points:{" "}
           <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
@@ -977,7 +1084,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             race !== "Baseliner" || field.key !== "digestionStrength"
           ).map((field) => (
             <li class="flex items-center justify-between gap-2" key={field.key}>
-              <span class="text-sm">{field.label}</span>
+              <span class="text-sm">
+                {field.label}
+                {addictionAffectedStats.has(field.key) && (
+                  <span class="ml-1 text-xs font-semibold text-error">[Addiction]</span>
+                )}
+                {statCaps[field.key] !== undefined && (
+                  <span class="ml-1 text-xs font-semibold text-warning">[Capped to {statCaps[field.key]}]</span>
+                )}
+              </span>
               <span class="text-sm">
                 Base: <strong>{baseStats[field.key]}</strong> | Effective:{" "}
                 <strong>{effectiveByStat[field.key]}</strong>
@@ -986,8 +1101,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={baseStats[field.key] <=
-                    (statFloor ?? initialBaseStats[field.key])}
+                  disabled={baseStats[field.key] <= getStatFloor(field.key)}
                   onClick={() =>
                     decreaseStat(field.key)}
                 >
@@ -996,7 +1110,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={unallocatedStatPoints - inventoryPointCost < 1}
+                  disabled={unallocatedStatPoints - inventoryPointCost < 1 ||
+                    (statCaps[field.key] !== undefined && baseStats[field.key] >= statCaps[field.key]!)}
                   onClick={() =>
                     increaseStat(field.key)}
                 >
@@ -1006,6 +1121,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             </li>
           ))}
         </ul>
+            </>
+          );
+        })()}
       </div>
 
       <OtherStatsSection draft={draft} carryCapacity={carryCapacity} />
@@ -1187,6 +1305,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                   [id]: choices,
                                                 };
                                               });
+                                              // Enforce stat cap: refund base stat points above 1
+                                              if (val && baseStats[val] > 1) {
+                                                const refund = baseStats[val] - 1;
+                                                setBaseStats((current) => ({
+                                                  ...current,
+                                                  [val]: 1,
+                                                }));
+                                                setUnallocatedStatPoints((current) => current + refund);
+                                              }
                                             }}
                                           >
                                             <option value="">

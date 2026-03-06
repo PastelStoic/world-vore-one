@@ -27,16 +27,24 @@ export function parseRace(rawRace: string): Race {
   return "Baseliner";
 }
 
-export function parseBaseStats(raw: string): BaseStats | null {
+export function parseBaseStats(raw: string, perkIds?: string[]): BaseStats | null {
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const defaults = createDefaultBaseStats();
     const result = { ...defaults };
 
+    const allowNegativeDigestion = perkIds?.includes("extremely-inefficient-digestion") ?? false;
+
     for (const stat of BASE_STAT_FIELDS) {
       const value = parsed[stat.key];
-      if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+      if (typeof value !== "number" || !Number.isInteger(value)) {
         return null;
+      }
+
+      if (stat.key === "digestionStrength" && allowNegativeDigestion) {
+        if (value < -4) return null;
+      } else {
+        if (value < 1) return null;
       }
 
       result[stat.key] = value;
@@ -256,11 +264,13 @@ export function calculatePerksCost(
   const derived = getDerivedPerkIds(perkIds);
   let paidPerkCount = 0;
   let totalPointsGranted = 0;
+  let totalFreePerks = 0;
 
   for (const perkId of perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
     const rank = perkRanks?.[perkId] ?? 1;
     totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
+    totalFreePerks += (perk?.freePerks ?? 0) * rank;
     if (perk?.isFree) continue;
 
     if (derived.has(perkId)) {
@@ -271,8 +281,9 @@ export function calculatePerksCost(
     paidPerkCount += rank;
   }
 
-  // First paid perk is free, subsequent paid perks cost PERK_COST_STAT_POINTS each
-  const baseCost = Math.max(0, paidPerkCount - 1) * PERK_COST_STAT_POINTS;
+  // First paid perk is free, plus any freePerks grants from active perks
+  const freeSlots = 1 + totalFreePerks;
+  const baseCost = Math.max(0, paidPerkCount - freeSlots) * PERK_COST_STAT_POINTS;
   return baseCost - totalPointsGranted;
 }
 
@@ -287,12 +298,18 @@ export function validateCharacterProgression(
     return total + input.baseStats[stat.key];
   }, 0);
 
+  // Minimum valid stat total: normally 8 (all at 1), but digestionStrength
+  // can go to -4 with extremely-inefficient-digestion
+  const hasNegativeDigestion = input.perkIds.includes("extremely-inefficient-digestion");
+  const minDigestionStrength = hasNegativeDigestion ? -4 : 1;
+  const minStatTotal = (BASE_STAT_FIELDS.length - 1) + minDigestionStrength;
+
+  if (statTotal < minStatTotal) {
+    return "Base stats cannot go below their minimum values.";
+  }
+
   const defaultStatTotal = BASE_STAT_FIELDS.length;
   const spentOnStats = statTotal - defaultStatTotal;
-
-  if (spentOnStats < 0) {
-    return "Base stats cannot go below their default values.";
-  }
 
   const spentOnPerks = calculatePerksCost(input.perkIds, input.perkRanks);
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;

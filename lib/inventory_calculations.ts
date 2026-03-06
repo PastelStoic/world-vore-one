@@ -22,6 +22,7 @@ export function countCarriedItemSlots(
   let slots = 0;
 
   for (const e of inv.carried.equipment) {
+    if (e.perkGranted) continue; // Perk-granted items don't use slots
     const def = lookups?.getEquipment?.(e.equipmentId);
     if (def?.isCharge) {
       slots += e.totalCharges; // Each charge = 1 slot
@@ -71,6 +72,7 @@ export function countAllItemSlots(
 
   // Count stowed items the same way as carried
   for (const e of inv.stowed.equipment) {
+    if (e.perkGranted) continue; // Perk-granted items don't use slots
     const def = lookups?.getEquipment?.(e.equipmentId);
     if (def?.isCharge) {
       slots += e.totalCharges;
@@ -104,7 +106,8 @@ export function hasMultipleCarriedBulkyEquipment(
 ): boolean {
   let bulkyCount = 0;
   for (const eq of inv.carried.equipment) {
-    if (getEquipment(eq.equipmentId)?.isBulky) {
+    const isBulky = eq.isBulkyOverride ?? getEquipment(eq.equipmentId)?.isBulky;
+    if (isBulky) {
       bulkyCount += 1;
       if (bulkyCount > 1) return true;
     }
@@ -162,12 +165,13 @@ export function calculateInventoryWeight(
   for (const e of inv.carried.equipment) {
     const def = lookups.getEquipment(e.equipmentId);
     if (def) {
+      const effectiveWeight = e.weightOverride ?? def.weight;
       if (def.isCharge) {
         // Only remaining (unused) charges contribute weight
         const remaining = Math.max(0, e.totalCharges - e.usedCharges);
-        total += def.weight * remaining;
+        total += effectiveWeight * remaining;
       } else {
-        total += def.weight;
+        total += effectiveWeight;
       }
     }
   }

@@ -50,6 +50,22 @@ interface PerkModifiers {
   organCapacityMultipliers?: Partial<Record<OrganType, number>>;
 }
 
+export interface PerkGrantedEquipment {
+  equipmentId: string;
+  /** Override the equipment's weight (e.g. 0 for sapper) */
+  weightOverride?: number;
+  /** Override the equipment's bulky flag (e.g. false for sapper) */
+  isBulkyOverride?: boolean;
+}
+
+export interface PerkGrantedMeleeWeapon {
+  name: string;
+  damage: number;
+  weight: number;
+  traitIds: string[];
+  description: string;
+}
+
 export interface PerkDefinition {
   id: string;
   name: string;
@@ -64,6 +80,8 @@ export interface PerkDefinition {
   isFree?: boolean;
   /** Stat points granted when this perk is taken (e.g. negative perks). */
   pointsGranted?: number;
+  /** Number of additional free perk slots this perk grants (e.g. custom tierfraun grants 2). */
+  freePerks?: number;
   /** When set, the player is prompted to enter custom text when taking this perk. */
   customInput?: string;
   /** Perk IDs that cannot be taken alongside this perk (mutual exclusion). */
@@ -86,6 +104,10 @@ export interface PerkDefinition {
    * Prevents the same stat from being chosen twice across ranks of the same perk.
    */
   requiresStatChoice?: BaseStatKey[];
+  /** Equipment automatically granted when this perk is taken. */
+  grantsEquipment?: PerkGrantedEquipment[];
+  /** Melee weapons automatically granted when this perk is taken. */
+  grantsMeleeWeapons?: PerkGrantedMeleeWeapon[];
 }
 
 export const PERKS: PerkDefinition[] = [

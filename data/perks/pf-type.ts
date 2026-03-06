@@ -332,7 +332,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    excludesPerks: ["open-ended-tail", "open-ended-tail-mouthless"],
+    excludesPerks: ["open-ended-tail"],
     includesPerks: ["natural-predator"],
     pointsGranted: -3,
     description:
@@ -362,6 +362,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     customInput: "Your animal type, chosen perks, and custom gimmick",
+    pointsGranted: -3,
+    freePerks: 2,
     description:
       `You have animal genes in you, making you stronger in certain areas.
 

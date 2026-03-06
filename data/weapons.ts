@@ -166,9 +166,7 @@ Utterly silent:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Some bullshit:
-*Le thing happens, lmao
-Two-handed:
+    gimmicks: `Two-handed:
 *Weapon requires both hands in order to be used properly.
 Mad-minute technique:
 *Takes one turn to swap into this technique.

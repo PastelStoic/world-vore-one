@@ -6,6 +6,7 @@ import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
 import { MELEE_TRAITS_BY_ID, MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import type { InventoryLocation } from "./helpers.ts";
+import TraitBadge from "./TraitBadge.tsx";
 
 interface MeleeWeaponCardProps {
   meleeWeapon: InventoryMeleeWeapon;
@@ -134,19 +135,17 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
 
       {/* Traits */}
       {def.traitIds.length > 0 && (
-        <div class="space-y-0.5">
-          <span class="text-xs font-medium">Traits:</span>
-          <ul class="ml-2 text-xs space-y-0.5">
-            {def.traitIds.map((tid) => {
-              const trait = MELEE_TRAITS_BY_ID.get(tid);
-              return (
-                <li key={tid}>
-                  <strong>{trait?.name ?? tid}:</strong>{" "}
-                  {trait?.description ?? ""}
-                </li>
-              );
-            })}
-          </ul>
+        <div class="flex flex-wrap gap-1">
+          {def.traitIds.map((tid) => {
+            const trait = MELEE_TRAITS_BY_ID.get(tid);
+            return (
+              <TraitBadge
+                key={tid}
+                name={trait?.name ?? tid}
+                description={trait?.description ?? ""}
+              />
+            );
+          })}
         </div>
       )}
     </div>

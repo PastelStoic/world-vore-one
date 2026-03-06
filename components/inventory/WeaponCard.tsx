@@ -8,11 +8,32 @@ import {
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
+import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
   type InventoryLocation,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
 } from "./helpers.ts";
+
+function parseGimmicks(str: string): { name: string; description: string }[] {
+  const result: { name: string; description: string }[] = [];
+  const lines = str.split("\n");
+  let current: { name: string; lines: string[] } | null = null;
+  for (const line of lines) {
+    if (line.startsWith("*") || line.startsWith("--->") || line.startsWith("-->") || line.trim() === "") {
+      current?.lines.push(line);
+    } else {
+      if (current) {
+        result.push({ name: current.name, description: current.lines.join("\n").trim() });
+      }
+      current = { name: line.endsWith(":") ? line.slice(0, -1) : line, lines: [] };
+    }
+  }
+  if (current) {
+    result.push({ name: current.name, description: current.lines.join("\n").trim() });
+  }
+  return result;
+}
 
 interface WeaponCardProps {
   weapon: InventoryWeapon;
@@ -265,9 +286,13 @@ export default function WeaponCard(props: WeaponCardProps) {
       </div>
 
       {/* Gimmicks */}
-      <div class="text-xs text-base-content/70 whitespace-pre-line ml-2">
-        <PerkDescription name="" description={def.gimmicks} hideByDefault />
-      </div>
+      {def.gimmicks && (
+        <div class="flex flex-wrap gap-1">
+          {parseGimmicks(def.gimmicks).map((g) => (
+            <TraitBadge key={g.name} name={g.name} description={g.description} />
+          ))}
+        </div>
+      )}
 
       {/* Ammo tracker – always editable for combat tracking */}
       <div class="flex items-center gap-2 text-sm">

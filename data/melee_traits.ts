@@ -129,13 +129,13 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "shield",
     name: "Shield",
     description:
-      "Enemies have -3d6 to hit you.",
+      "Enemies have -3d6 to hit you. If slung over your back, enemies have -1d6 to hit you from behind.",
   },
   {
     id: "board-shield",
     name: "Board shield",
     description:
-      "Enemies have -6d6 to hit you. Can be planted onto the ground, serving as 2d6 cover.",
+      "Enemies have -6d6 to hit you. If slung over your back, enemies have -3d6 to hit you from behind. Can be planted onto the ground, serving as 2d6 cover.",
   },
 ];
 

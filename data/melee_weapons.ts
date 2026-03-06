@@ -79,11 +79,19 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     description: "Heavy blade that can be wielded with either hand.",
   },
   {
+    id: "longsword",
+    name: "Longsword",
+    damage: 4,
+    weight: 3,
+    traitIds: ["two-handed", "flourishing"],
+    description: "A remarkably long sword, the kinds you'd see knights use.",
+  },
+  {
     id: "greatsword",
     name: "Greatsword",
     damage: 5,
-    weight: 3,
-    traitIds: ["two-handed", "flourishing"],
+    weight: 4,
+    traitIds: ["two-handed", "flourishing","razor-bladed"],
     description: "Massive, oversized blade, meant for wide swings.",
   },
 

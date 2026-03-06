@@ -89,10 +89,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Specify which faction you are loyal to, and which faction you're spying on, when making your character.
 *When attacked by your rael faction, you have a signal  that identifies your true alignment, and they always recognize it. 
 *When doing your spy missions, you are assumed to have all the neccessary tools to carry it out: 
-*Lockpicks, silenced gun, cyanide pills, anything that'd be fitting for a spy to have.
-*The enemy is right to punish you if you're caught!
-*When picking this perk, do not list it in your sheet - rather, list a 'fake' perk. The fake perk has no effect. 
-*Tell staff in DMs that you've chosen the Spy perk. This perk relies entirely on secrecy, so don't go telling others you don't trust~`,
+*Lockpicks, silenced gun, cyanide pills, anything that'd be fitting for a spy to have, you can simply conjure out of thin air.
+*The enemy is right to punish you if you're caught!`,
   },
   {
     id: "beastmaster",

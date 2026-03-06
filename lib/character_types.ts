@@ -28,7 +28,7 @@ export const ORGAN_LABELS: Record<OrganType, string> = {
 };
 
 export const FACTIONS = [
-  "N/A - Civvilians and unafilliated"
+  "N/A - Civvilians and unafilliated",
   "GERMANY - German Imperial Army",
   "GERMANY - The 7th Western Army",
   "GERMANY - German East African Army",

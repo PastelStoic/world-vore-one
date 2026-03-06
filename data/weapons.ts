@@ -364,7 +364,9 @@ Light-machinegun:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Reliable:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Reliable:
 *No debuff from having a bayonet attached. Does not break easily, maintenance isn't difficult, mud is no problem.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, "gewehr98-smk"],
   },
@@ -379,8 +381,8 @@ Light-machinegun:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
 Wasteful reload:
 *Takes 2 turns to reload if there's still any bullets inside, and said bullets are lost.
 *If reload is started, weapon cannot fire until reloading is finished.
@@ -399,8 +401,8 @@ Agile:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `Cost:
-*1 point.`,
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.`,
     compatibleAttachmentIds: [],
   },
   {
@@ -414,7 +416,9 @@ Agile:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Agile:
+    gimmicks: `One-handed:
+*Weapon can be held in one hand, with another tool in your free hand.
+Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 Loading Gate:
 *Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
@@ -432,7 +436,9 @@ Loading Gate:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Restricted:
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
 *Prized and rare weapon. Must pay 3 points to have it.
 *Soldiers with the 'stormtrooper' factional perk only need to pay 1.`,
     compatibleAttachmentIds: [],

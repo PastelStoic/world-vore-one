@@ -5,6 +5,17 @@ import { isAdmin } from "./lib/admin.ts";
 
 export const app = new App<State>();
 
+app.get("/favicon.ico", async () => {
+  const file = await Deno.open("static/favicon.ico");
+  const headers = new Headers({
+    "Content-Type": "image/x-icon",
+    vary: "If-None-Match",
+    "Cache-Control": "public, max-age=31536000, immutable",
+    "Deno-Cache-Id": "favicon-v1",
+  });
+  return new Response(file.readable, { headers });
+});
+
 app.use(staticFiles());
 
 // Auth middleware – resolves user from session cookie

@@ -818,7 +818,7 @@ Agile:
 *Weapon requires both hands in order to be used properly.
 Magazine-fed:
 *Each magazine has 1 weight; choose how many magazines to bring at the start of a scene.
-*Reloading is instantaneous if you use a magazine. Magazines are lost when unloaded.
+*Reloading is a free action if you use a magazine.
 *Reloads normally if you have no magazines left.`,
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
     freeAccessoryIds: ["schmidt-rubin-magazine"],

@@ -108,6 +108,12 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
       "The weapon is extremely sharp, like a razor. If you have 3 successes over your opponent, roll a 1d6 to disable (NOT cut off!) a limb. 1-2, left or right arm respectively. 3-4, left or right leg respectively. 5, the torso, and 6, the head. Losing an arm makes the opponent drop their item; losing both means they can hold nothing. Losing a leg kicks the player down to the bottom of initiative; losing both makes them immobile and knocks them to the floor. Hitting the torso makes the target take +1 damage from all sources. Losing the head is instant death. Mutually exclusive with barbed.",
   },
   {
+    id: "path-clearer",
+    name: "Path clearer",
+    description:
+      "The weapon is primarily a tool, meant to cut through things. Can destroy certain types of cover entirely as an action. Cuts through vines and shrubbery easily.",
+  },
+  {
     id: "buckler-shield",
     name: "Buckler shield",
     description:

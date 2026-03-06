@@ -128,6 +128,14 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     traitIds: ["two-handed", "cavalry-weapon", "extra-long"],
     description: "Long cavalry charging weapon, devastating on horseback.",
   },
+  {
+    id: "harpoon",
+    name: "Harpoon",
+    damage: 3,
+    weight: 2,
+    traitIds: ["one-handed", "throwable", "barbed-hooked"],
+    description: "Throwing harpoon, mostly meant to fight sea creatures.",
+  },
 
   // ── Bludgeons ──────────────────────────────────────────────────────────
   {
@@ -153,14 +161,6 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     weight: 3,
     traitIds: ["two-handed", "crushing", "breaching"],
     description: "A military pickaxe is precisely as its name suggests, it focuses all the damage on a single point! It is a bit heavier to accomodate that.",
-  },
-  {
-    id: "flail",
-    name: "Flail",
-    damage: 3,
-    weight: 3,
-    traitIds: ["one-handed", "crushing", "barbed-hooked"],
-    description: "Spiked iron ball on a chain that entangles as it strikes.",
   },
 
   // ── Axes ───────────────────────────────────────────────────────────────
@@ -197,6 +197,14 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     weight: 1,
     traitIds: ["one-handed", "barbed-hooked"],
     description: "Leather lash that entangles as it strikes.",
+  },
+  {
+    id: "flail",
+    name: "Flail",
+    damage: 3,
+    weight: 3,
+    traitIds: ["one-handed", "crushing", "barbed-hooked"],
+    description: "Spiked iron ball on a chain that entangles as it strikes.",
   },
 
   // ── Shields ────────────────────────────────────────────────────────────

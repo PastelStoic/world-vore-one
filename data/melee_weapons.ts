@@ -206,7 +206,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 1,
     weight: 1,
     traitIds: ["one-handed", "buckler-shield"],
-    description: "Defensive buckler; usable as a makeshift strike.",
+    description: "Tiny shield that helps defending you in melee.",
   },
   {
     id: "shield",

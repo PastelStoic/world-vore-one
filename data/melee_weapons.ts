@@ -55,6 +55,14 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     description: "A modern, curved sabre. Made light and sharp for infantry usage.",
   },
   {
+    id: "cavalry-sabre",
+    name: "Cavalry sabre",
+    damage: 3,
+    weight: 2,
+    traitIds: ["one-handed", "cavalry-weapon"],
+    description: "A cavalry sabre, made much thicker and heavier than a typical sabre, so as to take full advantage of its mount's weight and speed.",
+  },
+  {
     id: "rapier",
     name: "Rapier",
     damage: 3,

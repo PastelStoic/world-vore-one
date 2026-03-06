@@ -77,7 +77,8 @@ Bulky kit:
 Trench-sweeper:
 *Cover is one tier lower if the target is at 3 distances or closer.
 Double-fire:
-*-3d6 to shooting, gains +1 rate of fire, and does not gain accuracy benefits from the fastened fire.`,
+*Double-firing does not require a stance swap.
+*+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
     compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off"],
     reloadsIndividually: true,
   },

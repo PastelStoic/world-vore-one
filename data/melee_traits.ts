@@ -102,6 +102,12 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
       "The weapon is barbed OR has a nasty hook, making it stick to things. When the target is hit, they're unable to move in their next turn. If used on a throwable weapon, when the target is hit, they gain the weapon's weight until it is removed. Mutually exclusive with razor-bladed.",
   },
   {
+    id: "breaching",
+    name: "Breaching",
+    description:
+      "The weapon is primarily a tool, meant to break through things. Can destroy certain types of cover and obstacles entirely as an action.",
+  },
+  {
     id: "razor-bladed",
     name: "Razor bladed",
     description:
@@ -111,7 +117,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "path-clearer",
     name: "Path clearer",
     description:
-      "The weapon is primarily a tool, meant to cut through things. Can destroy certain types of cover entirely as an action. Cuts through vines and shrubbery easily.",
+      "The weapon is primarily a tool, meant to cut through things. Can destroy certain types of cover and obstacles entirely as an action.",
   },
   {
     id: "buckler-shield",

@@ -99,18 +99,77 @@ Advantages:
 *This perk is free.
 *You have an extra 3 points.
 *You have an extra 2 perks.
-*You have the 'allies' perk for free. You have goon underlings who do your bidding.
-*You have the 'patron' perk for free. Your boss supports you.
+*You have the ‘allies’ perk for free. You have goon underlings who do your bidding.
+*You have the ‘patron’ perk for free. Your boss supports you.
 *You have a safehouse that also happens to be a business - a source of (illegal) income.
 
 Disadvantages:
 
 *Only one per player.
-*No 'free range' perk.
+*No ‘free range’ perk.
 *You are a target. Killing you off will greatly weaken your Mafia.
 *You must be a baseliner. You can make a new Capo if this one dies.
 *You do not betray your family no matter what.
-*Crimes can be linked back to you if you're not careful! Your goons should do the work, not you!
+*Crimes can be linked back to you if you’re not careful! Your goons should do the work, not you!
 *Must be in America and be part of one of three mafias.`,
   },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // TEMPLATE: How to add a new faction perk
+  // ─────────────────────────────────────────────────────────────────────────
+  // Copy the block below, remove the leading //   and fill in the fields.
+  //
+  // {
+  //   id: "my-faction-perk",          // Unique kebab-case ID (no spaces)
+  //   name: "My Faction Name",        // Display name
+  //   category: "faction",
+  //
+  //   // ── Who can take this perk ──────────────────────────────────────────
+  //   // Single faction:
+  //   requiredFaction: "The 7th Western Army",
+  //   // OR multiple factions (any one of them qualifies):
+  //   requiredFaction: ["German Imperial Army", "German East African Army"],
+  //
+  //   // ── Cost ────────────────────────────────────────────────────────────
+  //   isFree: true,                   // true = perk costs 0 points to take
+  //
+  //   // ── Bonuses ─────────────────────────────────────────────────────────
+  //   // Give the player extra stat points (positive = more points):
+  //   pointsGranted: 2,
+  //
+  //   // Automatically include specific perks (no extra cost to the player).
+  //   // Use the perk IDs from data/perks/ (e.g. "runner", "tough", "gunner"):
+  //   includesPerks: ["runner", "gunner"],
+  //
+  //   // Give the player a free equipment item:
+  //   grantsEquipment: [
+  //     { equipmentId: "entrenching-gear", weightOverride: 0, isBulkyOverride: false },
+  //   ],
+  //
+  //   // Give the player a free melee weapon:
+  //   grantsMeleeWeapons: [
+  //     { meleeWeaponId: "bayonet" },
+  //   ],
+  //
+  //   // Give the player a free choice among perks — use customInput for text description
+  //   // of what they should pick (shown in the editor as a text field).
+  //   // OR use selectablePerkIds (once that feature is added) for a dropdown:
+  //   customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
+  //
+  //   // ── Stat modifiers ──────────────────────────────────────────────────
+  //   modifiers: {
+  //     baseStatBonuses: { strength: 1, dexterity: 1 }, // Add to base stats
+  //     healthMultiplier: 2,                            // Double HP
+  //     organCapacityMultiplier: 3,                     // Triple organ capacity
+  //   },
+  //
+  //   description: `Write your perk description here.
+  //
+  // Advantages:
+  // *Advantage one.
+  // *Advantage two.
+  //
+  // Disadvantages:
+  // *Disadvantage one.`,
+  // },
 ];

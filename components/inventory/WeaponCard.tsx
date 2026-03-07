@@ -40,6 +40,8 @@ interface WeaponCardProps {
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
+  /** When true, ammo/magazines/reload inputs are disabled (non-owner viewer) */
+  combatReadOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
   perkIds?: string[];
   inventory: CharacterInventory;
@@ -50,6 +52,8 @@ interface WeaponCardProps {
     to: InventoryLocation,
   ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
+  /** Called when a weapon is permanently lost (weapon-master "Lost" button) */
+  onLoss?: (location: InventoryLocation, index: number) => void;
   onSetAmmo: (
     location: InventoryLocation,
     index: number,
@@ -70,6 +74,12 @@ interface WeaponCardProps {
     weaponIndex: number,
     attachmentId: string,
   ) => void;
+  /** Eject a charge-based magazine attachment and do a standard reload */
+  onEjectDrumAndReload?: (
+    location: InventoryLocation,
+    weaponIndex: number,
+    drumAttachmentId: string,
+  ) => void;
   onToggleAttachedCharge: (
     location: InventoryLocation,
     weaponIndex: number,
@@ -87,6 +97,7 @@ export default function WeaponCard(props: WeaponCardProps) {
     location,
     index,
     readOnly,
+    combatReadOnly,
     hasSignatureWeaponPerk,
     perkIds,
     inventory,
@@ -130,6 +141,12 @@ export default function WeaponCard(props: WeaponCardProps) {
       attachmentMagazineSystem = true;
     }
   }
+
+  // Detect charge-based magazine attachment currently in the chamber (e.g. Thompson drum)
+  const drumAttachmentId = w.attachedIds.find((aId) => {
+    const aDef = ATTACHMENTS_BY_ID.get(aId);
+    return aDef?.isCharge && Boolean(aDef?.ammoOverride);
+  });
 
   // Find compatible attachments owned in the same location's inventory
   // For charge-based attachments, only show if they have remaining charges
@@ -267,7 +284,11 @@ export default function WeaponCard(props: WeaponCardProps) {
                 <button
                   type="button"
                   class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-                  onClick={() => props.onRemove(location, index)}
+                  title="Permanently lose this weapon — the point cost is not refunded"
+                  onClick={() =>
+                    props.onLoss
+                      ? props.onLoss(location, index)
+                      : props.onRemove(location, index)}
                 >
                   Lost
                 </button>
@@ -285,25 +306,41 @@ export default function WeaponCard(props: WeaponCardProps) {
         )}
       </div>
 
-      {/* Gimmicks */}
-      {def.gimmicks && (
-        <div class="flex flex-wrap gap-1">
-          {parseGimmicks(def.gimmicks).map((g) => (
-            <TraitBadge key={g.name} name={g.name} description={g.description} />
-          ))}
-        </div>
-      )}
+      {/* Gimmicks + traits added by equipped attachments */}
+      {(() => {
+        const baseTraits = def.gimmicks ? parseGimmicks(def.gimmicks) : [];
+        const attachmentTraits: { name: string; description: string }[] = [];
+        for (const aId of w.attachedIds) {
+          const aDef = ATTACHMENTS_BY_ID.get(aId);
+          if (aDef?.addsTraits) {
+            for (const t of aDef.addsTraits) {
+              attachmentTraits.push(t);
+            }
+          }
+        }
+        const allTraits = [...baseTraits, ...attachmentTraits];
+        if (allTraits.length === 0) return null;
+        return (
+          <div class="flex flex-wrap gap-1">
+            {allTraits.map((g) => (
+              <TraitBadge key={g.name} name={g.name} description={g.description} />
+            ))}
+          </div>
+        );
+      })()}
 
-      {/* Ammo tracker – always editable for combat tracking */}
+      {/* Ammo tracker – editable for owner/admin combat tracking */}
       <div class="flex items-center gap-2 text-sm">
         <span>Ammo:</span>
         <input
           type="number"
-          class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+          class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center disabled:opacity-50"
           min="0"
           max={effectiveAmmo}
           value={w.currentAmmo}
+          disabled={combatReadOnly}
           onInput={(e) => {
+            if (combatReadOnly) return;
             const val = Number((e.target as HTMLInputElement).value);
             if (!Number.isNaN(val)) props.onSetAmmo(location, index, val);
           }}
@@ -317,7 +354,7 @@ export default function WeaponCard(props: WeaponCardProps) {
               : "opacity-50 cursor-not-allowed"
           } ${isReloading ? "bg-warning/10 border-warning/60" : ""}`}
           onClick={() => {
-            if (!canReload && !isReloading) return;
+            if (combatReadOnly || (!canReload && !isReloading)) return;
 
             // Multi-turn reload: track progress
             if (effectiveReloadTurns > 1) {
@@ -417,7 +454,7 @@ export default function WeaponCard(props: WeaponCardProps) {
               }
             }
           }}
-          disabled={!canReload && !isReloading}
+          disabled={combatReadOnly || (!canReload && !isReloading)}
           title={isReloading
             ? `Reloading: ${reloadProgress}/${effectiveReloadTurns} turns`
             : !canReload
@@ -447,7 +484,9 @@ export default function WeaponCard(props: WeaponCardProps) {
             type="button"
             class="px-1 text-xs border rounded text-error hover:bg-error/10"
             title="Cancel reload"
+            disabled={combatReadOnly}
             onClick={() => {
+              if (combatReadOnly) return;
               props.onUpdateCombat((inv) => {
                 inv[location].weapons[index].reloadProgress = 0;
                 return inv;
@@ -457,8 +496,19 @@ export default function WeaponCard(props: WeaponCardProps) {
             Cancel
           </button>
         )}
-        {/* Standard reload option: for magazine-fed weapons that can also reload without a magazine */}
-        {hasMagazines && !weaponRequiresMags && !isAmmoFull && !isReloading && (
+        {/* Eject drum + standard reload: when a charge-based magazine is attached */}
+        {drumAttachmentId && props.onEjectDrumAndReload && !isReloading && !combatReadOnly && (
+          <button
+            type="button"
+            class="px-1 text-xs border rounded hover:bg-base-200"
+            title="Eject drum magazine and reload with standard magazines"
+            onClick={() => props.onEjectDrumAndReload!(location, index, drumAttachmentId)}
+          >
+            Eject drum + reload ({def.ammo})
+          </button>
+        )}
+        {/* Standard reload option: for magazine-fed weapons without a drum */}
+        {!drumAttachmentId && hasMagazines && !weaponRequiresMags && !isAmmoFull && !isReloading && !combatReadOnly && (
           <button
             type="button"
             class="px-1 text-xs border rounded hover:bg-base-200"
@@ -480,7 +530,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         )}
       </div>
 
-      {/* Magazine tracking – always editable for combat tracking */}
+      {/* Magazine tracking – editable for owner/admin combat tracking */}
       {hasMagazines && (
         <div class="space-y-1">
           <div class="flex items-center gap-2 text-sm">
@@ -491,10 +541,12 @@ export default function WeaponCard(props: WeaponCardProps) {
             </span>
             <input
               type="number"
-              class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center"
+              class="w-16 border rounded px-1 py-0.5 text-sm font-mono text-center disabled:opacity-50"
               min="0"
               value={w.magazines}
+              disabled={combatReadOnly}
               onInput={(e) => {
+                if (combatReadOnly) return;
                 const val = Number((e.target as HTMLInputElement).value);
                 if (!Number.isNaN(val)) props.onSetMagazines(location, index, val);
               }}

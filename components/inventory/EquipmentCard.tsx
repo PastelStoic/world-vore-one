@@ -13,6 +13,8 @@ interface EquipmentCardProps {
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
+  /** When true, charge usage buttons are disabled (non-owner viewer) */
+  combatReadOnly?: boolean;
   carriedBulkyCount: number;
   onMove: (from: InventoryLocation, index: number, to: InventoryLocation) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
@@ -26,6 +28,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     location,
     index,
     readOnly,
+    combatReadOnly,
     carriedBulkyCount,
     onMove,
     onRemove,
@@ -107,7 +110,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
         />
       </div>
 
-      {/* Charge tracking with checkboxes – always interactive for combat tracking */}
+      {/* Charge tracking with checkboxes – editable for owner/admin combat tracking */}
       {def.isCharge && (
         <div class="space-y-1 text-sm">
           <div class="flex items-center gap-2">
@@ -142,11 +145,17 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                     isUsed
                       ? "bg-error/20 border-error/70 text-error"
                       : "bg-success/10 border-success/70 text-success"
-                  } cursor-pointer hover:opacity-75`}
-                  title={isUsed
-                    ? "Used (click to restore)"
-                    : "Available (click to use)"}
-                  onClick={() => onToggleCharge(location, index, ci)}
+                  } ${combatReadOnly ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-75"}`}
+                  title={combatReadOnly
+                    ? (isUsed ? "Used" : "Available")
+                    : (isUsed
+                      ? "Used (click to restore)"
+                      : "Available (click to use)")}
+                  disabled={combatReadOnly}
+                  onClick={() => {
+                    if (combatReadOnly) return;
+                    onToggleCharge(location, index, ci);
+                  }}
                 >
                   {isUsed ? "✕" : "●"}
                 </button>

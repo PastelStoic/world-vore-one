@@ -169,6 +169,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         characterId={id}
         canSeeDisguisedPerks={canSeeDisguisedPerks}
         displayOnlyPerkIds={displayOnlyPerkIds}
+        canEditCombatState={canEdit}
       />
     </CharacterPageLayout>
   );

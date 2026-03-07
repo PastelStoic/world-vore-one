@@ -51,6 +51,18 @@ interface InventorySectionProps {
   characterId?: string;
   /** The character's perk IDs – used for features like Signature Weapon */
   perkIds?: string[];
+  /**
+   * Whether ammo/charges can be edited (combat tracking).
+   * Only the sheet owner and admins should be able to change these.
+   * Defaults to true when readOnly is false (editor mode), false otherwise.
+   */
+  canEditCombatState?: boolean;
+  /**
+   * Called when a weapon is permanently "Lost" (weapon-master only).
+   * The argument is the total point cost that should be permanently deducted
+   * (weapon cost + slot cost that would otherwise be refunded).
+   */
+  onLoseWeaponPermanently?: (pointsLost: number) => void;
 }
 
 
@@ -64,7 +76,12 @@ export default function InventorySection(props: InventorySectionProps) {
     availablePoints,
     characterId,
     perkIds,
+    canEditCombatState,
+    onLoseWeaponPermanently,
   } = props;
+  // In editor mode (readOnly=false), combat state is always editable.
+  // In viewer mode (readOnly=true), only owners/admins can edit combat state.
+  const combatReadOnly = readOnly && !canEditCombatState;
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
@@ -272,6 +289,22 @@ export default function InventorySection(props: InventorySectionProps) {
       inv[location].weapons.splice(index, 1);
       return inv;
     });
+  }
+
+  // -- Permanently lose a weapon (weapon-master "Lost" button) --
+  // Computes cost before removal so we can notify the editor to deduct it permanently.
+  function loseWeaponPermanently(location: InventoryLocation, index: number) {
+    const weapon = inventory[location].weapons[index];
+    if (!weapon) return;
+    // Slot cost: each slot over the free limit costs 1pt
+    const curSlots = countAllItemSlots(inventory, slotLookups);
+    const slotCost = curSlots > CREATION_FREE_ITEM_SLOTS ? EXTRA_ITEM_POINT_COST : 0;
+    const weaponCost = getWeaponPointCost(weapon.weaponId, perkIds);
+    const totalCost = slotCost + weaponCost;
+    removeWeapon(location, index);
+    if (totalCost > 0) {
+      onLoseWeaponPermanently?.(totalCost);
+    }
   }
 
   // -- Move weapon between locations --
@@ -556,6 +589,52 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
+  // -- Eject a charge-based magazine attachment (e.g. Thompson drum) and do a standard reload --
+  function ejectDrumAndReload(
+    location: InventoryLocation,
+    weaponIndex: number,
+    drumAttachmentId: string,
+  ) {
+    updateCombat((inv) => {
+      const weapon = inv[location].weapons[weaponIndex];
+      const ids = weapon.attachedIds;
+      const idx = ids.indexOf(drumAttachmentId);
+      if (idx < 0) return inv;
+      ids.splice(idx, 1);
+
+      const attDef = ATTACHMENTS_BY_ID.get(drumAttachmentId);
+      if (attDef?.isCharge && attDef.ammoOverride) {
+        const partials = weapon.partialMagazines ?? [];
+        const savedStates: number[] = [];
+        for (let i = 0; i < weapon.magazines; i++) {
+          savedStates.push(attDef.ammoOverride);
+        }
+        for (const p of partials) savedStates.push(p);
+        if (weapon.currentAmmo > 0) savedStates.push(weapon.currentAmmo);
+
+        const savedChargeData = weapon.attachmentChargeData?.[drumAttachmentId];
+        const originalTotalCharges = savedChargeData?.totalCharges ?? savedStates.length;
+        const usedCharges = Math.max(0, originalTotalCharges - savedStates.length);
+        inv[location].attachments.push({
+          attachmentId: drumAttachmentId,
+          totalCharges: originalTotalCharges,
+          usedCharges,
+          savedMagazineStates: savedStates,
+        });
+        if (weapon.attachmentChargeData) {
+          delete weapon.attachmentChargeData[drumAttachmentId];
+        }
+        weapon.magazines = 0;
+        weapon.partialMagazines = [];
+      }
+
+      // Standard reload: fill to base weapon ammo capacity
+      const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
+      weapon.currentAmmo = wDef?.ammo ?? weapon.currentAmmo;
+      return inv;
+    });
+  }
+
   // -- Toggle a charge for a non-magazine isCharge attachment currently on a weapon --
   function toggleAttachedWeaponCharge(
     location: InventoryLocation,
@@ -725,7 +804,9 @@ export default function InventorySection(props: InventorySectionProps) {
                   location={location}
                   index={i}
                   readOnly={readOnly}
+                  combatReadOnly={combatReadOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
+                  onLoss={onLoseWeaponPermanently ? loseWeaponPermanently : undefined}
                   perkIds={perkIds}
                   inventory={inventory}
                   onToggleSignature={toggleSignatureWeapon}
@@ -735,6 +816,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   onSetMagazines={setMagazines}
                   onAttach={attachToWeapon}
                   onDetach={detachFromWeapon}
+                  onEjectDrumAndReload={ejectDrumAndReload}
                   onToggleAttachedCharge={toggleAttachedWeaponCharge}
                   onUpdateCombat={updateCombat}
                 />
@@ -779,6 +861,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   location={location}
                   index={i}
                   readOnly={readOnly}
+                  combatReadOnly={combatReadOnly}
                   carriedBulkyCount={carriedBulkyCount}
                   onMove={moveEquipment}
                   onRemove={removeEquipment}

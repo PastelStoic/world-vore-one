@@ -25,8 +25,7 @@ export default function TraitBadge({ name, description }: TraitBadgeProps) {
       <button
         type="button"
         class="px-2 py-0.5 text-xs border rounded bg-base-200 hover:bg-base-300 cursor-pointer font-medium"
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           setOpen((v) => !v);
         }}
       >

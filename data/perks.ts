@@ -105,6 +105,17 @@ export interface PerkDefinition {
   grantsEquipment?: PerkGrantedEquipment[];
   /** Melee weapons automatically granted when this perk is taken. */
   grantsMeleeWeapons?: PerkGrantedMeleeWeapon[];
+  /**
+   * When set, taking this perk lets the player choose one or more perks as a
+   * free bonus. If the array is non-empty, only those perk IDs are offered; if
+   * the field is an empty array the full perk list is shown.
+   * Use `selectablePerksCount` to allow more than one choice.
+   * Chosen perks are tracked in CharacterDraft.perkSelections and treated as
+   * derived (free), equivalent to includesPerks but player-chosen.
+   */
+  selectablePerkIds?: string[];
+  /** How many perks the player may choose via selectablePerkIds (default 1). */
+  selectablePerksCount?: number;
 }
 
 export const PERKS: PerkDefinition[] = [

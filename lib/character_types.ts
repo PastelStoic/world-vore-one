@@ -152,6 +152,12 @@ export interface CharacterDraft {
   perkRanks?: Record<string, number>;
   /** Maps a disguisable perk ID to the fake perk ID it appears as to non-owners. */
   perkDisguises?: Record<string, string>;
+  /**
+   * Per-parent-perk selected perk IDs (from selectablePerkIds).
+   * Key = parent perk ID, value = array of chosen derived perk IDs.
+   * Chosen perks are treated as derived / free (like includesPerks but player-chosen).
+   */
+  perkSelections?: Record<string, string[]>;
   inventory?: CharacterInventory;
 }
 

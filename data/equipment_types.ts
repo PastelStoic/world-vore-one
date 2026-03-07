@@ -94,6 +94,8 @@ export interface AttachmentDefinition {
   damageOverride?: number;
   /** If set, adds this value to the weapon's rate of fire when this attachment is active */
   rateOfFireBonus?: number;
+  /** Traits added to the weapon's trait list while this attachment is equipped */
+  addsTraits?: { name: string; description: string }[];
 }
 
 // ── General equipment ───────────────────────────────────────────────────────

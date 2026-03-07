@@ -39,6 +39,7 @@ import {
   EQUIPMENT_BY_ID,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
+import { getWeaponPointCost } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -94,6 +95,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkDisguises, setPerkDisguises] = useState<Record<string, string>>(
     props.initialCharacter.perkDisguises ?? {},
   );
+  const [perkSelections, setPerkSelections] = useState<Record<string, string[]>>(
+    props.initialCharacter.perkSelections ?? {},
+  );
   const [inventory, setInventory] = useState<CharacterInventory>(
     props.initialCharacter.inventory ?? createEmptyInventory(),
   );
@@ -125,6 +129,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       ? perkStatChoices
       : undefined,
     perkDisguises,
+    perkSelections: Object.keys(perkSelections).length > 0 ? perkSelections : undefined,
     inventory,
   };
 
@@ -140,7 +145,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   const inventoryPointCost = calculateInventoryPointCost(
     inventory,
-    (id) => WEAPONS_BY_ID.get(id)?.pointCost ?? 0,
+    (id) => getWeaponPointCost(id, perkIds),
     {
       getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
       getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
@@ -148,7 +153,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
-  const derivedPerkIds = getDerivedPerkIds(perkIds);
+  const derivedPerkIds = getDerivedPerkIds(perkIds, perkSelections);
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
   const ownedLockCategories = new Set(
     ownedPerks
@@ -445,15 +450,23 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     // longer derived from any remaining source perk)
     const perk = perksById.get(perkId);
     const perkIdsWithoutSource = perkIds.filter((id) => id !== perkId);
-    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource);
-    const orphanedIds = (perk?.includesPerks ?? []).filter(
+    // Selections from OTHER perks remain active; only selections FROM this perk are cleared
+    const selectionsWithoutSource = { ...perkSelections };
+    delete selectionsWithoutSource[perkId];
+    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource, selectionsWithoutSource);
+    const orphanedIncluded = (perk?.includesPerks ?? []).filter(
       (id) => !stillDerived.has(id),
     );
+    // Also remove selection-granted perks when the parent is removed
+    const orphanedSelected = (perkSelections[perkId] ?? []).filter(
+      (id) => !stillDerived.has(id),
+    );
+    const orphanedIds = [...orphanedIncluded, ...orphanedSelected];
     const newPerkIds = perkIdsWithoutSource.filter(
       (id) => !orphanedIds.includes(id),
     );
-    const refund = calculatePerksCost(perkIds, perkRanks) -
-      calculatePerksCost(newPerkIds, perkRanks);
+    const refund = calculatePerksCost(perkIds, perkRanks, perkSelections) -
+      calculatePerksCost(newPerkIds, perkRanks, selectionsWithoutSource);
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
     setPerkNotes((current) => {
@@ -479,6 +492,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkDisguises((current) => {
       const next = { ...current };
       for (const id of allRemovedIds) delete next[id];
+      return next;
+    });
+    setPerkSelections((current) => {
+      const next = { ...current };
+      delete next[perkId]; // Clear selections made by this perk
+      for (const id of allRemovedIds) delete next[id]; // Clear selections if orphaned perks were themselves parents
       return next;
     });
     setUnallocatedStatPoints((current) => current + refund);
@@ -607,6 +626,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         type="hidden"
         name="perkDisguises"
         value={JSON.stringify(perkDisguises)}
+      />
+      <input
+        type="hidden"
+        name="perkSelections"
+        value={JSON.stringify(perkSelections)}
       />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
@@ -1161,7 +1185,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         const isDerived = derivedPerkIds.has(id);
                         const sourcePerk = isDerived
                           ? ownedPerks.find((op) =>
-                            op.perk?.includesPerks?.includes(id)
+                            op.perk?.includesPerks?.includes(id) ||
+                            (perkSelections[op.id] ?? []).includes(id)
                           )?.perk
                           : undefined;
                         const canRemove = !isDerived && (canRemoveOldPerks ||
@@ -1416,6 +1441,65 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </select>
                               </div>
                             )}
+                            {!isDerived && perk?.selectablePerkIds !== undefined && (() => {
+                              const count = perk.selectablePerksCount ?? 1;
+                              return (
+                                <div class="mt-1 space-y-1">
+                                  {Array.from({ length: count }, (_, si) => {
+                                    const currentSelectionId = perkSelections[id]?.[si] ?? "";
+                                    const otherSelectedIds = (perkSelections[id] ?? [])
+                                      .filter((sel, i) => i !== si && Boolean(sel));
+                                    const candidatePerks = props.perks.filter((p) => {
+                                      if (
+                                        perk.selectablePerkIds!.length > 0 &&
+                                        !perk.selectablePerkIds!.includes(p.id)
+                                      ) return false;
+                                      if (otherSelectedIds.includes(p.id)) return false;
+                                      return true;
+                                    });
+                                    return (
+                                      <div key={si} class="flex items-center gap-2 flex-wrap">
+                                        <label class="text-xs text-base-content/70">
+                                          {count > 1 ? `Choice ${si + 1}:` : "Choose perk:"}
+                                        </label>
+                                        <select
+                                          class="select border rounded px-1 py-0.5 text-xs"
+                                          value={currentSelectionId}
+                                          onChange={(e) => {
+                                            const newId = (e.target as HTMLSelectElement).value;
+                                            const oldId = perkSelections[id]?.[si] ?? "";
+                                            const currentArr = [...(perkSelections[id] ?? [])];
+                                            while (currentArr.length <= si) currentArr.push("");
+                                            currentArr[si] = newId;
+                                            const newSelections = { ...perkSelections, [id]: currentArr };
+                                            setPerkSelections(newSelections);
+                                            let newPerkIds = [...perkIds];
+                                            if (oldId && oldId !== newId) {
+                                              const withoutOld = newPerkIds.filter((pid) => pid !== oldId);
+                                              const stillDerived = getDerivedPerkIds(withoutOld, newSelections);
+                                              if (!stillDerived.has(oldId)) {
+                                                newPerkIds = withoutOld;
+                                              }
+                                            }
+                                            if (newId && !newPerkIds.includes(newId)) {
+                                              newPerkIds = [...newPerkIds, newId];
+                                            }
+                                            setPerkIds(newPerkIds);
+                                          }}
+                                        >
+                                          <option value="">— Select perk —</option>
+                                          {candidatePerks.map((p) => (
+                                            <option key={p.id} value={p.id}>
+                                              {p.name}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            })()}
                           </li>
                         );
                       })}
@@ -1546,6 +1630,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         onChange={setInventory}
         availablePoints={unallocatedStatPoints}
         perkIds={perkIds}
+        onLoseWeaponPermanently={(cost) =>
+          setUnallocatedStatPoints((current) => current - cost)}
       />
 
       <Button type="submit">{props.submitLabel}</Button>

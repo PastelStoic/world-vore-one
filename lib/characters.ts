@@ -24,6 +24,7 @@ export {
   parsePerkIds,
   parsePerkNotes,
   parsePerkRanks,
+  parsePerkSelections,
   parsePerkStatChoices,
   parsePerkUpgradeNotes,
   parseRace,

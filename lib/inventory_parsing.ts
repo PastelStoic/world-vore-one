@@ -82,6 +82,9 @@ export function parseInventory(raw: string): CharacterInventory | null {
             ? e.charges
             : 1,
           usedCharges: typeof e.usedCharges === "number" ? e.usedCharges : 0,
+          ...(typeof e.perkGranted === "string" ? { perkGranted: e.perkGranted } : {}),
+          ...(typeof e.weightOverride === "number" ? { weightOverride: e.weightOverride } : {}),
+          ...(typeof e.isBulkyOverride === "boolean" ? { isBulkyOverride: e.isBulkyOverride } : {}),
         }));
       }
 

@@ -197,6 +197,33 @@ export function parsePerkDisguises(raw: string): Record<string, string> {
   }
 }
 
+/**
+ * Parse perkSelections — the player-chosen perks for perks with selectablePerkIds.
+ * Key = parent perk ID, value = array of chosen derived perk IDs.
+ */
+export function parsePerkSelections(
+  raw: string,
+): Record<string, string[]> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, string[]> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (Array.isArray(value)) {
+        const ids = value.filter((v): v is string => typeof v === "string" && v.trim().length > 0);
+        if (ids.length > 0) result[key] = ids;
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 export function parseDescription(raw: string): CharacterDescription | null {
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
@@ -243,13 +270,25 @@ export function parseDescription(raw: string): CharacterDescription | null {
  * Returns the set of perk IDs that are automatically granted by other perks in
  * the given list. Derived perks are tied to their source perk; rank 1 is free,
  * and extra ranks (if any) are costed normally.
+ * Also includes player-chosen perks from perkSelections as derived (free).
  */
-export function getDerivedPerkIds(perkIds: string[]): Set<string> {
+export function getDerivedPerkIds(
+  perkIds: string[],
+  perkSelections?: Record<string, string[]>,
+): Set<string> {
   const derived = new Set<string>();
   for (const perkId of perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
     for (const includedId of perk?.includesPerks ?? []) {
       derived.add(includedId);
+    }
+  }
+  // Player-chosen perks (from selectablePerkIds) are also derived/free
+  if (perkSelections) {
+    for (const selectedIds of Object.values(perkSelections)) {
+      for (const id of selectedIds) {
+        derived.add(id);
+      }
     }
   }
   return derived;
@@ -258,10 +297,11 @@ export function getDerivedPerkIds(perkIds: string[]): Set<string> {
 export function calculatePerksCost(
   perkIds: string[],
   perkRanks?: Record<string, number>,
+  perkSelections?: Record<string, string[]>,
 ): number {
   if (perkIds.length <= 0) return 0;
 
-  const derived = getDerivedPerkIds(perkIds);
+  const derived = getDerivedPerkIds(perkIds, perkSelections);
   let paidPerkCount = 0;
   let totalPointsGranted = 0;
   let totalFreePerks = 0;

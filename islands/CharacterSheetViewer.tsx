@@ -29,6 +29,8 @@ interface CharacterSheetViewerProps {
   canSeeDisguisedPerks?: boolean;
   /** Perk IDs to show for display only (not used in stat calculations). */
   displayOnlyPerkIds?: string[];
+  /** Whether the current user can edit ammo/charges (owner or admin). */
+  canEditCombatState?: boolean;
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
@@ -39,6 +41,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     characterId,
     canSeeDisguisedPerks = false,
     displayOnlyPerkIds = [],
+    canEditCombatState = false,
   } = props;
   const desc = character.description;
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
@@ -274,6 +277,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         readOnly
         characterId={characterId}
         perkIds={character.perkIds}
+        canEditCombatState={canEditCombatState}
       />
 
       <div class="rounded border p-3 space-y-2">

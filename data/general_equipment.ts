@@ -74,7 +74,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     isBulky: true,
     description: `Body armour, mostly cerimonial, but some still used it during WW1 – mostly the French.
 *Has 3 weight instead of 1.
-*Melee attackers need an additional 1 success to attack you. Does nothing against bullets.
+*Melee attackers need an additional 2 successes to attack you. Does nothing against bullets.
 *You may only bring one full reload of ammo and reloading a weapon takes +1 turn.
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },

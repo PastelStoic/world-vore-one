@@ -872,7 +872,25 @@ Extra heavy magazines:
     freeAccessoryIds: ["mg11-magazine"],
     requiresMagazines: true,
     reloadTurns: 3,
-  }
+  },
+  {
+    id: "stamm-sauer-1916",
+    name: "Stamm Sauer 1916",
+    type: "Light-machinegun",
+    kind: "light-machinegun",
+    nation: "Switzerland",
+    damage: "3",
+    ammo: 20,
+    rateOfFire: 4,
+    weight: 3,
+    pointCost: 1,
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Light-machinegun:
+*Comes with a bipod but gains no benefit from it.
+*Automatic fire whilst not set up awards a -1d6 for every shot fired.`,
+    compatibleAttachmentIds: [],
+  },
 ];
 
 export const WEAPONS_BY_ID = new Map(

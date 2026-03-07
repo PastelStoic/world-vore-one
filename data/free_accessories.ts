@@ -14,6 +14,14 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
       "A drum magazine for the Lewis gun. Choose how many to bring at scene start.",
   },
   {
+    id: "mg11-magazine",
+    name: "MG11 drum magazine",
+    weight: 3,
+    ammo: 250,
+    description:
+      "A box magazine for the MG11. Choose how many to bring at scene start.",
+  },
+  {
     id: "schmidt-rubin-magazine",
     name: "Schmidt–Rubin magazine",
     weight: 1,

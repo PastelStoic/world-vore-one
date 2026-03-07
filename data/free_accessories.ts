@@ -15,7 +15,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   },
   {
     id: "mg11-magazine",
-    name: "MG11 drum magazine",
+    name: "MG11 box magazine",
     weight: 3,
     ammo: 250,
     description:

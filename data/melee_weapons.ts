@@ -113,6 +113,14 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     description: "Long-shafted thrusting weapon.",
   },
   {
+    id: "greatclub",
+    name: "Great club",
+    damage: 4,
+    weight: 3,
+    traitIds: ["two-handed", "crushing"],
+    description: "A massive, two-handed club, meant for beating people up!",
+  },
+  {
     id: "pike",
     name: "Pike",
     damage: 3,

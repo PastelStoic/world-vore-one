@@ -123,19 +123,19 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "buckler-shield",
     name: "Buckler shield",
     description:
-      "You may hold this weapon and the 'duelling' trait will still work. Enemies have -1d6 to hit you.",
+      "You may hold this weapon and the 'duelling' trait will still work. Enemies need 1 additional success to hit you in melee.",
   },
   {
     id: "shield",
     name: "Shield",
     description:
-      "Enemies have -3d6 to hit you. If slung over your back, enemies have -1d6 to hit you from behind.",
+      "Enemies need 2 additional successes to hit you in melee. If slung over your back, enemies need 1 additional success to hit you from the back.",
   },
   {
     id: "board-shield",
     name: "Board shield",
     description:
-      "Enemies have -6d6 to hit you. If slung over your back, enemies have -3d6 to hit you from behind. Can be planted onto the ground, serving as 2d6 cover.",
+      "Enemies need 3 additional successes to hit you in melee. If slung over your back, enemies need 2 additional successes to hit you from the back. Can be planted onto the ground, serving as 2d6 cover.",
   },
 ];
 

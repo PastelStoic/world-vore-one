@@ -843,6 +843,36 @@ Cylinder:
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
     reloadsIndividually: true,
   },
+  {
+    id: "mg11",
+    name: "MG11",
+    type: "Heavy Machinegun",
+    kind: "heavy-machinegun",
+    nation: "Switzerland",
+    damage: "3",
+    ammo: 250,
+    rateOfFire: 10,
+    weight: 4,
+    pointCost: 3,
+    gimmicks: `Two-handed:
+*Weapon requires both hands in order to be used properly.
+Restricted:
+*Prized and rare weapon. Must pay 3 points to have it.
+Heavy-machinegun:
+*Comes with a bipod, but gains no benefit from it.
+*Automatic fire whilst not set up awards a -3d6 for every shot fired.
+*Takes 3 turns to set up the bipod. Allies can help in setting the gun up.
+Multi-target:
+*Can hit multiple targets at once. Can choose how many bullets to spend per target.
+*One bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.
+Extra heavy magazines:
+*Choose how many additional magazines to bring. Each magazine has 3 weight. Declare at scene start.
+*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`,
+    compatibleAttachmentIds: [],
+    freeAccessoryIds: ["mg11-magazine"],
+    requiresMagazines: true,
+    reloadTurns: 3,
+  }
 ];
 
 export const WEAPONS_BY_ID = new Map(

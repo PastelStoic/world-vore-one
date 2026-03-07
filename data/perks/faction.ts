@@ -5,7 +5,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     id: "king-s-royal-army-pf",
     name: "King's royal army",
     category: "faction",
-    requiredFaction: "King's Royal Army",
+    requiredFaction: "SWITZERLAND - King's Royal Army",
     isFree: true,
     pointsGranted: 3,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
@@ -27,7 +27,7 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
-    requiredFaction: ["German Imperial Army", "The 7th Western Army", "German East African Army", "German West African Army",],
+    requiredFaction: ["GERMANY - German Imperial Army", "GERMANY - The 7th Western Army", "GERMANY - German East African Army", "GERMANY - German West African Army",],
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `Germany strong!
@@ -48,7 +48,7 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench raider",
     category: "faction",
-    requiredFaction: ["British Expeditionary Force (BEF)", "Canadian Expeditionary Force (CEF)", "Royal Berkshire Regiment"],
+    requiredFaction: ["BRITAIN - British Expeditionary Force (BEF)", "BRITAIN - Canadian Expeditionary Force (CEF)", "BRITAIN - Royal Berkshire Regiment"],
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `ENGERLAAAANNDDD
@@ -69,7 +69,7 @@ Disadvantages:
     id: "harlem-hellfighter",
     name: "Harlem Hellfighter",
     category: "faction",
-    requiredFaction:   "Harlem Hellfighters",
+    requiredFaction: ["AMERICA - Harlem Hellfighters"],
     pointsGranted: 2,
     customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
     description: `America strong!
@@ -89,7 +89,7 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
-    requiredFaction: ["Italian mafia - Las Manos Apertas", "Russian mafia - Chernoye Zoloto","Irish mafia - O’Malley Syndicate"],
+    requiredFaction: ["AMERICA - 'Las Manos Apertas' Mafia", "AMERICA - 'Chernoye Zoloto' Mafia","AMERICA - 'O’Malley Syndicate' Mafia"],
     isFree: true,
     pointsGranted: 3,
     description:

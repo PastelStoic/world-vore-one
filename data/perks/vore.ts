@@ -180,7 +180,8 @@ export const VORE_PERKS: PerkDefinition[] = [
 *You are able to speak with your predator and control a bodypart you inhabit, however ...
 *The predator can easily shut you down and keep you from doing anything, contrary to 'living-fat-advisors'.
 *When your predator gives birth OR impregnates someone, your consciousness is transfered to that body and you live on! 
-*You'll be alive, but with a different appearance.`,
+*You'll be alive, but with a different body and appearance. You may need to make a new sheet to reflect that, unless you are a template and the birthling is your template too.
+*If you do have to make a new sheet, it keeps the same point totals and number of perks as your previous one, but you may rearrange them as you please, with the justification that your body is just that different.`,
   },
   {
     id: "living-fat-advisors",

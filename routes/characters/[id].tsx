@@ -80,6 +80,13 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       ...character,
       perkIds: filteredPerkIds,
       perkDisguises: undefined,
+      // Femboy perk: disguise the character's sex as Futa to non-owners.
+      ...("pilzherr-femboy" in disguises && {
+        description: {
+          ...character.description,
+          sex: "Futa" as const,
+        },
+      }),
     };
   }
 

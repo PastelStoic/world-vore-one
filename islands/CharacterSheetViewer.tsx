@@ -126,6 +126,12 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
             </p>
             <p>
               <strong>Sex:</strong> {desc.sex}
+              {canSeeDisguisedPerks &&
+                character.perkDisguises?.["pilzherr-femboy"] && (
+                <span class="block ml-5 text-purple-600 italic text-xs">
+                  Displayed as: Futa
+                </span>
+              )}
             </p>
             {desc.isTemplate && (
               <p>

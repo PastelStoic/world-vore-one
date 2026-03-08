@@ -8,7 +8,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     requiredFaction: "SWITZERLAND - King's Royal Army",
     isFree: true,
     pointsGranted: 3,
-    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
+    selectablePerkIds: ["sapper", "scrounger", "innovator", "defender", "weapon-master"],
     description: `Switzerland strong!
 
 Advantages:
@@ -29,7 +29,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["GERMANY - German Imperial Army", "GERMANY - The 7th Western Army", "GERMANY - German East African Army", "GERMANY - German West African Army",],
     pointsGranted: 2,
-    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
+    selectablePerkIds: ["sapper", "scrounger", "innovator", "defender", "weapon-master"],
     description: `Germany strong!
 
 Advantages:
@@ -50,7 +50,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["BRITAIN - British Expeditionary Force (BEF)", "BRITAIN - Canadian Expeditionary Force (CEF)", "BRITAIN - Royal Berkshire Regiment"],
     pointsGranted: 2,
-    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
+    selectablePerkIds: ["sapper", "scrounger", "innovator", "defender", "weapon-master"],
     description: `ENGERLAAAANNDDD
 
 Advantages:
@@ -71,7 +71,7 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["AMERICA - Harlem Hellfighters"],
     pointsGranted: 2,
-    customInput: "Chosen gear perk (e.g. Scrounger, Sapper, Inventor…)",
+    selectablePerkIds: ["sapper", "scrounger", "innovator", "defender", "weapon-master"],
     description: `America strong!
  
 Advantages:

@@ -54,6 +54,8 @@ interface WeaponCardProps {
   onRemove: (location: InventoryLocation, index: number) => void;
   /** Called when a weapon is permanently lost (weapon-master "Lost" button) */
   onLoss?: (location: InventoryLocation, index: number) => void;
+  /** Called when a weapon is returned to armory (weapon-master "Return to armory" button) */
+  onReturn?: (location: InventoryLocation, index: number) => void;
   onSetAmmo: (
     location: InventoryLocation,
     index: number,
@@ -277,7 +279,10 @@ export default function WeaponCard(props: WeaponCardProps) {
                 <button
                   type="button"
                   class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
-                  onClick={() => props.onRemove(location, index)}
+                  onClick={() =>
+                    props.onReturn
+                      ? props.onReturn(location, index)
+                      : props.onRemove(location, index)}
                 >
                   Return to armory
                 </button>

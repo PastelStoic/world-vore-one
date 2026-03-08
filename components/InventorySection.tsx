@@ -182,6 +182,14 @@ export default function InventorySection(props: InventorySectionProps) {
     return 0;
   }
 
+  /** Compute how many points adding a melee weapon to a location would cost */
+  function meleeAddCost(_location: InventoryLocation): number {
+    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
+      return EXTRA_ITEM_POINT_COST;
+    }
+    return 0;
+  }
+
   function costLabel(cost: number): string {
     if (cost === 0) return "Free";
     return `${cost}pt`;
@@ -292,18 +300,28 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // -- Permanently lose a weapon (weapon-master "Lost" button) --
-  // Computes cost before removal so we can notify the editor to deduct it permanently.
+  // Only deduct the weapon's own point cost (restricted weapon cost).
+  // Slot cost is NOT deducted here because it naturally recalculates when the weapon is removed.
   function loseWeaponPermanently(location: InventoryLocation, index: number) {
     const weapon = inventory[location].weapons[index];
     if (!weapon) return;
-    // Slot cost: each slot over the free limit costs 1pt
-    const curSlots = countAllItemSlots(inventory, slotLookups);
-    const slotCost = curSlots > CREATION_FREE_ITEM_SLOTS ? EXTRA_ITEM_POINT_COST : 0;
     const weaponCost = getWeaponPointCost(weapon.weaponId, perkIds);
-    const totalCost = slotCost + weaponCost;
     removeWeapon(location, index);
-    if (totalCost > 0) {
-      onLoseWeaponPermanently?.(totalCost);
+    if (weaponCost > 0) {
+      onLoseWeaponPermanently?.(weaponCost);
+    }
+  }
+
+  // -- Return a weapon to the armory (weapon-master "Return to armory" button) --
+  // Removes the weapon but permanently deducts its weapon point cost (restricted = 1pt).
+  // This prevents "withdraw restricted, return, get refund" exploits.
+  function returnWeaponToArmory(location: InventoryLocation, index: number) {
+    const weapon = inventory[location].weapons[index];
+    if (!weapon) return;
+    const weaponCost = getWeaponPointCost(weapon.weaponId, perkIds);
+    removeWeapon(location, index);
+    if (weaponCost > 0) {
+      onLoseWeaponPermanently?.(weaponCost);
     }
   }
 
@@ -807,6 +825,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   combatReadOnly={combatReadOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
                   onLoss={onLoseWeaponPermanently ? loseWeaponPermanently : undefined}
+                  onReturn={onLoseWeaponPermanently ? returnWeaponToArmory : undefined}
                   perkIds={perkIds}
                   inventory={inventory}
                   onToggleSignature={toggleSignatureWeapon}
@@ -1209,7 +1228,9 @@ export default function InventorySection(props: InventorySectionProps) {
                 )
                 : (
                   <ul class="max-h-64 overflow-y-auto space-y-1">
-                    {filteredMeleeWeapons.map((mw) => (
+                    {filteredMeleeWeapons.map((mw) => {
+                      const addCost = meleeAddCost(addTarget);
+                      return (
                       <li
                         key={mw.id}
                         class="text-sm border-b border-gray-100 pb-1"
@@ -1226,7 +1247,7 @@ export default function InventorySection(props: InventorySectionProps) {
                             class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
                             onClick={() => addMeleeWeapon(mw.id, addTarget)}
                           >
-                            Add
+                            Add ({costLabel(addCost)})
                           </button>
                         </div>
                         {mw.description && (
@@ -1239,7 +1260,8 @@ export default function InventorySection(props: InventorySectionProps) {
                           </div>
                         )}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 )}
             </div>

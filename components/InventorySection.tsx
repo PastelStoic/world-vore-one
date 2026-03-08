@@ -313,16 +313,13 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // -- Return a weapon to the armory (weapon-master "Return to armory" button) --
-  // Removes the weapon but permanently deducts its weapon point cost (restricted = 1pt).
-  // This prevents "withdraw restricted, return, get refund" exploits.
+  // Simply removes the weapon from inventory. The point cost is naturally refunded by
+  // inventory recalculation — the character already owns this weapon and can re-withdraw it.
+  // (Only "Lost" permanently deducts points, for weapons that are stolen / gone for good.)
   function returnWeaponToArmory(location: InventoryLocation, index: number) {
     const weapon = inventory[location].weapons[index];
     if (!weapon) return;
-    const weaponCost = getWeaponPointCost(weapon.weaponId, perkIds);
     removeWeapon(location, index);
-    if (weaponCost > 0) {
-      onLoseWeaponPermanently?.(weaponCost);
-    }
   }
 
   // -- Move weapon between locations --

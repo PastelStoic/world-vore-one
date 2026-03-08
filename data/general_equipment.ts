@@ -32,8 +32,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Entrenching gear",
     weight: 1,
     isBulky: true,
-    description: `Shovel, hatchet, hammer, nails – the minimum required to dig a trench or fortify any position.
-*It takes hours to build any field fortifications worth a damned thing.
+    description: `Shovel, hatchet, pickaxe, hammer, nails – the minimum required to dig a trench, fortify a position or to break things down!
+*It takes hours to build any field fortifications worth a damned thing. Same for breaking things down, based on how big they are!
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },
   {

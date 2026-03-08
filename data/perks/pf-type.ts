@@ -26,15 +26,15 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     lockCategory: "pilzherr-type",
     description: `You are a MALE PF! You look just like a girl though.
 
-*Variant of the 'Pilzherr' perk. This one is not free.
+*Variant of the 'Pilzherr' perk. This one is not free. YOU DO NOT NEED THIS PERK TO BE A FEMBOY. It exists only for secrecy stuffs. Read below.
 *One of the biggest advantages of PFs is the fact that they reproduce so quickly. 
 *By nature of wanting to shaft just about anything, attacking their reproductive capabilities is a valid strategy.
 *This is where you come in: Whenever you impregnate a PF, that PF can only birth Pilzherrs from there on out.
 *The Pilzherrs she births do not share any of her skills or memories; they're worthless to her. 
 *You are capable of vore all the same as a regular PF.
 
-*By taking 'Femboy', list a fake perk instead. Tell staff in DMs when taking this perk, so we'll keep track of it. 
-*The point of this perk is secrecy, be careful not to reveal it. 
+*By taking 'Femboy', list a fake perk instead. You do not need this perk to be a femboy, this perk merely lets you pass as a girl instead.
+*The point of this perk is secrecy, be careful not to reveal it. This should help you impregnate PFs without being spotted!
 *If you cum inside a PF, inform their owner in DMs that you were a femboy and tell them not to tell anyone else that you are a femboy.`,
   },
   {

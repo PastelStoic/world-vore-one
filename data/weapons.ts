@@ -41,7 +41,7 @@ Overloaded chamber:
     name: "Colt Single Action Army (Colt SAA)",
     type: "Single-action revolver",
     kind: "single-action-revolver",
-    nation: "civilian",
+    nation: "Civilian",
     damage: "2",
     ammo: 6,
     rateOfFire: 1,

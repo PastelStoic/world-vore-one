@@ -195,6 +195,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *While the stock is on, loses agile gimmick.
 *Holstering and unholstering this weapon takes an additional turn.
 *+1 rate of fire.`,
+    removesTraits: ["Agile"],
   },
 
   // ── American ──

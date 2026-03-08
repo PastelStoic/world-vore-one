@@ -190,6 +190,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `The dead remain within you after churning, awakening as your fat!
 
+*Only Pilzfrauns/Pilzherrs, etc, are affected by this. Baseliners are not, they simply digest away normally.
 *Prey must pick a bodypart ( Boobs, butt, belly, testicles, balls, etc ) to live on as. They'll retain their consciousness and memories.
 *The pred will then be able hear their living fat within their mind, and may be advised by it, if they're willing.
 *The living fat has control over the body part they inhabit: You may lactate or grow hard spontaneously, etc.

@@ -37,13 +37,13 @@ Overloaded chamber:
     reloadTurns: 4,
   },
   {
-    id: "Smith-and-Wesson-Safety-Hammerless",
-    name: "Smith & Wesson Safety Hammerless",
-    type: "Double-action revolver",
-    kind: "double-action-revolver",
+    id: "colt-single-action-army",
+    name: "Colt Single Action Army (Colt SAA)",
+    type: "Single-action revolver",
+    kind: "single-action-revolver",
     nation: "civilian",
     damage: "2",
-    ammo: 5,
+    ammo: 6,
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
@@ -51,9 +51,9 @@ Overloaded chamber:
 *Weapon can be held in one hand, with another tool in your free hand.
 Agile:
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Cylinder:
-*Reloads each bullet individually, taking 1 turn per bullet.`,
-    compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
+Loading Gate:
+*Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
+    compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
   {

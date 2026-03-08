@@ -279,8 +279,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 1,
     description: `*It takes 1 turn to put the stock on/off.
-*The 'automatic fire' attachment no longer reduces accuracy with each additional shot.
-*Holstering and unholstering this weapon takes an additional turn.`,
+*The 'automatic fire' attachment's accuracy from extra shots now return to normal.
+*Holstering and unholstering this weapon takes an additional turn.
+*May be used alongside the other attachments of this weapon.`,
   },
 ];
 

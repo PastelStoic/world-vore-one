@@ -329,6 +329,19 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                               </span>
                             );
                           })()}
+                        {/* Show selected sub-perk for perks with selectablePerkIds */}
+                        {perkDef?.selectablePerkIds !== undefined &&
+                          character.perkSelections?.[id]?.filter(Boolean).map((selId, si) => {
+                            const selPerk = PERKS_BY_ID.get(selId);
+                            if (!selPerk) return null;
+                            const count = perkDef.selectablePerksCount ?? 1;
+                            return (
+                              <span key={si} class="block ml-5 text-xs text-base-content/70 italic">
+                                {count > 1 ? `Choice ${si + 1}: ` : "Chosen perk: "}
+                                <span class="not-italic font-medium">{selPerk.name}</span>
+                              </span>
+                            );
+                          })}
                         {/* Per-rank notes for upgradable perks */}
                         {!displayOnly && perkDef?.upgradable && (
                           <div class="ml-5 space-y-0.5">

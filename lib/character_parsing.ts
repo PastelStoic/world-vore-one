@@ -10,6 +10,7 @@ import {
   type CharacterDraft,
   createDefaultBaseStats,
   createDefaultDescription,
+  FACTION_DEFINITIONS_BY_ID,
   getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type Race,
@@ -271,10 +272,12 @@ export function parseDescription(raw: string): CharacterDescription | null {
  * the given list. Derived perks are tied to their source perk; rank 1 is free,
  * and extra ranks (if any) are costed normally.
  * Also includes player-chosen perks from perkSelections as derived (free).
+ * Also includes perks auto-granted by the character's faction.
  */
 export function getDerivedPerkIds(
   perkIds: string[],
   perkSelections?: Record<string, string[]>,
+  faction?: string,
 ): Set<string> {
   const derived = new Set<string>();
   for (const perkId of perkIds) {
@@ -291,6 +294,15 @@ export function getDerivedPerkIds(
       }
     }
   }
+  // Faction-granted perks are derived/free
+  if (faction) {
+    const factionDef = FACTION_DEFINITIONS_BY_ID.get(faction);
+    if (factionDef?.grantsPerkIds) {
+      for (const id of factionDef.grantsPerkIds) {
+        derived.add(id);
+      }
+    }
+  }
   return derived;
 }
 
@@ -298,10 +310,11 @@ export function calculatePerksCost(
   perkIds: string[],
   perkRanks?: Record<string, number>,
   perkSelections?: Record<string, string[]>,
+  faction?: string,
 ): number {
   if (perkIds.length <= 0) return 0;
 
-  const derived = getDerivedPerkIds(perkIds, perkSelections);
+  const derived = getDerivedPerkIds(perkIds, perkSelections, faction);
   let paidPerkCount = 0;
   let totalPointsGranted = 0;
   let totalFreePerks = 0;
@@ -319,6 +332,12 @@ export function calculatePerksCost(
     }
 
     paidPerkCount += rank;
+  }
+
+  // Faction-granted stat points
+  if (faction) {
+    const factionDef = FACTION_DEFINITIONS_BY_ID.get(faction);
+    totalPointsGranted += factionDef?.grantsStatPoints ?? 0;
   }
 
   // First paid perk is free, plus any freePerks grants from active perks
@@ -351,7 +370,7 @@ export function validateCharacterProgression(
   const defaultStatTotal = BASE_STAT_FIELDS.length;
   const spentOnStats = statTotal - defaultStatTotal;
 
-  const spentOnPerks = calculatePerksCost(input.perkIds, input.perkRanks);
+  const spentOnPerks = calculatePerksCost(input.perkIds, input.perkRanks, input.perkSelections, input.description.faction);
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 
   if (totalUsed < getStartingStatPoints(input.race)) {

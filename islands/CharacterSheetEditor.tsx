@@ -12,6 +12,7 @@ import {
   type CharacterDescription,
   type CharacterDraft,
   type CharacterSheet,
+  FACTION_DEFINITIONS_BY_ID,
   FACTIONS,
   getRacesForSex,
   getStartingStatPoints,
@@ -153,7 +154,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
-  const derivedPerkIds = getDerivedPerkIds(perkIds, perkSelections);
+  const derivedPerkIds = getDerivedPerkIds(perkIds, perkSelections, description.faction);
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
   const ownedLockCategories = new Set(
     ownedPerks
@@ -453,7 +454,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     // Selections from OTHER perks remain active; only selections FROM this perk are cleared
     const selectionsWithoutSource = { ...perkSelections };
     delete selectionsWithoutSource[perkId];
-    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource, selectionsWithoutSource);
+    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource, selectionsWithoutSource, description.faction);
     const orphanedIncluded = (perk?.includesPerks ?? []).filter(
       (id) => !stillDerived.has(id),
     );
@@ -465,8 +466,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const newPerkIds = perkIdsWithoutSource.filter(
       (id) => !orphanedIds.includes(id),
     );
-    const refund = calculatePerksCost(perkIds, perkRanks, perkSelections) -
-      calculatePerksCost(newPerkIds, perkRanks, selectionsWithoutSource);
+    const refund = calculatePerksCost(perkIds, perkRanks, perkSelections, description.faction) -
+      calculatePerksCost(newPerkIds, perkRanks, selectionsWithoutSource, description.faction);
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
     setPerkNotes((current) => {
@@ -804,11 +805,37 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <select
                   class="select w-full border rounded px-3 py-2"
                   value={description.faction}
-                  onChange={(event) =>
-                    updateDescription(
-                      "faction",
-                      (event.target as HTMLSelectElement).value,
-                    )}
+                  onChange={(event) => {
+                    const newFaction = (event.target as HTMLSelectElement).value;
+                    const oldFaction = description.faction;
+                    updateDescription("faction", newFaction);
+
+                    // Auto-manage faction-granted perks
+                    const oldDef = FACTION_DEFINITIONS_BY_ID.get(oldFaction);
+                    const newDef = FACTION_DEFINITIONS_BY_ID.get(newFaction);
+                    const oldGranted = oldDef?.grantsPerkIds ?? [];
+                    const newGranted = newDef?.grantsPerkIds ?? [];
+
+                    // Remove old faction perks that aren't granted by the new faction
+                    // and aren't derived from other sources
+                    const toRemove = oldGranted.filter((id) => !newGranted.includes(id));
+                    const toAdd = newGranted.filter((id) => !perkIds.includes(id));
+
+                    let updatedPerkIds = perkIds.filter((id) => !toRemove.includes(id));
+                    updatedPerkIds = [...updatedPerkIds, ...toAdd];
+
+                    // Calculate stat point delta from the faction switch
+                    const oldPoints = oldDef?.grantsStatPoints ?? 0;
+                    const newPoints = newDef?.grantsStatPoints ?? 0;
+                    const pointsDelta = newPoints - oldPoints;
+
+                    if (updatedPerkIds.length !== perkIds.length || toAdd.length > 0) {
+                      setPerkIds(updatedPerkIds);
+                    }
+                    if (pointsDelta !== 0) {
+                      setUnallocatedStatPoints((current) => current + pointsDelta);
+                    }
+                  }}
                 >
                   <option value="">— None —</option>
                   {FACTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
@@ -1476,7 +1503,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                             let newPerkIds = [...perkIds];
                                             if (oldId && oldId !== newId) {
                                               const withoutOld = newPerkIds.filter((pid) => pid !== oldId);
-                                              const stillDerived = getDerivedPerkIds(withoutOld, newSelections);
+                                              const stillDerived = getDerivedPerkIds(withoutOld, newSelections, description.faction);
                                               if (!stillDerived.has(oldId)) {
                                                 newPerkIds = withoutOld;
                                               }

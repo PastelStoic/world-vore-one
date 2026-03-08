@@ -315,15 +315,22 @@ export default function WeaponCard(props: WeaponCardProps) {
       {(() => {
         const baseTraits = def.gimmicks ? parseGimmicks(def.gimmicks) : [];
         const attachmentTraits: { name: string; description: string }[] = [];
+        const removedTraitNames = new Set<string>();
         for (const aId of w.attachedIds) {
           const aDef = ATTACHMENTS_BY_ID.get(aId);
+          if (aDef?.removesTraits) {
+            for (const name of aDef.removesTraits) {
+              removedTraitNames.add(name);
+            }
+          }
           if (aDef?.addsTraits) {
             for (const t of aDef.addsTraits) {
               attachmentTraits.push(t);
             }
           }
         }
-        const allTraits = [...baseTraits, ...attachmentTraits];
+        const filteredBaseTraits = baseTraits.filter((t) => !removedTraitNames.has(t.name));
+        const allTraits = [...filteredBaseTraits, ...attachmentTraits];
         if (allTraits.length === 0) return null;
         return (
           <div class="flex flex-wrap gap-1">

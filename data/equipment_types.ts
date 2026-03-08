@@ -96,6 +96,8 @@ export interface AttachmentDefinition {
   rateOfFireBonus?: number;
   /** Traits added to the weapon's trait list while this attachment is equipped */
   addsTraits?: { name: string; description: string }[];
+  /** Trait names removed from the weapon's trait list while this attachment is equipped */
+  removesTraits?: string[];
 }
 
 // ── General equipment ───────────────────────────────────────────────────────

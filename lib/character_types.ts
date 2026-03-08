@@ -61,6 +61,24 @@ export const FACTIONS = [
 ] as const;
 export type Faction = (typeof FACTIONS)[number];
 
+// ── Faction definitions (optional bonuses when a faction is selected) ────────
+
+export interface FactionDefinition {
+  id: Faction;
+  /** Perk IDs automatically granted when this faction is selected (free, derived). */
+  grantsPerkIds?: string[];
+  /** Extra stat points granted when this faction is selected. */
+  grantsStatPoints?: number;
+}
+
+export const FACTION_DEFINITIONS: FactionDefinition[] = FACTIONS.map((id) => ({
+  id,
+}));
+
+export const FACTION_DEFINITIONS_BY_ID = new Map(
+  FACTION_DEFINITIONS.map((f) => [f.id as string, f]),
+);
+
 export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];
 

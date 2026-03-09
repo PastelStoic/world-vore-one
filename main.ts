@@ -2,6 +2,7 @@ import { App, staticFiles } from "fresh";
 import { define, type State } from "./utils.ts";
 import { getSession, getSessionIdFromRequest } from "./lib/auth.ts";
 import { isAdmin } from "./lib/admin.ts";
+import { cacheStaticFiles } from "./middleware/static_files.ts";
 
 export const app = new App<State>();
 
@@ -16,6 +17,10 @@ app.get("/favicon.ico", async () => {
   return new Response(file.readable, { headers });
 });
 
+// Fixes Cache-Control headers on responses from staticFiles() — must come first
+// so it can post-process the response. staticFiles() serves built assets with
+// correct MIME types but misapplies no-cache to Vite's content-hashed JS files.
+app.use(cacheStaticFiles());
 app.use(staticFiles());
 
 // Auth middleware – resolves user from session cookie

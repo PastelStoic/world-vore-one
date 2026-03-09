@@ -5,6 +5,7 @@ import type {
 import {
   ATTACHMENTS_BY_ID,
   FREE_ACCESSORIES_BY_ID,
+  WEAPON_TRAITS_BY_ID,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
@@ -14,26 +15,6 @@ import {
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
 } from "./helpers.ts";
-
-function parseGimmicks(str: string): { name: string; description: string }[] {
-  const result: { name: string; description: string }[] = [];
-  const lines = str.split("\n");
-  let current: { name: string; lines: string[] } | null = null;
-  for (const line of lines) {
-    if (line.startsWith("*") || line.startsWith("--->") || line.startsWith("-->") || line.trim() === "") {
-      current?.lines.push(line);
-    } else {
-      if (current) {
-        result.push({ name: current.name, description: current.lines.join("\n").trim() });
-      }
-      current = { name: line.endsWith(":") ? line.slice(0, -1) : line, lines: [] };
-    }
-  }
-  if (current) {
-    result.push({ name: current.name, description: current.lines.join("\n").trim() });
-  }
-  return result;
-}
 
 interface WeaponCardProps {
   weapon: InventoryWeapon;
@@ -311,32 +292,40 @@ export default function WeaponCard(props: WeaponCardProps) {
         )}
       </div>
 
-      {/* Gimmicks + traits added by equipped attachments */}
+      {/* Traits + traits added/removed by equipped attachments */}
       {(() => {
-        const baseTraits = def.gimmicks ? parseGimmicks(def.gimmicks) : [];
-        const attachmentTraits: { name: string; description: string }[] = [];
-        const removedTraitNames = new Set<string>();
+        const removedTraitIds = new Set<string>();
+        const addedTraitIds: string[] = [];
         for (const aId of w.attachedIds) {
           const aDef = ATTACHMENTS_BY_ID.get(aId);
-          if (aDef?.removesTraits) {
-            for (const name of aDef.removesTraits) {
-              removedTraitNames.add(name);
+          if (aDef?.removesTraitIds) {
+            for (const tid of aDef.removesTraitIds) {
+              removedTraitIds.add(tid);
             }
           }
-          if (aDef?.addsTraits) {
-            for (const t of aDef.addsTraits) {
-              attachmentTraits.push(t);
+          if (aDef?.addsTraitIds) {
+            for (const tid of aDef.addsTraitIds) {
+              addedTraitIds.push(tid);
             }
           }
         }
-        const filteredBaseTraits = baseTraits.filter((t) => !removedTraitNames.has(t.name));
-        const allTraits = [...filteredBaseTraits, ...attachmentTraits];
-        if (allTraits.length === 0) return null;
+        const allTraitIds = [
+          ...def.traitIds.filter((tid) => !removedTraitIds.has(tid)),
+          ...addedTraitIds,
+        ];
+        if (allTraitIds.length === 0) return null;
         return (
           <div class="flex flex-wrap gap-1">
-            {allTraits.map((g) => (
-              <TraitBadge key={g.name} name={g.name} description={g.description} />
-            ))}
+            {allTraitIds.map((tid) => {
+              const trait = WEAPON_TRAITS_BY_ID.get(tid);
+              return (
+                <TraitBadge
+                  key={tid}
+                  name={trait?.name ?? tid}
+                  description={trait?.description ?? ""}
+                />
+              );
+            })}
           </div>
         );
       })()}

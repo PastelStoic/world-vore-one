@@ -54,7 +54,8 @@ export interface WeaponDefinition {
   weight: number;
   /** Extra point cost beyond the free 3-item budget (0 = free slot, 1 = costs 1 extra point, 3 = restricted) */
   pointCost: number;
-  gimmicks: string;
+  /** Trait IDs from weapon_traits.ts applied to this weapon */
+  traitIds: string[];
   /** IDs of attachments compatible with this weapon */
   compatibleAttachmentIds: string[];
   /** IDs of free items that come with this weapon (e.g. Lewis magazines) */
@@ -94,10 +95,10 @@ export interface AttachmentDefinition {
   damageOverride?: number;
   /** If set, adds this value to the weapon's rate of fire when this attachment is active */
   rateOfFireBonus?: number;
-  /** Traits added to the weapon's trait list while this attachment is equipped */
-  addsTraits?: { name: string; description: string }[];
-  /** Trait names removed from the weapon's trait list while this attachment is equipped */
-  removesTraits?: string[];
+  /** Trait IDs added to the weapon's trait list while this attachment is equipped */
+  addsTraitIds?: string[];
+  /** Trait IDs removed from the weapon's trait list while this attachment is equipped */
+  removesTraitIds?: string[];
 }
 
 // ── General equipment ───────────────────────────────────────────────────────
@@ -111,6 +112,14 @@ export interface EquipmentDefinition {
   isCharge?: boolean;
   /** Equipment that is bulky (cannot stack with other bulky kits) */
   isBulky?: boolean;
+}
+
+// ── Weapon traits (gun / ranged) ────────────────────────────────────────────
+
+export interface WeaponTraitDefinition {
+  id: string;
+  name: string;
+  description: string;
 }
 
 // ── Melee weapon traits ─────────────────────────────────────────────────────

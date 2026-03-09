@@ -53,14 +53,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Revolvers",
     nation: "Any",
     weight: 1,
-    removesTraits: ["Cylinder"],
-    addsTraits: [
-      {
-        name: "Quickloader",
-        description:
-          "Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.",
-      },
-    ],
+    removesTraitIds: ["cylinder"],
+    addsTraitIds: ["quickloader"],
     description: `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
   },
@@ -84,15 +78,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
-    removesTraits: ["Double barrel Shotgun"],
-    addsTraits: [
-      {
-        name: "Sawn-off",
-        description: `Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-*Deals 4 damage to enemies 2 distances or closer. Deals 2 damage to enemies 3 distances or beyond.
-*Deals no damage to enemies 10 distances or beyond.`,
-      },
-    ],
+    removesTraitIds: ["double-barrel-shotgun"],
+    addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
 *Replaces the 'Double Barrel Shotgun' gimmick with this gimmick instead.
@@ -107,13 +94,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Civilian",
     weight: 0,
     reloadTurnsOverride: 30,
-    removesTraits: ["Musket"],
-    addsTraits: [
-      {
-        name: "Rifled musket",
-        description: "Reloading takes 30 turns.",
-      },
-    ],
+    removesTraitIds: ["musket"],
+    addsTraitIds: ["rifled-musket"],
     description: `*Replaces the 'Musket' gimmick with this gimmick instead.
 *Reloading takes 30 turns.`,
   },
@@ -151,7 +133,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     isCharge: true,
     ammoOverride: 20,
     requiresMagazines: true,
-    removesTraits: ["Half-Agile"],
+    removesTraitIds: ["half-agile"],
     description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
@@ -165,7 +147,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     isCharge: true,
     ammoOverride: 20,
     requiresMagazines: true,
-    removesTraits: ["Walking fire"],
+    removesTraitIds: ["walking-fire"],
     description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
@@ -195,7 +177,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *While the stock is on, loses agile gimmick.
 *Holstering and unholstering this weapon takes an additional turn.
 *+1 rate of fire.`,
-    removesTraits: ["Agile"],
+    removesTraitIds: ["agile"],
   },
 
   // ── American ──

@@ -21,17 +21,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Black Powder:
-*Makes a huge cloud of smelly gunpowder smoke after firing, giving away your position immediately.
-Extremely slow reload:
-*Takes 4 turns to load a single bullet. Each bullet must be reloaded individually. Cannot use a speedloader.
-*Weapon can fire after reloading is started provided there are still bullets inside it.
-Overloaded chamber:
-*Optionally overload the chamber(s) with additional gunpowder. Declare how many are at scene start.
-*Deals 4 damage, but if there are more 1's than 6's when shooting, it explodes in your hands.
-*If it explodes, deals 4 damage to you and the gun is ruined.`,
+    traitIds: ["one-handed", "black-powder", "extremely-slow-reload", "overloaded-chamber"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
     reloadTurns: 4,
@@ -47,12 +37,7 @@ Overloaded chamber:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Loading Gate:
-*Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
+    traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
@@ -67,21 +52,7 @@ Loading Gate:
     rateOfFire: 1,
     weight: 3,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-Canister:
-*Choose how many additional canisters of fuel to bring. Each canister has 1 weight. Declare at scene start.
-Flamethrower:
-*Maximum range of 3 distances; cannot target anyone beyond. Ignores cover.
---->If a target is hit:
-*Target is set on fire, takes 3 damage immediately and 3 damage every turn thereafter. A target on fire can only do one of two things: Create distance between themselves and you. OR Try to put the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well.
-Volatile:
---->If you are shot from the back OR a grenade explodes:
-*Roll a 1d6. On a 2, your canister is set ablaze, you are set on fire. On a 1, your canister explodes, setting you and everyone 1 distance away on fire. You cannot put the fire out until the canister is removed from your back in either circumstance.
-Bulky kit:
-*If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
+    traitIds: ["two-handed", "restricted", "canister", "flamethrower", "volatile", "bulky-kit"],
     compatibleAttachmentIds: [],
   },
   {
@@ -95,16 +66,7 @@ Bulky kit:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Double barrel Shotgun:
-*Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
-*Loads each shell individually, 1 shell per turn.
-Trench-sweeper:
-*Cover is one tier lower if the target is at 3 distances or closer.
-Double-fire:
-*Double-firing does not require a stance swap.
-*+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
+    traitIds: ["two-handed", "double-barrel-shotgun", "trench-sweeper", "double-fire"],
     compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off"],
     reloadsIndividually: true,
   },
@@ -119,12 +81,7 @@ Double-fire:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Extra long:
-*If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.
-Musket:
-*Takes 20 turns to reload. Accuracy penalty from ranged shooting is doubled.`,
+    traitIds: ["two-handed", "extra-long", "musket"],
     compatibleAttachmentIds: ["musket-rifled", ...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
     reloadTurns: 20,
@@ -140,16 +97,7 @@ Musket:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Recoverable ammo:
-*At combat end, all arrows can be recovered.
-Draw and let loose:
-*To fire this weapon, it must be prepared: A turn has to be spent pulling the string, and it may only be fired in the next.
-*You can keep the string drawn for [CONSTITUTION] turns before you lose your strength and let go.
-*You can move while the string is drawn.
-Utterly silent:
-*Only those 1 distance away from you can hear your bow's string. It is completely silent otherwise.`,
+    traitIds: ["two-handed", "recoverable-ammo-arrows", "draw-and-let-loose", "utterly-silent-bow"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
@@ -164,12 +112,7 @@ Utterly silent:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Recoverable ammo:
-*At combat end, all bolts can be recovered.
-Utterly silent:
-*Only those 1 distance away from you can hear your crossbow's string. It is completely silent otherwise.`,
+    traitIds: ["two-handed", "recoverable-ammo-bolts", "utterly-silent-crossbow"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
@@ -186,11 +129,7 @@ Utterly silent:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Mad-minute technique:
-*Takes one turn to swap into this technique.
-*+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
+    traitIds: ["two-handed", "mad-minute"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "lee-enfield-grenade-launcher",
@@ -207,12 +146,7 @@ Mad-minute technique:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Cylinder:
-*Reloads each bullet individually, taking 1 turn per bullet.`,
+    traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -227,21 +161,7 @@ Cylinder:
     rateOfFire: 10,
     weight: 4,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-*Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only pay 1.
-Heavy-machinegun:
-*Comes with a bipod, but gains no benefit from it.
-*Automatic fire whilst not set up awards a -3d6 for every shot fired.
-*Takes 3 turns to set up the bipod. Allies can help in setting the gun up.
-Multi-target:
-*Can hit multiple targets at once. Can choose how many bullets to spend per target.
-*One bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.
-Heavy magazines:
-*Choose how many additional magazines to bring. Each magazine has 1 weight. Declare at scene start.
-*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`,
+    traitIds: ["two-handed", "restricted", "heavy-machinegun", "multi-target", "heavy-magazines"],
     compatibleAttachmentIds: ["lewis-gun-shield"],
     freeAccessoryIds: ["lewis-drum-magazine"],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
@@ -261,13 +181,7 @@ Heavy magazines:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Tubular magazine:
-*Reloads each bullet individually, taking 1 turn per bullet.
-Extra long:
---->When fitted with a bayonet:
-*If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.`,
+    traitIds: ["two-handed", "tubular-magazine-bullets", "extra-long-bayonet"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -282,12 +196,7 @@ Extra long:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Cylinder:
-*Reloads each bullet individually, taking 1 turn per bullet.`,
+    traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -302,13 +211,7 @@ Cylinder:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Half-Agile:
-*Can be fired even at distance 0 with -3d6 to accuracy. Can be unholstered and holstered at no action cost.
-Short rifle:
---->When fitted with a bayonet:
-*Double debuff from having a bayonet on and loses half-agile.`,
+    traitIds: ["two-handed", "half-agile", "short-rifle"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "berthier-chauchat-magazines",
@@ -325,8 +228,7 @@ Short rifle:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.`,
+    traitIds: ["one-handed"],
     compatibleAttachmentIds: [],
   },
   {
@@ -340,13 +242,7 @@ Short rifle:
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Walking fire:
-*Takes one turn to swap into this technique.
-*-3d6 to shooting. May move and fire as part of the same action.
-Jams frequently:
-*Reloading takes 2 turns. If reload is started, cannot fire until reloading is finished.`,
+    traitIds: ["two-handed", "walking-fire", "jams-frequently"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "rsc-chauchat-magazines",
@@ -364,11 +260,7 @@ Jams frequently:
     rateOfFire: 4,
     weight: 3,
     pointCost: 1,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Light-machinegun:
-*Comes with a bipod but gains no benefit from it.
-*Automatic fire whilst not set up awards a -1d6 for every shot fired.`,
+    traitIds: ["two-handed", "light-machinegun"],
     compatibleAttachmentIds: [],
   },
 
@@ -384,10 +276,7 @@ Light-machinegun:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Reliable:
-*No debuff from having a bayonet attached. Does not break easily, maintenance isn't difficult, mud is no problem.`,
+    traitIds: ["two-handed", "reliable"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, "gewehr98-smk"],
   },
   {
@@ -401,13 +290,7 @@ Reliable:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Wasteful reload:
-*Takes 2 turns to reload if there's still any bullets inside, and said bullets are lost.
-*If reload is started, weapon cannot fire until reloading is finished.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.`,
+    traitIds: ["one-handed", "wasteful-reload", "agile"],
     compatibleAttachmentIds: ["c96-extended-stock"],
   },
   {
@@ -421,8 +304,7 @@ Agile:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.`,
+    traitIds: ["one-handed"],
     compatibleAttachmentIds: [],
   },
   {
@@ -436,12 +318,7 @@ Agile:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Loading Gate:
-*Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
+    traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
@@ -456,11 +333,7 @@ Loading Gate:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-*Soldiers with the 'stormtrooper' factional perk only need to pay 1.`,
+    traitIds: ["two-handed", "restricted"],
     compatibleAttachmentIds: [],
     discountFactionPerkIds: ["sturmtruppen"],
   },
@@ -477,10 +350,7 @@ Restricted:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Reliable:
-*No debuff from having a bayonet attached. Does not break easily, maintenance isn't difficult, mud is no problem.`,
+    traitIds: ["two-handed", "reliable"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "springfield-pedersen",
@@ -498,11 +368,7 @@ Reliable:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-*Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only need to pay 1.`,
+    traitIds: ["two-handed", "restricted"],
     compatibleAttachmentIds: ["thompson-drum-magazines"],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
   },
@@ -517,17 +383,7 @@ Restricted:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Shotgun:
-*Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
-Tubular magazine:
-*Reloads each shell individually, taking 1 turn per shell.
-Trench-sweeper:
-*Cover is one tier lower if the target is at 3 distances or closer.
-Slam fire:
-*Takes one turn to swap into this technique.
-*+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.`,
+    traitIds: ["two-handed", "shotgun", "tubular-magazine-shells", "trench-sweeper", "slam-fire"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -542,8 +398,7 @@ Slam fire:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.`,
+    traitIds: ["one-handed"],
     compatibleAttachmentIds: [],
   },
   {
@@ -557,15 +412,7 @@ Slam fire:
     rateOfFire: 4,
     weight: 3,
     pointCost: 1,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Light-machinegun:
-*Comes with a bipod but gains no benefit from it.
-*Automatic fire whilst not set up awards a -1d6 for every shot fired.
-Select fire:
-*Takes one action to choose between full auto or slower full auto.
-*The former has the weapon work normally.
-*The latter disregards the downside of light-machinegun, but gains a -2 to its rate of fire.`,
+    traitIds: ["two-handed", "light-machinegun", "select-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -579,17 +426,7 @@ Select fire:
     rateOfFire: 2,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-*Soldiers with the 'British-trench-raiders' or 'Harlem Hellfighters' factional perks only need to pay 1.
-Shotgun:
-*Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.
-Tubular magazine:
-*Reloads each shell individually, taking 1 turn per shell.
-Trench-sweeper:
-*Cover is one tier lower if the target is at 3 distances or closer.`,
+    traitIds: ["two-handed", "restricted", "shotgun", "tubular-magazine-shells", "trench-sweeper"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadsIndividually: true,
@@ -607,14 +444,7 @@ Trench-sweeper:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-6mm Arisaka:
-*The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.
-*Deal 2 damage at distance 16 or beyond.
-Extra long:
---->When fitted with a bayonet:
-*If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.`,
+    traitIds: ["two-handed", "6mm-arisaka", "extra-long-bayonet"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -628,12 +458,7 @@ Extra long:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Cylinder:
-*Reloads each bullet individually, taking 1 turn per bullet.`,
+    traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -650,11 +475,7 @@ Cylinder:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Extra long:
---->When fitted with a bayonet:
-*If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.`,
+    traitIds: ["two-handed", "extra-long-bayonet"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -668,12 +489,7 @@ Extra long:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Loading Gate:
-*Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.`,
+    traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: ["nagant-suppressor"],
     reloadsIndividually: true,
   },
@@ -688,13 +504,7 @@ Loading Gate:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-6mm Arisaka:
-*The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.
-*Deal 2 damage at distance 16 or beyond.`,
+    traitIds: ["two-handed", "restricted", "6mm-arisaka"],
     compatibleAttachmentIds: [],
   },
 
@@ -710,16 +520,7 @@ Restricted:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Half-Agile:
-*Can be fired even at distance 0 with -3d6 to accuracy. Can be unholstered and holstered at no action cost.
-Short rifle:
---->When fitted with a bayonet:
-*Double debuff from having a bayonet on and loses half-agile.
-En-block clip:
---->When the rifle is empty:
-*Reloading can be done at no action cost. Shooting on the same turn awards -3d6 to accuracy.`,
+    traitIds: ["two-handed", "half-agile", "short-rifle", "en-block-clip"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -733,8 +534,7 @@ En-block clip:
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.`,
+    traitIds: ["one-handed"],
     compatibleAttachmentIds: [
       "steyr-automatic-fire",
       "steyr-extended-magazine",
@@ -754,13 +554,7 @@ En-block clip:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-En-block clip:
---->When the rifle is empty:
-*Reloading can be done at no action cost. Shooting on the same turn awards -3d6 to accuracy.
-6.5mm Carcano:
-*The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.`,
+    traitIds: ["two-handed", "en-block-clip", "6-5mm-carcano"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -774,11 +568,7 @@ En-block clip:
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Overhead magazine:
-*The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
-*If you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.`,
+    traitIds: ["two-handed", "overhead-magazine"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -792,13 +582,7 @@ Overhead magazine:
     rateOfFire: 4,
     weight: 2,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-Overhead magazine:
-*The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target. 
-*If you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.`,
+    traitIds: ["two-handed", "restricted", "overhead-magazine"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -812,12 +596,7 @@ Overhead magazine:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Loading Gate:
-*Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.`,
+    traitIds: ["one-handed", "loading-gate", "agile"],
     compatibleAttachmentIds: [],
     reloadsIndividually: true,
   },
@@ -834,12 +613,7 @@ Agile:
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Magazine-fed:
-*Each magazine has 1 weight; choose how many magazines to bring at the start of a scene.
-*Reloading is a free action if you use a magazine.
-*Reloads normally if you have no magazines left.`,
+    traitIds: ["two-handed", "magazine-fed"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
     freeAccessoryIds: ["schmidt-rubin-magazine"],
   },
@@ -854,12 +628,7 @@ Magazine-fed:
     rateOfFire: 1,
     weight: 1,
     pointCost: 0,
-    gimmicks: `One-handed:
-*Weapon can be held in one hand, with another tool in your free hand.
-Agile:
-*Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-Cylinder:
-*Reloads each bullet individually, taking 1 turn per bullet.`,
+    traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
     reloadsIndividually: true,
   },
@@ -874,20 +643,7 @@ Cylinder:
     rateOfFire: 10,
     weight: 4,
     pointCost: 3,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Restricted:
-*Prized and rare weapon. Must pay 3 points to have it.
-Heavy-machinegun:
-*Comes with a bipod, but gains no benefit from it.
-*Automatic fire whilst not set up awards a -3d6 for every shot fired.
-*Takes 3 turns to set up the bipod. Allies can help in setting the gun up.
-Multi-target:
-*Can hit multiple targets at once. Can choose how many bullets to spend per target.
-*One bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.
-Extra heavy magazines:
-*Choose how many additional magazines to bring. Each magazine has 3 weight. Declare at scene start.
-*Reloading takes 3 turns. If reload is started, cannot fire until reloading is finished. Allies can help in reloading.`,
+    traitIds: ["two-handed", "restricted", "heavy-machinegun", "multi-target", "extra-heavy-magazines"],
     compatibleAttachmentIds: [],
     freeAccessoryIds: ["mg11-magazine"],
     requiresMagazines: true,
@@ -904,11 +660,7 @@ Extra heavy magazines:
     rateOfFire: 4,
     weight: 3,
     pointCost: 1,
-    gimmicks: `Two-handed:
-*Weapon requires both hands in order to be used properly.
-Light-machinegun:
-*Comes with a bipod but gains no benefit from it.
-*Automatic fire whilst not set up awards a -1d6 for every shot fired.`,
+    traitIds: ["two-handed", "light-machinegun"],
     compatibleAttachmentIds: [],
   },
 ];

@@ -1,6 +1,6 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
-import { WEAPONS, type WeaponKind } from "@/data/equipment.ts";
+import { WEAPONS, WEAPON_TRAITS_BY_ID, type WeaponKind } from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
 
@@ -125,12 +125,18 @@ export default define.page(function WikiWeapons() {
                           Reloads one round at a time.
                         </p>
                       )}
-                      {weapon.gimmicks && (
-                        <div class="mt-1">
-                          <span class="text-xs font-medium">Gimmicks: </span>
-                          <span class="text-xs whitespace-pre-line text-base-content/70">
-                            {weapon.gimmicks}
-                          </span>
+                      {weapon.traitIds.length > 0 && (
+                        <div class="mt-1 space-y-1">
+                          <span class="text-xs font-medium">Traits: </span>
+                          {weapon.traitIds.map((tid) => {
+                            const trait = WEAPON_TRAITS_BY_ID.get(tid);
+                            return (
+                              <div key={tid} class="text-xs text-base-content/70 ml-2">
+                                <span class="font-medium">{trait?.name ?? tid}:</span>{" "}
+                                {trait?.description ?? ""}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

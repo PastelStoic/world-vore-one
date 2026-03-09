@@ -6,6 +6,7 @@ import {
   EQUIPMENT_BY_ID,
   MELEE_WEAPONS,
   type Nation,
+  WEAPON_TRAITS_BY_ID,
   WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
@@ -943,7 +944,10 @@ export default function InventorySection(props: InventorySectionProps) {
                     <div class="text-xs text-base-content/70 ml-2">
                       <PerkDescription
                         name=""
-                        description={w.gimmicks}
+                        description={w.traitIds.map((tid) => {
+                          const trait = WEAPON_TRAITS_BY_ID.get(tid);
+                          return trait ? `${trait.name}: ${trait.description}` : tid;
+                        }).join("\n")}
                         hideByDefault
                       />
                     </div>

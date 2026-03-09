@@ -20,6 +20,40 @@ import {
 } from "./character_types.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a JSON string as a plain object, then build a Record by transforming
+ * each entry. Returns `defaultValue` on parse failure or non-object input.
+ */
+function parseJsonRecord<T>(
+  raw: string,
+  transform: (key: string, value: unknown) => T | undefined,
+): Record<string, T> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, T> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      const transformed = transform(key, value);
+      if (transformed !== undefined) result[key] = transformed;
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Parsers
+// ---------------------------------------------------------------------------
+
 export function parseRace(rawRace: string): Race {
   if (RACES.includes(rawRace as Race)) {
     return rawRace as Race;
@@ -74,82 +108,36 @@ export function parsePerkIds(raw: string): string[] | null {
 }
 
 export function parsePerkNotes(raw: string): Record<string, string> {
-  try {
-    const parsed = JSON.parse(raw);
-    if (
-      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
-    ) {
-      return {};
-    }
-    const notes: Record<string, string> = {};
-    for (const [key, value] of Object.entries(parsed)) {
-      if (typeof value === "string" && value.trim()) {
-        notes[key] = value.trim();
-      }
-    }
-    return notes;
-  } catch {
-    return {};
-  }
+  return parseJsonRecord(raw, (_key, value) => {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    return undefined;
+  });
 }
 
 export function parsePerkUpgradeNotes(
   raw: string,
 ): Record<string, string[]> {
-  try {
-    const parsed = JSON.parse(raw);
-    if (
-      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
-    ) {
-      return {};
+  return parseJsonRecord(raw, (_key, value) => {
+    if (Array.isArray(value)) {
+      return value.map((v) => typeof v === "string" ? v : "");
     }
-    const result: Record<string, string[]> = {};
-    for (const [key, value] of Object.entries(parsed)) {
-      if (Array.isArray(value)) {
-        result[key] = value.map((v) =>
-          typeof v === "string" ? v : ""
-        );
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
+    return undefined;
+  });
 }
 
 export function parsePerkStatChoices(
   raw: string,
 ): Record<string, BaseStatKey[]> {
-  const VALID_STAT_KEYS: BaseStatKey[] = [
-    "strength",
-    "dexterity",
-    "constitution",
-    "intelligence",
-    "charisma",
-    "escapeTraining",
-    "digestionStrength",
-    "digestionResilience",
-  ];
-  try {
-    const parsed = JSON.parse(raw);
-    if (
-      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
-    ) {
-      return {};
+  const validStatKeys = BASE_STAT_FIELDS.map((f) => f.key as string);
+  return parseJsonRecord(raw, (_key, value) => {
+    if (Array.isArray(value)) {
+      const choices = value.filter((v): v is BaseStatKey =>
+        typeof v === "string" && validStatKeys.includes(v)
+      );
+      if (choices.length > 0) return choices;
     }
-    const result: Record<string, BaseStatKey[]> = {};
-    for (const [key, value] of Object.entries(parsed)) {
-      if (Array.isArray(value)) {
-        const choices = value.filter((v): v is BaseStatKey =>
-          typeof v === "string" && (VALID_STAT_KEYS as string[]).includes(v)
-        );
-        if (choices.length > 0) result[key] = choices;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
+    return undefined;
+  });
 }
 
 export function parsePerkRanks(
@@ -179,23 +167,10 @@ export function parsePerkRanks(
 }
 
 export function parsePerkDisguises(raw: string): Record<string, string> {
-  try {
-    const parsed = JSON.parse(raw);
-    if (
-      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
-    ) {
-      return {};
-    }
-    const disguises: Record<string, string> = {};
-    for (const [key, value] of Object.entries(parsed)) {
-      if (typeof value === "string" && value.trim()) {
-        disguises[key] = value.trim();
-      }
-    }
-    return disguises;
-  } catch {
-    return {};
-  }
+  return parseJsonRecord(raw, (_key, value) => {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    return undefined;
+  });
 }
 
 /**
@@ -205,24 +180,15 @@ export function parsePerkDisguises(raw: string): Record<string, string> {
 export function parsePerkSelections(
   raw: string,
 ): Record<string, string[]> {
-  try {
-    const parsed = JSON.parse(raw);
-    if (
-      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
-    ) {
-      return {};
+  return parseJsonRecord(raw, (_key, value) => {
+    if (Array.isArray(value)) {
+      const ids = value.filter((v): v is string =>
+        typeof v === "string" && v.trim().length > 0
+      );
+      if (ids.length > 0) return ids;
     }
-    const result: Record<string, string[]> = {};
-    for (const [key, value] of Object.entries(parsed)) {
-      if (Array.isArray(value)) {
-        const ids = value.filter((v): v is string => typeof v === "string" && v.trim().length > 0);
-        if (ids.length > 0) result[key] = ids;
-      }
-    }
-    return result;
-  } catch {
-    return {};
-  }
+    return undefined;
+  });
 }
 
 export function parseDescription(raw: string): CharacterDescription | null {

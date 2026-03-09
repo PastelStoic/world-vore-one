@@ -6,7 +6,6 @@ import {
   EQUIPMENT_BY_ID,
   MELEE_WEAPONS,
   type Nation,
-  NATIONS,
   WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
@@ -29,10 +28,12 @@ import WeaponCard from "./inventory/WeaponCard.tsx";
 import EquipmentCard from "./inventory/EquipmentCard.tsx";
 import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
+import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
   type InventoryLocation,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
+  convertMagazinesToAttachment,
   weightLookups,
   slotLookups,
 } from "./inventory/helpers.ts";
@@ -65,6 +66,7 @@ interface InventorySectionProps {
   onLoseWeaponPermanently?: (pointsLost: number) => void;
 }
 
+type ActivePicker = "weapon" | "equipment" | "melee" | "attachment" | null;
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -85,10 +87,8 @@ export default function InventorySection(props: InventorySectionProps) {
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
-  const [showAddWeapon, setShowAddWeapon] = useState(false);
-  const [showAddEquipment, setShowAddEquipment] = useState(false);
-  const [showAddMelee, setShowAddMelee] = useState(false);
-  const [showAddAttachment, setShowAddAttachment] = useState(false);
+
+  const [activePicker, setActivePicker] = useState<ActivePicker>(null);
   const [weaponFilter, setWeaponFilter] = useState("");
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
@@ -99,6 +99,10 @@ export default function InventorySection(props: InventorySectionProps) {
   const [meleeFilter, setMeleeFilter] = useState("");
   const [addTarget, setAddTarget] = useState<InventoryLocation>("carried");
 
+  function togglePicker(picker: ActivePicker) {
+    setActivePicker((current) => current === picker ? null : picker);
+  }
+
   // ── Derived ──
   const allSlots = countAllItemSlots(inventory, slotLookups);
   const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
@@ -108,23 +112,12 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // Compute inventory point cost with signature weapon adjustments
   const inventoryPointCost = (() => {
-    // Use the signature-adjusted cost function
-    const adjustedGetCost = (id: string) => getWeaponPointCost(id, perkIds);
-    let cost = calculateInventoryPointCost(
-      inventory,
-      adjustedGetCost,
-      slotLookups,
-    );
-
     if (hasSignatureWeaponPerk) {
-      // Recalculate with signature adjustments
-      cost = 0;
-
+      let cost = 0;
       const adjustedSlots = countAllItemSlots(inventory, slotLookups);
       const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
       cost += overFree * EXTRA_ITEM_POINT_COST;
 
-      // Weapon-specific costs with signature adjustment
       for (const w of inventory.carried.weapons) {
         cost += getSignatureAdjustedPointCost(
           w.weaponId,
@@ -139,55 +132,24 @@ export default function InventorySection(props: InventorySectionProps) {
           perkIds,
         );
       }
-    } else {
-      cost = calculateInventoryPointCost(
-        inventory,
-        (id) => getWeaponPointCost(id, perkIds),
-        slotLookups,
-      );
+      return cost;
     }
 
-    return cost;
+    return calculateInventoryPointCost(
+      inventory,
+      (id) => getWeaponPointCost(id, perkIds),
+      slotLookups,
+    );
   })();
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
     : undefined;
 
   // ── Cost computation for adding an item ──
-  /** Compute how many points adding a weapon to a location would cost */
-  function weaponAddCost(
-    weaponId: string,
-    _location: InventoryLocation,
-  ): number {
-    let cost = getWeaponPointCost(weaponId, perkIds);
-    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
-      cost += EXTRA_ITEM_POINT_COST;
-    }
-    return cost;
-  }
 
-  /** Compute how many points adding equipment to a location would cost */
-  function equipmentAddCost(_location: InventoryLocation): number {
-    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
-      return EXTRA_ITEM_POINT_COST;
-    }
-    return 0;
-  }
-
-  /** Compute how many points adding an attachment to a location would cost */
-  function attachmentAddCost(_location: InventoryLocation): number {
-    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
-      return EXTRA_ITEM_POINT_COST;
-    }
-    return 0;
-  }
-
-  /** Compute how many points adding a melee weapon to a location would cost */
-  function meleeAddCost(_location: InventoryLocation): number {
-    if (allSlots >= CREATION_FREE_ITEM_SLOTS) {
-      return EXTRA_ITEM_POINT_COST;
-    }
-    return 0;
+  /** Compute the slot cost component for adding a new item */
+  function slotCost(): number {
+    return allSlots >= CREATION_FREE_ITEM_SLOTS ? EXTRA_ITEM_POINT_COST : 0;
   }
 
   function costLabel(cost: number): string {
@@ -276,7 +238,7 @@ export default function InventorySection(props: InventorySectionProps) {
       inv[location].weapons.push(item);
       return inv;
     });
-    setShowAddWeapon(false);
+    setActivePicker(null);
   }
 
   // -- Remove weapon --
@@ -300,8 +262,6 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // -- Permanently lose a weapon (weapon-master "Lost" button) --
-  // Only deduct the weapon's own point cost (restricted weapon cost).
-  // Slot cost is NOT deducted here because it naturally recalculates when the weapon is removed.
   function loseWeaponPermanently(location: InventoryLocation, index: number) {
     const weapon = inventory[location].weapons[index];
     if (!weapon) return;
@@ -312,10 +272,7 @@ export default function InventorySection(props: InventorySectionProps) {
     }
   }
 
-  // -- Return a weapon to the armory (weapon-master "Return to armory" button) --
-  // Simply removes the weapon from inventory. The point cost is naturally refunded by
-  // inventory recalculation — the character already owns this weapon and can re-withdraw it.
-  // (Only "Lost" permanently deducts points, for weapons that are stolen / gone for good.)
+  // -- Return a weapon to the armory (weapon-master) --
   function returnWeaponToArmory(location: InventoryLocation, index: number) {
     const weapon = inventory[location].weapons[index];
     if (!weapon) return;
@@ -351,7 +308,7 @@ export default function InventorySection(props: InventorySectionProps) {
       inv[location].equipment.push(item);
       return inv;
     });
-    setShowAddEquipment(false);
+    setActivePicker(null);
   }
 
   // -- Remove equipment --
@@ -404,7 +361,7 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Toggle a charge used/unused (right-to-left: rightmost charge is spent first) --
+  // -- Toggle a charge used/unused --
   function toggleCharge(
     location: InventoryLocation,
     index: number,
@@ -414,10 +371,8 @@ export default function InventorySection(props: InventorySectionProps) {
       const eq = inv[location].equipment[index];
       const isUsed = chargeIndex >= eq.totalCharges - eq.usedCharges;
       if (isUsed) {
-        // Restore this charge and all to its left
         eq.usedCharges = eq.totalCharges - chargeIndex - 1;
       } else {
-        // Use this charge and all to its right
         eq.usedCharges = eq.totalCharges - chargeIndex;
       }
       return inv;
@@ -433,7 +388,6 @@ export default function InventorySection(props: InventorySectionProps) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[index];
       const def = WEAPONS_BY_ID.get(weapon.weaponId);
-      // Check for ammo override from attached attachments
       let maxAmmo = def?.ammo ?? 999;
       for (const aId of weapon.attachedIds) {
         const aDef = ATTACHMENTS_BY_ID.get(aId);
@@ -456,7 +410,7 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Attach / detach attachments (moves from inventory to weapon and back) --
+  // -- Attach / detach attachments --
   function attachToWeapon(
     location: InventoryLocation,
     weaponIndex: number,
@@ -464,7 +418,6 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
-      // Find the attachment in the same location's inventory
       const attIdx = inv[location].attachments.findIndex(
         (a) => a.attachmentId === attachmentId,
       );
@@ -475,8 +428,6 @@ export default function InventorySection(props: InventorySectionProps) {
       }
       weapon.attachedIds.push(attachmentId);
 
-      // For charge-based attachments: save charge data on the weapon so totalCharges
-      // survives while the attachment is equipped and can be restored on detach.
       if (attDef?.isCharge && attInv) {
         if (!weapon.attachmentChargeData) weapon.attachmentChargeData = {};
         weapon.attachmentChargeData[attachmentId] = {
@@ -485,7 +436,6 @@ export default function InventorySection(props: InventorySectionProps) {
         };
       }
 
-      // For charge-based magazine attachments: convert charges into weapon magazines
       if (attDef?.isCharge && attDef.ammoOverride && attInv) {
         const remainingCharges = Math.max(
           0,
@@ -493,25 +443,17 @@ export default function InventorySection(props: InventorySectionProps) {
         );
 
         if (remainingCharges > 0) {
-          // Check if we have saved magazine states from a previous detach
           if (
             attInv.savedMagazineStates && attInv.savedMagazineStates.length > 0
           ) {
             const ammoOverride = attDef.ammoOverride!;
-            // Use only as many saved states as remainingCharges allows, so a
-            // manually-reduced totalCharges doesn't resurrect extra magazines.
             const statesToUse = [...attInv.savedMagazineStates]
               .sort((a, b) => b - a)
               .slice(0, remainingCharges);
-            // Load the best magazine
             const best = statesToUse.shift()!;
             weapon.currentAmmo = best;
-            // Separate remaining into full and partial
             const fullMags = statesToUse.filter((s) => s >= ammoOverride).length;
             const partials = statesToUse.filter((s) => s < ammoOverride);
-            // If the user manually increased totalCharges beyond what savedMagazineStates
-            // recorded (e.g. bought more magazines after a detach), treat the surplus
-            // as additional full magazines so they are not silently dropped.
             const extraFullMags = Math.max(
               0,
               remainingCharges - attInv.savedMagazineStates.length,
@@ -519,13 +461,11 @@ export default function InventorySection(props: InventorySectionProps) {
             weapon.magazines = fullMags + extraFullMags;
             weapon.partialMagazines = partials;
           } else {
-            // Fresh attach: load one magazine, rest are spare
             weapon.currentAmmo = attDef.ammoOverride;
             weapon.magazines = remainingCharges - 1;
             weapon.partialMagazines = [];
           }
         }
-        // If remainingCharges === 0, don't change ammo or magazines
       }
 
       if (attDef?.ammoOverride) {
@@ -548,54 +488,18 @@ export default function InventorySection(props: InventorySectionProps) {
 
       const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
 
-      // For charge-based magazine attachments: convert weapon magazines back to charges
-      // and save individual magazine ammo states for re-attachment
       if (attDef?.isCharge && attDef.ammoOverride) {
-        const partials = weapon.partialMagazines ?? [];
-        // Build array of all magazine ammo states:
-        // full spare magazines + partial spare magazines + the loaded magazine
-        const savedStates: number[] = [];
-        for (let i = 0; i < weapon.magazines; i++) {
-          savedStates.push(attDef.ammoOverride);
-        }
-        for (const p of partials) {
-          savedStates.push(p);
-        }
-        // Include the currently loaded magazine if it has ammo
-        if (weapon.currentAmmo > 0) {
-          savedStates.push(weapon.currentAmmo);
-        }
-
-        // Restore the original totalCharges so that spending magazines only raises
-        // usedCharges rather than reducing totalCharges.
-        const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
-        const originalTotalCharges = savedChargeData?.totalCharges ?? savedStates.length;
-        const usedCharges = Math.max(0, originalTotalCharges - savedStates.length);
-        inv[location].attachments.push({
-          attachmentId,
-          totalCharges: originalTotalCharges,
-          usedCharges,
-          savedMagazineStates: savedStates,
-        });
-        if (weapon.attachmentChargeData) {
-          delete weapon.attachmentChargeData[attachmentId];
-        }
-        weapon.magazines = 0;
-        weapon.partialMagazines = [];
-        // Revert ammo to weapon default (gun is empty after removing magazine)
+        const restored = convertMagazinesToAttachment(weapon, attachmentId);
+        inv[location].attachments.push(restored);
         const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
         weapon.currentAmmo = Math.min(weapon.currentAmmo, wDef?.ammo ?? 999);
       } else {
-        // Return the attachment to the same location's inventory.
-        // For charge-based non-magazine attachments, restore the charge state that was
-        // saved when the attachment was equipped.
         const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
         inv[location].attachments.push({
           attachmentId,
           totalCharges: savedChargeData?.totalCharges ?? (attDef?.isCharge ? 1 : 0),
           usedCharges: savedChargeData?.usedCharges ?? 0,
         });
-        // Clean up saved state from weapon
         if (weapon.attachmentChargeData) {
           delete weapon.attachmentChargeData[attachmentId];
         }
@@ -604,7 +508,6 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Eject a charge-based magazine attachment (e.g. Thompson drum) and do a standard reload --
   function ejectDrumAndReload(
     location: InventoryLocation,
     weaponIndex: number,
@@ -619,38 +522,16 @@ export default function InventorySection(props: InventorySectionProps) {
 
       const attDef = ATTACHMENTS_BY_ID.get(drumAttachmentId);
       if (attDef?.isCharge && attDef.ammoOverride) {
-        const partials = weapon.partialMagazines ?? [];
-        const savedStates: number[] = [];
-        for (let i = 0; i < weapon.magazines; i++) {
-          savedStates.push(attDef.ammoOverride);
-        }
-        for (const p of partials) savedStates.push(p);
-        if (weapon.currentAmmo > 0) savedStates.push(weapon.currentAmmo);
-
-        const savedChargeData = weapon.attachmentChargeData?.[drumAttachmentId];
-        const originalTotalCharges = savedChargeData?.totalCharges ?? savedStates.length;
-        const usedCharges = Math.max(0, originalTotalCharges - savedStates.length);
-        inv[location].attachments.push({
-          attachmentId: drumAttachmentId,
-          totalCharges: originalTotalCharges,
-          usedCharges,
-          savedMagazineStates: savedStates,
-        });
-        if (weapon.attachmentChargeData) {
-          delete weapon.attachmentChargeData[drumAttachmentId];
-        }
-        weapon.magazines = 0;
-        weapon.partialMagazines = [];
+        const restored = convertMagazinesToAttachment(weapon, drumAttachmentId);
+        inv[location].attachments.push(restored);
       }
 
-      // Standard reload: fill to base weapon ammo capacity
       const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
       weapon.currentAmmo = wDef?.ammo ?? weapon.currentAmmo;
       return inv;
     });
   }
 
-  // -- Toggle a charge for a non-magazine isCharge attachment currently on a weapon --
   function toggleAttachedWeaponCharge(
     location: InventoryLocation,
     weaponIndex: number,
@@ -663,13 +544,10 @@ export default function InventorySection(props: InventorySectionProps) {
       const chargeData = weapon.attachmentChargeData[attachmentId];
       if (!chargeData) return inv;
       const { totalCharges, usedCharges } = chargeData;
-      // Right-to-left: charges to the right are spent first
       const usedStartIndex = totalCharges - usedCharges;
       if (chargeIndex >= usedStartIndex) {
-        // Currently used → restore it
         chargeData.usedCharges = Math.max(0, usedCharges - 1);
       } else {
-        // Currently available → use it
         chargeData.usedCharges = Math.min(totalCharges, usedCharges + 1);
       }
       return inv;
@@ -692,7 +570,7 @@ export default function InventorySection(props: InventorySectionProps) {
       inv[location].attachments.push(item);
       return inv;
     });
-    setShowAddAttachment(false);
+    setActivePicker(null);
   }
 
   function removeAttachment(location: InventoryLocation, index: number) {
@@ -729,7 +607,6 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Toggle an attachment charge used/unused (same logic as equipment toggleCharge) --
   function toggleAttachmentCharge(
     location: InventoryLocation,
     index: number,
@@ -747,7 +624,7 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
-  // -- Add melee weapon by premade ID --
+  // -- Add melee weapon --
   function addMeleeWeapon(meleeWeaponId: string, location: InventoryLocation) {
     const item: InventoryMeleeWeapon = {
       instanceId: crypto.randomUUID(),
@@ -757,7 +634,7 @@ export default function InventorySection(props: InventorySectionProps) {
       inv[location].meleeWeapons.push(item);
       return inv;
     });
-    setShowAddMelee(false);
+    setActivePicker(null);
   }
 
   // -- Remove melee weapon --
@@ -806,7 +683,6 @@ export default function InventorySection(props: InventorySectionProps) {
 
         {isEmpty && <p class="text-sm text-base-content/50 italic">No items.</p>}
 
-        {/* Weapons */}
         {inv.weapons.length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -841,7 +717,6 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {/* Melee weapons */}
         {inv.meleeWeapons.length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -864,7 +739,6 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {/* Equipment */}
         {inv.equipment.length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -889,7 +763,6 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {/* Attachments (loose, not attached to any weapon) */}
         {(inv.attachments ?? []).length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -918,7 +791,6 @@ export default function InventorySection(props: InventorySectionProps) {
   // ── Filter available weapons/equipment ──
   const filteredWeapons = WEAPONS.filter((w) => {
     if (nationFilter) {
-      // "Any" nation weapons show for all non-Civilian nations
       if (w.nation === "Any") {
         if (nationFilter === "Civilian") return false;
       } else if (w.nation !== nationFilter) {
@@ -947,7 +819,6 @@ export default function InventorySection(props: InventorySectionProps) {
   const filteredAttachments = ATTACHMENTS.filter((a) => {
     if (attachmentNationFilter) {
       if (attachmentNationFilter === "Any") {
-        // "Generic" filter: only show attachments with nation "Any"
         if (a.nation !== "Any") return false;
       } else {
         if (a.nation !== attachmentNationFilter) return false;
@@ -975,15 +846,12 @@ export default function InventorySection(props: InventorySectionProps) {
         )}
       </h3>
 
-      {/* Carried inventory */}
       {renderInventoryBlock("carried")}
 
       <hr class="border-gray-200" />
 
-      {/* Stowed inventory */}
       {renderInventoryBlock("stowed")}
 
-      {/* Add item controls */}
       {!readOnly && (
         <div class="space-y-2 border-t pt-2">
           <div class="flex flex-wrap gap-2">
@@ -1004,366 +872,228 @@ export default function InventorySection(props: InventorySectionProps) {
             <button
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-              onClick={() => {
-                setShowAddWeapon((v) => !v);
-                setShowAddEquipment(false);
-                setShowAddMelee(false);
-                setShowAddAttachment(false);
-              }}
+              onClick={() => togglePicker("weapon")}
             >
-              {showAddWeapon ? "Cancel" : hasWeaponMaster ? "Armory" : "+ Weapon"}
+              {activePicker === "weapon" ? "Cancel" : hasWeaponMaster ? "Armory" : "+ Weapon"}
             </button>
             <button
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-              onClick={() => {
-                setShowAddEquipment((v) => !v);
-                setShowAddWeapon(false);
-                setShowAddMelee(false);
-                setShowAddAttachment(false);
-              }}
+              onClick={() => togglePicker("equipment")}
             >
-              {showAddEquipment ? "Cancel" : "+ Equipment"}
+              {activePicker === "equipment" ? "Cancel" : "+ Equipment"}
             </button>
             <button
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-              onClick={() => {
-                setShowAddAttachment((v) => !v);
-                setShowAddWeapon(false);
-                setShowAddEquipment(false);
-                setShowAddMelee(false);
-              }}
+              onClick={() => togglePicker("attachment")}
             >
-              {showAddAttachment ? "Cancel" : "+ Attachment"}
+              {activePicker === "attachment" ? "Cancel" : "+ Attachment"}
             </button>
             <button
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-              onClick={() => {
-                setShowAddMelee((v) => !v);
-                setShowAddWeapon(false);
-                setShowAddEquipment(false);
-                setShowAddAttachment(false);
-              }}
+              onClick={() => togglePicker("melee")}
             >
-              {showAddMelee ? "Cancel" : "+ Melee Weapon"}
+              {activePicker === "melee" ? "Cancel" : "+ Melee Weapon"}
             </button>
           </div>
 
-          {/* Weapon picker */}
-          {showAddWeapon && (
-            <div class="space-y-1 border rounded p-2 bg-base-200">
-              <div class="flex flex-wrap gap-1 mb-1">
-                <button
-                  type="button"
-                  class={`text-xs px-2 py-0.5 rounded border ${
-                    nationFilter === ""
-                      ? "bg-primary/20 border-primary/70 font-medium"
-                      : "hover:bg-base-200"
-                  }`}
-                  onClick={() => setNationFilter("")}
-                >
-                  All
-                </button>
-                {NATIONS.filter((n) => n !== "Any").map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    class={`text-xs px-2 py-0.5 rounded border ${
-                      nationFilter === n
-                        ? "bg-primary/20 border-primary/70 font-medium"
-                        : "hover:bg-base-200"
-                    }`}
-                    onClick={() => setNationFilter(n === nationFilter ? "" : n)}
+          {activePicker === "weapon" && (
+            <ItemPicker
+              items={filteredWeapons}
+              filterValue={weaponFilter}
+              onFilterChange={setWeaponFilter}
+              filterPlaceholder="Filter weapons by name, type, or nation…"
+              emptyMessage="No matching weapons."
+              nationFilter={{
+                value: nationFilter,
+                onChange: setNationFilter,
+              }}
+              renderItem={(w) => {
+                const addCost = getWeaponPointCost(w.id, perkIds) + slotCost();
+                return (
+                  <li
+                    key={w.id}
+                    class="text-sm border-b border-gray-100 pb-1"
                   >
-                    {n}
-                  </button>
-                ))}
-              </div>
-              <input
-                type="text"
-                class="w-full border rounded px-2 py-1 text-sm"
-                placeholder="Filter weapons by name, type, or nation…"
-                value={weaponFilter}
-                onInput={(e) =>
-                  setWeaponFilter((e.target as HTMLInputElement).value)}
-              />
-              {filteredWeapons.length === 0
-                ? (
-                  <p class="text-sm text-base-content/50 italic">
-                    No matching weapons.
-                  </p>
-                )
-                : (
-                  <ul class="max-h-64 overflow-y-auto space-y-1">
-                    {filteredWeapons.map((w) => {
-                      const addCost = weaponAddCost(w.id, addTarget);
-                      return (
-                        <li
-                          key={w.id}
-                          class="text-sm border-b border-gray-100 pb-1"
-                        >
-                          <div class="flex items-center justify-between">
-                            <span>
-                              {w.name}{" "}
-                              <span class="text-xs text-base-content/60">
-                                ({w.type} · {w.nation} · W:{w.weight}{" "}
-                                · DMG:{w.damage})
-                              </span>
-                              {w.pointCost > 0 && (
-                                <span class="text-xs text-warning ml-1">
-                                  [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
-                                </span>
-                              )}
-                            </span>
-                            <button
-                              type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                              onClick={() => addWeapon(w.id, addTarget)}
-                            >
-                              {hasWeaponMaster
-                                ? `Withdraw (${costLabel(addCost)})`
-                                : `Add (${costLabel(addCost)})`}
-                            </button>
-                          </div>
-                          <div class="text-xs text-base-content/70 ml-2">
-                            <PerkDescription
-                              name=""
-                              description={w.gimmicks}
-                              hideByDefault
-                            />
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-            </div>
-          )}
-
-          {/* Equipment picker */}
-          {showAddEquipment && (
-            <div class="space-y-1 border rounded p-2 bg-base-200">
-              <input
-                type="text"
-                class="w-full border rounded px-2 py-1 text-sm"
-                placeholder="Filter equipment by name…"
-                value={equipmentFilter}
-                onInput={(e) =>
-                  setEquipmentFilter((e.target as HTMLInputElement).value)}
-              />
-              {filteredEquipment.length === 0
-                ? (
-                  <p class="text-sm text-base-content/50 italic">
-                    No matching equipment.
-                  </p>
-                )
-                : (
-                  <ul class="space-y-1">
-                    {filteredEquipment.map((eq) => {
-                      const addCost = equipmentAddCost(addTarget);
-                      const cannotCarryBulky = addTarget === "carried" &&
-                        eq.isBulky && carriedBulkyCount > 0;
-                      return (
-                        <li
-                          key={eq.id}
-                          class="text-sm border-b border-gray-100 pb-1"
-                        >
-                          <div class="flex items-center justify-between">
-                            <span>
-                              {eq.name}{" "}
-                              <span class="text-xs text-base-content/60">
-                                (W:{eq.weight}
-                                {eq.isCharge ? " · Charges" : ""}
-                                {eq.isBulky ? " · Bulky" : ""})
-                              </span>
-                            </span>
-                            <button
-                              type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200 disabled:opacity-40 disabled:cursor-not-allowed"
-                              onClick={() => addEquipment(eq.id, addTarget)}
-                              disabled={cannotCarryBulky}
-                              title={cannotCarryBulky
-                                ? "Only one bulky kit can be carried at a time"
-                                : undefined}
-                            >
-                              Add ({costLabel(addCost)})
-                            </button>
-                          </div>
-                          <div class="text-xs text-base-content/70 ml-2">
-                            <PerkDescription
-                              name=""
-                              description={eq.description}
-                              hideByDefault
-                            />
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-            </div>
-          )}
-
-          {/* Melee weapon picker */}
-          {showAddMelee && (
-            <div class="space-y-1 border rounded p-2 bg-base-200">
-              <input
-                type="text"
-                class="w-full border rounded px-2 py-1 text-sm"
-                placeholder="Filter melee weapons by name…"
-                value={meleeFilter}
-                onInput={(e) =>
-                  setMeleeFilter((e.target as HTMLInputElement).value)}
-              />
-              {filteredMeleeWeapons.length === 0
-                ? (
-                  <p class="text-sm text-base-content/50 italic">
-                    No matching melee weapons.
-                  </p>
-                )
-                : (
-                  <ul class="max-h-64 overflow-y-auto space-y-1">
-                    {filteredMeleeWeapons.map((mw) => {
-                      const addCost = meleeAddCost(addTarget);
-                      return (
-                      <li
-                        key={mw.id}
-                        class="text-sm border-b border-gray-100 pb-1"
-                      >
-                        <div class="flex items-center justify-between">
-                          <span>
-                            {mw.name}{" "}
-                            <span class="text-xs text-base-content/60">
-                              (DMG:{mw.damage} · W:{mw.weight})
-                            </span>
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {w.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          ({w.type} · {w.nation} · W:{w.weight}{" "}
+                          · DMG:{w.damage})
+                        </span>
+                        {w.pointCost > 0 && (
+                          <span class="text-xs text-warning ml-1">
+                            [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
                           </span>
-                          <button
-                            type="button"
-                            class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                            onClick={() => addMeleeWeapon(mw.id, addTarget)}
-                          >
-                            Add ({costLabel(addCost)})
-                          </button>
-                        </div>
-                        {mw.description && (
-                          <div class="text-xs text-base-content/70 ml-2">
-                            <PerkDescription
-                              name=""
-                              description={mw.description}
-                              hideByDefault
-                            />
-                          </div>
                         )}
-                      </li>
-                      );
-                    })}
-                  </ul>
-                )}
-            </div>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                        onClick={() => addWeapon(w.id, addTarget)}
+                      >
+                        {hasWeaponMaster
+                          ? `Withdraw (${costLabel(addCost)})`
+                          : `Add (${costLabel(addCost)})`}
+                      </button>
+                    </div>
+                    <div class="text-xs text-base-content/70 ml-2">
+                      <PerkDescription
+                        name=""
+                        description={w.gimmicks}
+                        hideByDefault
+                      />
+                    </div>
+                  </li>
+                );
+              }}
+            />
           )}
 
-          {/* Attachment picker */}
-          {showAddAttachment && (
-            <div class="space-y-1 border rounded p-2 bg-base-200">
-              <div class="flex flex-wrap gap-1 mb-1">
-                <button
-                  type="button"
-                  class={`text-xs px-2 py-0.5 rounded border ${
-                    attachmentNationFilter === ""
-                      ? "bg-primary/20 border-primary/70 font-medium"
-                      : "hover:bg-base-200"
-                  }`}
-                  onClick={() => setAttachmentNationFilter("")}
-                >
-                  All
-                </button>
-                <button
-                  type="button"
-                  class={`text-xs px-2 py-0.5 rounded border ${
-                    attachmentNationFilter === "Any"
-                      ? "bg-primary/20 border-primary/70 font-medium"
-                      : "hover:bg-base-200"
-                  }`}
-                  onClick={() =>
-                    setAttachmentNationFilter(
-                      attachmentNationFilter === "Any" ? "" : "Any",
-                    )}
-                >
-                  Generic
-                </button>
-                {NATIONS.filter((n) => n !== "Any").map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    class={`text-xs px-2 py-0.5 rounded border ${
-                      attachmentNationFilter === n
-                        ? "bg-primary/20 border-primary/70 font-medium"
-                        : "hover:bg-base-200"
-                    }`}
-                    onClick={() =>
-                      setAttachmentNationFilter(
-                        n === attachmentNationFilter ? "" : n,
-                      )}
+          {activePicker === "equipment" && (
+            <ItemPicker
+              items={filteredEquipment}
+              filterValue={equipmentFilter}
+              onFilterChange={setEquipmentFilter}
+              filterPlaceholder="Filter equipment by name…"
+              emptyMessage="No matching equipment."
+              renderItem={(eq) => {
+                const addCost = slotCost();
+                const cannotCarryBulky = addTarget === "carried" &&
+                  eq.isBulky && carriedBulkyCount > 0;
+                return (
+                  <li
+                    key={eq.id}
+                    class="text-sm border-b border-gray-100 pb-1"
                   >
-                    {n}
-                  </button>
-                ))}
-              </div>
-              <input
-                type="text"
-                class="w-full border rounded px-2 py-1 text-sm"
-                placeholder="Filter attachments by name or weapon…"
-                value={attachmentFilter}
-                onInput={(e) =>
-                  setAttachmentFilter((e.target as HTMLInputElement).value)}
-              />
-              {filteredAttachments.length === 0
-                ? (
-                  <p class="text-sm text-base-content/50 italic">
-                    No matching attachments.
-                  </p>
-                )
-                : (
-                  <ul class="max-h-64 overflow-y-auto space-y-1">
-                    {filteredAttachments.map((att) => {
-                      const addCost = attachmentAddCost(addTarget);
-                      return (
-                        <li
-                          key={att.id}
-                          class="text-sm border-b border-gray-100 pb-1"
-                        >
-                          <div class="flex items-center justify-between">
-                            <span>
-                              {att.name}{" "}
-                              <span class="text-xs text-base-content/60">
-                                (W:{att.weight} · For: {att.appliesTo}
-                                {att.isCharge ? " · Charges" : ""})
-                              </span>
-                            </span>
-                            <button
-                              type="button"
-                              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                              onClick={() =>
-                                addAttachmentToInventory(att.id, addTarget)}
-                            >
-                              Add ({costLabel(addCost)})
-                            </button>
-                          </div>
-                          <div class="text-xs text-base-content/70 ml-2">
-                            <PerkDescription
-                              name=""
-                              description={att.description}
-                              hideByDefault
-                            />
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-            </div>
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {eq.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          (W:{eq.weight}
+                          {eq.isCharge ? " · Charges" : ""}
+                          {eq.isBulky ? " · Bulky" : ""})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => addEquipment(eq.id, addTarget)}
+                        disabled={cannotCarryBulky}
+                        title={cannotCarryBulky
+                          ? "Only one bulky kit can be carried at a time"
+                          : undefined}
+                      >
+                        Add ({costLabel(addCost)})
+                      </button>
+                    </div>
+                    <div class="text-xs text-base-content/70 ml-2">
+                      <PerkDescription
+                        name=""
+                        description={eq.description}
+                        hideByDefault
+                      />
+                    </div>
+                  </li>
+                );
+              }}
+            />
+          )}
+
+          {activePicker === "melee" && (
+            <ItemPicker
+              items={filteredMeleeWeapons}
+              filterValue={meleeFilter}
+              onFilterChange={setMeleeFilter}
+              filterPlaceholder="Filter melee weapons by name…"
+              emptyMessage="No matching melee weapons."
+              renderItem={(mw) => {
+                const addCost = slotCost();
+                return (
+                  <li
+                    key={mw.id}
+                    class="text-sm border-b border-gray-100 pb-1"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {mw.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          (DMG:{mw.damage} · W:{mw.weight})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                        onClick={() => addMeleeWeapon(mw.id, addTarget)}
+                      >
+                        Add ({costLabel(addCost)})
+                      </button>
+                    </div>
+                    {mw.description && (
+                      <div class="text-xs text-base-content/70 ml-2">
+                        <PerkDescription
+                          name=""
+                          description={mw.description}
+                          hideByDefault
+                        />
+                      </div>
+                    )}
+                  </li>
+                );
+              }}
+            />
+          )}
+
+          {activePicker === "attachment" && (
+            <ItemPicker
+              items={filteredAttachments}
+              filterValue={attachmentFilter}
+              onFilterChange={setAttachmentFilter}
+              filterPlaceholder="Filter attachments by name or weapon…"
+              emptyMessage="No matching attachments."
+              nationFilter={{
+                value: attachmentNationFilter,
+                onChange: setAttachmentNationFilter,
+                showGenericButton: true,
+              }}
+              renderItem={(att) => {
+                const addCost = slotCost();
+                return (
+                  <li
+                    key={att.id}
+                    class="text-sm border-b border-gray-100 pb-1"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {att.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          (W:{att.weight} · For: {att.appliesTo}
+                          {att.isCharge ? " · Charges" : ""})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                        onClick={() =>
+                          addAttachmentToInventory(att.id, addTarget)}
+                      >
+                        Add ({costLabel(addCost)})
+                      </button>
+                    </div>
+                    <div class="text-xs text-base-content/70 ml-2">
+                      <PerkDescription
+                        name=""
+                        description={att.description}
+                        hideByDefault
+                      />
+                    </div>
+                  </li>
+                );
+              }}
+            />
           )}
         </div>
       )}

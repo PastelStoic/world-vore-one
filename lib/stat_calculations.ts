@@ -1,5 +1,10 @@
 import { PERKS_BY_ID } from "@/data/perks.ts";
-import type { BaseStatKey, CharacterDraft, OrganType } from "./character_types.ts";
+import {
+  BASE_STAT_FIELDS,
+  type BaseStatKey,
+  type CharacterDraft,
+  type OrganType,
+} from "./character_types.ts";
 
 export const ENCUMBRANCE_LEVELS = [
   "Unencumbered",
@@ -107,66 +112,119 @@ export function getEncumbranceLabel(level: EncumbranceLevel) {
   return ENCUMBRANCE_LEVELS[level];
 }
 
+// ---------------------------------------------------------------------------
+// Per-stat configuration for the parameterized calculator
+// ---------------------------------------------------------------------------
+
+type MultiplierKey = "digestionStrengthMultiplier" | "digestionResilienceMultiplier";
+
+interface StatCalcConfig {
+  applyEncumbrance: boolean;
+  clampToOne: boolean;
+  multiplierKey?: MultiplierKey;
+}
+
+const STAT_CONFIG: Record<BaseStatKey, StatCalcConfig> = {
+  strength: { applyEncumbrance: true, clampToOne: false },
+  dexterity: { applyEncumbrance: true, clampToOne: false },
+  constitution: { applyEncumbrance: false, clampToOne: true },
+  intelligence: { applyEncumbrance: false, clampToOne: true },
+  charisma: { applyEncumbrance: false, clampToOne: true },
+  escapeTraining: { applyEncumbrance: false, clampToOne: true },
+  digestionStrength: {
+    applyEncumbrance: false,
+    clampToOne: false,
+    multiplierKey: "digestionStrengthMultiplier",
+  },
+  digestionResilience: {
+    applyEncumbrance: false,
+    clampToOne: true,
+    multiplierKey: "digestionResilienceMultiplier",
+  },
+};
+
+/**
+ * Calculate the effective value of any base stat, applying bonuses,
+ * multipliers, caps, and encumbrance as appropriate for that stat.
+ */
+export function calculateEffectiveStat(
+  input: CharacterDraft,
+  statKey: BaseStatKey,
+  options: CalculationOptions = {},
+): number {
+  const config = STAT_CONFIG[statKey];
+  let effective = input.baseStats[statKey] + getBaseStatBonus(input, statKey);
+
+  if (config.multiplierKey) {
+    effective *= getMultiplier(input, config.multiplierKey);
+  }
+
+  effective = applyStatCap(effective, getStatCap(input, statKey));
+
+  if (config.clampToOne) {
+    effective = Math.max(1, effective);
+  }
+
+  if (config.applyEncumbrance) {
+    effective = applyEncumbrancePenalty(effective, options.encumbranceLevel ?? 0);
+  }
+
+  return effective;
+}
+
+/**
+ * Calculate all effective stats at once. Convenience for building the
+ * effectiveByStat record used across the editor and viewer.
+ */
+export function calculateAllEffectiveStats(
+  input: CharacterDraft,
+  options: CalculationOptions = {},
+): Record<BaseStatKey, number> {
+  const result = {} as Record<BaseStatKey, number>;
+  for (const { key } of BASE_STAT_FIELDS) {
+    result[key] = calculateEffectiveStat(input, key, options);
+  }
+  return result;
+}
+
+// Backward-compatible named exports
+
 export function calculateEffectiveStrength(
   input: CharacterDraft,
   options: CalculationOptions = {},
 ) {
-  const effective = input.baseStats.strength +
-    getBaseStatBonus(input, "strength");
-  const capped = applyStatCap(effective, getStatCap(input, "strength"));
-  const level = options.encumbranceLevel ?? 0;
-  return applyEncumbrancePenalty(capped, level);
+  return calculateEffectiveStat(input, "strength", options);
 }
 
 export function calculateEffectiveDexterity(
   input: CharacterDraft,
   options: CalculationOptions = {},
 ) {
-  const effective = input.baseStats.dexterity +
-    getBaseStatBonus(input, "dexterity");
-  const capped = applyStatCap(effective, getStatCap(input, "dexterity"));
-  const level = options.encumbranceLevel ?? 0;
-  return applyEncumbrancePenalty(capped, level);
+  return calculateEffectiveStat(input, "dexterity", options);
 }
 
 export function calculateEffectiveConstitution(input: CharacterDraft) {
-  const effective = input.baseStats.constitution +
-    getBaseStatBonus(input, "constitution");
-  return Math.max(1, applyStatCap(effective, getStatCap(input, "constitution")));
+  return calculateEffectiveStat(input, "constitution");
 }
 
 export function calculateEffectiveIntelligence(input: CharacterDraft) {
-  const effective = input.baseStats.intelligence +
-    getBaseStatBonus(input, "intelligence");
-  return Math.max(1, applyStatCap(effective, getStatCap(input, "intelligence")));
+  return calculateEffectiveStat(input, "intelligence");
 }
 
 export function calculateEffectiveCharisma(input: CharacterDraft) {
-  const effective = input.baseStats.charisma +
-    getBaseStatBonus(input, "charisma");
-  return Math.max(1, applyStatCap(effective, getStatCap(input, "charisma")));
+  return calculateEffectiveStat(input, "charisma");
 }
 
 export function calculateEffectiveEscapeTraining(input: CharacterDraft) {
-  const effective = input.baseStats.escapeTraining +
-    getBaseStatBonus(input, "escapeTraining");
-  return Math.max(1, applyStatCap(effective, getStatCap(input, "escapeTraining")));
+  return calculateEffectiveStat(input, "escapeTraining");
 }
 
 export function calculateEffectiveDigestionStrength(input: CharacterDraft) {
-  const base = input.baseStats.digestionStrength +
-    getBaseStatBonus(input, "digestionStrength");
-  const multiplier = getMultiplier(input, "digestionStrengthMultiplier");
-  const effective = base * multiplier;
-  return applyStatCap(effective, getStatCap(input, "digestionStrength"));
+  return calculateEffectiveStat(input, "digestionStrength");
 }
 
 export function calculateEffectiveDigestionResilience(input: CharacterDraft) {
-  const base = input.baseStats.digestionResilience +
-    getBaseStatBonus(input, "digestionResilience");
-  const multiplier = getMultiplier(input, "digestionResilienceMultiplier");
-  const effective = base * multiplier;
-  return Math.max(1, applyStatCap(effective, getStatCap(input, "digestionResilience")));
+  return calculateEffectiveStat(input, "digestionResilience");
 }
 
 export function calculateBaseHealth(input: CharacterDraft) {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
@@ -25,6 +25,8 @@ import {
 import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
+import { cleanupPerkData } from "@/lib/perk_state_helpers.ts";
+import { useImageUpload } from "@/lib/useImageUpload.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
@@ -111,11 +113,19 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkSearchFilter, setPerkSearchFilter] = useState("");
 
   // Image upload state
-  const [currentImageUrl, setCurrentImageUrl] = useState(props.imageUrl ?? "");
-  const [pendingImageId, setPendingImageId] = useState("");
-  const [imageUploading, setImageUploading] = useState(false);
-  const [imageError, setImageError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    currentImageUrl,
+    pendingImageId,
+    imageUploading,
+    imageError,
+    fileInputRef,
+    handleImageUpload,
+    handleImageDelete,
+  } = useImageUpload({
+    initialImageUrl: props.imageUrl ?? "",
+    characterId: props.characterId,
+    action: props.action,
+  });
 
   const draft: CharacterDraft = {
     name,
@@ -216,87 +226,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     value: CharacterDescription[K],
   ) {
     setDescription((current) => ({ ...current, [key]: value }));
-  }
-
-  async function handleImageUpload(file: File) {
-    setImageUploading(true);
-    setImageError("");
-
-    try {
-      // 1. Get a direct upload URL
-      const isUpdate = props.action === "update" && props.characterId;
-      const urlEndpoint = isUpdate
-        ? `/api/characters/${props.characterId}/image`
-        : `/api/images/direct-upload`;
-
-      const urlRes = await fetch(urlEndpoint, { method: "POST" });
-      if (!urlRes.ok) {
-        throw new Error("Failed to get upload URL");
-      }
-      const { uploadURL, imageId } = await urlRes.json();
-
-      // 2. Upload the file directly to Cloudflare
-      const formData = new FormData();
-      formData.append("file", file);
-      const uploadRes = await fetch(uploadURL, {
-        method: "POST",
-        body: formData,
-      });
-      if (!uploadRes.ok) {
-        throw new Error("Image upload to Cloudflare failed");
-      }
-
-      if (isUpdate) {
-        // 3a. Update mode: save the image ID on the character immediately
-        const saveRes = await fetch(
-          `/api/characters/${props.characterId}/image`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imageId }),
-          },
-        );
-        if (!saveRes.ok) {
-          throw new Error("Failed to save image reference");
-        }
-        const { imageUrl } = await saveRes.json();
-        setCurrentImageUrl(imageUrl);
-      } else {
-        // 3b. Create mode: store the imageId to submit with the form
-        setPendingImageId(imageId);
-        // Show a preview via the object URL
-        setCurrentImageUrl(URL.createObjectURL(file));
-      }
-    } catch (err) {
-      setImageError(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setImageUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  }
-
-  async function handleImageDelete() {
-    setImageUploading(true);
-    setImageError("");
-
-    try {
-      if (props.action === "update" && props.characterId) {
-        const res = await fetch(
-          `/api/characters/${props.characterId}/image`,
-          { method: "DELETE" },
-        );
-        if (!res.ok) {
-          throw new Error("Failed to delete image");
-        }
-      }
-      // For create mode, just clear local state (orphaned CF image will expire)
-      setCurrentImageUrl("");
-      setPendingImageId("");
-    } catch (err) {
-      setImageError(err instanceof Error ? err.message : "Delete failed");
-    } finally {
-      setImageUploading(false);
-    }
   }
 
   // When pending approval, allow full re-allocation (no floor on decreases)
@@ -470,37 +399,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       calculatePerksCost(newPerkIds, perkRanks, selectionsWithoutSource, description.faction);
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
-    setPerkNotes((current) => {
-      const next = { ...current };
-      for (const id of allRemovedIds) delete next[id];
-      return next;
-    });
-    setPerkUpgradeNotes((current) => {
-      const next = { ...current };
-      for (const id of allRemovedIds) delete next[id];
-      return next;
-    });
-    setPerkStatChoices((current) => {
-      const next = { ...current };
-      for (const id of allRemovedIds) delete next[id];
-      return next;
-    });
-    setPerkRanks((current) => {
-      const next = { ...current };
-      for (const id of allRemovedIds) delete next[id];
-      return next;
-    });
-    setPerkDisguises((current) => {
-      const next = { ...current };
-      for (const id of allRemovedIds) delete next[id];
-      return next;
-    });
-    setPerkSelections((current) => {
-      const next = { ...current };
-      delete next[perkId]; // Clear selections made by this perk
-      for (const id of allRemovedIds) delete next[id]; // Clear selections if orphaned perks were themselves parents
-      return next;
-    });
+    const cleaned = cleanupPerkData(
+      { perkNotes, perkUpgradeNotes, perkStatChoices, perkRanks, perkDisguises, perkSelections },
+      allRemovedIds,
+    );
+    setPerkNotes(cleaned.perkNotes);
+    setPerkUpgradeNotes(cleaned.perkUpgradeNotes);
+    setPerkStatChoices(cleaned.perkStatChoices);
+    setPerkRanks(cleaned.perkRanks);
+    setPerkDisguises(cleaned.perkDisguises);
+    setPerkSelections(cleaned.perkSelections);
     setUnallocatedStatPoints((current) => current + refund);
 
     // Remove perk-granted items from inventory
@@ -717,22 +625,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       const removedIds = perkIds.filter((id) =>
                         !keptPerkIds.includes(id)
                       );
-                      setPerkNotes((current) => {
-                        const next = { ...current };
-                        for (const id of removedIds) delete next[id];
-                        return next;
-                      });
-                      setPerkUpgradeNotes((current) => {
-                        const next = { ...current };
-                        for (const id of removedIds) delete next[id];
-                        return next;
-                      });
-                      setPerkStatChoices((current) => {
-                        const next = { ...current };
-                        for (const id of removedIds) delete next[id];
-                        return next;
-                      });
+                      const cleaned = cleanupPerkData(
+                        { perkNotes, perkUpgradeNotes, perkStatChoices, perkRanks, perkDisguises, perkSelections },
+                        removedIds,
+                      );
+                      setPerkNotes(cleaned.perkNotes);
+                      setPerkUpgradeNotes(cleaned.perkUpgradeNotes);
+                      setPerkStatChoices(cleaned.perkStatChoices);
                       setPerkRanks(keptRanks);
+                      setPerkDisguises(cleaned.perkDisguises);
+                      setPerkSelections(cleaned.perkSelections);
                       setPerkIds(keptPerkIds);
                     }
                     setRace(newRace);

@@ -8,6 +8,10 @@ import {
   MELEE_WEAPONS_BY_ID,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
+import type {
+  InventoryAttachment,
+  InventoryWeapon,
+} from "@/lib/inventory_types.ts";
 
 export type InventoryLocation = "carried" | "stowed";
 
@@ -69,4 +73,56 @@ export function getSignatureAdjustedPointCost(
   //  Every other weapon is free."
   if (def.pointCost >= 3) return 1; // Originally restricted → still 1pt as signature
   return 0;
+}
+
+// ── Drum/magazine eject helper ──────────────────────────────────────────────
+
+/**
+ * Convert a weapon's magazine state back into an InventoryAttachment with
+ * charge data and saved magazine states. Used by both detachFromWeapon and
+ * ejectDrumAndReload to avoid duplicating the magazine-to-charge logic.
+ *
+ * Mutates the weapon in place: clears magazines, partialMagazines, and
+ * attachmentChargeData for the given attachment.
+ */
+export function convertMagazinesToAttachment(
+  weapon: InventoryWeapon,
+  attachmentId: string,
+): InventoryAttachment {
+  const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+  const ammoOverride = attDef?.ammoOverride ?? 0;
+  const partials = weapon.partialMagazines ?? [];
+
+  // Build array of all magazine ammo states
+  const savedStates: number[] = [];
+  for (let i = 0; i < weapon.magazines; i++) {
+    savedStates.push(ammoOverride);
+  }
+  for (const p of partials) {
+    savedStates.push(p);
+  }
+  if (weapon.currentAmmo > 0) {
+    savedStates.push(weapon.currentAmmo);
+  }
+
+  // Restore the original totalCharges so spending magazines only raises
+  // usedCharges rather than reducing totalCharges
+  const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
+  const originalTotalCharges = savedChargeData?.totalCharges ??
+    savedStates.length;
+  const usedCharges = Math.max(0, originalTotalCharges - savedStates.length);
+
+  // Clean up weapon state
+  if (weapon.attachmentChargeData) {
+    delete weapon.attachmentChargeData[attachmentId];
+  }
+  weapon.magazines = 0;
+  weapon.partialMagazines = [];
+
+  return {
+    attachmentId,
+    totalCharges: originalTotalCharges,
+    usedCharges,
+    savedMagazineStates: savedStates,
+  };
 }

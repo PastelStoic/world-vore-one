@@ -45,7 +45,6 @@ the admin panel uses client-side `fetch()` calls to API endpoints.
 ├── deno.json                # Import map, tasks, compiler options
 │
 ├── lib/                     # Business logic & data access
-│   ├── kv.ts                # Deno KV singleton accessor
 │   ├── character_types.ts   # Domain types & constants
 │   ├── characters.ts        # Character CRUD & snapshot operations
 │   ├── stat_calculations.ts # Pure derived-stat calculators
@@ -76,8 +75,7 @@ the admin panel uses client-side `fetch()` calls to API endpoints.
 ├── islands/                 # Client-hydrated interactive components
 │   ├── CharacterSheetEditor.tsx
 │   ├── CharacterSheetViewer.tsx
-│   ├── AdminPanel.tsx
-│   └── Counter.tsx
+│   └── AdminPanel.tsx
 │
 ├── components/              # Server-rendered shared components
 │   ├── CharacterPageLayout.tsx
@@ -108,8 +106,8 @@ handlers.
 
 ### Deno KV
 
-All persistence uses Deno's built-in KV store accessed through a lazy singleton
-in `lib/kv.ts`. Key prefixes:
+All persistence uses Deno's built-in KV store accessed via `Deno.openKv()` in
+`lib/character_db.ts`. Key prefixes:
 
 | Prefix                       | Data                      |
 | ---------------------------- | ------------------------- |

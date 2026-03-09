@@ -15,8 +15,60 @@ const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
 const CHARACTER_SNAPSHOT_PREFIX = ["character_snapshots"] as const;
 const CHARACTER_SNAPSHOT_BY_ID_PREFIX = ["character_snapshots_by_id"] as const;
 
+// ---------------------------------------------------------------------------
+// KV singleton
+// ---------------------------------------------------------------------------
+
+let _kv: Deno.Kv | null = null;
+
+async function getKv(): Promise<Deno.Kv> {
+  if (!_kv) _kv = await Deno.openKv();
+  return _kv;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Write a character to both KV key paths (by id and by userId) atomically.
+ */
+async function saveCharacter(
+  kv: Deno.Kv,
+  character: CharacterSheet,
+): Promise<void> {
+  await kv.set([...CHARACTER_PREFIX, character.id], character);
+  await kv.set(
+    [...CHARACTER_BY_USER_PREFIX, character.userId, character.id],
+    character,
+  );
+}
+
+/**
+ * Read-modify-write helper. Fetches a character, applies a mutation, and
+ * saves to both key paths. Returns null if the character doesn't exist.
+ */
+async function updateCharacter(
+  characterId: string,
+  mutate: (character: CharacterSheet) => void,
+): Promise<CharacterSheet | null> {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  mutate(character);
+  character.updatedAt = new Date().toISOString();
+
+  await saveCharacter(kv, character);
+  return character;
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
 export async function listCharacters(userId?: string) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const characters: CharacterSheet[] = [];
 
   if (userId) {
@@ -48,7 +100,7 @@ export async function listCharacters(userId?: string) {
 }
 
 export async function getCharacter(id: string) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const entry = await kv.get<CharacterSheet>([...CHARACTER_PREFIX, id]);
   return entry.value;
 }
@@ -58,7 +110,7 @@ export async function upsertCharacter(
   changelog: string,
   options?: { basedOnSnapshotId?: string },
 ) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
   const snapshotId = crypto.randomUUID();
@@ -81,6 +133,12 @@ export async function upsertCharacter(
       baseStats: input.baseStats,
       unallocatedStatPoints: input.unallocatedStatPoints,
       perkIds: input.perkIds,
+      perkNotes: input.perkNotes,
+      perkUpgradeNotes: input.perkUpgradeNotes,
+      perkStatChoices: input.perkStatChoices,
+      perkRanks: input.perkRanks,
+      perkDisguises: input.perkDisguises,
+      perkSelections: input.perkSelections,
       inventory: input.inventory,
     },
   };
@@ -106,11 +164,7 @@ export async function upsertCharacter(
     input.id,
     snapshotId,
   ], snapshot);
-  await kv.set([...CHARACTER_PREFIX, input.id], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, input.userId, input.id],
-    character,
-  );
+  await saveCharacter(kv, character);
   return character;
 }
 
@@ -118,23 +172,13 @@ export async function setCharacterImageId(
   characterId: string,
   imageId: string | null,
 ) {
-  const kv = await Deno.openKv();
-  const character = await getCharacter(characterId);
-  if (!character) return null;
-
-  if (imageId) {
-    character.imageId = imageId;
-  } else {
-    delete character.imageId;
-  }
-  character.updatedAt = new Date().toISOString();
-
-  await kv.set([...CHARACTER_PREFIX, characterId], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
-    character,
-  );
-  return character;
+  return updateCharacter(characterId, (character) => {
+    if (imageId) {
+      character.imageId = imageId;
+    } else {
+      delete character.imageId;
+    }
+  });
 }
 
 /**
@@ -144,7 +188,7 @@ export async function setCharacterImageId(
 export async function upsertCharacterDirect(
   input: CharacterDraft & Pick<CharacterSheet, "id" | "userId"> & { status?: CharacterStatus },
 ) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
 
@@ -158,11 +202,7 @@ export async function upsertCharacterDirect(
     updatedAt: now,
   };
 
-  await kv.set([...CHARACTER_PREFIX, input.id], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, input.userId, input.id],
-    character,
-  );
+  await saveCharacter(kv, character);
   return character;
 }
 
@@ -170,19 +210,9 @@ export async function setCharacterStatus(
   characterId: string,
   status: CharacterStatus,
 ) {
-  const kv = await Deno.openKv();
-  const character = await getCharacter(characterId);
-  if (!character) return null;
-
-  character.status = status;
-  character.updatedAt = new Date().toISOString();
-
-  await kv.set([...CHARACTER_PREFIX, characterId], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
-    character,
-  );
-  return character;
+  return updateCharacter(characterId, (character) => {
+    character.status = status;
+  });
 }
 
 /**
@@ -193,46 +223,26 @@ export async function updateCharacterInventory(
   characterId: string,
   inventory: CharacterInventory,
 ) {
-  const kv = await Deno.openKv();
-  const character = await getCharacter(characterId);
-  if (!character) return null;
-
-  character.inventory = inventory;
-  character.updatedAt = new Date().toISOString();
-
-  await kv.set([...CHARACTER_PREFIX, characterId], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
-    character,
-  );
-  return character;
+  return updateCharacter(characterId, (character) => {
+    character.inventory = inventory;
+  });
 }
 
 export async function setCharacterHidden(
   characterId: string,
   hidden: boolean,
 ) {
-  const kv = await Deno.openKv();
-  const character = await getCharacter(characterId);
-  if (!character) return null;
-
-  if (hidden) {
-    character.hidden = true;
-  } else {
-    delete character.hidden;
-  }
-  character.updatedAt = new Date().toISOString();
-
-  await kv.set([...CHARACTER_PREFIX, characterId], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, character.userId, characterId],
-    character,
-  );
-  return character;
+  return updateCharacter(characterId, (character) => {
+    if (hidden) {
+      character.hidden = true;
+    } else {
+      delete character.hidden;
+    }
+  });
 }
 
 export async function listCharacterSnapshots(characterId: string) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const snapshots: CharacterSnapshot[] = [];
 
   for await (
@@ -253,7 +263,7 @@ export async function getCharacterSnapshot(
   characterId: string,
   snapshotId: string,
 ) {
-  const kv = await Deno.openKv();
+  const kv = await getKv();
   const entry = await kv.get<CharacterSnapshot>([
     ...CHARACTER_SNAPSHOT_BY_ID_PREFIX,
     characterId,

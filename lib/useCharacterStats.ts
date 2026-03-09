@@ -11,15 +11,8 @@ import {
   createEmptyInventory,
 } from "./inventory_types.ts";
 import {
+  calculateAllEffectiveStats,
   calculateEffectiveCarryCapacity,
-  calculateEffectiveCharisma,
-  calculateEffectiveConstitution,
-  calculateEffectiveDexterity,
-  calculateEffectiveDigestionResilience,
-  calculateEffectiveDigestionStrength,
-  calculateEffectiveEscapeTraining,
-  calculateEffectiveIntelligence,
-  calculateEffectiveStrength,
   calculateEncumbranceLevel,
   type EncumbranceLevel,
 } from "./stat_calculations.ts";
@@ -70,16 +63,7 @@ export function useCharacterStats(draft: CharacterDraft): CharacterStatsResult {
     : "No STR/DEX penalty";
 
   const effectiveByStat = useMemo(() => {
-    return {
-      strength: calculateEffectiveStrength(draft, { encumbranceLevel }),
-      dexterity: calculateEffectiveDexterity(draft, { encumbranceLevel }),
-      constitution: calculateEffectiveConstitution(draft),
-      intelligence: calculateEffectiveIntelligence(draft),
-      charisma: calculateEffectiveCharisma(draft),
-      escapeTraining: calculateEffectiveEscapeTraining(draft),
-      digestionStrength: calculateEffectiveDigestionStrength(draft),
-      digestionResilience: calculateEffectiveDigestionResilience(draft),
-    };
+    return calculateAllEffectiveStats(draft, { encumbranceLevel });
   }, [draft, encumbranceLevel]);
 
   return {

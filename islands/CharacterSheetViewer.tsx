@@ -17,11 +17,6 @@ import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
-// Sass's change
-import {
-  calculateInventoryPointCost,
-  createEmptyInventory,
-} from "@/lib/inventory_types.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -55,16 +50,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     perk: perksById.get(id),
     displayOnly: false,
   }));
-
-  // Sass's change
-  const inventoryPointCost = calculateInventoryPointCost(
-    inventory,
-    (id) => getWeaponPointCost(id, perkIds),
-    {
-      getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
-      getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
-    },
-  );
 
   // Merge display-only perks (fake perks shown to non-owners in place of disguised ones).
   const allDisplayPerks = [
@@ -246,7 +231,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-base-content">
           Unallocated stat points:{" "}
-          <strong>{character.unallocatedStatPoints - inventoryPointCost}</strong>
+          <strong>{character.unallocatedStatPoints}</strong>
         </p>
         {(() => {
           // Compute addiction-affected stats

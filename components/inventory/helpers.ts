@@ -9,8 +9,15 @@ import {
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import type {
+  CharacterInventory,
   InventoryAttachment,
   InventoryWeapon,
+} from "@/lib/inventory_types.ts";
+import {
+  calculateInventoryPointCost,
+  countAllItemSlots,
+  CREATION_FREE_ITEM_SLOTS,
+  EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 
 export type InventoryLocation = "carried" | "stowed";
@@ -31,11 +38,16 @@ export const slotLookups = {
 
 // ── Weapon point cost helpers ─────────────────────────────────────────────
 
-export function getWeaponPointCost(id: string, perkIds?: string[]): number {
+export function getWeaponPointCost(
+  id: string,
+  perkIds?: string[],
+  weaponMasterRestrictedUnlocks?: string[],
+): number {
   const def = WEAPONS_BY_ID.get(id);
   if (!def) return 0;
   // Weapon Master: non-restricted weapons are free, restricted cost 1pt
   if (perkIds?.includes("weapon-master")) {
+    if (weaponMasterRestrictedUnlocks?.includes(id)) return 0;
     if (def.pointCost >= 3) return 1; // Restricted still costs 1pt
     return 0; // Everything else is free from the armory
   }
@@ -46,6 +58,38 @@ export function getWeaponPointCost(id: string, perkIds?: string[]): number {
     }
   }
   return def.pointCost;
+}
+
+export function calculateInventoryPointCostWithPerks(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+): number {
+  const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
+  if (!hasWeaponMaster) {
+    return calculateInventoryPointCost(
+      inventory,
+      (id) =>
+        getWeaponPointCost(id, perkIds, inventory.weaponMasterRestrictedUnlocks),
+      slotLookups,
+    );
+  }
+
+  let cost = 0;
+  const totalSlots = countAllItemSlots(inventory, slotLookups);
+  const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
+  cost += overFree * EXTRA_ITEM_POINT_COST;
+
+  const unlocks = new Set(inventory.weaponMasterRestrictedUnlocks ?? []);
+  cost += unlocks.size;
+  const unlockedIds = [...unlocks];
+
+  for (const location of ["carried", "stowed"] as const) {
+    for (const w of inventory[location].weapons) {
+      cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds);
+    }
+  }
+
+  return cost;
 }
 
 /**

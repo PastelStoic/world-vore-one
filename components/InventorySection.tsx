@@ -18,7 +18,6 @@ import type {
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
 import {
-  calculateInventoryPointCost,
   calculateInventoryWeight,
   countAllItemSlots,
   CREATION_FREE_ITEM_SLOTS,
@@ -32,6 +31,7 @@ import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
   type InventoryLocation,
+  calculateInventoryPointCostWithPerks,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
   convertMagazinesToAttachment,
@@ -88,6 +88,8 @@ export default function InventorySection(props: InventorySectionProps) {
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
+  const weaponMasterRestrictedUnlocks = inventory.weaponMasterRestrictedUnlocks ??
+    [];
 
   const [activePicker, setActivePicker] = useState<ActivePicker>(null);
   const [weaponFilter, setWeaponFilter] = useState("");
@@ -136,11 +138,7 @@ export default function InventorySection(props: InventorySectionProps) {
       return cost;
     }
 
-    return calculateInventoryPointCost(
-      inventory,
-      (id) => getWeaponPointCost(id, perkIds),
-      slotLookups,
-    );
+    return calculateInventoryPointCostWithPerks(inventory, perkIds);
   })();
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
@@ -236,28 +234,42 @@ export default function InventorySection(props: InventorySectionProps) {
       partialMagazines: [],
     };
     update((inv) => {
+      if (hasWeaponMaster && def.pointCost >= 3) {
+        inv.weaponMasterRestrictedUnlocks ??= [];
+        if (!inv.weaponMasterRestrictedUnlocks.includes(weaponId)) {
+          inv.weaponMasterRestrictedUnlocks.push(weaponId);
+        }
+      }
       inv[location].weapons.push(item);
       return inv;
     });
     setActivePicker(null);
   }
 
+  function removeWeaponAt(
+    inv: CharacterInventory,
+    location: InventoryLocation,
+    index: number,
+  ) {
+    const weapon = inv[location].weapons[index];
+    if (!weapon) return;
+    if (weapon.attachedIds.length > 0) {
+      for (const aId of weapon.attachedIds) {
+        const aDef = ATTACHMENTS_BY_ID.get(aId);
+        inv[location].attachments.push({
+          attachmentId: aId,
+          totalCharges: aDef?.isCharge ? 1 : 0,
+          usedCharges: 0,
+        });
+      }
+    }
+    inv[location].weapons.splice(index, 1);
+  }
+
   // -- Remove weapon --
   function removeWeapon(location: InventoryLocation, index: number) {
     update((inv) => {
-      const weapon = inv[location].weapons[index];
-      // Return attached attachments to inventory before removing
-      if (weapon && weapon.attachedIds.length > 0) {
-        for (const aId of weapon.attachedIds) {
-          const aDef = ATTACHMENTS_BY_ID.get(aId);
-          inv[location].attachments.push({
-            attachmentId: aId,
-            totalCharges: aDef?.isCharge ? 1 : 0,
-            usedCharges: 0,
-          });
-        }
-      }
-      inv[location].weapons.splice(index, 1);
+      removeWeaponAt(inv, location, index);
       return inv;
     });
   }
@@ -266,18 +278,40 @@ export default function InventorySection(props: InventorySectionProps) {
   function loseWeaponPermanently(location: InventoryLocation, index: number) {
     const weapon = inventory[location].weapons[index];
     if (!weapon) return;
-    const weaponCost = getWeaponPointCost(weapon.weaponId, perkIds);
-    removeWeapon(location, index);
-    if (weaponCost > 0) {
-      onLoseWeaponPermanently?.(weaponCost);
-    }
+    const def = WEAPONS_BY_ID.get(weapon.weaponId);
+    const isRestricted = (def?.pointCost ?? 0) >= 3;
+    const wasUnlocked = weaponMasterRestrictedUnlocks.includes(weapon.weaponId);
+    const weaponCost = isRestricted && hasWeaponMaster && wasUnlocked
+      ? 1
+      : getWeaponPointCost(weapon.weaponId, perkIds, weaponMasterRestrictedUnlocks);
+
+    update((inv) => {
+      if (isRestricted && hasWeaponMaster) {
+        inv.weaponMasterRestrictedUnlocks = (inv.weaponMasterRestrictedUnlocks ??
+          []).filter((id) => id !== weapon.weaponId);
+      }
+      removeWeaponAt(inv, location, index);
+      return inv;
+    });
+
+    if (weaponCost > 0) onLoseWeaponPermanently?.(weaponCost);
   }
 
   // -- Return a weapon to the armory (weapon-master) --
   function returnWeaponToArmory(location: InventoryLocation, index: number) {
-    const weapon = inventory[location].weapons[index];
-    if (!weapon) return;
-    removeWeapon(location, index);
+    update((inv) => {
+      const weapon = inv[location].weapons[index];
+      if (!weapon) return inv;
+      const def = WEAPONS_BY_ID.get(weapon.weaponId);
+      if (hasWeaponMaster && (def?.pointCost ?? 0) >= 3) {
+        inv.weaponMasterRestrictedUnlocks ??= [];
+        if (!inv.weaponMasterRestrictedUnlocks.includes(weapon.weaponId)) {
+          inv.weaponMasterRestrictedUnlocks.push(weapon.weaponId);
+        }
+      }
+      removeWeaponAt(inv, location, index);
+      return inv;
+    });
   }
 
   // -- Move weapon between locations --
@@ -699,9 +733,10 @@ export default function InventorySection(props: InventorySectionProps) {
                   combatReadOnly={combatReadOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
                   onLoss={onLoseWeaponPermanently ? loseWeaponPermanently : undefined}
-                  onReturn={onLoseWeaponPermanently ? returnWeaponToArmory : undefined}
-                  perkIds={perkIds}
-                  inventory={inventory}
+                   onReturn={onLoseWeaponPermanently ? returnWeaponToArmory : undefined}
+                   perkIds={perkIds}
+                   weaponMasterRestrictedUnlocks={weaponMasterRestrictedUnlocks}
+                   inventory={inventory}
                   onToggleSignature={toggleSignatureWeapon}
                   onMove={moveWeapon}
                   onRemove={removeWeapon}
@@ -912,7 +947,11 @@ export default function InventorySection(props: InventorySectionProps) {
                 onChange: setNationFilter,
               }}
               renderItem={(w) => {
-                const addCost = getWeaponPointCost(w.id, perkIds) + slotCost();
+                const addCost = getWeaponPointCost(
+                  w.id,
+                  perkIds,
+                  weaponMasterRestrictedUnlocks,
+                ) + slotCost();
                 return (
                   <li
                     key={w.id}
@@ -927,7 +966,11 @@ export default function InventorySection(props: InventorySectionProps) {
                         </span>
                         {w.pointCost > 0 && (
                           <span class="text-xs text-warning ml-1">
-                            [Cost: {getWeaponPointCost(w.id, perkIds)}pt]
+                            [Cost: {getWeaponPointCost(
+                              w.id,
+                              perkIds,
+                              weaponMasterRestrictedUnlocks,
+                            )}pt]
                           </span>
                         )}
                       </span>

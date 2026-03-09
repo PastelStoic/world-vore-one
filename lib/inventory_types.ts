@@ -96,6 +96,8 @@ export interface InventoryAttachment {
  * Loose (unattached) attachments are in their own list.
  */
 export interface CharacterInventory {
+  /** Restricted weapon IDs permanently purchased via Weapon Master armory */
+  weaponMasterRestrictedUnlocks?: string[];
   carried: {
     weapons: InventoryWeapon[];
     meleeWeapons: InventoryMeleeWeapon[];
@@ -122,6 +124,7 @@ export const EXTRA_ITEM_POINT_COST = 1;
 
 export function createEmptyInventory(): CharacterInventory {
   return {
+    weaponMasterRestrictedUnlocks: [],
     carried: {
       weapons: [],
       meleeWeapons: [],

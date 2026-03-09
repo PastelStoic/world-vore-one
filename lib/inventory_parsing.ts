@@ -21,6 +21,13 @@ export function parseInventory(raw: string): CharacterInventory | null {
     if (!parsed || typeof parsed !== "object") return null;
 
     const inv = createEmptyInventory();
+    inv.weaponMasterRestrictedUnlocks = Array.isArray(
+        parsed.weaponMasterRestrictedUnlocks,
+      )
+      ? (parsed.weaponMasterRestrictedUnlocks as unknown[]).filter(
+        (id): id is string => typeof id === "string",
+      )
+      : [];
 
     for (const location of ["carried", "stowed"] as const) {
       const src = parsed[location];

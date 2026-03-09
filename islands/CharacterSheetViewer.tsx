@@ -16,7 +16,15 @@ import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
-import { createEmptyInventory } from "@/lib/inventory_types.ts";
+import {
+  calculateInventoryPointCost,
+  createEmptyInventory,
+} from "@/lib/inventory_types.ts";
+import {
+  ATTACHMENTS_BY_ID,
+  EQUIPMENT_BY_ID,
+} from "@/data/equipment.ts";
+import { getWeaponPointCost } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -71,6 +79,15 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const [showDescription, setShowDescription] = useState(true);
   const [inventory, setInventory] = useState(
     character.inventory ?? createEmptyInventory(),
+  );
+
+  const inventoryPointCost = calculateInventoryPointCost(
+    inventory,
+    (id) => getWeaponPointCost(id, character.perkIds),
+    {
+      getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
+      getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
+    },
   );
 
   // Build a draft that uses the local inventory state so weight/encumbrance updates live
@@ -231,7 +248,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-base-content">
           Unallocated stat points:{" "}
-          <strong>{character.unallocatedStatPoints}</strong>
+          <strong>{character.unallocatedStatPoints - inventoryPointCost}</strong>
         </p>
         {(() => {
           // Compute addiction-affected stats

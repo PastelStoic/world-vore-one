@@ -211,7 +211,6 @@ export function parseDescription(raw: string): CharacterDescription | null {
         : false,
       countryOfOrigin: str("countryOfOrigin"),
       faction: str("faction"),
-      subfaction: str("subfaction"),
       role: str("role"),
       age: str("age"),
       dateOfBirth: str("dateOfBirth"),

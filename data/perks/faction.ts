@@ -40,7 +40,6 @@ Advantages:
 Disadvantages:
 *Only three per player.
 *Must be German-born.
-*Must be part of any German subfaction(s).
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.
 *Extra edgy.`,
   },
@@ -61,7 +60,6 @@ Advantages:
 Disadvantages:
 *Only three per player.
 *Must be British.
-*Must be part of any British subfaction(s)
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.
 *British.`,
   },
@@ -82,7 +80,6 @@ Advantages:
 Disadvantages:
 *Only three per player.
 *Must be American.
-*Must be part of the 'Harlem Hellfighters' subfaction.
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {

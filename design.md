@@ -22,8 +22,7 @@ select an animal type.
 
 **Is a template:** [ Y/N. Only for Pilzfraun. ] **Country of origin:** [ Where
 you were born, regardless of type ]. **Faction:** [ Which faction your character
-belongs to, if any. ]. **Subfaction:** [ ONLY if Soldier! (below). The
-subfaction of your main faction! ]. **Role:** [ What you do! Cook, politician,
+belongs to, if any. ]. **Role:** [ What you do! Cook, politician,
 soldier, sapper, conscript, etc. Humans _must_ be commanders, they are too
 valuable to lose as regular foot soldiers. ]
 

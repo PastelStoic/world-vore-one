@@ -756,21 +756,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 />
               </label>
 
-              {description.role.toLowerCase() === "soldier" && (
-                <label class="block">
-                  <span class="block font-medium mb-1">Subfaction</span>
-                  <input
-                    class="input w-full border rounded px-3 py-2"
-                    type="text"
-                    value={description.subfaction}
-                    onInput={(event) =>
-                      updateDescription(
-                        "subfaction",
-                        event.currentTarget.value,
-                      )}
-                  />
-                </label>
-              )}
+
 
               <label class="block">
                 <span class="block font-medium mb-1">Age</span>

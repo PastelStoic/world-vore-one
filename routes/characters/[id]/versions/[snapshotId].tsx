@@ -144,11 +144,6 @@ export default define.page<typeof handler>(
                 <strong>Faction:</strong> {draft.description.faction}
               </p>
             )}
-            {draft.description.subfaction && (
-              <p>
-                <strong>Subfaction:</strong> {draft.description.subfaction}
-              </p>
-            )}
             {draft.description.role && (
               <p>
                 <strong>Role:</strong> {draft.description.role}

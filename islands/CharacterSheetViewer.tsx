@@ -148,11 +148,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <strong>Faction:</strong> {desc.faction}
               </p>
             )}
-            {desc.subfaction && (
-              <p>
-                <strong>Subfaction:</strong> {desc.subfaction}
-              </p>
-            )}
             {desc.role && (
               <p>
                 <strong>Role:</strong> {desc.role}

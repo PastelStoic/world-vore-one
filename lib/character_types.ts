@@ -136,7 +136,6 @@ export interface CharacterDescription {
   isTemplate: boolean;
   countryOfOrigin: string;
   faction: string;
-  subfaction: string;
   role: string;
   age: string;
   dateOfBirth: string;
@@ -228,7 +227,6 @@ export function createDefaultDescription(): CharacterDescription {
     isTemplate: false,
     countryOfOrigin: "",
     faction: "",
-    subfaction: "",
     role: "",
     age: "",
     dateOfBirth: "",

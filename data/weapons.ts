@@ -229,6 +229,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
+    discountFactionPerkIds: ["FRANCE - French Foreign Legion", "FRANCE - Chasseurs Alpins"],
     compatibleAttachmentIds: [],
   },
   {

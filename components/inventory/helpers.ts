@@ -81,7 +81,7 @@ export function calculateInventoryPointCostWithPerks(
 
   const unlocks = new Set(inventory.weaponMasterRestrictedUnlocks ?? []);
   cost += unlocks.size;
-  const unlockedIds = [...unlocks];
+  const unlockedIds = inventory.weaponMasterRestrictedUnlocks ?? [];
 
   for (const location of ["carried", "stowed"] as const) {
     for (const w of inventory[location].weapons) {

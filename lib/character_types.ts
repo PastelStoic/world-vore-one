@@ -40,6 +40,8 @@ export const FACTIONS = [
   "OTTOMANS - New Ottoman Army",
   "SWITZERLAND - King's Royal Army",
   "FRANCE - French Standing Army",
+  "FRANCE - French Foreign Legion",
+  "FRANCE - Chasseurs Alpins",
   "FRANCE - French Eastern African Army",
   "FRANCE - French Western African Army",
   "BRITAIN - British Expeditionary Force (BEF)",

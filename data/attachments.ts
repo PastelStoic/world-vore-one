@@ -99,6 +99,16 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description: `*Replaces the 'Musket' gimmick with this gimmick instead.
 *Reloading takes 30 turns.`,
   },
+  {
+    id: "colt-walker-bullets",
+    name: "Colt walker: Bullets",
+    appliesTo: "Colt Walker",
+    nation: "Civilian",
+    weight: 1,
+    removesTraitIds: ["extremely-slow-reload"],
+    addsTraitIds: ["loading-gate"],
+    description: `*Removes the 'extremely-slow-reload' gimmick, replacing it with 'loading gate'`,
+  },
 
   // ── British ──
   {

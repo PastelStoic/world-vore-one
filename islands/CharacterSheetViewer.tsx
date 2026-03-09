@@ -231,7 +231,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-base-content">
           Unallocated stat points:{" "}
-          <strong>{character.unallocatedStatPoints}</strong>
+          <strong>{character.unallocatedStatPoints - character.inventoryPointCost}</strong>
         </p>
         {(() => {
           // Compute addiction-affected stats

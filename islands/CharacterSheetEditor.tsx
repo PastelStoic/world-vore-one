@@ -34,15 +34,9 @@ import InventorySection from "@/components/InventorySection.tsx";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { Button } from "@/components/Button.tsx";
 import {
-  calculateInventoryPointCost,
   createEmptyInventory,
 } from "@/lib/inventory_types.ts";
-import {
-  ATTACHMENTS_BY_ID,
-  EQUIPMENT_BY_ID,
-  WEAPONS_BY_ID,
-} from "@/data/equipment.ts";
-import { getWeaponPointCost } from "@/components/inventory/helpers.ts";
+import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -154,13 +148,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     effectiveByStat,
   } = useCharacterStats(draft);
 
-  const inventoryPointCost = calculateInventoryPointCost(
+  const inventoryPointCost = calculateInventoryPointCostWithPerks(
     inventory,
-    (id) => getWeaponPointCost(id, perkIds),
-    {
-      getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
-      getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
-    },
+    perkIds,
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));

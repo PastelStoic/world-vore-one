@@ -64,6 +64,9 @@ export function parseInventory(raw: string): CharacterInventory | null {
           instanceId: String(w.instanceId),
           meleeWeaponId: String(w.meleeWeaponId),
           ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
+          ...(typeof w.signatureExtraTraitId === "string"
+            ? { signatureExtraTraitId: w.signatureExtraTraitId }
+            : {}),
           ...(typeof w.perkGranted === "string" ? { perkGranted: w.perkGranted } : {}),
         }));
       }

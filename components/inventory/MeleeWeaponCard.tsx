@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 
 import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
-import { MELEE_TRAITS_BY_ID, MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
+import { MELEE_TRAITS, MELEE_TRAITS_BY_ID, MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
@@ -15,6 +15,11 @@ interface MeleeWeaponCardProps {
   readOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
   onToggleSignature: (location: InventoryLocation, index: number) => void;
+  onSetSignatureTrait: (
+    location: InventoryLocation,
+    index: number,
+    traitId: string,
+  ) => void;
   onMove: (from: InventoryLocation, index: number, to: InventoryLocation) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
 }
@@ -27,6 +32,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     readOnly,
     hasSignatureWeaponPerk,
     onToggleSignature,
+    onSetSignatureTrait,
     onMove,
     onRemove,
   } = props;
@@ -44,6 +50,12 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   const grantingPerkName = isPerkGranted
     ? PERKS_BY_ID.get(mw.perkGranted!)?.name ?? mw.perkGranted
     : null;
+  const signatureExtraTrait = isSignature && mw.signatureExtraTraitId
+    ? MELEE_TRAITS_BY_ID.get(mw.signatureExtraTraitId)
+    : undefined;
+  const displayedTraitIds = Array.from(new Set(
+    signatureExtraTrait ? [...def.traitIds, signatureExtraTrait.id] : def.traitIds,
+  ));
 
   if (!def) {
     return (
@@ -134,9 +146,9 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
       )}
 
       {/* Traits */}
-      {def.traitIds.length > 0 && (
+      {displayedTraitIds.length > 0 && (
         <div class="flex flex-wrap gap-1">
-          {def.traitIds.map((tid) => {
+          {displayedTraitIds.map((tid) => {
             const trait = MELEE_TRAITS_BY_ID.get(tid);
             return (
               <TraitBadge
@@ -146,6 +158,25 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
               />
             );
           })}
+        </div>
+      )}
+
+      {isSignature && !readOnly && (
+        <div class="ml-2 text-xs">
+          <label class="mr-1">Extra trait:</label>
+          <select
+            class="select text-xs border rounded px-1 py-0.5"
+            value={mw.signatureExtraTraitId ?? ""}
+            onChange={(e) =>
+              onSetSignatureTrait(location, index, (e.target as HTMLSelectElement).value)}
+          >
+            <option value="">Select a trait…</option>
+            {MELEE_TRAITS.map((trait) => (
+              <option key={trait.id} value={trait.id}>
+                {trait.name}
+              </option>
+            ))}
+          </select>
         </div>
       )}
     </div>

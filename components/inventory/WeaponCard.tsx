@@ -94,6 +94,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   const otherLocation: InventoryLocation = location === "carried"
     ? "stowed"
     : "carried";
+  const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
 
   // Check for ammo override from attached attachments
   let effectiveAmmo = def.ammo;
@@ -147,7 +148,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   );
   const availableAttachments = def.compatibleAttachmentIds
     .filter((aId) =>
-      !w.attachedIds.includes(aId) && ownedAttachmentIds.has(aId)
+      !w.attachedIds.includes(aId) && (isSignature || ownedAttachmentIds.has(aId))
     )
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
     .filter(Boolean);
@@ -194,7 +195,6 @@ export default function WeaponCard(props: WeaponCardProps) {
   const isReloading = reloadProgress > 0;
 
   // Signature weapon benefits
-  const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
   const damageDisplay = isSignature
     ? `${effectiveDamage}+1`
     : String(effectiveDamage);
@@ -720,7 +720,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         </div>
       )}
 
-      {/* Attach new attachment – only shows compatible attachments owned in inventory */}
+      {/* Attach new attachment */}
       {!readOnly && availableAttachments.length > 0 && (
         <div class="ml-2">
           <select
@@ -731,7 +731,9 @@ export default function WeaponCard(props: WeaponCardProps) {
               if (val) props.onAttach(location, index, val);
             }}
           >
-            <option value="">+ Attach from inventory…</option>
+            <option value="">
+              {isSignature ? "+ Attach compatible…" : "+ Attach from inventory…"}
+            </option>
             {availableAttachments.map((a) => (
               <option key={a!.id} value={a!.id}>
                 {a!.name} (W:{a!.weight})
@@ -741,6 +743,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         </div>
       )}
       {!readOnly && availableAttachments.length === 0 &&
+        !isSignature &&
         def.compatibleAttachmentIds.filter((aId) =>
             !w.attachedIds.includes(aId)
           ).length > 0 &&

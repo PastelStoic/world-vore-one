@@ -17,14 +17,9 @@ import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import {
-  calculateInventoryPointCost,
   createEmptyInventory,
 } from "@/lib/inventory_types.ts";
-import {
-  ATTACHMENTS_BY_ID,
-  EQUIPMENT_BY_ID,
-} from "@/data/equipment.ts";
-import { getWeaponPointCost } from "@/components/inventory/helpers.ts";
+import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -81,13 +76,9 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     character.inventory ?? createEmptyInventory(),
   );
 
-  const inventoryPointCost = calculateInventoryPointCost(
+  const inventoryPointCost = calculateInventoryPointCostWithPerks(
     inventory,
-    (id) => getWeaponPointCost(id, character.perkIds),
-    {
-      getEquipment: (id) => EQUIPMENT_BY_ID.get(id),
-      getAttachment: (id) => ATTACHMENTS_BY_ID.get(id),
-    },
+    character.perkIds,
   );
 
   // Build a draft that uses the local inventory state so weight/encumbrance updates live

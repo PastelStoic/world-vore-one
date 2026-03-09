@@ -18,6 +18,7 @@ export function countCarriedItemSlots(
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
     getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
   },
+  freeAttachmentIds?: ReadonlySet<string>,
 ): number {
   let slots = 0;
 
@@ -59,6 +60,23 @@ export function countCarriedItemSlots(
     }
   }
 
+  if (freeAttachmentIds && freeAttachmentIds.size > 0) {
+    const freeUsed = new Set<string>();
+    for (const w of inv.carried.weapons) {
+      for (const attachmentId of w.attachedIds) {
+        if (freeAttachmentIds.has(attachmentId)) {
+          freeUsed.add(attachmentId);
+        }
+      }
+    }
+    for (const a of inv.carried.attachments ?? []) {
+      if (freeAttachmentIds.has(a.attachmentId)) {
+        freeUsed.add(a.attachmentId);
+      }
+    }
+    slots = Math.max(0, slots - freeUsed.size);
+  }
+
   return slots;
 }
 
@@ -72,6 +90,7 @@ export function countAllItemSlots(
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
     getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
   },
+  freeAttachmentIds?: ReadonlySet<string>,
 ): number {
   let slots = countCarriedItemSlots(inv, lookups);
 
@@ -105,6 +124,35 @@ export function countAllItemSlots(
     } else {
       slots += 1;
     }
+  }
+
+  if (freeAttachmentIds && freeAttachmentIds.size > 0) {
+    const freeUsed = new Set<string>();
+    for (const w of inv.carried.weapons) {
+      for (const attachmentId of w.attachedIds) {
+        if (freeAttachmentIds.has(attachmentId)) {
+          freeUsed.add(attachmentId);
+        }
+      }
+    }
+    for (const a of inv.carried.attachments ?? []) {
+      if (freeAttachmentIds.has(a.attachmentId)) {
+        freeUsed.add(a.attachmentId);
+      }
+    }
+    for (const w of inv.stowed.weapons) {
+      for (const attachmentId of w.attachedIds) {
+        if (freeAttachmentIds.has(attachmentId)) {
+          freeUsed.add(attachmentId);
+        }
+      }
+    }
+    for (const a of inv.stowed.attachments ?? []) {
+      if (freeAttachmentIds.has(a.attachmentId)) {
+        freeUsed.add(a.attachmentId);
+      }
+    }
+    slots = Math.max(0, slots - freeUsed.size);
   }
 
   return slots;
@@ -215,8 +263,9 @@ export function calculateInventoryPointCost(
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
     getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
   },
+  freeAttachmentIds?: ReadonlySet<string>,
 ): number {
-  const totalSlots = countAllItemSlots(inv, slotLookups);
+  const totalSlots = countAllItemSlots(inv, slotLookups, freeAttachmentIds);
   const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
 
   // Slot cost

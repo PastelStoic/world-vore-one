@@ -9,8 +9,15 @@ import {
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import type {
+  CharacterInventory,
   InventoryAttachment,
   InventoryWeapon,
+} from "@/lib/inventory_types.ts";
+import {
+  calculateInventoryPointCost,
+  countAllItemSlots,
+  CREATION_FREE_ITEM_SLOTS,
+  EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 
 export type InventoryLocation = "carried" | "stowed";
@@ -73,6 +80,77 @@ export function getSignatureAdjustedPointCost(
   //  Every other weapon is free."
   if (def.pointCost >= 3) return 1; // Originally restricted → still 1pt as signature
   return 0;
+}
+
+export function getSignatureFreeAttachmentIds(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+): Set<string> {
+  if (!perkIds?.includes("signiature-weapon")) return new Set<string>();
+
+  const signatureWeapon = [...inventory.carried.weapons, ...inventory.stowed.weapons]
+    .find((w) => w.isSignatureWeapon);
+  if (!signatureWeapon) return new Set<string>();
+
+  const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
+  if (!def) return new Set<string>();
+
+  return new Set(def.compatibleAttachmentIds);
+}
+
+export function countAllItemSlotsWithPerks(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+): number {
+  const signatureFreeAttachmentIds = getSignatureFreeAttachmentIds(
+    inventory,
+    perkIds,
+  );
+  return countAllItemSlots(inventory, slotLookups, signatureFreeAttachmentIds);
+}
+
+export function calculateInventoryPointCostWithPerks(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+): number {
+  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ?? false;
+  const signatureFreeAttachmentIds = getSignatureFreeAttachmentIds(
+    inventory,
+    perkIds,
+  );
+
+  if (hasSignatureWeaponPerk) {
+    const adjustedSlots = countAllItemSlots(
+      inventory,
+      slotLookups,
+      signatureFreeAttachmentIds,
+    );
+    const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
+    let cost = overFree * EXTRA_ITEM_POINT_COST;
+
+    for (const w of inventory.carried.weapons) {
+      cost += getSignatureAdjustedPointCost(
+        w.weaponId,
+        !!w.isSignatureWeapon,
+        perkIds,
+      );
+    }
+    for (const w of inventory.stowed.weapons) {
+      cost += getSignatureAdjustedPointCost(
+        w.weaponId,
+        !!w.isSignatureWeapon,
+        perkIds,
+      );
+    }
+    return cost;
+  }
+
+  return calculateInventoryPointCost(
+    inventory,
+    (id) => getWeaponPointCost(id, perkIds),
+    slotLookups,
+    signatureFreeAttachmentIds,
+  );
 }
 
 // ── Drum/magazine eject helper ──────────────────────────────────────────────

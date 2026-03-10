@@ -168,7 +168,7 @@ export async function upsertCharacter(
   return character;
 }
 
-export async function setCharacterImageId(
+export function setCharacterImageId(
   characterId: string,
   imageId: string | null,
 ) {
@@ -186,7 +186,9 @@ export async function setCharacterImageId(
  * Used for edits while a character is still pending approval.
  */
 export async function upsertCharacterDirect(
-  input: CharacterDraft & Pick<CharacterSheet, "id" | "userId"> & { status?: CharacterStatus },
+  input: CharacterDraft & Pick<CharacterSheet, "id" | "userId"> & {
+    status?: CharacterStatus;
+  },
 ) {
   const kv = await getKv();
   const now = new Date().toISOString();
@@ -206,7 +208,7 @@ export async function upsertCharacterDirect(
   return character;
 }
 
-export async function setCharacterStatus(
+export function setCharacterStatus(
   characterId: string,
   status: CharacterStatus,
 ) {
@@ -219,7 +221,7 @@ export async function setCharacterStatus(
  * Update only the inventory on a saved character (combat state: ammo, charges, magazines).
  * Does NOT create a snapshot – this is for in-session tracking.
  */
-export async function updateCharacterInventory(
+export function updateCharacterInventory(
   characterId: string,
   inventory: CharacterInventory,
 ) {
@@ -228,7 +230,7 @@ export async function updateCharacterInventory(
   });
 }
 
-export async function setCharacterHidden(
+export function setCharacterHidden(
   characterId: string,
   hidden: boolean,
 ) {

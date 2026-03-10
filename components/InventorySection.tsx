@@ -32,7 +32,6 @@ import {
   calculateInventoryPointCostWithPerks,
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
-  getSignatureAdjustedPointCost,
   getWeaponPointCost,
   type InventoryLocation,
   weightLookups,
@@ -728,8 +727,11 @@ export default function InventorySection(props: InventorySectionProps) {
           )}
         </h4>
 
-        {isEmpty && <p class="text-sm text-base-content/50 italic">No items.
-        </p>}
+        {isEmpty && (
+          <p class="text-sm text-base-content/50 italic">
+            No items.
+          </p>
+        )}
 
         {inv.weapons.length > 0 && (
           <div class="space-y-1">

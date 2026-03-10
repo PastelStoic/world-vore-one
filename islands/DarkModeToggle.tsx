@@ -28,6 +28,7 @@ export default function DarkModeToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggle}
       title={dark ? "Switch to light mode" : "Switch to dark mode"}
       class="text-sm px-3 py-1 border rounded hover:bg-base-200 transition-colors select-none"

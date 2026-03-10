@@ -36,9 +36,6 @@ import { Button } from "@/components/Button.tsx";
 import {
   createEmptyInventory,
 } from "@/lib/inventory_types.ts";
-import {
-  WEAPONS_BY_ID,
-} from "@/data/equipment.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetEditorProps {

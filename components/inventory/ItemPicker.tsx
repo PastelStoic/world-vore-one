@@ -95,7 +95,7 @@ export default function ItemPicker<T>(props: ItemPickerProps<T>) {
         )
         : (
           <ul class={`${maxHeight} overflow-y-auto space-y-1`}>
-            {items.map((item, i) => renderItem(item))}
+            {items.map((item) => renderItem(item))}
           </ul>
         )}
     </div>

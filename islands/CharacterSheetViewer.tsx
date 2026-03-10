@@ -1,4 +1,4 @@
-import { useMemo, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import {
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,

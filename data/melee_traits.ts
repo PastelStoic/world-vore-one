@@ -93,7 +93,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "throwable",
     name: "Throwable",
     description:
-      "The weapon is meant, first and foremost, to be thrown. You can throw it 5 + STR distances away, and hitting the target is a Strength check, instead of Dexterity. Deals -1 damage when used as a melee weapon, damage cannot be brought to 0 through this.",
+      "The weapon is meant, first and foremost, to be thrown. You can throw it 5 + STR distances away, hitting the target is a DEX vs Cover contested check. Deals -1 damage when used as a melee weapon, damage cannot be brought to 0 through this.",
   },
   {
     id: "barbed-hooked",

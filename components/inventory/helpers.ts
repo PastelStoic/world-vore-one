@@ -203,3 +203,36 @@ export function convertMagazinesToAttachment(
     savedMagazineStates: savedStates,
   };
 }
+
+// ── Attachment prerequisite helpers ────────────────────────────────────────
+
+export function getMissingRequiredAttachmentIds(
+  attachmentId: string,
+  attachedIds: readonly string[],
+): string[] {
+  const def = ATTACHMENTS_BY_ID.get(attachmentId);
+  if (!def?.requiresAttachmentIds || def.requiresAttachmentIds.length === 0) {
+    return [];
+  }
+  return def.requiresAttachmentIds.filter((requiredId) =>
+    !attachedIds.includes(requiredId)
+  );
+}
+
+export function canAttachToWeapon(
+  attachmentId: string,
+  attachedIds: readonly string[],
+): boolean {
+  return getMissingRequiredAttachmentIds(attachmentId, attachedIds).length === 0;
+}
+
+export function getDependentAttachmentIds(
+  attachmentId: string,
+  attachedIds: readonly string[],
+): string[] {
+  return attachedIds.filter((otherAttachmentId) => {
+    if (otherAttachmentId === attachmentId) return false;
+    const otherDef = ATTACHMENTS_BY_ID.get(otherAttachmentId);
+    return otherDef?.requiresAttachmentIds?.includes(attachmentId) ?? false;
+  });
+}

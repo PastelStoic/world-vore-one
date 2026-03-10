@@ -11,6 +11,8 @@ import {
 import PerkDescription from "@/components/PerkDescription.tsx";
 import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
+  canAttachToWeapon,
+  getDependentAttachmentIds,
   type InventoryLocation,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
@@ -150,10 +152,17 @@ export default function WeaponCard(props: WeaponCardProps) {
   );
   const availableAttachments = def.compatibleAttachmentIds
     .filter((aId) =>
-      !w.attachedIds.includes(aId) && (isSignature || ownedAttachmentIds.has(aId))
+      !w.attachedIds.includes(aId) &&
+      (isSignature || ownedAttachmentIds.has(aId)) &&
+      canAttachToWeapon(aId, w.attachedIds)
     )
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
     .filter(Boolean);
+  const blockedByPrerequisiteCount = def.compatibleAttachmentIds.filter((aId) =>
+    !w.attachedIds.includes(aId) &&
+    (isSignature || ownedAttachmentIds.has(aId)) &&
+    !canAttachToWeapon(aId, w.attachedIds)
+  ).length;
 
   // Check if weapon uses magazines (freeAccessoryIds) or attachment-based magazine system
   const hasFreeAccessoryMags = def.freeAccessoryIds &&
@@ -633,6 +642,11 @@ export default function WeaponCard(props: WeaponCardProps) {
           <span class="text-xs font-medium">Attachments:</span>
           {w.attachedIds.map((aId) => {
             const aDef = ATTACHMENTS_BY_ID.get(aId);
+            const dependentAttachmentIds = getDependentAttachmentIds(aId, w.attachedIds);
+            const dependentAttachmentNames = dependentAttachmentIds.map((id) =>
+              ATTACHMENTS_BY_ID.get(id)?.name ?? id
+            );
+            const canDetach = dependentAttachmentIds.length === 0;
             // Charge data for non-magazine isCharge attachments on this weapon
             const attachedChargeData = aDef?.isCharge && !aDef.ammoOverride
               ? w.attachmentChargeData?.[aId]
@@ -656,6 +670,10 @@ export default function WeaponCard(props: WeaponCardProps) {
                     <button
                       type="button"
                       class="px-1 border rounded text-error hover:bg-error/10"
+                      disabled={!canDetach}
+                      title={canDetach
+                        ? ""
+                        : `Cannot detach while required by: ${dependentAttachmentNames.join(", ")}`}
                       onClick={() => props.onDetach(location, index, aId)}
                     >
                       Detach
@@ -759,6 +777,12 @@ export default function WeaponCard(props: WeaponCardProps) {
             them via the Attachments section below.
           </div>
         )}
+      {!readOnly && blockedByPrerequisiteCount > 0 && (
+        <div class="ml-2 text-xs text-base-content/50 italic">
+          Some attachments are currently blocked until their required
+          attachment is already attached.
+        </div>
+      )}
     </div>
   );
 }

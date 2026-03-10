@@ -102,6 +102,7 @@ export default define.page(function WikiEquipment() {
                       att.weightOverride !== undefined ||
                       att.reloadTurnsOverride !== undefined ||
                       att.damageOverride !== undefined ||
+                      (att.requiresAttachmentIds?.length ?? 0) > 0 ||
                       att.rateOfFireBonus !== undefined) && (
                       <div class="flex flex-wrap gap-3 text-xs text-base-content/60 mt-1">
                         {att.ammoOverride !== undefined && (
@@ -117,6 +118,11 @@ export default define.page(function WikiEquipment() {
                         )}
                         {att.damageOverride !== undefined && (
                           <span>Damage override: {att.damageOverride}</span>
+                        )}
+                        {(att.requiresAttachmentIds?.length ?? 0) > 0 && (
+                          <span>
+                            Requires attached: {att.requiresAttachmentIds!.join(", ")}
+                          </span>
                         )}
                         {att.rateOfFireBonus !== undefined && (
                           <span>RoF bonus: +{att.rateOfFireBonus}</span>

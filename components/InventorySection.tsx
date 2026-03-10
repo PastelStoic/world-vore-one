@@ -29,9 +29,11 @@ import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
+  canAttachToWeapon,
   calculateInventoryPointCostWithPerks,
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
+  getDependentAttachmentIds,
   getWeaponPointCost,
   type InventoryLocation,
   weightLookups,
@@ -434,10 +436,12 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
+      if (weapon.attachedIds.includes(attachmentId)) return inv;
       const attIdx = inv[location].attachments.findIndex(
         (a) => a.attachmentId === attachmentId,
       );
       const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+      if (!canAttachToWeapon(attachmentId, weapon.attachedIds)) return inv;
       let attInv: InventoryAttachment | undefined;
       if (attIdx >= 0) {
         attInv = inv[location].attachments.splice(attIdx, 1)[0];
@@ -514,6 +518,8 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
+      const dependents = getDependentAttachmentIds(attachmentId, weapon.attachedIds);
+      if (dependents.length > 0) return inv;
       const ids = weapon.attachedIds;
       const idx = ids.indexOf(attachmentId);
       if (idx >= 0) ids.splice(idx, 1);

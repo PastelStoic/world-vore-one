@@ -99,6 +99,8 @@ export interface AttachmentDefinition {
   addsTraitIds?: string[];
   /** Trait IDs removed from the weapon's trait list while this attachment is equipped */
   removesTraitIds?: string[];
+  /** IDs of attachments that must already be attached before this can be attached */
+  requiresAttachmentIds?: string[];
 }
 
 // ── General equipment ───────────────────────────────────────────────────────

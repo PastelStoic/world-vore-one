@@ -231,6 +231,16 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
 *May be used alongside the Pedersen device.`,
   },
+  {
+    id: "springfield-alofs-device",
+    name: "Springfield: Alofs device",
+    appliesTo: "M1903 Springfield",
+    nation: "United States",
+    weight: 1,
+    requiresAttachmentIds: ["springfield-pedersen"],
+    description: `*Requires the Pedersen device to already be attached before this can be attached.
+*Represents the Alofs conversion hardware mounted on the Springfield setup.`,
+  },
 
   // ── Russian ──
   {

@@ -93,7 +93,13 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     customInput: "Description of your condition",
     upgradable: true,
     maxRanks: 5,
-    requiresStatChoice: ["strength", "dexterity", "constitution", "intelligence", "charisma"],
+    requiresStatChoice: [
+      "strength",
+      "dexterity",
+      "constitution",
+      "intelligence",
+      "charisma",
+    ],
     description:
       `You have some type of health condition that is completely crippling in some way or another.
 

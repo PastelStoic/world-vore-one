@@ -33,9 +33,7 @@ import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { Button } from "@/components/Button.tsx";
-import {
-  createEmptyInventory,
-} from "@/lib/inventory_types.ts";
+import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetEditorProps {
@@ -92,7 +90,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [perkDisguises, setPerkDisguises] = useState<Record<string, string>>(
     props.initialCharacter.perkDisguises ?? {},
   );
-  const [perkSelections, setPerkSelections] = useState<Record<string, string[]>>(
+  const [perkSelections, setPerkSelections] = useState<
+    Record<string, string[]>
+  >(
     props.initialCharacter.perkSelections ?? {},
   );
   const [inventory, setInventory] = useState<CharacterInventory>(
@@ -134,7 +134,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       ? perkStatChoices
       : undefined,
     perkDisguises,
-    perkSelections: Object.keys(perkSelections).length > 0 ? perkSelections : undefined,
+    perkSelections: Object.keys(perkSelections).length > 0
+      ? perkSelections
+      : undefined,
     inventory,
   };
 
@@ -154,7 +156,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
-  const derivedPerkIds = getDerivedPerkIds(perkIds, perkSelections, description.faction);
+  const derivedPerkIds = getDerivedPerkIds(
+    perkIds,
+    perkSelections,
+    description.faction,
+  );
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
   const ownedLockCategories = new Set(
     ownedPerks
@@ -236,7 +242,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   function getStatFloor(statKey: BaseStatKey): number {
     const baseFloor = statFloor ?? initialBaseStats[statKey];
     // digestionStrength can go to -4 with extremely-inefficient-digestion perk
-    if (statKey === "digestionStrength" && perkIds.includes("extremely-inefficient-digestion")) {
+    if (
+      statKey === "digestionStrength" &&
+      perkIds.includes("extremely-inefficient-digestion")
+    ) {
       return Math.max(-4, baseFloor);
     }
     // All other stats: minimum of 1
@@ -323,7 +332,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const allNewPerks = [perkId, ...includedIds];
     const hasGrantedItems = allNewPerks.some((id) => {
       const p = perksById.get(id);
-      return (p?.grantsEquipment?.length ?? 0) > 0 || (p?.grantsMeleeWeapons?.length ?? 0) > 0;
+      return (p?.grantsEquipment?.length ?? 0) > 0 ||
+        (p?.grantsMeleeWeapons?.length ?? 0) > 0;
     });
     if (hasGrantedItems) {
       setInventory((inv) => {
@@ -373,7 +383,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     // Selections from OTHER perks remain active; only selections FROM this perk are cleared
     const selectionsWithoutSource = { ...perkSelections };
     delete selectionsWithoutSource[perkId];
-    const stillDerived = getDerivedPerkIds(perkIdsWithoutSource, selectionsWithoutSource, description.faction);
+    const stillDerived = getDerivedPerkIds(
+      perkIdsWithoutSource,
+      selectionsWithoutSource,
+      description.faction,
+    );
     const orphanedIncluded = (perk?.includesPerks ?? []).filter(
       (id) => !stillDerived.has(id),
     );
@@ -385,12 +399,29 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     const newPerkIds = perkIdsWithoutSource.filter(
       (id) => !orphanedIds.includes(id),
     );
-    const refund = calculatePerksCost(perkIds, perkRanks, perkSelections, description.faction) -
-      calculatePerksCost(newPerkIds, perkRanks, selectionsWithoutSource, description.faction);
+    const refund = calculatePerksCost(
+      perkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+    ) -
+      calculatePerksCost(
+        newPerkIds,
+        perkRanks,
+        selectionsWithoutSource,
+        description.faction,
+      );
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
     const cleaned = cleanupPerkData(
-      { perkNotes, perkUpgradeNotes, perkStatChoices, perkRanks, perkDisguises, perkSelections },
+      {
+        perkNotes,
+        perkUpgradeNotes,
+        perkStatChoices,
+        perkRanks,
+        perkDisguises,
+        perkSelections,
+      },
       allRemovedIds,
     );
     setPerkNotes(cleaned.perkNotes);
@@ -440,7 +471,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.requiresStatChoice) {
       setPerkStatChoices((current) => ({
         ...current,
-        [perkId]: [...(current[perkId] ?? ["" as BaseStatKey]), "" as BaseStatKey],
+        [perkId]: [
+          ...(current[perkId] ?? ["" as BaseStatKey]),
+          "" as BaseStatKey,
+        ],
       }));
     }
   }
@@ -542,11 +576,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         name="unallocatedStatPoints"
         value={String(unallocatedStatPoints)}
       />
-      {/* When identity fields are locked the fieldset is disabled and its
-          inputs are excluded from form submission, so emit a hidden input. */}
-      {lockIdentityFields && (
-        <input type="hidden" name="name" value={name} />
-      )}
+      {
+        /* When identity fields are locked the fieldset is disabled and its
+          inputs are excluded from form submission, so emit a hidden input. */
+      }
+      {lockIdentityFields && <input type="hidden" name="name" value={name} />}
 
       {lockIdentityFields && (
         <p class="text-sm text-base-content/70">
@@ -616,7 +650,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         !keptPerkIds.includes(id)
                       );
                       const cleaned = cleanupPerkData(
-                        { perkNotes, perkUpgradeNotes, perkStatChoices, perkRanks, perkDisguises, perkSelections },
+                        {
+                          perkNotes,
+                          perkUpgradeNotes,
+                          perkStatChoices,
+                          perkRanks,
+                          perkDisguises,
+                          perkSelections,
+                        },
                         removedIds,
                       );
                       setPerkNotes(cleaned.perkNotes);
@@ -698,7 +739,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   class="select w-full border rounded px-3 py-2"
                   value={description.faction}
                   onChange={(event) => {
-                    const newFaction = (event.target as HTMLSelectElement).value;
+                    const newFaction =
+                      (event.target as HTMLSelectElement).value;
                     const oldFaction = description.faction;
                     updateDescription("faction", newFaction);
 
@@ -710,10 +752,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
                     // Remove old faction perks that aren't granted by the new faction
                     // and aren't derived from other sources
-                    const toRemove = oldGranted.filter((id) => !newGranted.includes(id));
-                    const toAdd = newGranted.filter((id) => !perkIds.includes(id));
+                    const toRemove = oldGranted.filter((id) =>
+                      !newGranted.includes(id)
+                    );
+                    const toAdd = newGranted.filter((id) =>
+                      !perkIds.includes(id)
+                    );
 
-                    let updatedPerkIds = perkIds.filter((id) => !toRemove.includes(id));
+                    let updatedPerkIds = perkIds.filter((id) =>
+                      !toRemove.includes(id)
+                    );
                     updatedPerkIds = [...updatedPerkIds, ...toAdd];
 
                     // Calculate stat point delta from the faction switch
@@ -721,11 +769,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     const newPoints = newDef?.grantsStatPoints ?? 0;
                     const pointsDelta = newPoints - oldPoints;
 
-                    if (updatedPerkIds.length !== perkIds.length || toAdd.length > 0) {
+                    if (
+                      updatedPerkIds.length !== perkIds.length ||
+                      toAdd.length > 0
+                    ) {
                       setPerkIds(updatedPerkIds);
                     }
                     if (pointsDelta !== 0) {
-                      setUnallocatedStatPoints((current) => current + pointsDelta);
+                      setUnallocatedStatPoints((current) =>
+                        current + pointsDelta
+                      );
                     }
                   }}
                 >
@@ -745,8 +798,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     updateDescription("role", event.currentTarget.value)}
                 />
               </label>
-
-
 
               <label class="block">
                 <span class="block font-medium mb-1">Age</span>
@@ -977,75 +1028,90 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           // Compute addiction-affected stats (highest of the 5 main stats)
           const addictionAffectedStats = new Set<BaseStatKey>();
           if (perkIds.includes("crippling-addiction")) {
-            const mainStats: BaseStatKey[] = ["strength", "dexterity", "constitution", "intelligence", "charisma"];
-            const maxValue = Math.max(...mainStats.map(k => baseStats[k]));
+            const mainStats: BaseStatKey[] = [
+              "strength",
+              "dexterity",
+              "constitution",
+              "intelligence",
+              "charisma",
+            ];
+            const maxValue = Math.max(...mainStats.map((k) => baseStats[k]));
             for (const k of mainStats) {
               if (baseStats[k] === maxValue) addictionAffectedStats.add(k);
             }
           }
           return (
             <>
-        <p class="text-sm text-base-content flex items-center gap-2">
-          Unallocated stat points:{" "}
-          <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
-          <button
-            type="button"
-            class="px-2 py-1 border rounded disabled:opacity-40"
-            disabled={unallocatedStatPoints - inventoryPointCost < 1}
-            onClick={() => setUnallocatedStatPoints((c) => c - 1)}
-          >
-            -1
-          </button>
-          <button
-            type="button"
-            class="px-2 py-1 border rounded"
-            onClick={() => setUnallocatedStatPoints((c) => c + 1)}
-          >
-            +1
-          </button>
-        </p>
-        <ul class="space-y-2">
-          {BASE_STAT_FIELDS.filter((field) =>
-            race !== "Baseliner" || field.key !== "digestionStrength"
-          ).map((field) => (
-            <li class="flex items-center justify-between gap-2" key={field.key}>
-              <span class="text-sm">
-                {field.label}
-                {addictionAffectedStats.has(field.key) && (
-                  <span class="ml-1 text-xs font-semibold text-error">[Addiction]</span>
-                )}
-                {statCaps[field.key] !== undefined && (
-                  <span class="ml-1 text-xs font-semibold text-warning">[Capped to {statCaps[field.key]}]</span>
-                )}
-              </span>
-              <span class="text-sm">
-                Base: <strong>{baseStats[field.key]}</strong> | Effective:{" "}
-                <strong>{effectiveByStat[field.key]}</strong>
-              </span>
-              <div class="flex gap-1">
+              <p class="text-sm text-base-content flex items-center gap-2">
+                Unallocated stat points:{" "}
+                <strong>{unallocatedStatPoints - inventoryPointCost}</strong>
                 <button
                   type="button"
                   class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={baseStats[field.key] <= getStatFloor(field.key)}
-                  onClick={() =>
-                    decreaseStat(field.key)}
+                  disabled={unallocatedStatPoints - inventoryPointCost < 1}
+                  onClick={() => setUnallocatedStatPoints((c) => c - 1)}
                 >
                   -1
                 </button>
                 <button
                   type="button"
-                  class="px-2 py-1 border rounded disabled:opacity-40"
-                  disabled={unallocatedStatPoints - inventoryPointCost < 1 ||
-                    (statCaps[field.key] !== undefined && baseStats[field.key] >= statCaps[field.key]!)}
-                  onClick={() =>
-                    increaseStat(field.key)}
+                  class="px-2 py-1 border rounded"
+                  onClick={() => setUnallocatedStatPoints((c) => c + 1)}
                 >
                   +1
                 </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </p>
+              <ul class="space-y-2">
+                {BASE_STAT_FIELDS.filter((field) =>
+                  race !== "Baseliner" || field.key !== "digestionStrength"
+                ).map((field) => (
+                  <li
+                    class="flex items-center justify-between gap-2"
+                    key={field.key}
+                  >
+                    <span class="text-sm">
+                      {field.label}
+                      {addictionAffectedStats.has(field.key) && (
+                        <span class="ml-1 text-xs font-semibold text-error">
+                          [Addiction]
+                        </span>
+                      )}
+                      {statCaps[field.key] !== undefined && (
+                        <span class="ml-1 text-xs font-semibold text-warning">
+                          [Capped to {statCaps[field.key]}]
+                        </span>
+                      )}
+                    </span>
+                    <span class="text-sm">
+                      Base: <strong>{baseStats[field.key]}</strong> | Effective:
+                      {" "}
+                      <strong>{effectiveByStat[field.key]}</strong>
+                    </span>
+                    <div class="flex gap-1">
+                      <button
+                        type="button"
+                        class="px-2 py-1 border rounded disabled:opacity-40"
+                        disabled={baseStats[field.key] <=
+                          getStatFloor(field.key)}
+                        onClick={() => decreaseStat(field.key)}
+                      >
+                        -1
+                      </button>
+                      <button
+                        type="button"
+                        class="px-2 py-1 border rounded disabled:opacity-40"
+                        disabled={unallocatedStatPoints - inventoryPointCost <
+                            1 ||
+                          (statCaps[field.key] !== undefined &&
+                            baseStats[field.key] >= statCaps[field.key]!)}
+                        onClick={() => increaseStat(field.key)}
+                      >
+                        +1
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </>
           );
         })()}
@@ -1104,11 +1170,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           (canRemoveOldPerks || currentRank > initialRank) &&
                           // Derived perks cannot be downgraded below rank 1
                           (!isDerived || currentRank > 1);
-                        const chosenStats = (perkStatChoices[id] ?? []) as BaseStatKey[];
+                        const chosenStats =
+                          (perkStatChoices[id] ?? []) as BaseStatKey[];
                         const hasUnsatisfiedStatChoices =
                           perk?.requiresStatChoice
                             ? chosenStats.length < currentRank ||
-                              chosenStats.some((s) => !s)
+                              chosenStats.some((s) =>
+                                !s
+                              )
                             : false;
                         const hasRemainingStats = !perk?.requiresStatChoice ||
                           (perk.requiresStatChoice ?? []).some(
@@ -1129,9 +1198,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           : 0;
                         const canAffordUpgrade =
                           (unallocatedStatPoints - inventoryPointCost) >=
-                          upgradeCost;
+                            upgradeCost;
                         const statLabelMap = BASE_STAT_FIELDS.reduce(
-                          (m, f) => { m[f.key] = f.label; return m; },
+                          (m, f) => {
+                            m[f.key] = f.label;
+                            return m;
+                          },
                           {} as Record<string, string>,
                         );
                         return (
@@ -1157,19 +1229,20 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   </span>
                                 )}
                               </span>
-                              {isUpgradable && canUpgrade && canAffordUpgrade && (
-                                <button
-                                  type="button"
-                                  class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
-                                  onClick={() => upgradePerk(id)}
-                                >
-                                  Upgrade{upgradeCost < 0
-                                    ? ` (+${-upgradeCost} SP)`
-                                    : upgradeCost === 0
-                                    ? " (Free)"
-                                    : ` (${upgradeCost} SP)`}
-                                </button>
-                              )}
+                              {isUpgradable && canUpgrade && canAffordUpgrade &&
+                                (
+                                  <button
+                                    type="button"
+                                    class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
+                                    onClick={() => upgradePerk(id)}
+                                  >
+                                    Upgrade{upgradeCost < 0
+                                      ? ` (+${-upgradeCost} SP)`
+                                      : upgradeCost === 0
+                                      ? " (Free)"
+                                      : ` (${upgradeCost} SP)`}
+                                  </button>
+                                )}
                               {canDowngrade && (
                                 <button
                                   type="button"
@@ -1191,106 +1264,122 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             </div>
                             {/* Upgradable perk: per-rank inputs */}
                             {isUpgradable &&
-                              (perk?.requiresStatChoice || perk?.customInput) && (
-                              <div class="mt-1 space-y-1">
-                                {Array.from({ length: currentRank }, (_, ri) => {
-                                  const chosenForRank = chosenStats[ri];
-                                  const usedByOthers = chosenStats.filter(
-                                    (_, i) => i !== ri,
-                                  );
-                                  return (
-                                    <div
-                                      key={ri}
-                                      class="border rounded px-2 py-1 text-xs space-y-1"
-                                    >
-                                      <span class="font-semibold text-xs">
-                                        Rank {ri + 1}
-                                      </span>
-                                      {perk?.requiresStatChoice && (
-                                        <div>
-                                          <label class="text-xs text-base-content/70 mr-1">
-                                            Locked stat:
-                                          </label>
-                                          <select
-                                            class="select border rounded px-1 py-0.5 text-xs"
-                                            value={chosenForRank ?? ""}
-                                            onChange={(e) => {
-                                              const val =
-                                                (e.target as HTMLSelectElement)
-                                                  .value as BaseStatKey;
-                                              setPerkStatChoices((current) => {
-                                                const choices = [
-                                                  ...(current[id] ??
-                                                    Array(currentRank).fill(
-                                                      "" as BaseStatKey,
-                                                    )),
-                                                ];
-                                                choices[ri] = val;
-                                                return {
-                                                  ...current,
-                                                  [id]: choices,
-                                                };
-                                              });
-                                              // Enforce stat cap: refund base stat points above 1
-                                              if (val && baseStats[val] > 1) {
-                                                const refund = baseStats[val] - 1;
-                                                setBaseStats((current) => ({
-                                                  ...current,
-                                                  [val]: 1,
-                                                }));
-                                                setUnallocatedStatPoints((current) => current + refund);
-                                              }
-                                            }}
-                                          >
-                                            <option value="">
-                                              — Select stat —
-                                            </option>
-                                            {(perk.requiresStatChoice ?? [])
-                                              .filter(
-                                                (s) =>
-                                                  !usedByOthers.includes(
-                                                    s as BaseStatKey,
-                                                  ) ||
-                                                  s === chosenForRank,
-                                              )
-                                              .map((s) => (
-                                                <option key={s} value={s}>
-                                                  {statLabelMap[s] ?? s}
+                              (perk?.requiresStatChoice || perk?.customInput) &&
+                              (
+                                <div class="mt-1 space-y-1">
+                                  {Array.from(
+                                    { length: currentRank },
+                                    (_, ri) => {
+                                      const chosenForRank = chosenStats[ri];
+                                      const usedByOthers = chosenStats.filter(
+                                        (_, i) => i !== ri,
+                                      );
+                                      return (
+                                        <div
+                                          key={ri}
+                                          class="border rounded px-2 py-1 text-xs space-y-1"
+                                        >
+                                          <span class="font-semibold text-xs">
+                                            Rank {ri + 1}
+                                          </span>
+                                          {perk?.requiresStatChoice && (
+                                            <div>
+                                              <label class="text-xs text-base-content/70 mr-1">
+                                                Locked stat:
+                                              </label>
+                                              <select
+                                                class="select border rounded px-1 py-0.5 text-xs"
+                                                value={chosenForRank ?? ""}
+                                                onChange={(e) => {
+                                                  const val =
+                                                    (e.target as HTMLSelectElement)
+                                                      .value as BaseStatKey;
+                                                  setPerkStatChoices(
+                                                    (current) => {
+                                                      const choices = [
+                                                        ...(current[id] ??
+                                                          Array(currentRank)
+                                                            .fill(
+                                                              "" as BaseStatKey,
+                                                            )),
+                                                      ];
+                                                      choices[ri] = val;
+                                                      return {
+                                                        ...current,
+                                                        [id]: choices,
+                                                      };
+                                                    },
+                                                  );
+                                                  // Enforce stat cap: refund base stat points above 1
+                                                  if (
+                                                    val && baseStats[val] > 1
+                                                  ) {
+                                                    const refund =
+                                                      baseStats[val] - 1;
+                                                    setBaseStats((current) => ({
+                                                      ...current,
+                                                      [val]: 1,
+                                                    }));
+                                                    setUnallocatedStatPoints((
+                                                      current,
+                                                    ) => current + refund);
+                                                  }
+                                                }}
+                                              >
+                                                <option value="">
+                                                  — Select stat —
                                                 </option>
-                                              ))}
-                                          </select>
+                                                {(perk.requiresStatChoice ?? [])
+                                                  .filter(
+                                                    (s) =>
+                                                      !usedByOthers.includes(
+                                                        s as BaseStatKey,
+                                                      ) ||
+                                                      s === chosenForRank,
+                                                  )
+                                                  .map((s) => (
+                                                    <option key={s} value={s}>
+                                                      {statLabelMap[s] ?? s}
+                                                    </option>
+                                                  ))}
+                                              </select>
+                                            </div>
+                                          )}
+                                          {perk?.customInput && (
+                                            <input
+                                              type="text"
+                                              class="w-full border rounded px-2 py-1 text-xs"
+                                              placeholder={perk.customInput}
+                                              value={(perkUpgradeNotes[id] ??
+                                                [])[ri] ?? ""}
+                                              onInput={(e) => {
+                                                const value =
+                                                  (e.target as HTMLInputElement)
+                                                    .value;
+                                                setPerkUpgradeNotes(
+                                                  (current) => {
+                                                    const notes = [
+                                                      ...(current[id] ??
+                                                        Array(currentRank).fill(
+                                                          "",
+                                                        )),
+                                                    ];
+                                                    notes[ri] = value;
+                                                    return {
+                                                      ...current,
+                                                      [id]: notes,
+                                                    };
+                                                  },
+                                                );
+                                              }}
+                                            />
+                                          )}
                                         </div>
-                                      )}
-                                      {perk?.customInput && (
-                                        <input
-                                          type="text"
-                                          class="w-full border rounded px-2 py-1 text-xs"
-                                          placeholder={perk.customInput}
-                                          value={(perkUpgradeNotes[id] ??
-                                            [])[ri] ?? ""}
-                                          onInput={(e) => {
-                                            const value =
-                                              (e.target as HTMLInputElement)
-                                                .value;
-                                            setPerkUpgradeNotes((current) => {
-                                              const notes = [
-                                                ...(current[id] ??
-                                                  Array(currentRank).fill("")),
-                                              ];
-                                              notes[ri] = value;
-                                              return {
-                                                ...current,
-                                                [id]: notes,
-                                              };
-                                            });
-                                          }}
-                                        />
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
+                                      );
+                                    },
+                                  )}
+                                </div>
+                              )}
                             {/* Non-upgradable perk: single note input */}
                             {!isUpgradable && perk?.customInput && (
                               <input
@@ -1346,65 +1435,108 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </select>
                               </div>
                             )}
-                            {!isDerived && perk?.selectablePerkIds !== undefined && (() => {
-                              const count = perk.selectablePerksCount ?? 1;
-                              return (
-                                <div class="mt-1 space-y-1">
-                                  {Array.from({ length: count }, (_, si) => {
-                                    const currentSelectionId = perkSelections[id]?.[si] ?? "";
-                                    const otherSelectedIds = (perkSelections[id] ?? [])
-                                      .filter((sel, i) => i !== si && Boolean(sel));
-                                    const candidatePerks = props.perks.filter((p) => {
-                                      if (
-                                        perk.selectablePerkIds!.length > 0 &&
-                                        !perk.selectablePerkIds!.includes(p.id)
-                                      ) return false;
-                                      if (otherSelectedIds.includes(p.id)) return false;
-                                      return true;
-                                    });
-                                    return (
-                                      <div key={si} class="flex items-center gap-2 flex-wrap">
-                                        <label class="text-xs text-base-content/70">
-                                          {count > 1 ? `Choice ${si + 1}:` : "Choose perk:"}
-                                        </label>
-                                        <select
-                                          class="select border rounded px-1 py-0.5 text-xs"
-                                          value={currentSelectionId}
-                                          onChange={(e) => {
-                                            const newId = (e.target as HTMLSelectElement).value;
-                                            const oldId = perkSelections[id]?.[si] ?? "";
-                                            const currentArr = [...(perkSelections[id] ?? [])];
-                                            while (currentArr.length <= si) currentArr.push("");
-                                            currentArr[si] = newId;
-                                            const newSelections = { ...perkSelections, [id]: currentArr };
-                                            setPerkSelections(newSelections);
-                                            let newPerkIds = [...perkIds];
-                                            if (oldId && oldId !== newId) {
-                                              const withoutOld = newPerkIds.filter((pid) => pid !== oldId);
-                                              const stillDerived = getDerivedPerkIds(withoutOld, newSelections, description.faction);
-                                              if (!stillDerived.has(oldId)) {
-                                                newPerkIds = withoutOld;
-                                              }
-                                            }
-                                            if (newId && !newPerkIds.includes(newId)) {
-                                              newPerkIds = [...newPerkIds, newId];
-                                            }
-                                            setPerkIds(newPerkIds);
-                                          }}
+                            {!isDerived &&
+                              perk?.selectablePerkIds !== undefined && (() => {
+                                const count = perk.selectablePerksCount ?? 1;
+                                return (
+                                  <div class="mt-1 space-y-1">
+                                    {Array.from({ length: count }, (_, si) => {
+                                      const currentSelectionId =
+                                        perkSelections[id]?.[si] ?? "";
+                                      const otherSelectedIds =
+                                        (perkSelections[id] ?? [])
+                                          .filter((sel, i) =>
+                                            i !== si && Boolean(sel)
+                                          );
+                                      const candidatePerks = props.perks.filter(
+                                        (p) => {
+                                          if (
+                                            perk.selectablePerkIds!.length >
+                                              0 &&
+                                            !perk.selectablePerkIds!.includes(
+                                              p.id,
+                                            )
+                                          ) return false;
+                                          if (otherSelectedIds.includes(p.id)) {
+                                            return false;
+                                          }
+                                          return true;
+                                        },
+                                      );
+                                      return (
+                                        <div
+                                          key={si}
+                                          class="flex items-center gap-2 flex-wrap"
                                         >
-                                          <option value="">— Select perk —</option>
-                                          {candidatePerks.map((p) => (
-                                            <option key={p.id} value={p.id}>
-                                              {p.name}
+                                          <label class="text-xs text-base-content/70">
+                                            {count > 1
+                                              ? `Choice ${si + 1}:`
+                                              : "Choose perk:"}
+                                          </label>
+                                          <select
+                                            class="select border rounded px-1 py-0.5 text-xs"
+                                            value={currentSelectionId}
+                                            onChange={(e) => {
+                                              const newId =
+                                                (e.target as HTMLSelectElement)
+                                                  .value;
+                                              const oldId =
+                                                perkSelections[id]?.[si] ?? "";
+                                              const currentArr = [
+                                                ...(perkSelections[id] ?? []),
+                                              ];
+                                              while (currentArr.length <= si) {
+                                                currentArr.push("");
+                                              }
+                                              currentArr[si] = newId;
+                                              const newSelections = {
+                                                ...perkSelections,
+                                                [id]: currentArr,
+                                              };
+                                              setPerkSelections(newSelections);
+                                              let newPerkIds = [...perkIds];
+                                              if (oldId && oldId !== newId) {
+                                                const withoutOld = newPerkIds
+                                                  .filter((pid) =>
+                                                    pid !== oldId
+                                                  );
+                                                const stillDerived =
+                                                  getDerivedPerkIds(
+                                                    withoutOld,
+                                                    newSelections,
+                                                    description.faction,
+                                                  );
+                                                if (!stillDerived.has(oldId)) {
+                                                  newPerkIds = withoutOld;
+                                                }
+                                              }
+                                              if (
+                                                newId &&
+                                                !newPerkIds.includes(newId)
+                                              ) {
+                                                newPerkIds = [
+                                                  ...newPerkIds,
+                                                  newId,
+                                                ];
+                                              }
+                                              setPerkIds(newPerkIds);
+                                            }}
+                                          >
+                                            <option value="">
+                                              — Select perk —
                                             </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              );
-                            })()}
+                                            {candidatePerks.map((p) => (
+                                              <option key={p.id} value={p.id}>
+                                                {p.name}
+                                              </option>
+                                            ))}
+                                          </select>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })()}
                           </li>
                         );
                       })}
@@ -1491,7 +1623,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   : (
                     <ul class="space-y-2">
                       {availablePerks.map((perk) => {
-                        const cost = calculatePerksCost([...perkIds, perk.id], perkRanks) -
+                        const cost =
+                          calculatePerksCost([...perkIds, perk.id], perkRanks) -
                           calculatePerksCost(perkIds, perkRanks);
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;

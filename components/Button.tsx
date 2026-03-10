@@ -9,7 +9,8 @@ export interface ButtonProps {
   class?: string;
 }
 
-const BASE = "px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors disabled:opacity-40";
+const BASE =
+  "px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors disabled:opacity-40";
 
 /** A standard action button. */
 export function Button({ class: extraClass, ...props }: ButtonProps) {
@@ -29,9 +30,16 @@ export interface ButtonLinkProps {
 }
 
 /** The same visual style as Button, but rendered as an anchor tag. */
-export function ButtonLink({ href, class: extraClass, children }: ButtonLinkProps) {
+export function ButtonLink(
+  { href, class: extraClass, children }: ButtonLinkProps,
+) {
   return (
-    <a href={href} class={extraClass ? `inline-block ${BASE} ${extraClass}` : `inline-block ${BASE}`}>
+    <a
+      href={href}
+      class={extraClass
+        ? `inline-block ${BASE} ${extraClass}`
+        : `inline-block ${BASE}`}
+    >
       {children}
     </a>
   );

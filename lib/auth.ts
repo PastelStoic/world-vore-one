@@ -27,7 +27,10 @@ interface SessionData {
 const SESSION_PREFIX = ["sessions"] as const;
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export async function createSession(kv: Deno.Kv, user: SessionUser): Promise<string> {
+export async function createSession(
+  kv: Deno.Kv,
+  user: SessionUser,
+): Promise<string> {
   const sessionId = crypto.randomUUID();
   const data: SessionData = {
     user,
@@ -52,7 +55,10 @@ export async function getSession(
   return entry.value.user;
 }
 
-export async function deleteSession(kv: Deno.Kv, sessionId: string): Promise<void> {
+export async function deleteSession(
+  kv: Deno.Kv,
+  sessionId: string,
+): Promise<void> {
   await kv.delete([...SESSION_PREFIX, sessionId]);
 }
 

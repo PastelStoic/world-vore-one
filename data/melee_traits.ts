@@ -14,8 +14,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
   {
     id: "two-handed",
     name: "Two-handed",
-    description:
-      "Weapon must be two-handed in order to be used properly.",
+    description: "Weapon must be two-handed in order to be used properly.",
   },
   {
     id: "bastard-weapon",

@@ -21,7 +21,9 @@ export interface ImageUploadState {
   handleImageDelete: () => Promise<void>;
 }
 
-export function useImageUpload(options: UseImageUploadOptions): ImageUploadState {
+export function useImageUpload(
+  options: UseImageUploadOptions,
+): ImageUploadState {
   const { initialImageUrl, characterId, action } = options;
 
   const [currentImageUrl, setCurrentImageUrl] = useState(initialImageUrl);

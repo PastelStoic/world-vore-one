@@ -1,10 +1,10 @@
 import { useMemo, useState } from "preact/hooks";
 import type { CharacterDraft } from "./character_types.ts";
 import {
-  WEAPONS_BY_ID,
-  EQUIPMENT_BY_ID,
   ATTACHMENTS_BY_ID,
+  EQUIPMENT_BY_ID,
   MELEE_WEAPONS_BY_ID,
+  WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import {
   calculateInventoryWeight,

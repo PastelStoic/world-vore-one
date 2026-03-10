@@ -12,7 +12,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Long guns",
     nation: "Any",
     weight: 1,
-    description: `3 damage when attached to the end of a long gun; 2 damage otherwise.
+    description:
+      `3 damage when attached to the end of a long gun; 2 damage otherwise.
 *-2d6 to shooting if attached. Usable by any rifle and most other long guns.
 *It takes 1 turn to put the bayonet on the gun, or to remove it.`,
   },
@@ -43,7 +44,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Long guns",
     nation: "Any",
     weight: 1,
-    description: `A strong sling around your person that keeps your weapon held in place should you let go of it.
+    description:
+      `A strong sling around your person that keeps your weapon held in place should you let go of it.
 *Dropping a weapon becomes a free action and it stays with you.
 *-1d6 to STR or DEX while the weapon is dangling off of you.`,
   },
@@ -55,7 +57,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     removesTraitIds: ["cylinder"],
     addsTraitIds: ["quickloader"],
-    description: `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
+    description:
+      `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
   },
 
@@ -106,9 +109,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Civilian",
     weight: 1,
     reloadTurnsOverride: 1,
-    removesTraitIds: ["extremely-slow-reload","overloaded-chamber"],
+    removesTraitIds: ["extremely-slow-reload", "overloaded-chamber"],
     addsTraitIds: ["loading-gate"],
-    description: `*Removes the 'extremely-slow-reload' and 'overloaded-chamber' gimmicks, replacing it with 'loading gate'`,
+    description:
+      `*Removes the 'extremely-slow-reload' and 'overloaded-chamber' gimmicks, replacing it with 'loading gate'`,
   },
 
   // ── British ──
@@ -119,7 +123,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Britain",
     weight: 1,
     isCharge: true,
-    description: `*Takes 3 turns to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
+    description:
+      `*Takes 3 turns to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
 *Reloading a grenade after firing takes 1 turn.
 *Fires a grenade, which explodes on impact, so long as the enemy is 3 distances away or more.
 *Does not detonate if the enemy is within 2 distances. Deals 2 damage to the target.
@@ -145,7 +150,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["half-agile"],
-    description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
+    description:
+      `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
   },
@@ -159,7 +165,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["walking-fire"],
-    description: `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
+    description:
+      `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
   },
@@ -172,7 +179,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Germany",
     weight: 0,
     isCharge: true,
-    description: `*Armor piercing ammunition. Ignores damage reduction from perks and gear.
+    description:
+      `*Armor piercing ammunition. Ignores damage reduction from perks and gear.
 (Lizard tierfraun, prey-as-armour, etc.)
 *May pierce lightly armoured vehicles once we actually add those.
 *When buying this piece of gear, you're paying for charges of it. Each charge is 5 rounds.
@@ -238,7 +246,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "United States",
     weight: 1,
     requiresAttachmentIds: ["springfield-pedersen"],
-    description: `*Requires the Pedersen device to already be attached before this can be attached.
+    description:
+      `*Requires the Pedersen device to already be attached before this can be attached.
 *Represents the Alofs conversion hardware mounted on the Springfield setup.`,
   },
 

@@ -133,7 +133,11 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *You never run out the resources to hunt and prepare your sustenance as long as you have your kit.
 *This does not mean you know your way around the place - just that nature won't kill you.`,
     grantsEquipment: [
-      { equipmentId: "survivalists-kit", weightOverride: 0, isBulkyOverride: false },
+      {
+        equipmentId: "survivalists-kit",
+        weightOverride: 0,
+        isBulkyOverride: false,
+      },
     ],
   },
   {

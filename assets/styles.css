@@ -1,10 +1,14 @@
 @import "tailwindcss";
-@plugin "daisyui"{
-   themes: light --default, dark --prefersdark;
- }
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
 
 .fresh-gradient {
-  background-color: color-mix(in oklch, var(--color-success) 50%, var(--color-base-100));
+  background-color: color-mix(
+    in oklch,
+    var(--color-success) 50%,
+    var(--color-base-100)
+  );
   background-image: linear-gradient(
     to right bottom,
     color-mix(in oklch, var(--color-primary) 30%, var(--color-base-100)),

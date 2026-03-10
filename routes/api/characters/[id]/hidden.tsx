@@ -1,8 +1,5 @@
 import { define } from "@/utils.ts";
-import {
-  getCharacter,
-  setCharacterHidden,
-} from "@/lib/characters.ts";
+import { getCharacter, setCharacterHidden } from "@/lib/characters.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {

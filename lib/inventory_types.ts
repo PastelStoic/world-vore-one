@@ -31,7 +31,10 @@ export interface InventoryWeapon {
    * Charge state for isCharge attachments (without ammoOverride) that are currently attached.
    * Keyed by attachmentId. Preserved so detaching restores the original charge data.
    */
-  attachmentChargeData?: Record<string, { totalCharges: number; usedCharges: number }>;
+  attachmentChargeData?: Record<
+    string,
+    { totalCharges: number; usedCharges: number }
+  >;
 }
 
 /**

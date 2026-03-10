@@ -12,7 +12,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 2,
     weight: 1,
     traitIds: ["one-handed", "concealable"],
-    description: "Short double-edged blade. Can easily be hidden underneath clothing. Arguably one of humanity's oldest weapons.",
+    description:
+      "Short double-edged blade. Can easily be hidden underneath clothing. Arguably one of humanity's oldest weapons.",
   },
   {
     id: "throwing-dagger",
@@ -20,7 +21,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 2,
     weight: 1,
     traitIds: ["one-handed", "throwable", "concealable"],
-    description: "A small throwing dagger, not as good for shanking someone with as a regularly sized dagger, but remarkably accurate on the throw.",
+    description:
+      "A small throwing dagger, not as good for shanking someone with as a regularly sized dagger, but remarkably accurate on the throw.",
   },
   {
     id: "combat-knife",
@@ -28,7 +30,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 2,
     weight: 1,
     traitIds: ["one-handed", "rapid-shanking"],
-    description: "Standard military fighting knife. More of a tool than a combat weapon, but it works in a pinch.",
+    description:
+      "Standard military fighting knife. More of a tool than a combat weapon, but it works in a pinch.",
   },
   {
     id: "throwing-knife",
@@ -44,7 +47,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 2,
     weight: 1,
     traitIds: ["one-handed", "path-clearer"],
-    description: "A machete, sports a heavy inward-curved blade. Excellent for clearing the way on jungles.",
+    description:
+      "A machete, sports a heavy inward-curved blade. Excellent for clearing the way on jungles.",
   },
   {
     id: "sabre",
@@ -52,7 +56,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 3,
     weight: 1,
     traitIds: ["one-handed"],
-    description: "A modern, curved sabre. Made light and sharp for infantry usage.",
+    description:
+      "A modern, curved sabre. Made light and sharp for infantry usage.",
   },
   {
     id: "cavalry-sabre",
@@ -60,14 +65,15 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 3,
     weight: 2,
     traitIds: ["one-handed", "cavalry-weapon"],
-    description: "A cavalry sabre, made much thicker and heavier than a typical sabre, so as to take full advantage of its mount's weight and speed.",
+    description:
+      "A cavalry sabre, made much thicker and heavier than a typical sabre, so as to take full advantage of its mount's weight and speed.",
   },
   {
     id: "rapier",
     name: "Rapier",
     damage: 3,
     weight: 2,
-    traitIds: [ "one-handed", "duelling"],
+    traitIds: ["one-handed", "duelling"],
     description: "Long, thin thrusting sword favoured by duelists.",
   },
   {
@@ -99,7 +105,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     name: "Greatsword",
     damage: 5,
     weight: 4,
-    traitIds: ["two-handed", "flourishing","razor-bladed"],
+    traitIds: ["two-handed", "flourishing", "razor-bladed"],
     description: "Massive, oversized blade, meant for wide swings.",
   },
 
@@ -133,16 +139,32 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     name: "Halberd",
     damage: 4,
     weight: 3,
-    traitIds: ["two-handed", "extra-long", "multi-headed", "flourishing", "extra-long", "barbed-hooked"],
-    description: "Polearm combining an axe-head, a spike, and a hook. The axe-head can floursh, the spike is extra-long, and the hook is hooking!",
+    traitIds: [
+      "two-handed",
+      "extra-long",
+      "multi-headed",
+      "flourishing",
+      "extra-long",
+      "barbed-hooked",
+    ],
+    description:
+      "Polearm combining an axe-head, a spike, and a hook. The axe-head can floursh, the spike is extra-long, and the hook is hooking!",
   },
   {
     id: "warhammer",
     name: "Warhammer",
     damage: 3,
     weight: 3,
-    traitIds: ["two-handed", "extra-long", "multi-headed", "crushing", "extra-long", "barbed-hooked"],
-    description: "Polearm combining a hammer-head, a spike and a hook. The Hammer-head can crush, the spike is extra long, and the book is hooking!",
+    traitIds: [
+      "two-handed",
+      "extra-long",
+      "multi-headed",
+      "crushing",
+      "extra-long",
+      "barbed-hooked",
+    ],
+    description:
+      "Polearm combining a hammer-head, a spike and a hook. The Hammer-head can crush, the spike is extra long, and the book is hooking!",
   },
   {
     id: "lance",
@@ -184,7 +206,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 3,
     weight: 3,
     traitIds: ["one-handed", "crushing", "breaching"],
-    description: "A military pickaxe is precisely as its name suggests, it focuses all the damage on a single point! It is a bit heavier to accomodate that.",
+    description:
+      "A military pickaxe is precisely as its name suggests, it focuses all the damage on a single point! It is a bit heavier to accomodate that.",
   },
 
   // ── Axes ───────────────────────────────────────────────────────────────
@@ -193,7 +216,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     name: "Hand Axe",
     damage: 2,
     weight: 1,
-    traitIds: ["one-handed","path-clearer"],
+    traitIds: ["one-handed", "path-clearer"],
     description: "Short-handled axe for chopping.",
   },
   {
@@ -246,7 +269,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 1,
     weight: 2,
     traitIds: ["one-handed", "shield"],
-    description: "A moderately sized shield, among the most common types used during medieval times. Kite, round, square, there's many kinds.",
+    description:
+      "A moderately sized shield, among the most common types used during medieval times. Kite, round, square, there's many kinds.",
   },
   {
     id: "board-shield",
@@ -254,7 +278,8 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
     damage: 1,
     weight: 3,
     traitIds: ["two-handed", "board-shield"],
-    description: "A massive board shield, when placed on the ground, it reaches all the way to your chin.",
+    description:
+      "A massive board shield, when placed on the ground, it reaches all the way to your chin.",
   },
 ];
 

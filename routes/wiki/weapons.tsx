@@ -1,6 +1,10 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
-import { WEAPONS, WEAPON_TRAITS_BY_ID, type WeaponKind } from "@/data/equipment.ts";
+import {
+  WEAPON_TRAITS_BY_ID,
+  type WeaponKind,
+  WEAPONS,
+} from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
 
@@ -58,94 +62,118 @@ export default define.page(function WikiWeapons() {
       <Head>
         <title>Weapons – Wiki – World Vore One</title>
       </Head>
-        <header>
-          <BackLink href="/wiki">← Wiki</BackLink>
-          <h1 class="text-3xl font-bold mt-2">Weapons</h1>
-          <p class="text-base-content">
-            All ranged (and melee-category) weapons, grouped by type.
-          </p>
-        </header>
+      <header>
+        <BackLink href="/wiki">← Wiki</BackLink>
+        <h1 class="text-3xl font-bold mt-2">Weapons</h1>
+        <p class="text-base-content">
+          All ranged (and melee-category) weapons, grouped by type.
+        </p>
+      </header>
 
-        {KIND_ORDER.map((kind) => {
-          const weapons = WEAPONS.filter((w) => w.kind === kind);
-          if (weapons.length === 0) return null;
-          return (
-            <section key={kind} class="space-y-2">
-              <h2 class="text-xl font-semibold border-b pb-1">
-                {KIND_LABELS[kind]}
-              </h2>
-              <div class="space-y-2">
-                {weapons.map((weapon) => (
-                  <details
-                    key={weapon.id}
-                    class="border rounded-lg bg-base-100/80 px-4 py-2"
-                  >
-                    <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                      <span class="font-semibold">{weapon.name}</span>
-                      <span class="text-xs text-base-content/60">{weapon.nation}</span>
-                      <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
-                        <span>DMG: {weapon.damage}</span>
-                        <span>Ammo: {weapon.ammo}</span>
-                        <span>RoF: {weapon.rateOfFire}</span>
-                        <span>Wt: {weapon.weight}</span>
-                        {weapon.pointCost !== 0 && (
-                          <span class={weapon.pointCost === 3 ? "text-error font-medium" : "text-warning"}>
-                            {pointCostLabel(weapon.pointCost)}
-                          </span>
-                        )}
-                        <span class="text-base-content/50">▶ details</span>
-                      </span>
-                    </summary>
-                    <div class="mt-2 text-sm text-base-content space-y-1 border-t pt-2">
-                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-base-content/70">
-                        <div><span class="font-medium">Damage:</span> {weapon.damage}</div>
-                        <div><span class="font-medium">Ammo:</span> {weapon.ammo}</div>
-                        <div><span class="font-medium">Rate of fire:</span> {weapon.rateOfFire}</div>
-                        <div><span class="font-medium">Weight:</span> {weapon.weight}</div>
-                        <div><span class="font-medium">Nation:</span> {weapon.nation}</div>
-                        <div><span class="font-medium">Type:</span> {weapon.type}</div>
-                        <div>
-                          <span class="font-medium">Cost:</span>{" "}
+      {KIND_ORDER.map((kind) => {
+        const weapons = WEAPONS.filter((w) => w.kind === kind);
+        if (weapons.length === 0) return null;
+        return (
+          <section key={kind} class="space-y-2">
+            <h2 class="text-xl font-semibold border-b pb-1">
+              {KIND_LABELS[kind]}
+            </h2>
+            <div class="space-y-2">
+              {weapons.map((weapon) => (
+                <details
+                  key={weapon.id}
+                  class="border rounded-lg bg-base-100/80 px-4 py-2"
+                >
+                  <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
+                    <span class="font-semibold">{weapon.name}</span>
+                    <span class="text-xs text-base-content/60">
+                      {weapon.nation}
+                    </span>
+                    <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
+                      <span>DMG: {weapon.damage}</span>
+                      <span>Ammo: {weapon.ammo}</span>
+                      <span>RoF: {weapon.rateOfFire}</span>
+                      <span>Wt: {weapon.weight}</span>
+                      {weapon.pointCost !== 0 && (
+                        <span
+                          class={weapon.pointCost === 3
+                            ? "text-error font-medium"
+                            : "text-warning"}
+                        >
                           {pointCostLabel(weapon.pointCost)}
-                        </div>
-                        {weapon.reloadTurns && weapon.reloadTurns > 1 && (
-                          <div>
-                            <span class="font-medium">Reload turns:</span>{" "}
-                            {weapon.reloadTurns}
-                          </div>
-                        )}
+                        </span>
+                      )}
+                      <span class="text-base-content/50">▶ details</span>
+                    </span>
+                  </summary>
+                  <div class="mt-2 text-sm text-base-content space-y-1 border-t pt-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-base-content/70">
+                      <div>
+                        <span class="font-medium">Damage:</span> {weapon.damage}
                       </div>
-                      {weapon.requiresMagazines && (
-                        <p class="text-xs text-warning">
-                          Requires magazines to reload.
-                        </p>
-                      )}
-                      {weapon.reloadsIndividually && (
-                        <p class="text-xs text-warning">
-                          Reloads one round at a time.
-                        </p>
-                      )}
-                      {weapon.traitIds.length > 0 && (
-                        <div class="mt-1 space-y-1">
-                          <span class="text-xs font-medium">Traits: </span>
-                          {weapon.traitIds.map((tid) => {
-                            const trait = WEAPON_TRAITS_BY_ID.get(tid);
-                            return (
-                              <div key={tid} class="text-xs text-base-content/70 ml-2">
-                                <span class="font-medium">{trait?.name ?? tid}:</span>{" "}
-                                {trait?.description ?? ""}
-                              </div>
-                            );
-                          })}
+                      <div>
+                        <span class="font-medium">Ammo:</span> {weapon.ammo}
+                      </div>
+                      <div>
+                        <span class="font-medium">Rate of fire:</span>{" "}
+                        {weapon.rateOfFire}
+                      </div>
+                      <div>
+                        <span class="font-medium">Weight:</span> {weapon.weight}
+                      </div>
+                      <div>
+                        <span class="font-medium">Nation:</span> {weapon.nation}
+                      </div>
+                      <div>
+                        <span class="font-medium">Type:</span> {weapon.type}
+                      </div>
+                      <div>
+                        <span class="font-medium">Cost:</span>{" "}
+                        {pointCostLabel(weapon.pointCost)}
+                      </div>
+                      {weapon.reloadTurns && weapon.reloadTurns > 1 && (
+                        <div>
+                          <span class="font-medium">Reload turns:</span>{" "}
+                          {weapon.reloadTurns}
                         </div>
                       )}
                     </div>
-                  </details>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+                    {weapon.requiresMagazines && (
+                      <p class="text-xs text-warning">
+                        Requires magazines to reload.
+                      </p>
+                    )}
+                    {weapon.reloadsIndividually && (
+                      <p class="text-xs text-warning">
+                        Reloads one round at a time.
+                      </p>
+                    )}
+                    {weapon.traitIds.length > 0 && (
+                      <div class="mt-1 space-y-1">
+                        <span class="text-xs font-medium">Traits:</span>
+                        {weapon.traitIds.map((tid) => {
+                          const trait = WEAPON_TRAITS_BY_ID.get(tid);
+                          return (
+                            <div
+                              key={tid}
+                              class="text-xs text-base-content/70 ml-2"
+                            >
+                              <span class="font-medium">
+                                {trait?.name ?? tid}:
+                              </span>{" "}
+                              {trait?.description ?? ""}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </PageShell>
   );
 });

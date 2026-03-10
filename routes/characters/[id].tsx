@@ -45,9 +45,10 @@ export const handler = define.handlers({
     }
 
     const returnTo = formData.get("returnTo");
-    const redirectTarget = (typeof returnTo === "string" && returnTo.startsWith("/"))
-      ? returnTo
-      : `/characters/${id}`;
+    const redirectTarget =
+      (typeof returnTo === "string" && returnTo.startsWith("/"))
+        ? returnTo
+        : `/characters/${id}`;
     return Response.redirect(new URL(redirectTarget, ctx.url), 303);
   },
 });
@@ -153,7 +154,9 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       )}
       {canEdit && (
         <div class="flex gap-4">
-          <ButtonLink href={`/characters/${id}/edit`}>Edit Character</ButtonLink>
+          <ButtonLink href={`/characters/${id}/edit`}>
+            Edit Character
+          </ButtonLink>
           <a href={`/characters/${id}/versions`} class="underline self-center">
             Previous Versions
           </a>

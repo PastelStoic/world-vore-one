@@ -16,9 +16,7 @@ import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
-import {
-  createEmptyInventory,
-} from "@/lib/inventory_types.ts";
+import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetViewerProps {
@@ -239,33 +237,48 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         <h3 class="font-semibold">Base Stats</h3>
         <p class="text-sm text-base-content">
           Unallocated stat points:{" "}
-          <strong>{character.unallocatedStatPoints - inventoryPointCost}</strong>
+          <strong>
+            {character.unallocatedStatPoints - inventoryPointCost}
+          </strong>
         </p>
         {(() => {
           // Compute addiction-affected stats
           const addictionAffectedStats = new Set<BaseStatKey>();
           if (character.perkIds.includes("crippling-addiction")) {
-            const mainStats: BaseStatKey[] = ["strength", "dexterity", "constitution", "intelligence", "charisma"];
-            const maxValue = Math.max(...mainStats.map(k => character.baseStats[k]));
+            const mainStats: BaseStatKey[] = [
+              "strength",
+              "dexterity",
+              "constitution",
+              "intelligence",
+              "charisma",
+            ];
+            const maxValue = Math.max(
+              ...mainStats.map((k) => character.baseStats[k]),
+            );
             for (const k of mainStats) {
-              if (character.baseStats[k] === maxValue) addictionAffectedStats.add(k);
+              if (character.baseStats[k] === maxValue) {addictionAffectedStats
+                  .add(k);}
             }
           }
           return (
-        <ul class="space-y-1 text-sm">
-          {BASE_STAT_FIELDS.filter((field) => character.race !== "Baseliner" || field.key !== "digestionStrength").map((field, idx) => (
-            <li key={field.key}>
-              {idx === 5 && <br /> /* Gap between regular and vore stats */}
-              {field.label}
-              {addictionAffectedStats.has(field.key) && (
-                <span class="ml-1 text-xs font-semibold text-error">[Addiction]</span>
-              )}
-              : Base{" "}
-              <strong>{character.baseStats[field.key]}</strong> | Effective{" "}
-              <strong>{effectiveByStat[field.key]}</strong>
-            </li>
-          ))}
-        </ul>
+            <ul class="space-y-1 text-sm">
+              {BASE_STAT_FIELDS.filter((field) =>
+                character.race !== "Baseliner" ||
+                field.key !== "digestionStrength"
+              ).map((field, idx) => (
+                <li key={field.key}>
+                  {idx === 5 && <br /> /* Gap between regular and vore stats */}
+                  {field.label}
+                  {addictionAffectedStats.has(field.key) && (
+                    <span class="ml-1 text-xs font-semibold text-error">
+                      [Addiction]
+                    </span>
+                  )}
+                  : Base <strong>{character.baseStats[field.key]}</strong>{" "}
+                  | Effective <strong>{effectiveByStat[field.key]}</strong>
+                </li>
+              ))}
+            </ul>
           );
         })()}
       </div>
@@ -303,94 +316,109 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                   <ul class="list-disc list-inside">
                     {group.items.map(({ id, perk, displayOnly }) => {
                       const rank = character.perkRanks?.[id] ?? 1;
-                      const perkDef = perk
-                        ? PERKS_BY_ID.get(id)
-                        : undefined;
+                      const perkDef = perk ? PERKS_BY_ID.get(id) : undefined;
                       const statLabelMap = BASE_STAT_FIELDS.reduce(
-                        (m, f) => { m[f.key] = f.label; return m; },
+                        (m, f) => {
+                          m[f.key] = f.label;
+                          return m;
+                        },
                         {} as Record<string, string>,
                       );
                       return (
-                      <li key={id}>
-                        {perk
-                          ? (
-                            <PerkDescription
-                              name={perk.name}
-                              description={perk.description}
-                            />
-                          )
-                          : id}
-                        {perkDef?.upgradable && rank > 1 && (
-                          <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
-                            Rank {rank}
-                          </span>
-                        )}
-                        {/* Owner/admin: show which perk this is disguised as */}
-                        {canSeeDisguisedPerks &&
-                          character.perkDisguises?.[id] && (() => {
-                            const fakePerk = perksById.get(
-                              character.perkDisguises![id],
-                            );
-                            return (
-                              <span class="block ml-5 text-purple-600 italic text-xs">
-                                Disguised as: {fakePerk?.name ??
-                                  character.perkDisguises![id]}
-                              </span>
-                            );
-                          })()}
-                        {/* Show selected sub-perk for perks with selectablePerkIds */}
-                        {perkDef?.selectablePerkIds !== undefined &&
-                          character.perkSelections?.[id]?.filter(Boolean).map((selId, si) => {
-                            const selPerk = PERKS_BY_ID.get(selId);
-                            if (!selPerk) return null;
-                            const count = perkDef.selectablePerksCount ?? 1;
-                            return (
-                              <span key={si} class="block ml-5 text-xs text-base-content/70 italic">
-                                {count > 1 ? `Choice ${si + 1}: ` : "Chosen perk: "}
-                                <span class="not-italic font-medium">{selPerk.name}</span>
-                              </span>
-                            );
-                          })}
-                        {/* Per-rank notes for upgradable perks */}
-                        {!displayOnly && perkDef?.upgradable && (
-                          <div class="ml-5 space-y-0.5">
-                            {Array.from({ length: rank }, (_, ri) => {
-                              const statKey =
-                                character.perkStatChoices?.[id]?.[ri];
-                              const note =
-                                character.perkUpgradeNotes?.[id]?.[ri] ??
-                                (ri === 0 ? character.perkNotes?.[id] : undefined);
-                              if (!statKey && !note) return null;
-                              return (
-                                <div
-                                  key={ri}
-                                  class="text-xs text-base-content/70 italic"
-                                >
-                                  {rank > 1 && (
-                                    <span class="font-semibold not-italic">
-                                      Rank {ri + 1}:{" "}
-                                    </span>
-                                  )}
-                                  {statKey && (
-                                    <span class="text-warning not-italic">
-                                      [{statLabelMap[statKey] ?? statKey} locked]
-                                      {note ? " — " : ""}
-                                    </span>
-                                  )}
-                                  {note}
-                                </div>
+                        <li key={id}>
+                          {perk
+                            ? (
+                              <PerkDescription
+                                name={perk.name}
+                                description={perk.description}
+                              />
+                            )
+                            : id}
+                          {perkDef?.upgradable && rank > 1 && (
+                            <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
+                              Rank {rank}
+                            </span>
+                          )}
+                          {/* Owner/admin: show which perk this is disguised as */}
+                          {canSeeDisguisedPerks &&
+                            character.perkDisguises?.[id] && (() => {
+                              const fakePerk = perksById.get(
+                                character.perkDisguises![id],
                               );
-                            })}
-                          </div>
-                        )}
-                        {/* Show legacy perk notes for non-upgradable perks */}
-                        {!displayOnly && !perkDef?.upgradable &&
-                          character.perkNotes?.[id] && (
-                          <span class="block ml-5 text-base-content/70 italic">
-                            {character.perkNotes[id]}
-                          </span>
-                        )}
-                      </li>
+                              return (
+                                <span class="block ml-5 text-purple-600 italic text-xs">
+                                  Disguised as: {fakePerk?.name ??
+                                    character.perkDisguises![id]}
+                                </span>
+                              );
+                            })()}
+                          {/* Show selected sub-perk for perks with selectablePerkIds */}
+                          {perkDef?.selectablePerkIds !== undefined &&
+                            character.perkSelections?.[id]?.filter(Boolean).map(
+                              (selId, si) => {
+                                const selPerk = PERKS_BY_ID.get(selId);
+                                if (!selPerk) return null;
+                                const count = perkDef.selectablePerksCount ?? 1;
+                                return (
+                                  <span
+                                    key={si}
+                                    class="block ml-5 text-xs text-base-content/70 italic"
+                                  >
+                                    {count > 1
+                                      ? `Choice ${si + 1}: `
+                                      : "Chosen perk: "}
+                                    <span class="not-italic font-medium">
+                                      {selPerk.name}
+                                    </span>
+                                  </span>
+                                );
+                              },
+                            )}
+                          {/* Per-rank notes for upgradable perks */}
+                          {!displayOnly && perkDef?.upgradable && (
+                            <div class="ml-5 space-y-0.5">
+                              {Array.from({ length: rank }, (_, ri) => {
+                                const statKey = character.perkStatChoices?.[id]
+                                  ?.[ri];
+                                const note =
+                                  character.perkUpgradeNotes?.[id]?.[ri] ??
+                                    (ri === 0
+                                      ? character.perkNotes?.[id]
+                                      : undefined);
+                                if (!statKey && !note) {
+                                  return null;
+                                }
+                                return (
+                                  <div
+                                    key={ri}
+                                    class="text-xs text-base-content/70 italic"
+                                  >
+                                    {rank > 1 && (
+                                      <span class="font-semibold not-italic">
+                                        Rank {ri + 1}:{" "}
+                                      </span>
+                                    )}
+                                    {statKey && (
+                                      <span class="text-warning not-italic">
+                                        [{statLabelMap[statKey] ?? statKey}{" "}
+                                        locked]
+                                        {note ? " — " : ""}
+                                      </span>
+                                    )}
+                                    {note}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                          {/* Show legacy perk notes for non-upgradable perks */}
+                          {!displayOnly && !perkDef?.upgradable &&
+                            character.perkNotes?.[id] && (
+                            <span class="block ml-5 text-base-content/70 italic">
+                              {character.perkNotes[id]}
+                            </span>
+                          )}
+                        </li>
                       );
                     })}
                   </ul>

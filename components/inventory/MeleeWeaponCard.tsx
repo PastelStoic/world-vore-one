@@ -3,7 +3,11 @@
 // ---------------------------------------------------------------------------
 
 import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
-import { MELEE_TRAITS, MELEE_TRAITS_BY_ID, MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
+import {
+  MELEE_TRAITS,
+  MELEE_TRAITS_BY_ID,
+  MELEE_WEAPONS_BY_ID,
+} from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
@@ -20,7 +24,11 @@ interface MeleeWeaponCardProps {
     index: number,
     traitId: string,
   ) => void;
-  onMove: (from: InventoryLocation, index: number, to: InventoryLocation) => void;
+  onMove: (
+    from: InventoryLocation,
+    index: number,
+    to: InventoryLocation,
+  ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
 }
 
@@ -72,9 +80,13 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   const signatureExtraTrait = isSignature && mw.signatureExtraTraitId
     ? MELEE_TRAITS_BY_ID.get(mw.signatureExtraTraitId)
     : undefined;
-  const displayedTraitIds = Array.from(new Set(
-    signatureExtraTrait ? [...def.traitIds, signatureExtraTrait.id] : def.traitIds,
-  ));
+  const displayedTraitIds = Array.from(
+    new Set(
+      signatureExtraTrait
+        ? [...def.traitIds, signatureExtraTrait.id]
+        : def.traitIds,
+    ),
+  );
 
   return (
     <div
@@ -170,7 +182,11 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
             class="select text-xs border rounded px-1 py-0.5"
             value={mw.signatureExtraTraitId ?? ""}
             onChange={(e) =>
-              onSetSignatureTrait(location, index, (e.target as HTMLSelectElement).value)}
+              onSetSignatureTrait(
+                location,
+                index,
+                (e.target as HTMLSelectElement).value,
+              )}
           >
             <option value="">Select a trait…</option>
             {MELEE_TRAITS.map((trait) => (

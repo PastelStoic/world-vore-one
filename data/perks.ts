@@ -1,4 +1,10 @@
-import type { BaseStatKey, Faction, OrganType, Race, Sex } from "@/lib/character_types.ts";
+import type {
+  BaseStatKey,
+  Faction,
+  OrganType,
+  Race,
+  Sex,
+} from "@/lib/character_types.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -91,9 +97,9 @@ export interface PerkDefinition {
   maxRanks?: number;
   /**
    * Perk IDs that are automatically granted when this perk is taken.
-    * Included perks grant rank 1 for free, cannot be removed independently,
-    * and are removed automatically when this perk is removed.
-    * Any additional ranks beyond the included first rank use normal perk costs.
+   * Included perks grant rank 1 for free, cannot be removed independently,
+   * and are removed automatically when this perk is removed.
+   * Any additional ranks beyond the included first rank use normal perk costs.
    */
   includesPerks?: string[];
   /**
@@ -168,7 +174,9 @@ export function validatePerkRequirements(
       for (const excludedId of perk.excludesPerks) {
         if (perkIds.includes(excludedId)) {
           const excludedPerk = PERKS_BY_ID.get(excludedId);
-          return `Perk "${perk.name}" cannot be combined with "${excludedPerk?.name ?? excludedId}".`;
+          return `Perk "${perk.name}" cannot be combined with "${
+            excludedPerk?.name ?? excludedId
+          }".`;
         }
       }
     }

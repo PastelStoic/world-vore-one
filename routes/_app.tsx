@@ -27,16 +27,12 @@ export default define.page(function App({ Component, state }) {
           {user
             ? (
               <div class="flex items-center gap-3">
-                {state.isAdmin && (
-                  <NavLink href="/admin">Admin</NavLink>
-                )}
+                {state.isAdmin && <NavLink href="/admin">Admin</NavLink>}
                 <span class="text-sm font-medium">{user.username}</span>
                 <NavLink href="/auth/logout">Logout</NavLink>
               </div>
             )
-            : (
-              <NavLink href="/auth/discord">Login with Discord</NavLink>
-            )}
+            : <NavLink href="/auth/discord">Login with Discord</NavLink>}
         </nav>
         <Component />
       </body>

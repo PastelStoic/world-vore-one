@@ -116,7 +116,9 @@ export function getEncumbranceLabel(level: EncumbranceLevel) {
 // Per-stat configuration for the parameterized calculator
 // ---------------------------------------------------------------------------
 
-type MultiplierKey = "digestionStrengthMultiplier" | "digestionResilienceMultiplier";
+type MultiplierKey =
+  | "digestionStrengthMultiplier"
+  | "digestionResilienceMultiplier";
 
 interface StatCalcConfig {
   applyEncumbrance: boolean;
@@ -166,7 +168,10 @@ export function calculateEffectiveStat(
   }
 
   if (config.applyEncumbrance) {
-    effective = applyEncumbrancePenalty(effective, options.encumbranceLevel ?? 0);
+    effective = applyEncumbrancePenalty(
+      effective,
+      options.encumbranceLevel ?? 0,
+    );
   }
 
   return effective;
@@ -308,7 +313,8 @@ export function calculateOrganCapacities(
 
     for (const perkId of input.perkIds) {
       const perk = PERKS_BY_ID.get(perkId);
-      organMultiplier *= perk?.modifiers?.organCapacityMultipliers?.[organ] ?? 1;
+      organMultiplier *= perk?.modifiers?.organCapacityMultipliers?.[organ] ??
+        1;
     }
 
     return { organ, capacity: base * globalMultiplier * organMultiplier };

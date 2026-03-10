@@ -52,7 +52,9 @@ export function getWeaponPointCost(
   }
   // Apply faction discount: restricted weapons cost 1pt if character has a matching faction perk
   if (def.pointCost >= 3 && def.discountFactionPerkIds && perkIds) {
-    if (def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))) {
+    if (
+      def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))
+    ) {
       return 1;
     }
   }
@@ -74,7 +76,9 @@ export function getSignatureAdjustedPointCost(
   // Apply faction discount first
   let baseCost = def.pointCost;
   if (baseCost >= 3 && def.discountFactionPerkIds && perkIds) {
-    if (def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))) {
+    if (
+      def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))
+    ) {
       baseCost = 1;
     }
   }
@@ -92,7 +96,10 @@ export function getSignatureFreeAttachmentIds(
 ): Set<string> {
   if (!perkIds?.includes("signiature-weapon")) return new Set<string>();
 
-  const signatureWeapon = [...inventory.carried.weapons, ...inventory.stowed.weapons]
+  const signatureWeapon = [
+    ...inventory.carried.weapons,
+    ...inventory.stowed.weapons,
+  ]
     .find((w) => w.isSignatureWeapon);
   if (!signatureWeapon) return new Set<string>();
 
@@ -117,7 +124,8 @@ export function calculateInventoryPointCostWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
 ): number {
-  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ?? false;
+  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
+    false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const signatureFreeAttachmentIds = getSignatureFreeAttachmentIds(
     inventory,
@@ -223,7 +231,8 @@ export function canAttachToWeapon(
   attachmentId: string,
   attachedIds: readonly string[],
 ): boolean {
-  return getMissingRequiredAttachmentIds(attachmentId, attachedIds).length === 0;
+  return getMissingRequiredAttachmentIds(attachmentId, attachedIds).length ===
+    0;
 }
 
 export function getDependentAttachmentIds(

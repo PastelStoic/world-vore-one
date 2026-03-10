@@ -13,9 +13,9 @@ import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
   canAttachToWeapon,
   getDependentAttachmentIds,
-  type InventoryLocation,
-  getWeaponPointCost,
   getSignatureAdjustedPointCost,
+  getWeaponPointCost,
+  type InventoryLocation,
 } from "./helpers.ts";
 
 interface WeaponCardProps {
@@ -158,11 +158,12 @@ export default function WeaponCard(props: WeaponCardProps) {
     )
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
     .filter(Boolean);
-  const blockedByPrerequisiteCount = def.compatibleAttachmentIds.filter((aId) =>
-    !w.attachedIds.includes(aId) &&
-    (isSignature || ownedAttachmentIds.has(aId)) &&
-    !canAttachToWeapon(aId, w.attachedIds)
-  ).length;
+  const blockedByPrerequisiteCount =
+    def.compatibleAttachmentIds.filter((aId) =>
+      !w.attachedIds.includes(aId) &&
+      (isSignature || ownedAttachmentIds.has(aId)) &&
+      !canAttachToWeapon(aId, w.attachedIds)
+    ).length;
 
   // Check if weapon uses magazines (freeAccessoryIds) or attachment-based magazine system
   const hasFreeAccessoryMags = def.freeAccessoryIds &&
@@ -235,13 +236,13 @@ export default function WeaponCard(props: WeaponCardProps) {
           )}
           {def.pointCost > 0 && (
             <span class="text-xs text-warning ml-1">
-                [Cost: {isSignature
-                  ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
-                  : getWeaponPointCost(
-                    w.weaponId,
-                    perkIds,
-                    weaponMasterRestrictedUnlocks,
-                  )}pt]
+              [Cost: {isSignature
+                ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
+                : getWeaponPointCost(
+                  w.weaponId,
+                  perkIds,
+                  weaponMasterRestrictedUnlocks,
+                )}pt]
             </span>
           )}
         </div>
@@ -270,39 +271,41 @@ export default function WeaponCard(props: WeaponCardProps) {
             >
               → {otherLocation === "carried" ? "Carry" : "Stow"}
             </button>
-            {props.perkIds?.includes("weapon-master") ? (
-              <>
-                <button
-                  type="button"
-                  class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
-                  onClick={() =>
-                    props.onReturn
-                      ? props.onReturn(location, index)
-                      : props.onRemove(location, index)}
-                >
-                  Return to armory
-                </button>
+            {props.perkIds?.includes("weapon-master")
+              ? (
+                <>
+                  <button
+                    type="button"
+                    class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
+                    onClick={() =>
+                      props.onReturn
+                        ? props.onReturn(location, index)
+                        : props.onRemove(location, index)}
+                  >
+                    Return to armory
+                  </button>
+                  <button
+                    type="button"
+                    class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+                    title="Permanently lose this weapon — the point cost is not refunded"
+                    onClick={() =>
+                      props.onLoss
+                        ? props.onLoss(location, index)
+                        : props.onRemove(location, index)}
+                  >
+                    Lost
+                  </button>
+                </>
+              )
+              : (
                 <button
                   type="button"
                   class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-                  title="Permanently lose this weapon — the point cost is not refunded"
-                  onClick={() =>
-                    props.onLoss
-                      ? props.onLoss(location, index)
-                      : props.onRemove(location, index)}
+                  onClick={() => props.onRemove(location, index)}
                 >
-                  Lost
+                  Remove
                 </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-                onClick={() => props.onRemove(location, index)}
-              >
-                Remove
-              </button>
-            )}
+              )}
           </div>
         )}
       </div>
@@ -513,18 +516,21 @@ export default function WeaponCard(props: WeaponCardProps) {
           </button>
         )}
         {/* Eject drum + standard reload: when a charge-based magazine is attached */}
-        {drumAttachmentId && props.onEjectDrumAndReload && !isReloading && !combatReadOnly && (
+        {drumAttachmentId && props.onEjectDrumAndReload && !isReloading &&
+          !combatReadOnly && (
           <button
             type="button"
             class="px-1 text-xs border rounded hover:bg-base-200"
             title="Eject drum magazine and reload with standard magazines"
-            onClick={() => props.onEjectDrumAndReload!(location, index, drumAttachmentId)}
+            onClick={() =>
+              props.onEjectDrumAndReload!(location, index, drumAttachmentId)}
           >
             Eject drum + reload ({def.ammo})
           </button>
         )}
         {/* Standard reload option: for magazine-fed weapons without a drum */}
-        {!drumAttachmentId && hasMagazines && !weaponRequiresMags && !isAmmoFull && !isReloading && !combatReadOnly && (
+        {!drumAttachmentId && hasMagazines && !weaponRequiresMags &&
+          !isAmmoFull && !isReloading && !combatReadOnly && (
           <button
             type="button"
             class="px-1 text-xs border rounded hover:bg-base-200"
@@ -564,7 +570,9 @@ export default function WeaponCard(props: WeaponCardProps) {
               onInput={(e) => {
                 if (combatReadOnly) return;
                 const val = Number((e.target as HTMLInputElement).value);
-                if (!Number.isNaN(val)) props.onSetMagazines(location, index, val);
+                if (!Number.isNaN(val)) {
+                  props.onSetMagazines(location, index, val);
+                }
               }}
             />
             <span class="text-xs text-base-content/60">
@@ -642,7 +650,10 @@ export default function WeaponCard(props: WeaponCardProps) {
           <span class="text-xs font-medium">Attachments:</span>
           {w.attachedIds.map((aId) => {
             const aDef = ATTACHMENTS_BY_ID.get(aId);
-            const dependentAttachmentIds = getDependentAttachmentIds(aId, w.attachedIds);
+            const dependentAttachmentIds = getDependentAttachmentIds(
+              aId,
+              w.attachedIds,
+            );
             const dependentAttachmentNames = dependentAttachmentIds.map((id) =>
               ATTACHMENTS_BY_ID.get(id)?.name ?? id
             );
@@ -654,7 +665,8 @@ export default function WeaponCard(props: WeaponCardProps) {
             const attachedRemaining = attachedChargeData
               ? Math.max(
                 0,
-                attachedChargeData.totalCharges - attachedChargeData.usedCharges,
+                attachedChargeData.totalCharges -
+                  attachedChargeData.usedCharges,
               )
               : 0;
             return (
@@ -663,7 +675,9 @@ export default function WeaponCard(props: WeaponCardProps) {
                   <span>
                     {aDef?.name ?? aId}
                     {aDef && aDef.weight > 0 && (
-                      <span class="text-base-content/50">(W:{aDef.weight})</span>
+                      <span class="text-base-content/50">
+                        (W:{aDef.weight})
+                      </span>
                     )}
                   </span>
                   {!readOnly && (
@@ -673,7 +687,9 @@ export default function WeaponCard(props: WeaponCardProps) {
                       disabled={!canDetach}
                       title={canDetach
                         ? ""
-                        : `Cannot detach while required by: ${dependentAttachmentNames.join(", ")}`}
+                        : `Cannot detach while required by: ${
+                          dependentAttachmentNames.join(", ")
+                        }`}
                       onClick={() => props.onDetach(location, index, aId)}
                     >
                       Detach
@@ -756,7 +772,9 @@ export default function WeaponCard(props: WeaponCardProps) {
             }}
           >
             <option value="">
-              {isSignature ? "+ Attach compatible…" : "+ Attach from inventory…"}
+              {isSignature
+                ? "+ Attach compatible…"
+                : "+ Attach from inventory…"}
             </option>
             {availableAttachments.map((a) => (
               <option key={a!.id} value={a!.id}>
@@ -779,8 +797,8 @@ export default function WeaponCard(props: WeaponCardProps) {
         )}
       {!readOnly && blockedByPrerequisiteCount > 0 && (
         <div class="ml-2 text-xs text-base-content/50 italic">
-          Some attachments are currently blocked until their required
-          attachment is already attached.
+          Some attachments are currently blocked until their required attachment
+          is already attached.
         </div>
       )}
     </div>

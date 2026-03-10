@@ -14,8 +14,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "two-handed",
     name: "Two-handed",
-    description:
-      "Weapon requires both hands in order to be used properly.",
+    description: "Weapon requires both hands in order to be used properly.",
   },
   {
     id: "agile",
@@ -38,14 +37,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "restricted",
     name: "Restricted",
-    description:
-      "Prized and rare weapon. Must pay 3 points to have it.",
+    description: "Prized and rare weapon. Must pay 3 points to have it.",
   },
   {
     id: "cylinder",
     name: "Cylinder",
-    description:
-      "Reloads each bullet individually, taking 1 turn per bullet.",
+    description: "Reloads each bullet individually, taking 1 turn per bullet.",
   },
   {
     id: "loading-gate",
@@ -92,14 +89,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "tubular-magazine-bullets",
     name: "Tubular magazine",
-    description:
-      "Reloads each bullet individually, taking 1 turn per bullet.",
+    description: "Reloads each bullet individually, taking 1 turn per bullet.",
   },
   {
     id: "tubular-magazine-shells",
     name: "Tubular magazine",
-    description:
-      "Reloads each shell individually, taking 1 turn per shell.",
+    description: "Reloads each shell individually, taking 1 turn per shell.",
   },
   {
     id: "en-block-clip",
@@ -230,14 +225,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "recoverable-ammo-arrows",
     name: "Recoverable ammo",
-    description:
-      "At combat end, all arrows can be recovered.",
+    description: "At combat end, all arrows can be recovered.",
   },
   {
     id: "recoverable-ammo-bolts",
     name: "Recoverable ammo",
-    description:
-      "At combat end, all bolts can be recovered.",
+    description: "At combat end, all bolts can be recovered.",
   },
   {
     id: "draw-and-let-loose",
@@ -298,8 +291,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "rifled-musket",
     name: "Rifled musket",
-    description:
-      "Reloading takes 30 turns.",
+    description: "Reloading takes 30 turns.",
   },
 ];
 

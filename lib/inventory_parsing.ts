@@ -74,7 +74,9 @@ export function parseInventory(raw: string): CharacterInventory | null {
           ...(typeof w.signatureExtraTraitId === "string"
             ? { signatureExtraTraitId: w.signatureExtraTraitId }
             : {}),
-          ...(typeof w.perkGranted === "string" ? { perkGranted: w.perkGranted } : {}),
+          ...(typeof w.perkGranted === "string"
+            ? { perkGranted: w.perkGranted }
+            : {}),
         }));
       }
 
@@ -92,9 +94,15 @@ export function parseInventory(raw: string): CharacterInventory | null {
             ? e.charges
             : 1,
           usedCharges: typeof e.usedCharges === "number" ? e.usedCharges : 0,
-          ...(typeof e.perkGranted === "string" ? { perkGranted: e.perkGranted } : {}),
-          ...(typeof e.weightOverride === "number" ? { weightOverride: e.weightOverride } : {}),
-          ...(typeof e.isBulkyOverride === "boolean" ? { isBulkyOverride: e.isBulkyOverride } : {}),
+          ...(typeof e.perkGranted === "string"
+            ? { perkGranted: e.perkGranted }
+            : {}),
+          ...(typeof e.weightOverride === "number"
+            ? { weightOverride: e.weightOverride }
+            : {}),
+          ...(typeof e.isBulkyOverride === "boolean"
+            ? { isBulkyOverride: e.isBulkyOverride }
+            : {}),
         }));
       }
 

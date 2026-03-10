@@ -20,7 +20,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "natural-predator",
     name: "Natural predator",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `You are a man-eater and devour others without much difficulty at all. 
 
@@ -43,7 +43,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "living-furnace",
     name: "Living furnace",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are closer to a furnace than a real person! 
 
 *Your points in digestion strenght are quadrupled. 
@@ -57,7 +57,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "in-charge",
     name: "In charge",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `You have an unreal amount of control over your digestive system! Mostly narrative perk.
 
@@ -76,7 +76,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "unreal-capacity",
     name: "Unreal capacity",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are unreasonably stretchy!
 
 *The capacity of each organ is tripled. You may get this perk multiple times and the benefits stack multiplicatively`,
@@ -89,7 +89,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "inescapable",
     name: "Inescapable",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `Once prey has grown weak and soft enough, they can't find a way out of you at all! 
 
@@ -100,7 +100,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "hauling-meat",
     name: "Hauling meat",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You've very strong legs! Carrying prey around is no biggie.
 
 *People weight only 1 weight when eaten by you. Does not apply to their equipment: Strip 'em! 
@@ -137,7 +137,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "prey-as-armour",
     name: "Prey-as-armour",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You have a person inside you! That's basically cover, right? 
 
 *Damage reduction from other items/perks apply before this perk's calculations are done.
@@ -151,7 +151,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "assimilator",
     name: "Assimilator",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You transform other people into strength for yourself.
 
 *When digesting prey, you gain an additional point, whether it was willing or unwilling vore.
@@ -161,7 +161,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "crusher",
     name: "Crusher",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `Your prey is MEANT to stay inside you! They better not fight back, lest they want to be punished! 
 
@@ -173,7 +173,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "ever-lasting",
     name: "Ever lasting",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are never truly gone. You always come back!
 
 *When churned, you continue on as living fat within your predator's body! 
@@ -189,7 +189,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "living-fat-advisors",
     name: "Living fat advisors",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `The dead remain within you after churning, awakening as your fat!
 
@@ -208,7 +208,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     id: "bacta-tank",
     name: "Bacta tank",
     category: "vore",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are oh so caring for your allies, oh my my!~
 
 *Your womb or balls can heal! People you unbirth or cockvore, get to heal inside you! 

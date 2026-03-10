@@ -16,10 +16,22 @@ interface EquipmentCardProps {
   /** When true, charge usage buttons are disabled (non-owner viewer) */
   combatReadOnly?: boolean;
   carriedBulkyCount: number;
-  onMove: (from: InventoryLocation, index: number, to: InventoryLocation) => void;
+  onMove: (
+    from: InventoryLocation,
+    index: number,
+    to: InventoryLocation,
+  ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
-  onSetTotalCharges: (location: InventoryLocation, index: number, total: number) => void;
-  onToggleCharge: (location: InventoryLocation, index: number, chargeIndex: number) => void;
+  onSetTotalCharges: (
+    location: InventoryLocation,
+    index: number,
+    total: number,
+  ) => void;
+  onToggleCharge: (
+    location: InventoryLocation,
+    index: number,
+    chargeIndex: number,
+  ) => void;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
@@ -38,9 +50,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
 
   const def = EQUIPMENT_BY_ID.get(eq.equipmentId);
   if (!def) {
-    return (
-      <div class="text-error">Unknown equipment: {eq.equipmentId}</div>
-    );
+    return <div class="text-error">Unknown equipment: {eq.equipmentId}</div>;
   }
 
   const otherLocation: InventoryLocation = location === "carried"
@@ -52,7 +62,9 @@ export default function EquipmentCard(props: EquipmentCardProps) {
   const remaining = def.isCharge
     ? Math.max(0, eq.totalCharges - eq.usedCharges)
     : 0;
-  const currentWeight = def.isCharge ? effectiveWeight * remaining : effectiveWeight;
+  const currentWeight = def.isCharge
+    ? effectiveWeight * remaining
+    : effectiveWeight;
   const canMoveToOther = !(
     otherLocation === "carried" &&
     effectiveBulky &&
@@ -145,7 +157,11 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                     isUsed
                       ? "bg-error/20 border-error/70 text-error"
                       : "bg-success/10 border-success/70 text-success"
-                  } ${combatReadOnly ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-75"}`}
+                  } ${
+                    combatReadOnly
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer hover:opacity-75"
+                  }`}
                   title={combatReadOnly
                     ? (isUsed ? "Used" : "Available")
                     : (isUsed

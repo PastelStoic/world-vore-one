@@ -20,8 +20,7 @@ export default function PerkDescription(
   if (hideByDefault) {
     return (
       <span>
-        {name && <strong>{name}</strong>}
-        {" "}
+        {name && <strong>{name}</strong>}{" "}
         <button
           type="button"
           class="text-xs text-primary hover:underline cursor-pointer"
@@ -43,7 +42,14 @@ export default function PerkDescription(
 
   return (
     <span>
-      {name ? <><strong>{name}</strong>: </> : null}{brief}
+      {name
+        ? (
+          <>
+            <strong>{name}</strong>:
+          </>
+        )
+        : null}
+      {brief}
       {hasDetails && (
         <>
           {" "}

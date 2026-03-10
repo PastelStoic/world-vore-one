@@ -8,7 +8,18 @@ export const FACTION_PERKS: PerkDefinition[] = [
     requiredFaction: "SWITZERLAND - King's Royal Army",
     isFree: true,
     pointsGranted: 3,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `You are a commended, loyal soldier of your beloved king.
 
 Advantages:
@@ -27,9 +38,25 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
-    requiredFaction: ["GERMANY - German Imperial Army", "GERMANY - The 7th Western Army", "GERMANY - German East African Army", "GERMANY - German West African Army",],
+    requiredFaction: [
+      "GERMANY - German Imperial Army",
+      "GERMANY - The 7th Western Army",
+      "GERMANY - German East African Army",
+      "GERMANY - German West African Army",
+    ],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `You are an elite Stormtrooper of the German Empire!
 
 Advantages:
@@ -47,9 +74,24 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench Raider",
     category: "faction",
-    requiredFaction: ["BRITAIN - British Expeditionary Force (BEF)", "BRITAIN - Canadian Expeditionary Force (CEF)", "BRITAIN - Royal Berkshire Regiment"],
+    requiredFaction: [
+      "BRITAIN - British Expeditionary Force (BEF)",
+      "BRITAIN - Canadian Expeditionary Force (CEF)",
+      "BRITAIN - Royal Berkshire Regiment",
+    ],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `ENGERLAAAANNDDD
 
 Advantages:
@@ -69,7 +111,18 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["FRANCE - French Foreign Legion"],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `You are a member of the French Foreign Legion!
 
 Advantages:
@@ -88,7 +141,18 @@ Disadvantages:
     requiredFaction: "FRANCE - Chasseurs Alpins",
     isFree: true,
     pointsGranted: 3,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `You are a tough French mountaineer
 
 Advantages:
@@ -107,7 +171,18 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["AMERICA - Harlem Hellfighters"],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signiature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
     description: `You are a soldier from a legendary American regiment
  
 Advantages:
@@ -124,7 +199,11 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
-    requiredFaction: ["AMERICA - 'Las Manos Apertas' Mafia", "AMERICA - 'Chernoye Zoloto' Mafia","AMERICA - 'O’Malley Syndicate' Mafia"],
+    requiredFaction: [
+      "AMERICA - 'Las Manos Apertas' Mafia",
+      "AMERICA - 'Chernoye Zoloto' Mafia",
+      "AMERICA - 'O’Malley Syndicate' Mafia",
+    ],
     isFree: true,
     pointsGranted: 3,
     freePerks: 2,
@@ -151,7 +230,6 @@ Disadvantages:
 *Crimes can be linked back to you if you’re not careful! Your goons should do the work, not you!
 *Must be in America and be part of one of three mafias.`,
   },
-
   // ─────────────────────────────────────────────────────────────────────────
   // TEMPLATE: How to add a new faction perk
   // ─────────────────────────────────────────────────────────────────────────

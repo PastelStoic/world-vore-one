@@ -39,7 +39,10 @@ export interface ParsedCharacterFields {
   perkIds: NonNullable<ReturnType<typeof parsePerkIds>>;
   perkNotes: Record<string, string>;
   perkUpgradeNotes: Record<string, string[]>;
-  perkStatChoices: Record<string, ReturnType<typeof parsePerkStatChoices>[string]>;
+  perkStatChoices: Record<
+    string,
+    ReturnType<typeof parsePerkStatChoices>[string]
+  >;
   perkRanks: Record<string, number>;
   perkDisguises: Record<string, string>;
   perkSelections: Record<string, string[]>;

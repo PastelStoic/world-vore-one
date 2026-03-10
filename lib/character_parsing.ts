@@ -62,13 +62,17 @@ export function parseRace(rawRace: string): Race {
   return "Baseliner";
 }
 
-export function parseBaseStats(raw: string, perkIds?: string[]): BaseStats | null {
+export function parseBaseStats(
+  raw: string,
+  perkIds?: string[],
+): BaseStats | null {
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
     const defaults = createDefaultBaseStats();
     const result = { ...defaults };
 
-    const allowNegativeDigestion = perkIds?.includes("extremely-inefficient-digestion") ?? false;
+    const allowNegativeDigestion =
+      perkIds?.includes("extremely-inefficient-digestion") ?? false;
 
     for (const stat of BASE_STAT_FIELDS) {
       const value = parsed[stat.key];
@@ -307,7 +311,8 @@ export function calculatePerksCost(
 
   // First paid perk is free, plus any freePerks grants from active perks
   const freeSlots = 1 + totalFreePerks;
-  const baseCost = Math.max(0, paidPerkCount - freeSlots) * PERK_COST_STAT_POINTS;
+  const baseCost = Math.max(0, paidPerkCount - freeSlots) *
+    PERK_COST_STAT_POINTS;
   return baseCost - totalPointsGranted;
 }
 
@@ -324,7 +329,9 @@ export function validateCharacterProgression(
 
   // Minimum valid stat total: normally 8 (all at 1), but digestionStrength
   // can go to -4 with extremely-inefficient-digestion
-  const hasNegativeDigestion = input.perkIds.includes("extremely-inefficient-digestion");
+  const hasNegativeDigestion = input.perkIds.includes(
+    "extremely-inefficient-digestion",
+  );
   const minDigestionStrength = hasNegativeDigestion ? -4 : 1;
   const minStatTotal = (BASE_STAT_FIELDS.length - 1) + minDigestionStrength;
 
@@ -335,7 +342,12 @@ export function validateCharacterProgression(
   const defaultStatTotal = BASE_STAT_FIELDS.length;
   const spentOnStats = statTotal - defaultStatTotal;
 
-  const spentOnPerks = calculatePerksCost(input.perkIds, input.perkRanks, input.perkSelections, input.description.faction);
+  const spentOnPerks = calculatePerksCost(
+    input.perkIds,
+    input.perkRanks,
+    input.perkSelections,
+    input.description.faction,
+  );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 
   if (totalUsed < getStartingStatPoints(input.race)) {

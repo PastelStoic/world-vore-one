@@ -3,7 +3,10 @@
 // ---------------------------------------------------------------------------
 
 import type { CharacterInventory } from "./inventory_types.ts";
-import { CREATION_FREE_ITEM_SLOTS, EXTRA_ITEM_POINT_COST } from "./inventory_types.ts";
+import {
+  CREATION_FREE_ITEM_SLOTS,
+  EXTRA_ITEM_POINT_COST,
+} from "./inventory_types.ts";
 
 /**
  * Count how many "item slots" the carried inventory uses.

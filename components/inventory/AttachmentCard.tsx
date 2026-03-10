@@ -12,10 +12,22 @@ interface AttachmentCardProps {
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
-  onMove: (from: InventoryLocation, index: number, to: InventoryLocation) => void;
+  onMove: (
+    from: InventoryLocation,
+    index: number,
+    to: InventoryLocation,
+  ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
-  onSetTotalCharges: (location: InventoryLocation, index: number, total: number) => void;
-  onToggleCharge: (location: InventoryLocation, index: number, chargeIndex: number) => void;
+  onSetTotalCharges: (
+    location: InventoryLocation,
+    index: number,
+    total: number,
+  ) => void;
+  onToggleCharge: (
+    location: InventoryLocation,
+    index: number,
+    chargeIndex: number,
+  ) => void;
 }
 
 export default function AttachmentCard(props: AttachmentCardProps) {
@@ -32,9 +44,7 @@ export default function AttachmentCard(props: AttachmentCardProps) {
 
   const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
   if (!def) {
-    return (
-      <div class="text-error">Unknown attachment: {att.attachmentId}</div>
-    );
+    return <div class="text-error">Unknown attachment: {att.attachmentId}</div>;
   }
 
   const otherLocation: InventoryLocation = location === "carried"

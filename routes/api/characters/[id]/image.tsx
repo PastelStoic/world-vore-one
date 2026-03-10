@@ -1,8 +1,5 @@
 import { define } from "@/utils.ts";
-import {
-  getCharacter,
-  setCharacterImageId,
-} from "@/lib/characters.ts";
+import { getCharacter, setCharacterImageId } from "@/lib/characters.ts";
 
 const CF_ACCOUNT_ID = Deno.env.get("CLOUDFLARE_ACCOUNT_ID") ?? "";
 const CF_IMAGES_TOKEN = Deno.env.get("CLOUDFLARE_IMAGES_API_TOKEN") ?? "";

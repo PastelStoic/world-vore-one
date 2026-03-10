@@ -29,8 +29,8 @@ import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
-  canAttachToWeapon,
   calculateInventoryPointCostWithPerks,
+  canAttachToWeapon,
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
   getDependentAttachmentIds,
@@ -518,7 +518,10 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
-      const dependents = getDependentAttachmentIds(attachmentId, weapon.attachedIds);
+      const dependents = getDependentAttachmentIds(
+        attachmentId,
+        weapon.attachedIds,
+      );
       if (dependents.length > 0) return inv;
       const ids = weapon.attachedIds;
       const idx = ids.indexOf(attachmentId);

@@ -300,9 +300,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                             Pending — Approve
                           </button>
                         )
-                        : (
-                          <span class="text-xs text-success">Approved</span>
-                        )}
+                        : <span class="text-xs text-success">Approved</span>}
                     </td>
                     <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
                     <td class="px-3 py-2 text-xs">
@@ -354,14 +352,19 @@ export default function AdminPanel(props: AdminPanelProps) {
             disabled={allCharsLoading.value}
             class="px-3 py-1.5 border rounded text-sm bg-primary text-primary-content hover:bg-primary/90 disabled:opacity-50 transition-colors"
           >
-            {allCharsLoading.value ? "Loading…" : allCharsLoaded.value ? "Refresh" : "Load"}
+            {allCharsLoading.value
+              ? "Loading…"
+              : allCharsLoaded.value
+              ? "Refresh"
+              : "Load"}
           </button>
         </div>
 
         {allCharsLoaded.value && (
           <>
             <p class="text-sm text-base-content/60">
-              {allCharacters.value.length} character{allCharacters.value.length !== 1 ? "s" : ""} found
+              {allCharacters.value.length}{" "}
+              character{allCharacters.value.length !== 1 ? "s" : ""} found
             </p>
             {allCharacters.value.length > 0 && (
               <div class="border rounded-lg overflow-hidden">
@@ -378,7 +381,12 @@ export default function AdminPanel(props: AdminPanelProps) {
                   </thead>
                   <tbody>
                     {allCharacters.value.map((c) => (
-                      <tr key={c.id} class={`border-t hover:bg-base-200 ${c.hidden ? "opacity-50" : ""}`}>
+                      <tr
+                        key={c.id}
+                        class={`border-t hover:bg-base-200 ${
+                          c.hidden ? "opacity-50" : ""
+                        }`}
+                      >
                         <td class="px-3 py-2">
                           <a
                             href={`/characters/${c.id}`}
@@ -387,7 +395,9 @@ export default function AdminPanel(props: AdminPanelProps) {
                             {c.name}
                           </a>
                           {c.hidden && (
-                            <span class="ml-1 text-xs text-base-content/50">(hidden)</span>
+                            <span class="ml-1 text-xs text-base-content/50">
+                              (hidden)
+                            </span>
                           )}
                         </td>
                         <td class="px-3 py-2">{c.race}</td>
@@ -480,7 +490,9 @@ export default function AdminPanel(props: AdminPanelProps) {
             />
           </div>
           <div class="flex-1 space-y-1">
-            <label class="text-xs text-base-content/60">Username (optional)</label>
+            <label class="text-xs text-base-content/60">
+              Username (optional)
+            </label>
             <input
               type="text"
               placeholder="Display name"

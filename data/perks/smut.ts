@@ -5,7 +5,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "milky",
     name: "Milky",
     category: "smut",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     customInput: "Milk, cum, or both?",
     description:
       `You are always producing milk ( or cum ) at a very substantial rate!
@@ -37,7 +37,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "rewritter",
     name: "Rewritter",
     category: "smut",
-    requiredRaces: ["Pilzherr","Pilzfraun","Tierherr","Tierfraun"],
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description:
       `Fucking a PF into rewriting her brain is doable, and you fuck them hard enough to do it regularly!
 
@@ -66,7 +66,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
     id: "baby-factory",
     name: "Baby Factory",
     category: "smut",
-    requiredRaces: ["Pilzfraun","Tierfraun"],
+    requiredRaces: ["Pilzfraun", "Tierfraun"],
     requiredSex: ["Female", "Futa"],
     modifiers: {
       organCapacityMultipliers: { womb: 27 },

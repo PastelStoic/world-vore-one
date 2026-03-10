@@ -19,6 +19,8 @@ import type {
 } from "@/lib/inventory_types.ts";
 import {
   calculateInventoryWeight,
+  CREATION_FREE_ITEM_SLOTS,
+  EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 import PerkDescription from "./PerkDescription.tsx";
 import WeaponCard from "./inventory/WeaponCard.tsx";
@@ -27,12 +29,12 @@ import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
-  type InventoryLocation,
   calculateInventoryPointCostWithPerks,
-  countAllItemSlotsWithPerks,
-  getWeaponPointCost,
-  getSignatureAdjustedPointCost,
   convertMagazinesToAttachment,
+  countAllItemSlotsWithPerks,
+  getSignatureAdjustedPointCost,
+  getWeaponPointCost,
+  type InventoryLocation,
   weightLookups,
 } from "./inventory/helpers.ts";
 
@@ -85,8 +87,9 @@ export default function InventorySection(props: InventorySectionProps) {
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
-  const weaponMasterRestrictedUnlocks = inventory.weaponMasterRestrictedUnlocks ??
-    [];
+  const weaponMasterRestrictedUnlocks =
+    inventory.weaponMasterRestrictedUnlocks ??
+      [];
 
   const [activePicker, setActivePicker] = useState<ActivePicker>(null);
   const [weaponFilter, setWeaponFilter] = useState("");
@@ -257,12 +260,17 @@ export default function InventorySection(props: InventorySectionProps) {
     const wasUnlocked = weaponMasterRestrictedUnlocks.includes(weapon.weaponId);
     const weaponCost = isRestricted && hasWeaponMaster && wasUnlocked
       ? 1
-      : getWeaponPointCost(weapon.weaponId, perkIds, weaponMasterRestrictedUnlocks);
+      : getWeaponPointCost(
+        weapon.weaponId,
+        perkIds,
+        weaponMasterRestrictedUnlocks,
+      );
 
     update((inv) => {
       if (isRestricted && hasWeaponMaster) {
-        inv.weaponMasterRestrictedUnlocks = (inv.weaponMasterRestrictedUnlocks ??
-          []).filter((id) => id !== weapon.weaponId);
+        inv.weaponMasterRestrictedUnlocks =
+          (inv.weaponMasterRestrictedUnlocks ??
+            []).filter((id) => id !== weapon.weaponId);
       }
       removeWeaponAt(inv, location, index);
       return inv;
@@ -435,7 +443,8 @@ export default function InventorySection(props: InventorySectionProps) {
       if (attIdx >= 0) {
         attInv = inv[location].attachments.splice(attIdx, 1)[0];
       }
-      const isSignatureWeapon = hasSignatureWeaponPerk && weapon.isSignatureWeapon;
+      const isSignatureWeapon = hasSignatureWeaponPerk &&
+        weapon.isSignatureWeapon;
       const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
       if (
         !attInv &&
@@ -474,7 +483,9 @@ export default function InventorySection(props: InventorySectionProps) {
               .slice(0, remainingCharges);
             const best = statesToUse.shift()!;
             weapon.currentAmmo = best;
-            const fullMags = statesToUse.filter((s) => s >= ammoOverride).length;
+            const fullMags = statesToUse.filter((s) =>
+              s >= ammoOverride
+            ).length;
             const partials = statesToUse.filter((s) => s < ammoOverride);
             const extraFullMags = Math.max(
               0,
@@ -519,7 +530,8 @@ export default function InventorySection(props: InventorySectionProps) {
         const savedChargeData = weapon.attachmentChargeData?.[attachmentId];
         inv[location].attachments.push({
           attachmentId,
-          totalCharges: savedChargeData?.totalCharges ?? (attDef?.isCharge ? 1 : 0),
+          totalCharges: savedChargeData?.totalCharges ??
+            (attDef?.isCharge ? 1 : 0),
           usedCharges: savedChargeData?.usedCharges ?? 0,
         });
         if (weapon.attachmentChargeData) {
@@ -716,7 +728,8 @@ export default function InventorySection(props: InventorySectionProps) {
           )}
         </h4>
 
-        {isEmpty && <p class="text-sm text-base-content/50 italic">No items.</p>}
+        {isEmpty && <p class="text-sm text-base-content/50 italic">No items.
+        </p>}
 
         {inv.weapons.length > 0 && (
           <div class="space-y-1">
@@ -732,11 +745,15 @@ export default function InventorySection(props: InventorySectionProps) {
                   readOnly={readOnly}
                   combatReadOnly={combatReadOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
-                  onLoss={onLoseWeaponPermanently ? loseWeaponPermanently : undefined}
-                   onReturn={onLoseWeaponPermanently ? returnWeaponToArmory : undefined}
-                   perkIds={perkIds}
-                   weaponMasterRestrictedUnlocks={weaponMasterRestrictedUnlocks}
-                   inventory={inventory}
+                  onLoss={onLoseWeaponPermanently
+                    ? loseWeaponPermanently
+                    : undefined}
+                  onReturn={onLoseWeaponPermanently
+                    ? returnWeaponToArmory
+                    : undefined}
+                  perkIds={perkIds}
+                  weaponMasterRestrictedUnlocks={weaponMasterRestrictedUnlocks}
+                  inventory={inventory}
                   onToggleSignature={toggleSignatureWeapon}
                   onMove={moveWeapon}
                   onRemove={removeWeapon}
@@ -911,7 +928,11 @@ export default function InventorySection(props: InventorySectionProps) {
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => togglePicker("weapon")}
             >
-              {activePicker === "weapon" ? "Cancel" : hasWeaponMaster ? "Armory" : "+ Weapon"}
+              {activePicker === "weapon"
+                ? "Cancel"
+                : hasWeaponMaster
+                ? "Armory"
+                : "+ Weapon"}
             </button>
             <button
               type="button"
@@ -990,7 +1011,9 @@ export default function InventorySection(props: InventorySectionProps) {
                         name=""
                         description={w.traitIds.map((tid) => {
                           const trait = WEAPON_TRAITS_BY_ID.get(tid);
-                          return trait ? `${trait.name}: ${trait.description}` : tid;
+                          return trait
+                            ? `${trait.name}: ${trait.description}`
+                            : tid;
                         }).join("\n")}
                         hideByDefault
                       />

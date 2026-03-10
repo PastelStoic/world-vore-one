@@ -107,7 +107,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     removesTraitIds: ["extremely-slow-reload","overloaded-chamber"],
     addsTraitIds: ["loading-gate"],
-    description: `*Removes the 'extremely-slow-reload' and 'overloaded-chamberr' gimmicks, replacing it with 'loading gate'`,
+    description: `*Removes the 'extremely-slow-reload' and 'overloaded-chamber' gimmicks, replacing it with 'loading gate'`,
   },
 
   // ── British ──

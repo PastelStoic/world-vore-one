@@ -457,7 +457,7 @@ export default function InventorySection(props: InventorySectionProps) {
           usedCharges: 0,
         };
       }
-      if (!attInv && !isSignatureWeapon) {
+      if (!attInv) {
         return inv;
       }
       weapon.attachedIds.push(attachmentId);

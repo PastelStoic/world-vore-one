@@ -19,9 +19,6 @@ import type {
 } from "@/lib/inventory_types.ts";
 import {
   calculateInventoryWeight,
-  countAllItemSlots,
-  CREATION_FREE_ITEM_SLOTS,
-  EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 import PerkDescription from "./PerkDescription.tsx";
 import WeaponCard from "./inventory/WeaponCard.tsx";
@@ -32,11 +29,11 @@ import ItemPicker from "./inventory/ItemPicker.tsx";
 import {
   type InventoryLocation,
   calculateInventoryPointCostWithPerks,
+  countAllItemSlotsWithPerks,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
   convertMagazinesToAttachment,
   weightLookups,
-  slotLookups,
 } from "./inventory/helpers.ts";
 
 interface InventorySectionProps {
@@ -107,39 +104,16 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // ── Derived ──
-  const allSlots = countAllItemSlots(inventory, slotLookups);
+  const allSlots = countAllItemSlotsWithPerks(inventory, perkIds);
   const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
     return count + (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isBulky ? 1 : 0);
   }, 0);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
 
-  // Compute inventory point cost with signature weapon adjustments
-  const inventoryPointCost = (() => {
-    if (hasSignatureWeaponPerk) {
-      let cost = 0;
-      const adjustedSlots = countAllItemSlots(inventory, slotLookups);
-      const overFree = Math.max(0, adjustedSlots - CREATION_FREE_ITEM_SLOTS);
-      cost += overFree * EXTRA_ITEM_POINT_COST;
-
-      for (const w of inventory.carried.weapons) {
-        cost += getSignatureAdjustedPointCost(
-          w.weaponId,
-          !!w.isSignatureWeapon,
-          perkIds,
-        );
-      }
-      for (const w of inventory.stowed.weapons) {
-        cost += getSignatureAdjustedPointCost(
-          w.weaponId,
-          !!w.isSignatureWeapon,
-          perkIds,
-        );
-      }
-      return cost;
-    }
-
-    return calculateInventoryPointCostWithPerks(inventory, perkIds);
-  })();
+  const inventoryPointCost = calculateInventoryPointCostWithPerks(
+    inventory,
+    perkIds,
+  );
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
     : undefined;
@@ -461,6 +435,19 @@ export default function InventorySection(props: InventorySectionProps) {
       if (attIdx >= 0) {
         attInv = inv[location].attachments.splice(attIdx, 1)[0];
       }
+      const isSignatureWeapon = hasSignatureWeaponPerk && weapon.isSignatureWeapon;
+      const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
+      if (
+        !attInv &&
+        isSignatureWeapon &&
+        weaponDef?.compatibleAttachmentIds.includes(attachmentId)
+      ) {
+        attInv = {
+          attachmentId,
+          totalCharges: attDef?.isCharge ? 1 : 0,
+          usedCharges: 0,
+        };
+      }
       weapon.attachedIds.push(attachmentId);
 
       if (attDef?.isCharge && attInv) {
@@ -693,6 +680,19 @@ export default function InventorySection(props: InventorySectionProps) {
     });
   }
 
+  function setMeleeSignatureTrait(
+    location: InventoryLocation,
+    index: number,
+    traitId: string,
+  ) {
+    update((inv) => {
+      const mw = inv[location].meleeWeapons[index];
+      if (!mw) return inv;
+      mw.signatureExtraTraitId = traitId || undefined;
+      return inv;
+    });
+  }
+
   // ── Render helpers ──
 
   function renderInventoryBlock(location: InventoryLocation) {
@@ -767,6 +767,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   readOnly={readOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
                   onToggleSignature={toggleSignatureMelee}
+                  onSetSignatureTrait={setMeleeSignatureTrait}
                   onMove={moveMeleeWeapon}
                   onRemove={removeMeleeWeapon}
                 />

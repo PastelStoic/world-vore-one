@@ -45,6 +45,8 @@ export interface InventoryMeleeWeapon {
   meleeWeaponId: string;
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** Extra trait chosen for a Signature melee weapon */
+  signatureExtraTraitId?: string;
   /** If set, this item was granted by the named perk and cannot be removed manually */
   perkGranted?: string;
 }

@@ -25,6 +25,7 @@ interface WeaponCardProps {
   combatReadOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
   perkIds?: string[];
+  weaponMasterRestrictedUnlocks?: string[];
   inventory: CharacterInventory;
   onToggleSignature: (location: InventoryLocation, index: number) => void;
   onMove: (
@@ -83,6 +84,7 @@ export default function WeaponCard(props: WeaponCardProps) {
     combatReadOnly,
     hasSignatureWeaponPerk,
     perkIds,
+    weaponMasterRestrictedUnlocks,
     inventory,
   } = props;
 
@@ -224,9 +226,13 @@ export default function WeaponCard(props: WeaponCardProps) {
           )}
           {def.pointCost > 0 && (
             <span class="text-xs text-warning ml-1">
-              [Cost: {isSignature
-                ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
-                : getWeaponPointCost(w.weaponId, perkIds)}pt]
+                [Cost: {isSignature
+                  ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
+                  : getWeaponPointCost(
+                    w.weaponId,
+                    perkIds,
+                    weaponMasterRestrictedUnlocks,
+                  )}pt]
             </span>
           )}
         </div>

@@ -22,7 +22,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 0,
     traitIds: ["one-handed", "black-powder", "extremely-slow-reload", "overloaded-chamber"],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["colt-walker-bullets"],
     reloadsIndividually: true,
     reloadTurns: 4,
   },

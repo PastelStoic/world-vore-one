@@ -38,25 +38,9 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   } = props;
 
   const def = MELEE_WEAPONS_BY_ID.get(mw.meleeWeaponId);
-  const otherLocation: InventoryLocation = location === "carried"
-    ? "stowed"
-    : "carried";
-
-  const isSignature = mw.isSignatureWeapon && hasSignatureWeaponPerk;
-  const damage = def?.damage ?? 0;
-  const damageDisplay = isSignature ? `${damage}+1` : String(damage);
-  const weight = def?.weight ?? 0;
   const isPerkGranted = !!mw.perkGranted;
-  const grantingPerkName = isPerkGranted
-    ? PERKS_BY_ID.get(mw.perkGranted!)?.name ?? mw.perkGranted
-    : null;
-  const signatureExtraTrait = isSignature && mw.signatureExtraTraitId
-    ? MELEE_TRAITS_BY_ID.get(mw.signatureExtraTraitId)
-    : undefined;
-  const displayedTraitIds = Array.from(new Set(
-    signatureExtraTrait ? [...def.traitIds, signatureExtraTrait.id] : def.traitIds,
-  ));
 
+  // early return if weapon not found
   if (!def) {
     return (
       <div class="border rounded p-2 bg-base-100 text-sm text-error">
@@ -73,6 +57,24 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
       </div>
     );
   }
+
+  const otherLocation: InventoryLocation = location === "carried"
+    ? "stowed"
+    : "carried";
+
+  const isSignature = mw.isSignatureWeapon && hasSignatureWeaponPerk;
+  const damage = def.damage;
+  const damageDisplay = isSignature ? `${damage}+1` : String(damage);
+  const weight = def.weight;
+  const grantingPerkName = isPerkGranted
+    ? PERKS_BY_ID.get(mw.perkGranted!)?.name ?? mw.perkGranted
+    : null;
+  const signatureExtraTrait = isSignature && mw.signatureExtraTraitId
+    ? MELEE_TRAITS_BY_ID.get(mw.signatureExtraTraitId)
+    : undefined;
+  const displayedTraitIds = Array.from(new Set(
+    signatureExtraTrait ? [...def.traitIds, signatureExtraTrait.id] : def.traitIds,
+  ));
 
   return (
     <div

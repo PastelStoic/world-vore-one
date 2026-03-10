@@ -12,6 +12,7 @@ import PerkDescription from "@/components/PerkDescription.tsx";
 import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
   type InventoryLocation,
+  hasRequiredAttachments,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
 } from "./helpers.ts";
@@ -150,7 +151,9 @@ export default function WeaponCard(props: WeaponCardProps) {
   );
   const availableAttachments = def.compatibleAttachmentIds
     .filter((aId) =>
-      !w.attachedIds.includes(aId) && (isSignature || ownedAttachmentIds.has(aId))
+      !w.attachedIds.includes(aId) &&
+      hasRequiredAttachments(w.attachedIds, aId) &&
+      (isSignature || ownedAttachmentIds.has(aId))
     )
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
     .filter(Boolean);
@@ -755,8 +758,8 @@ export default function WeaponCard(props: WeaponCardProps) {
           ).length > 0 &&
         (
           <div class="ml-2 text-xs text-base-content/50 italic">
-            Compatible attachments exist but none are in your inventory. Add
-            them via the Attachments section below.
+            Compatible attachments exist but none are currently attachable from
+            your inventory.
           </div>
         )}
     </div>

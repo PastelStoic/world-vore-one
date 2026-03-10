@@ -30,6 +30,7 @@ import {
   type InventoryLocation,
   calculateInventoryPointCostWithPerks,
   countAllItemSlotsWithPerks,
+  hasRequiredAttachments,
   getWeaponPointCost,
   getSignatureAdjustedPointCost,
   convertMagazinesToAttachment,
@@ -427,16 +428,24 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[weaponIndex];
+      const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+      const isSignatureWeapon = hasSignatureWeaponPerk && weapon.isSignatureWeapon;
+      const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
+      if (
+        !attDef ||
+        weapon.attachedIds.includes(attachmentId) ||
+        !weaponDef?.compatibleAttachmentIds.includes(attachmentId) ||
+        !hasRequiredAttachments(weapon.attachedIds, attachmentId)
+      ) {
+        return inv;
+      }
       const attIdx = inv[location].attachments.findIndex(
         (a) => a.attachmentId === attachmentId,
       );
-      const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
       let attInv: InventoryAttachment | undefined;
       if (attIdx >= 0) {
         attInv = inv[location].attachments.splice(attIdx, 1)[0];
       }
-      const isSignatureWeapon = hasSignatureWeaponPerk && weapon.isSignatureWeapon;
-      const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
       if (
         !attInv &&
         isSignatureWeapon &&
@@ -447,6 +456,9 @@ export default function InventorySection(props: InventorySectionProps) {
           totalCharges: attDef?.isCharge ? 1 : 0,
           usedCharges: 0,
         };
+      }
+      if (!attInv && !isSignatureWeapon) {
+        return inv;
       }
       weapon.attachedIds.push(attachmentId);
 

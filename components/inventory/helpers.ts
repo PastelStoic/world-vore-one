@@ -146,6 +146,15 @@ export function countAllItemSlotsWithPerks(
   return countAllItemSlots(inventory, slotLookups, signatureFreeAttachmentIds);
 }
 
+export function hasRequiredAttachments(
+  attachedIds: string[],
+  attachmentId: string,
+): boolean {
+  const requiredIds = ATTACHMENTS_BY_ID.get(attachmentId)?.requiredAttachmentIds;
+  if (!requiredIds?.length) return true;
+  return requiredIds.every((requiredId) => attachedIds.includes(requiredId));
+}
+
 export function calculateInventoryPointCostWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],

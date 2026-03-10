@@ -127,6 +127,9 @@ Disadvantages:
     requiredFaction: ["AMERICA - 'Las Manos Apertas' Mafia", "AMERICA - 'Chernoye Zoloto' Mafia","AMERICA - 'O’Malley Syndicate' Mafia"],
     isFree: true,
     pointsGranted: 3,
+    freePerks: 2,
+    includesPerks: ["allies", "patron"],
+    excludesPerks: ["free-range"],
     description:
       `You are an underboss of your respective mafia, owning some sort of safehouse/business within New Orleans!
 

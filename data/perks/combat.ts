@@ -95,8 +95,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Does not apply against the 'Danger sense' perk. Regular rules apply instead.`,
   },
   {
-    id: "signiature-weapon",
-    name: "Signiature weapon",
+    id: "signature-weapon",
+    name: "Signature weapon",
     category: "combat",
     customInput: "Your signature weapon",
     description: `You have a special weapon that belongs to you, and only you! 

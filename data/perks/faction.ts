@@ -8,13 +8,13 @@ export const FACTION_PERKS: PerkDefinition[] = [
     requiredFaction: "SWITZERLAND - King's Royal Army",
     isFree: true,
     pointsGranted: 3,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master"],
-    description: `Switzerland strong!
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    description: `You are a commended, loyal soldier of your beloved king.
 
 Advantages:
 *This perk is free.
 *Start with an additional 3 points.
-*Better gear: You are the best, so you get the best. Pick any perk that reasonably comes from having good gear: Scrounger, Sapper, Inventor, etc.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
 
 Disadvantages:
 *Only one per player.
@@ -29,12 +29,12 @@ Disadvantages:
     category: "faction",
     requiredFaction: ["GERMANY - German Imperial Army", "GERMANY - The 7th Western Army", "GERMANY - German East African Army", "GERMANY - German West African Army",],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master"],
-    description: `Germany strong!
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    description: `You are an elite Stormtrooper of the German Empire!
 
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Pick any perk that reasonably comes from having good gear: Scrounger, Sapper, Inventor, etc.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
 *Cheaper restricted GERMAN weapons.
 
 Disadvantages:
@@ -45,16 +45,16 @@ Disadvantages:
   },
   {
     id: "british-trench-raider",
-    name: "British Trench raider",
+    name: "British Trench Raider",
     category: "faction",
     requiredFaction: ["BRITAIN - British Expeditionary Force (BEF)", "BRITAIN - Canadian Expeditionary Force (CEF)", "BRITAIN - Royal Berkshire Regiment"],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master"],
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
     description: `ENGERLAAAANNDDD
 
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Pick any perk that reasonably comes from having good gear: Scrounger, Sapper, Inventor, etc.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
 *Cheaper restricted AMERICAN weapons.
 
 Disadvantages:
@@ -64,17 +64,55 @@ Disadvantages:
 *British.`,
   },
   {
+    id: "french-foreign-legion",
+    name: "French Foreign Legionnaire",
+    category: "faction",
+    requiredFaction: ["FRANCE - French Foreign Legion"],
+    pointsGranted: 2,
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    description: `You are a member of the French Foreign Legion!
+
+Advantages:
+*Start with an additional 2 points compared to normal PFs.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Cheaper restricted FRENCH weapons.
+
+Disadvantages:
+*Only three per player.
+*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
+  },
+  {
+    id: "chasseurs-alpins",
+    name: "Chasseur Alpin",
+    category: "faction",
+    requiredFaction: "FRANCE - Chasseurs Alpins",
+    isFree: true,
+    pointsGranted: 3,
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    description: `You are a tough French mountaineer
+
+Advantages:
+*This perk is free.
+*Start with an additional 3 points.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+
+Disadvantages:
+*Only one per player.
+*Must be French-born.
+*Must be part of the Chasseurs Alpins in #factions`,
+  },
+  {
     id: "harlem-hellfighter",
     name: "Harlem Hellfighter",
     category: "faction",
     requiredFaction: ["AMERICA - Harlem Hellfighters"],
     pointsGranted: 2,
-    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master"],
-    description: `America strong!
+    selectablePerkIds: ["sapper", "scrounger", "signiature-weapon", "defender", "weapon-master","melee-fighter","gunner","runner","effective-cover-use","veteran"],
+    description: `You are a soldier from a legendary American regiment
  
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Pick any perk that reasonably comes from having good gear: Scrounger, Sapper, Inventor, etc.
+*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
 *Cheaper restricted AMERICAN weapons.
 
 Disadvantages:

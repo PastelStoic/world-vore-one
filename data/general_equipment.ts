@@ -104,6 +104,53 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Once swallowed, you die within 3 turns. This cannot be stopped in any way.
 *Alternatively, feed it to someone else somehow. That's what a sane person would do.`,
   },
+  {
+  id: "warhorse",
+  name: "Warhorse",
+  weight: 0,
+  description: `A warhorse! Meant to be mounted and charged into battle!
+  *The warhorse can be mounted. The person mounting it has full control over the animal's movement. Movement becomes free for the rider.
+  *The Warhorse can hold 8 weight unencumbered, has 7 HP, and can move up to 3 distances per turn.
+  *You you can load 'stowed away' equipment upon your animal and access it, provided the animal is present within the scene.
+  *The animal follows typical rules for weight and HP. Each encumbrance levels decreases how many distances it can move by 1.
+  *If the animal dies, a new one must be paid for, unless you have a perk for it.
+  *Does not attack of its own volition - also remarkably dumb, anyone can mount it and run off, even if they're not its owner!
+  *Cannot pull a wagon.`,
+  },
+  {
+  id: "draft-horse",
+  name: "Draft horse",
+  weight: 0,
+  description: `A draft horse, meant to pull a heavy wagon behind itself.
+  *The Draft horse can hold 5 weight unencumbered, has 4 HP, and can move up to 2 distances per turn.
+  *You you can load 'stowed away' equipment upon your animal and access it, provided the animal is present within the scene.
+  *The animal follows typical rules for weight and HP. Each encumbrance levels decreases how many distances it can move by 1.
+  *If the animal dies, a new one must be paid for, unless you have a perk for it.
+  *Does not attack of its own volition - also remarkably dumb, anyone can pull it away, even if they're not its owner!
+  *Cannot be mounted.`,
+  },
+  {
+  id: "donker",
+  name: "Donkey",
+  weight: 0,
+  description: `A donkey, meant to carry a lot of things upon itself!
+  *The donkey can hold 12 weight unencumbered, has 4 HP, and can move up to 2 distances per turn.
+  *You you can load 'stowed away' equipment upon your animal and access it, provided the animal is present within the scene.
+  *The animal follows typical rules for weight and HP. Each encumbrance levels decreases how many distances it can move by 1.
+  *If the animal dies, a new one must be paid for, unless you have a perk for it.
+  *Does not attack of its own volition - also remarkably dumb, anyone can pull it away, even if they're not its owner!
+  *Cannot be mounted.
+  *Cannot pull a wagon.`,
+  },
+  {
+  id: "wagon",
+  name: "Wagon",
+  weight: 0,
+  description: `A huge wagon, meant to carry whatever you need it to carry!
+  *The wagon can carry 50 weight maximum.
+  *So long as your wagon is around, you can access your stowed-away equipment.
+  *The animal pulling this wagon can only move 1 distance per turn, regardless of weight.`,
+  },
 ];
 
 export const EQUIPMENT_BY_ID = new Map(

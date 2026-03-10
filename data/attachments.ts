@@ -105,9 +105,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Colt Walker",
     nation: "Civilian",
     weight: 1,
-    removesTraitIds: ["extremely-slow-reload"],
+    removesTraitIds: ["extremely-slow-reload","overloaded-chamber"],
     addsTraitIds: ["loading-gate"],
-    description: `*Removes the 'extremely-slow-reload' gimmick, replacing it with 'loading gate'`,
+    description: `*Removes the 'extremely-slow-reload' and 'overloaded-chamberr' gimmicks, replacing it with 'loading gate'`,
   },
 
   // ── British ──

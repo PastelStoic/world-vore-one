@@ -222,7 +222,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `You are a hypnotist; you can put people into trances which they find hard to break out of! 
 
-*You may try to hypnotize a willing volunteer who plays along with your hypnotization. 
+*You may try to hypnotize a willing volunteer who plays along with your hypnotization.
+*Hypnotization takes some time. Consider it to take 3 turns in time-sensitive scenes.
+*Other individuals cannot tell that the victim is hypnotized unless they are familiar with it.
+*The Victim forgets about the hynptization once its effects wear off.
 *Roll your charisma. Each success is equivalent to an hour of hypnosis, where the target must follow your commands.
 *If the commands bring direct harm to the victim, they may roll intelligence vs your charisma to break free.
 *Unwilling targets must be bound and unable to fight back or to just walk away. 

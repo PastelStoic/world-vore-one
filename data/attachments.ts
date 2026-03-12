@@ -168,7 +168,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["walking-fire"],
-    addTraitIDs: ["impossible-to-remove",],
+    addsTraitIds: ["impossible-to-remove",],
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
@@ -197,7 +197,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Germany",
     weight: 1,
     removesTraitIds: ["agile","one-handed"],
-    addTraitIDs: ["two-handed","inconvenient"],
+    addsTraitIds: ["two-handed","inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *While the stock is on, loses agile gimmick. Becomes two-handed.
 *Gains the 'inconvenient' gimmick.
@@ -264,7 +264,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 1,
     rateOfFireBonus: 2,
-    addTraitIDs: ["uncontrollable",],
+    addsTraitIds: ["uncontrollable",],
     description: `*Weapon gains +2 rate of fire.
 *Have -3d6 for each additional shot, instead of an accuracy buff.
 *May be used alongside the other attachments of this weapon.`,
@@ -287,7 +287,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 1,
     removesTraitIds: ["agile","one-handed","uncontrollable"],
-    addTraitIDs: ["two-handed","inconvenient"],
+    addsTraitIds: ["two-handed","inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.
 *Gains the 'inconvenient' gimmick.

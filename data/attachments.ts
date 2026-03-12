@@ -81,11 +81,11 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
-    removesTraitIds: ["double-barrel-shotgun"],
+    removesTraitIds: ["buckshot"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
-*Replaces the 'Double Barrel Shotgun' gimmick with this gimmick instead.
+*Worse ranging:
 *Deals 4 damage to enemies 2 distances or closer. Deals 2 damage to enemies 3 distances or beyond.
 *Deals no damage to enemies 10 distances or beyond.
 *Can be used alongside this weapon's other attachments.`,
@@ -100,7 +100,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     removesTraitIds: ["musket"],
     addsTraitIds: ["rifled-musket"],
     description: `*Replaces the 'Musket' gimmick with this gimmick instead.
-*Reloading takes 30 turns.`,
+*Reloading takes 30 turns.
+*Accuracy penalty returns to normal.`,
   },
   {
     id: "colt-walker-bullets",
@@ -124,7 +125,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     isCharge: true,
     description:
-      `*Takes 3 turns to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
+      `*Takes 1 turn to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
+*Roll DEX to hit your target, you only need 1 success regardless of cover. If you fail, roll 1d[DISTANCE TO TARGET]-1 - that is where the grenade lands.
 *Reloading a grenade after firing takes 1 turn.
 *Fires a grenade, which explodes on impact, so long as the enemy is 3 distances away or more.
 *Does not detonate if the enemy is within 2 distances. Deals 2 damage to the target.
@@ -150,6 +152,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["half-agile"],
+    addsTraitIds: ["impossible-to-remove",],
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
@@ -165,6 +168,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["walking-fire"],
+    addTraitIDs: ["impossible-to-remove",],
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
@@ -192,11 +196,12 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "C96 Mauser",
     nation: "Germany",
     weight: 1,
+    removesTraitIds: ["agile","one-handed"],
+    addTraitIDs: ["two-handed","inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
-*While the stock is on, loses agile gimmick.
-*Holstering and unholstering this weapon takes an additional turn.
+*While the stock is on, loses agile gimmick. Becomes two-handed.
+*Gains the 'inconvenient' gimmick.
 *+1 rate of fire.`,
-    removesTraitIds: ["agile"],
   },
 
   // ── American ──
@@ -224,7 +229,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     damageOverride: 2,
     rateOfFireBonus: 1,
     description: `*It takes 3 turns to put the pedersen on/off.
-*The Springfield deals 2 damage up to 5 distances away. At distance 6 or beyond, deals only 1 damage.
+*The Springfield deals 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
 *The Springfield has 40 rounds whilst the device is on.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 40 round magazine. Each charge has 1 weight.`,
@@ -237,18 +242,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
-*May be used alongside the Pedersen device.`,
-  },
-  {
-    id: "springfield-alofs-device",
-    name: "Springfield: Alofs device",
-    appliesTo: "M1903 Springfield",
-    nation: "United States",
-    weight: 1,
-    requiresAttachmentIds: ["springfield-pedersen"],
-    description:
-      `*Requires the Pedersen device to already be attached before this can be attached.
-*Represents the Alofs conversion hardware mounted on the Springfield setup.`,
+*May be used alongside this weapon's other attachments..`,
   },
 
   // ── Russian ──
@@ -270,6 +264,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 1,
     rateOfFireBonus: 2,
+    addTraitIDs: ["uncontrollable",],
     description: `*Weapon gains +2 rate of fire.
 *Have -3d6 for each additional shot, instead of an accuracy buff.
 *May be used alongside the other attachments of this weapon.`,
@@ -291,9 +286,11 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 1,
+    removesTraitIds: ["agile","one-handed","uncontrollable"],
+    addTraitIDs: ["two-handed","inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.
-*Holstering and unholstering this weapon takes an additional turn.
+*Gains the 'inconvenient' gimmick.
 *May be used alongside the other attachments of this weapon.`,
   },
 ];

@@ -80,6 +80,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: [
       "two-handed",
+      "buckshot",
       "double-barrel-shotgun",
       "trench-sweeper",
       "double-fire",
@@ -98,7 +99,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    traitIds: ["two-handed", "extra-long", "musket"],
+    traitIds: ["two-handed", "extra-long-bayonet", "musket"],
     compatibleAttachmentIds: ["musket-rifled", ...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
     reloadTurns: 20,
@@ -447,7 +448,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: [
       "two-handed",
-      "shotgun",
+      "buckshot",
       "tubular-magazine-shells",
       "trench-sweeper",
       "slam-fire",
@@ -497,7 +498,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "shotgun",
+      "buckshot",
       "tubular-magazine-shells",
       "trench-sweeper",
     ],

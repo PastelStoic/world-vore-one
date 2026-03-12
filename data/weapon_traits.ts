@@ -276,11 +276,23 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   },
   {
     id: "impossible-to-remove",
-    name: "Impossible to remeove",
+    name: "Impossible to remove",
     description:
       "Attachment modifies the weapon so much that removing it is extremely difficult. Takes 20 turns to remove and fix weapon back to normal.\nCan be removed in downtime without issues.",
   },
-
+  {
+    id: "inconvenient",
+    name: "Inconvenient",
+    description:
+      "Weapon is inconvenient to handle and its holster is strange. Takes 1 extra turn to holster/unholster. Takes the usual amount of time to be dropped outright.",
+  },
+  {
+    id: "uncontrollable",
+    name: "Uncontrollable",
+    description:
+      "Gain -3d6 for every shot after the first one instead of an accuracy bonus.",
+  },
+  
   // ── Traits added by attachments ──
   {
     id: "quickloader",

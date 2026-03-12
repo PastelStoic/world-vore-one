@@ -81,7 +81,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
-    removesTraitIds: ["buckshot"],
+    removesTraitIds: ["buckshot,double-fire"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
@@ -89,6 +89,17 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Deals 4 damage to enemies 2 distances or closer. Deals 2 damage to enemies 3 distances or beyond.
 *Deals no damage to enemies 10 distances or beyond.
 *Can be used alongside this weapon's other attachments.`,
+  },
+  {
+    id: "dbs-alofs-device",
+    name: "Double-barrel shotgun: Alofs Device",
+    appliesTo: "Double-barrel shotgun",
+    nation: "Civilian",
+    weight: 1,
+    ammoOverride: 5,
+    removesTraitIds: [""],
+    addsTraitIds: [""],
+    description: `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,
   },
   {
     id: "musket-rifled",

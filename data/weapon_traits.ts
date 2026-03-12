@@ -274,6 +274,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.",
   },
+  {
+    id: "impossible-to-remove",
+    name: "Impossible to remeove",
+    description:
+      "Attachment modifies the weapon so much that removing it is extremely difficult. Takes 20 turns to remove and fix weapon back to normal.\nCan be removed in downtime without issues.",
+  },
 
   // ── Traits added by attachments ──
   {

@@ -99,6 +99,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 5,
     removesTraitIds: [""],
     addsTraitIds: [""],
+    requiresAttachmentIds: ["dbs-single-barrel"],
     description: `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,
   },
   {

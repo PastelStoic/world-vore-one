@@ -81,7 +81,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
-    removesTraitIds: ["buckshot,double-fire"],
+    removesTraitIds: ["buckshot","double-fire"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.

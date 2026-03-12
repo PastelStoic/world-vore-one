@@ -51,8 +51,8 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
       "Reloads each bullet individually, taking 1 turn per bullet. Cannot have a quickloader.",
   },
   {
-    id: "shotgun",
-    name: "Shotgun",
+    id: "buckshot",
+    name: "Buckshot",
     description:
       "Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.",
   },
@@ -60,7 +60,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "double-barrel-shotgun",
     name: "Double barrel Shotgun",
     description:
-      "Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.\nLoads each shell individually, 1 shell per turn.",
+      "Loads each shell individually, 1 shell per turn.",
   },
   {
     id: "trench-sweeper",

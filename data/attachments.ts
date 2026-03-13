@@ -276,11 +276,12 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Automatic fire",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 1,
+    weight: 0,
     rateOfFireBonus: 2,
     addsTraitIds: ["uncontrollable",],
-    description: `*Weapon gains +2 rate of fire.
-*Have -3d6 for each additional shot, instead of an accuracy buff.
+    description: `*Attachment has no weight.
+*Weapon gains +2 rate of fire.
+*Gain the 'uncontrollable' gimmick.
 *May be used alongside the other attachments of this weapon.`,
   },
   {

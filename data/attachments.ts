@@ -97,6 +97,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 1,
+    weightOverride: 2,
     ammoOverride: 5,
     removesTraitIds: ["double-barrel-shotgun"],
     addsTraitIds: ["alofs-device"],

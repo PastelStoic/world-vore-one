@@ -85,7 +85,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "trench-sweeper",
       "double-fire",
     ],
-    compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off"],
+    compatibleAttachmentIds: ["dbs-single-barrel", "dbs-sawn-off","dbs-alofs-device"],
     reloadsIndividually: true,
   },
   {

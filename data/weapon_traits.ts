@@ -307,6 +307,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
       "Can be fired even at distance 0. Can be unholstered and holstered at no action cost.\nDeals 4 damage to enemies 2 distances or closer. Deals 2 damage to enemies 3 distances or beyond.\nDeals no damage to enemies 10 distances or beyond.",
   },
   {
+    id: "alofs-device",
+    name: "Alofs-device",
+    description:
+      "Loads each shell individually, 1 shell per turn.",
+  },
+  {
     id: "rifled-musket",
     name: "Rifled musket",
     description: "Reloading takes 30 turns.",

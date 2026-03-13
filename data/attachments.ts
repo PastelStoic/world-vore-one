@@ -71,6 +71,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 0,
     ammoOverride: 1,
     weightOverride: 1,
+    removesTraitIds: ["double-fire"],
     description: `*Modification is free.
 *Ammo is reduced to 1. Weight is reduced to 1.
 *Can be used alongside this weapon's other attachments.`,
@@ -81,7 +82,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
-    removesTraitIds: ["buckshot","double-fire"],
+    removesTraitIds: ["buckshot"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.
@@ -97,6 +98,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Civilian",
     weight: 1,
     ammoOverride: 5,
+    removesTraitIds: ["double-barrel-shotgun"],
     addsTraitIds: ["alofs-device"],
     requiresAttachmentIds: ["dbs-single-barrel"],
     description: `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,

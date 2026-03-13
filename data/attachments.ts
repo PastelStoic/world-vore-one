@@ -73,7 +73,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weightOverride: 1,
     removesTraitIds: ["double-fire"],
     description: `*Modification is free.
-*Ammo is reduced to 1. Weight is reduced to 1.
+*Ammo is reduced to 1. Weight is reduced by 1.
 *Can be used alongside this weapon's other attachments.`,
   },
   {

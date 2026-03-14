@@ -73,14 +73,6 @@ export interface FactionDefinition {
   grantsStatPoints?: number;
 }
 
-export const FACTION_DEFINITIONS: FactionDefinition[] = FACTIONS.map((id) => ({
-  id,
-}));
-
-export const FACTION_DEFINITIONS_BY_ID = new Map(
-  FACTION_DEFINITIONS.map((f) => [f.id as string, f]),
-);
-
 export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];
 

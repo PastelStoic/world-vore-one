@@ -10,7 +10,6 @@ import {
   type CharacterDraft,
   createDefaultBaseStats,
   createDefaultDescription,
-  FACTION_DEFINITIONS_BY_ID,
   getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type Race,
@@ -18,6 +17,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "./character_types.ts";
+import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 
 // ---------------------------------------------------------------------------

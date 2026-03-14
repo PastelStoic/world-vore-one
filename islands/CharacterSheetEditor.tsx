@@ -12,7 +12,6 @@ import {
   type CharacterDescription,
   type CharacterDraft,
   type CharacterSheet,
-  FACTION_DEFINITIONS_BY_ID,
   FACTIONS,
   getRacesForSex,
   getStartingStatPoints,
@@ -22,6 +21,7 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "@/lib/character_types.ts";
+import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";

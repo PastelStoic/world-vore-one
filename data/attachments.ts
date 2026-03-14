@@ -102,7 +102,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     removesTraitIds: ["double-barrel-shotgun"],
     addsTraitIds: ["alofs-device"],
     requiresAttachmentIds: ["dbs-single-barrel"],
-    description: `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,
+    description:
+      `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,
   },
   {
     id: "musket-rifled",
@@ -166,7 +167,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["half-agile"],
-    addsTraitIds: ["impossible-to-remove",],
+    addsTraitIds: ["impossible-to-remove"],
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
@@ -182,7 +183,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 20,
     requiresMagazines: true,
     removesTraitIds: ["walking-fire"],
-    addsTraitIds: ["impossible-to-remove",],
+    addsTraitIds: ["impossible-to-remove"],
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
@@ -210,8 +211,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "C96 Mauser",
     nation: "Germany",
     weight: 1,
-    removesTraitIds: ["agile","one-handed"],
-    addsTraitIds: ["two-handed","inconvenient"],
+    removesTraitIds: ["agile", "one-handed"],
+    addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *While the stock is on, loses agile gimmick. Becomes two-handed.
 *Gains the 'inconvenient' gimmick.
@@ -278,7 +279,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 0,
     rateOfFireBonus: 2,
-    addsTraitIds: ["uncontrollable",],
+    addsTraitIds: ["uncontrollable"],
     description: `*Attachment has no weight.
 *Weapon gains +2 rate of fire.
 *Gain the 'uncontrollable' gimmick.
@@ -301,8 +302,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 1,
-    removesTraitIds: ["agile","one-handed","uncontrollable"],
-    addsTraitIds: ["two-handed","inconvenient"],
+    removesTraitIds: ["agile", "one-handed", "uncontrollable"],
+    addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.
 *Gains the 'inconvenient' gimmick.

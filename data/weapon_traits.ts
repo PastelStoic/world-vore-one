@@ -59,8 +59,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "double-barrel-shotgun",
     name: "Double barrel Shotgun",
-    description:
-      "Loads each shell individually, 1 shell per turn.",
+    description: "Loads each shell individually, 1 shell per turn.",
   },
   {
     id: "trench-sweeper",
@@ -292,7 +291,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "Gain -3d6 for every shot after the first one instead of an accuracy bonus.",
   },
-  
+
   // ── Traits added by attachments ──
   {
     id: "quickloader",
@@ -309,8 +308,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "alofs-device",
     name: "Alofs-device",
-    description:
-      "Loads each shell individually, 1 shell per turn.",
+    description: "Loads each shell individually, 1 shell per turn.",
   },
   {
     id: "rifled-musket",

@@ -109,15 +109,40 @@ export function getSignatureFreeAttachmentIds(
   return new Set(def.compatibleAttachmentIds);
 }
 
+/** Collect all attachment IDs present in the inventory that are marked isFree. */
+function getInherentlyFreeAttachmentIds(inventory: CharacterInventory): Set<string> {
+  const result = new Set<string>();
+  const allIds: string[] = [
+    ...inventory.carried.weapons.flatMap((w) => w.attachedIds),
+    ...(inventory.carried.attachments ?? []).map((a) => a.attachmentId),
+    ...inventory.stowed.weapons.flatMap((w) => w.attachedIds),
+    ...(inventory.stowed.attachments ?? []).map((a) => a.attachmentId),
+  ];
+  for (const id of allIds) {
+    if (ATTACHMENTS_BY_ID.get(id)?.isFree) result.add(id);
+  }
+  return result;
+}
+
+function mergedFreeAttachmentIds(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+): Set<string> {
+  const sig = getSignatureFreeAttachmentIds(inventory, perkIds);
+  const inherent = getInherentlyFreeAttachmentIds(inventory);
+  for (const id of inherent) sig.add(id);
+  return sig;
+}
+
 export function countAllItemSlotsWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
 ): number {
-  const signatureFreeAttachmentIds = getSignatureFreeAttachmentIds(
+  return countAllItemSlots(
     inventory,
-    perkIds,
+    slotLookups,
+    mergedFreeAttachmentIds(inventory, perkIds),
   );
-  return countAllItemSlots(inventory, slotLookups, signatureFreeAttachmentIds);
 }
 
 export function calculateInventoryPointCostWithPerks(
@@ -127,16 +152,13 @@ export function calculateInventoryPointCostWithPerks(
   const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
-  const signatureFreeAttachmentIds = getSignatureFreeAttachmentIds(
-    inventory,
-    perkIds,
-  );
+  const freeAttachmentIds = mergedFreeAttachmentIds(inventory, perkIds);
   const unlockedIds = inventory.weaponMasterRestrictedUnlocks ?? [];
 
   const totalSlots = countAllItemSlots(
     inventory,
     slotLookups,
-    signatureFreeAttachmentIds,
+    freeAttachmentIds,
   );
   const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
   let cost = overFree * EXTRA_ITEM_POINT_COST;

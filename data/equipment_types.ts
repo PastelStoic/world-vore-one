@@ -101,6 +101,8 @@ export interface AttachmentDefinition {
   removesTraitIds?: string[];
   /** IDs of attachments that must already be attached before this can be attached */
   requiresAttachmentIds?: string[];
+  /** If true, this attachment does not cost an item slot (always free) */
+  isFree?: boolean;
 }
 
 // ── General equipment ───────────────────────────────────────────────────────

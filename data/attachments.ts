@@ -69,6 +69,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
+    isFree: true,
     ammoOverride: 1,
     weightOverride: 1,
     removesTraitIds: ["double-fire"],
@@ -82,6 +83,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Double-barrel shotgun",
     nation: "Civilian",
     weight: 0,
+    isFree: true,
     removesTraitIds: ["buckshot"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.

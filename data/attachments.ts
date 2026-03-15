@@ -173,6 +173,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Half-agile gimmick.
+*Difficult to remove mid battle due to extensive modifications done to the firearm in order to accomodate these magazines.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
   },
   {
@@ -189,6 +190,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description:
       `*Has 20 rounds. Reloading with standard stripper clips becomes impossible. Must be reloaded with another magazine.
 *Loses the Walking fire gimmick.
+*Difficult to remove mid battle due to extensive modifications done to the firearm in order to accomodate these magazines.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 20 round magazine. Each charge has 1 weight.`,
   },
 

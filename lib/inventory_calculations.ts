@@ -19,7 +19,9 @@ export function countCarriedItemSlots(
   inv: CharacterInventory,
   lookups?: {
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
-    getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
+    getAttachment?: (
+      id: string,
+    ) => { isCharge?: boolean; isFree?: boolean } | undefined;
   },
   freeAttachmentIds?: ReadonlySet<string>,
 ): number {
@@ -39,13 +41,8 @@ export function countCarriedItemSlots(
     slots += 1; // The weapon itself is 1 slot
     for (const attachmentId of w.attachedIds) {
       const def = lookups?.getAttachment?.(attachmentId);
-      if (def?.isCharge) {
-        // Charge attachments consume one slot per purchased charge when loose,
-        // but while attached we track only the installed instance.
-        slots += 1;
-      } else {
-        slots += 1;
-      }
+      if (def?.isFree) continue; // Always free – no slot cost
+      slots += 1;
     }
   }
 
@@ -56,6 +53,7 @@ export function countCarriedItemSlots(
 
   for (const a of inv.carried.attachments ?? []) {
     const def = lookups?.getAttachment?.(a.attachmentId);
+    if (def?.isFree) continue; // Always free – no slot cost
     if (def?.isCharge) {
       slots += a.totalCharges;
     } else {
@@ -91,7 +89,9 @@ export function countAllItemSlots(
   inv: CharacterInventory,
   lookups?: {
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
-    getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
+    getAttachment?: (
+      id: string,
+    ) => { isCharge?: boolean; isFree?: boolean } | undefined;
   },
   freeAttachmentIds?: ReadonlySet<string>,
 ): number {
@@ -110,7 +110,9 @@ export function countAllItemSlots(
 
   for (const w of inv.stowed.weapons) {
     slots += 1;
-    for (const _attachmentId of w.attachedIds) {
+    for (const attachmentId of w.attachedIds) {
+      const def = lookups?.getAttachment?.(attachmentId);
+      if (def?.isFree) continue; // Always free – no slot cost
       slots += 1;
     }
   }
@@ -122,6 +124,7 @@ export function countAllItemSlots(
 
   for (const a of inv.stowed.attachments ?? []) {
     const def = lookups?.getAttachment?.(a.attachmentId);
+    if (def?.isFree) continue; // Always free – no slot cost
     if (def?.isCharge) {
       slots += a.totalCharges;
     } else {

@@ -11,12 +11,22 @@ import {
   parseCharacterFormData,
 } from "@/lib/form_helpers.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
+import { isUserBanned } from "@/lib/admin.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {
     const user = ctx.state.user;
     if (!user) {
       return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (await isUserBanned(user.id)) {
+      return new Response(
+        "You have been banned and cannot create characters.",
+        {
+          status: 403,
+        },
+      );
     }
 
     const formData = await ctx.req.formData();
@@ -54,11 +64,16 @@ export const handler = define.handlers({
   },
 });
 
-export default define.page<typeof handler>((ctx) => {
+export default define.page<typeof handler>(async (ctx) => {
   if (!ctx.state.user) {
     return new Response(null, {
       status: 302,
       headers: { location: "/auth/discord" },
+    });
+  }
+  if (await isUserBanned(ctx.state.user.id)) {
+    return new Response("You have been banned and cannot create characters.", {
+      status: 403,
     });
   }
   return (

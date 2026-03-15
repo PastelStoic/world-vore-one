@@ -110,7 +110,9 @@ export function getSignatureFreeAttachmentIds(
 }
 
 /** Collect all attachment IDs present in the inventory that are marked isFree. */
-function getInherentlyFreeAttachmentIds(inventory: CharacterInventory): Set<string> {
+function getInherentlyFreeAttachmentIds(
+  inventory: CharacterInventory,
+): Set<string> {
   const result = new Set<string>();
   const allIds: string[] = [
     ...inventory.carried.weapons.flatMap((w) => w.attachedIds),

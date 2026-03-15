@@ -15,6 +15,12 @@ interface AdminRecord {
   username: string;
 }
 
+interface BannedRecord {
+  userId: string;
+  username: string;
+  bannedAt: string;
+}
+
 interface AdminPanelProps {
   isAdmin: boolean;
   hasAdmins: boolean;
@@ -39,6 +45,13 @@ export default function AdminPanel(props: AdminPanelProps) {
   const newAdminUserId = useSignal("");
   const newAdminUsername = useSignal("");
   const adminError = useSignal("");
+
+  // Ban management
+  const bannedUsers = useSignal<BannedRecord[]>([]);
+  const bannedLoaded = useSignal(false);
+  const newBanUserId = useSignal("");
+  const newBanUsername = useSignal("");
+  const banError = useSignal("");
 
   // All characters list
   const allCharacters = useSignal<CharacterResult[]>([]);
@@ -112,6 +125,77 @@ export default function AdminPanel(props: AdminPanelProps) {
       }
     } catch {
       // ignore
+    }
+  }
+
+  async function loadBannedUsers() {
+    try {
+      const res = await fetch("/api/admin/ban-user");
+      if (res.ok) {
+        bannedUsers.value = await res.json();
+        bannedLoaded.value = true;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  async function banUser() {
+    banError.value = "";
+    const userId = newBanUserId.value.trim();
+    const username = newBanUsername.value.trim();
+    if (!userId) {
+      banError.value = "Discord User ID is required.";
+      return;
+    }
+    if (
+      !confirm(
+        `Ban user ${
+          username || userId
+        }? This will permanently delete all of their characters.`,
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch("/api/admin/ban-user", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          username: username || userId,
+          action: "ban",
+        }),
+      });
+      if (res.ok) {
+        bannedUsers.value = await res.json();
+        newBanUserId.value = "";
+        newBanUsername.value = "";
+      } else {
+        const data = await res.json().catch(() => null);
+        banError.value = data?.error ?? "Failed to ban user.";
+      }
+    } catch {
+      banError.value = "Network error.";
+    }
+  }
+
+  async function unbanUser(userId: string) {
+    banError.value = "";
+    try {
+      const res = await fetch("/api/admin/ban-user", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ userId, action: "unban" }),
+      });
+      if (res.ok) {
+        bannedUsers.value = await res.json();
+      } else {
+        const data = await res.json().catch(() => null);
+        banError.value = data?.error ?? "Failed to unban user.";
+      }
+    } catch {
+      banError.value = "Network error.";
     }
   }
 
@@ -235,6 +319,9 @@ export default function AdminPanel(props: AdminPanelProps) {
   // Admin view
   if (!adminsLoaded.value) {
     loadAdmins();
+  }
+  if (!bannedLoaded.value) {
+    loadBannedUsers();
   }
 
   return (
@@ -515,6 +602,91 @@ export default function AdminPanel(props: AdminPanelProps) {
         {adminError.value && (
           <p class="text-error text-sm">{adminError.value}</p>
         )}
+      </section>
+
+      {/* ── Ban Management ───────────────────────────────── */}
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Ban Management</h2>
+
+        {bannedUsers.value.length > 0 && (
+          <div class="border rounded-lg overflow-hidden">
+            <table class="w-full text-sm">
+              <thead class="bg-base-200">
+                <tr>
+                  <th class="text-left px-3 py-2">Username</th>
+                  <th class="text-left px-3 py-2">User ID</th>
+                  <th class="text-left px-3 py-2">Banned At</th>
+                  <th class="text-left px-3 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bannedUsers.value.map((b) => (
+                  <tr key={b.userId} class="border-t hover:bg-base-200">
+                    <td class="px-3 py-2">{b.username}</td>
+                    <td class="px-3 py-2 font-mono text-xs">{b.userId}</td>
+                    <td class="px-3 py-2 text-xs">
+                      {b.bannedAt
+                        ? new Date(b.bannedAt).toLocaleDateString()
+                        : "—"}
+                    </td>
+                    <td class="px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          unbanUser(b.userId)}
+                        class="text-success hover:underline text-xs"
+                      >
+                        Unban
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {bannedUsers.value.length === 0 && bannedLoaded.value && (
+          <p class="text-sm text-base-content/60">No banned users.</p>
+        )}
+
+        <div class="flex gap-2 items-end">
+          <div class="flex-1 space-y-1">
+            <label class="text-xs text-base-content/60">Discord User ID</label>
+            <input
+              type="text"
+              placeholder="e.g. 123456789012345678"
+              value={newBanUserId.value}
+              onInput={(
+                e,
+              ) => (newBanUserId.value = (e.target as HTMLInputElement).value)}
+              class="w-full px-3 py-2 border rounded"
+            />
+          </div>
+          <div class="flex-1 space-y-1">
+            <label class="text-xs text-base-content/60">
+              Username (optional)
+            </label>
+            <input
+              type="text"
+              placeholder="Display name"
+              value={newBanUsername.value}
+              onInput={(
+                e,
+              ) => (newBanUsername.value =
+                (e.target as HTMLInputElement).value)}
+              class="w-full px-3 py-2 border rounded"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={banUser}
+            class="px-4 py-2 bg-error text-error-content rounded hover:bg-error/90 transition-colors"
+          >
+            Ban User
+          </button>
+        </div>
+        {banError.value && <p class="text-error text-sm">{banError.value}</p>}
       </section>
     </div>
   );

@@ -273,3 +273,63 @@ export async function getCharacterSnapshot(
   ]);
   return entry.value;
 }
+
+/**
+ * Delete a single character and all of its snapshots.
+ */
+export async function deleteCharacter(characterId: string): Promise<void> {
+  const kv = await getKv();
+  const character = await getCharacter(characterId);
+
+  // Delete main record and by-user index
+  await kv.delete([...CHARACTER_PREFIX, characterId]);
+  if (character) {
+    await kv.delete([
+      ...CHARACTER_BY_USER_PREFIX,
+      character.userId,
+      characterId,
+    ]);
+  }
+
+  // Delete all snapshots (by timestamp key)
+  for await (
+    const entry of kv.list({
+      prefix: [...CHARACTER_SNAPSHOT_PREFIX, characterId],
+    })
+  ) {
+    await kv.delete(entry.key);
+  }
+
+  // Delete all snapshots (by id key)
+  for await (
+    const entry of kv.list({
+      prefix: [...CHARACTER_SNAPSHOT_BY_ID_PREFIX, characterId],
+    })
+  ) {
+    await kv.delete(entry.key);
+  }
+}
+
+/**
+ * Delete all characters (and their snapshots) belonging to a user.
+ */
+export async function deleteAllCharactersForUser(
+  userId: string,
+): Promise<void> {
+  const kv = await getKv();
+  const characterIds: string[] = [];
+
+  for await (
+    const entry of kv.list<CharacterSheet>({
+      prefix: [...CHARACTER_BY_USER_PREFIX, userId],
+    })
+  ) {
+    if (entry.value) {
+      characterIds.push(entry.value.id);
+    }
+  }
+
+  for (const id of characterIds) {
+    await deleteCharacter(id);
+  }
+}

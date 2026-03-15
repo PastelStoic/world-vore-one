@@ -64,3 +64,62 @@ export async function listAdmins(): Promise<AdminRecord[]> {
 
   return admins;
 }
+
+// ── Ban management ─────────────────────────────────────────────────
+
+const BAN_PREFIX = ["bans"] as const;
+
+export interface BannedRecord {
+  userId: string;
+  username: string;
+  bannedAt: string;
+}
+
+/** Check whether a user is banned. */
+export async function isUserBanned(userId: string): Promise<boolean> {
+  const kv = await Deno.openKv();
+  const entry = await kv.get<boolean>([...BAN_PREFIX, userId]);
+  return entry.value === true;
+}
+
+/** Ban a user. */
+export async function banUser(
+  userId: string,
+  username: string,
+): Promise<void> {
+  const kv = await Deno.openKv();
+  await kv.set([...BAN_PREFIX, userId], true);
+  await kv.set([...BAN_PREFIX, userId, "username"], username);
+  await kv.set([...BAN_PREFIX, userId, "bannedAt"], new Date().toISOString());
+}
+
+/** Unban a user. */
+export async function unbanUser(userId: string): Promise<void> {
+  const kv = await Deno.openKv();
+  await kv.delete([...BAN_PREFIX, userId]);
+  await kv.delete([...BAN_PREFIX, userId, "username"]);
+  await kv.delete([...BAN_PREFIX, userId, "bannedAt"]);
+}
+
+/** List all banned users. */
+export async function listBannedUsers(): Promise<BannedRecord[]> {
+  const kv = await Deno.openKv();
+  const banned: BannedRecord[] = [];
+
+  for await (const entry of kv.list<boolean>({ prefix: [...BAN_PREFIX] })) {
+    if (entry.key.length === 2 && entry.value === true) {
+      const userId = entry.key[1] as string;
+      const [usernameEntry, bannedAtEntry] = await Promise.all([
+        kv.get<string>([...BAN_PREFIX, userId, "username"]),
+        kv.get<string>([...BAN_PREFIX, userId, "bannedAt"]),
+      ]);
+      banned.push({
+        userId,
+        username: usernameEntry.value ?? userId,
+        bannedAt: bannedAtEntry.value ?? "",
+      });
+    }
+  }
+
+  return banned;
+}

@@ -378,7 +378,7 @@ export default function AdminPanel(props: AdminPanelProps) {
             <table class="w-full text-sm">
               <thead class="bg-base-200">
                 <tr>
-                  <th class="text-left px-3 py-2">Name</th>
+                  <th class="text-left px-3 py-2 w-48">Name</th>
                   <th class="text-left px-3 py-2">Race</th>
                   <th class="text-left px-3 py-2">Status</th>
                   <th class="text-left px-3 py-2">Owner ID</th>
@@ -389,10 +389,11 @@ export default function AdminPanel(props: AdminPanelProps) {
               <tbody>
                 {characters.value.map((c) => (
                   <tr key={c.id} class="border-t hover:bg-base-200">
-                    <td class="px-3 py-2">
+                    <td class="px-3 py-2 max-w-0">
                       <a
                         href={`/characters/${c.id}`}
-                        class="underline text-primary"
+                        class="underline text-primary block truncate"
+                        title={c.name}
                       >
                         {c.name}
                       </a>
@@ -490,7 +491,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                 <table class="w-full text-sm">
                   <thead class="bg-base-200">
                     <tr>
-                      <th class="text-left px-3 py-2">Name</th>
+                      <th class="text-left px-3 py-2 w-48">Name</th>
                       <th class="text-left px-3 py-2">Race</th>
                       <th class="text-left px-3 py-2">Status</th>
                       <th class="text-left px-3 py-2">Owner ID</th>
@@ -506,10 +507,11 @@ export default function AdminPanel(props: AdminPanelProps) {
                           c.hidden ? "opacity-50" : ""
                         }`}
                       >
-                        <td class="px-3 py-2">
+                        <td class="px-3 py-2 max-w-0">
                           <a
                             href={`/characters/${c.id}`}
-                            class="underline text-primary"
+                            class="underline text-primary block truncate"
+                            title={c.name}
                           >
                             {c.name}
                           </a>

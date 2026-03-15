@@ -131,6 +131,9 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
           <span class="font-medium">Pending Approval</span>
           <span>This character is awaiting admin approval.</span>
           {ctx.state.isAdmin && (
+            <span class="font-mono text-xs opacity-70">Owner: {character.userId}</span>
+          )}
+          {ctx.state.isAdmin && (
             <div class="ml-auto flex gap-2">
               <form method="POST">
                 <input type="hidden" name="action" value="approve" />
@@ -161,6 +164,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         <div class="flex items-center gap-3 px-3 py-2 bg-primary/10 border border-primary/50 rounded text-primary text-sm">
           <span class="font-medium">Approved</span>
           <span>Disapprove to allow name/description edits again.</span>
+          <span class="font-mono text-xs opacity-70">Owner: {character.userId}</span>
           <div class="ml-auto flex gap-2">
             <form method="POST">
               <input type="hidden" name="action" value="disapprove" />

@@ -284,6 +284,27 @@ export default function AdminPanel(props: AdminPanelProps) {
     }
   }
 
+  async function adminDeleteCharacter(id: string, name: string) {
+    if (
+      !globalThis.confirm(
+        `Permanently delete "${name}" and all its data? This cannot be undone.`,
+      )
+    ) return;
+    try {
+      const res = await fetch(`/api/admin/delete-character`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ characterId: id }),
+      });
+      if (res.ok) {
+        allCharacters.value = allCharacters.value.filter((c) => c.id !== id);
+        characters.value = characters.value.filter((c) => c.id !== id);
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   // Not admin and no admins exist → show bootstrap
   if (!isAdmin.value && !hasAdmins.value) {
     return (
@@ -362,6 +383,7 @@ export default function AdminPanel(props: AdminPanelProps) {
                   <th class="text-left px-3 py-2">Status</th>
                   <th class="text-left px-3 py-2">Owner ID</th>
                   <th class="text-left px-3 py-2">Updated</th>
+                  <th class="text-left px-3 py-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -392,6 +414,16 @@ export default function AdminPanel(props: AdminPanelProps) {
                     <td class="px-3 py-2 font-mono text-xs">{c.userId}</td>
                     <td class="px-3 py-2 text-xs">
                       {new Date(c.updatedAt).toLocaleDateString()}
+                    </td>
+                    <td class="px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          adminDeleteCharacter(c.id, c.name)}
+                        class="text-xs text-error hover:underline"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -508,13 +540,23 @@ export default function AdminPanel(props: AdminPanelProps) {
                           {new Date(c.updatedAt).toLocaleDateString()}
                         </td>
                         <td class="px-3 py-2">
-                          <button
-                            type="button"
-                            onClick={() => toggleHideCharacter(c.id, c.hidden)}
-                            class="text-xs hover:underline"
-                          >
-                            {c.hidden ? "Unhide" : "Hide"}
-                          </button>
+                          <div class="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                toggleHideCharacter(c.id, c.hidden)}
+                              class="text-xs hover:underline"
+                            >
+                              {c.hidden ? "Unhide" : "Hide"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => adminDeleteCharacter(c.id, c.name)}
+                              class="text-xs text-error hover:underline"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

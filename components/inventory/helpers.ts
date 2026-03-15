@@ -6,6 +6,7 @@ import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT_BY_ID,
   MELEE_WEAPONS_BY_ID,
+  WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import type {
@@ -90,11 +91,26 @@ export function getSignatureAdjustedPointCost(
   return 0;
 }
 
+/** Set of attachment IDs that appear in only one weapon's compatibleAttachmentIds. */
+const UNIQUE_ATTACHMENT_IDS: Set<string> = (() => {
+  const counts = new Map<string, number>();
+  for (const w of WEAPONS) {
+    for (const aId of w.compatibleAttachmentIds) {
+      counts.set(aId, (counts.get(aId) ?? 0) + 1);
+    }
+  }
+  const unique = new Set<string>();
+  for (const [id, count] of counts) {
+    if (count === 1) unique.add(id);
+  }
+  return unique;
+})();
+
 export function getSignatureFreeAttachmentIds(
   inventory: CharacterInventory,
   perkIds?: string[],
 ): Set<string> {
-  if (!perkIds?.includes("signiature-weapon")) return new Set<string>();
+  if (!perkIds?.includes("signature-weapon")) return new Set<string>();
 
   const signatureWeapon = [
     ...inventory.carried.weapons,
@@ -106,7 +122,20 @@ export function getSignatureFreeAttachmentIds(
   const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
   if (!def) return new Set<string>();
 
-  return new Set(def.compatibleAttachmentIds);
+  // Only attachments unique to this weapon (not compatible with any other) are free
+  return new Set(
+    def.compatibleAttachmentIds.filter((aId) => UNIQUE_ATTACHMENT_IDS.has(aId)),
+  );
+}
+
+/** Check if an attachment is unique to the given weapon (for signature weapon free-attach). */
+export function isSignatureUniqueAttachment(
+  weaponDef: { compatibleAttachmentIds: string[] } | undefined,
+  attachmentId: string,
+): boolean {
+  return !!weaponDef &&
+    weaponDef.compatibleAttachmentIds.includes(attachmentId) &&
+    UNIQUE_ATTACHMENT_IDS.has(attachmentId);
 }
 
 /** Collect all attachment IDs present in the inventory that are marked isFree. */
@@ -150,7 +179,7 @@ export function calculateInventoryPointCostWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
 ): number {
-  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
+  const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const freeAttachmentIds = mergedFreeAttachmentIds(inventory, perkIds);

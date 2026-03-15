@@ -36,6 +36,7 @@ import {
   getDependentAttachmentIds,
   getWeaponPointCost,
   type InventoryLocation,
+  isSignatureUniqueAttachment,
   weightLookups,
 } from "./inventory/helpers.ts";
 
@@ -85,7 +86,7 @@ export default function InventorySection(props: InventorySectionProps) {
   // In editor mode (readOnly=false), combat state is always editable.
   // In viewer mode (readOnly=true), only owners/admins can edit combat state.
   const combatReadOnly = readOnly && !canEditCombatState;
-  const hasSignatureWeaponPerk = perkIds?.includes("signiature-weapon") ??
+  const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
     false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const weaponMasterRestrictedUnlocks =
@@ -452,7 +453,7 @@ export default function InventorySection(props: InventorySectionProps) {
       if (
         !attInv &&
         isSignatureWeapon &&
-        weaponDef?.compatibleAttachmentIds.includes(attachmentId)
+        isSignatureUniqueAttachment(weaponDef, attachmentId)
       ) {
         attInv = {
           attachmentId,

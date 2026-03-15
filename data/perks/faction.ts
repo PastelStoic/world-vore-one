@@ -11,7 +11,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",
@@ -48,7 +48,7 @@ Disadvantages:
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",
@@ -83,7 +83,7 @@ Disadvantages:
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",
@@ -114,7 +114,7 @@ Disadvantages:
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",
@@ -144,7 +144,7 @@ Disadvantages:
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",
@@ -174,7 +174,7 @@ Disadvantages:
     selectablePerkIds: [
       "sapper",
       "scrounger",
-      "signiature-weapon",
+      "signature-weapon",
       "defender",
       "weapon-master",
       "melee-fighter",

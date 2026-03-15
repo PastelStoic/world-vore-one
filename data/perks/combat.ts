@@ -104,7 +104,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *It must be grabbed from the weapon's list, or reflavoured from there.
 *It is considered the highest tier of weapon and deals +1 damage. 
 *No matter what happens, it always returns to you through one way or another. You may be temporarily separated from it.
-*If it is ranged, you may grab any suitable attachments for it, free of charge, at any point, so long as they do not encumber you.
+*Any attachments unique to this weapon (not compatible with other guns) are free.
 *If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point. Every other weapon is free.
 *If it's a melee weapon, you may grab one melee weapon trait that wouldn't otherwise fit the weapon, alongside all other fitting traits.`,
   },

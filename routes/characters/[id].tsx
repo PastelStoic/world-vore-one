@@ -3,6 +3,7 @@ import { define } from "@/utils.ts";
 import CharacterSheetViewer from "@/islands/CharacterSheetViewer.tsx";
 import { PERKS } from "@/data/perks.ts";
 import {
+  deleteCharacter,
   getCharacter,
   setCharacterHidden,
   setCharacterStatus,
@@ -42,6 +43,11 @@ export const handler = define.handlers({
 
     if (action === "disapprove" && ctx.state.isAdmin) {
       await setCharacterStatus(id, "pending");
+    }
+
+    if (action === "delete" && ctx.state.isAdmin) {
+      await deleteCharacter(id);
+      return Response.redirect(new URL("/", ctx.url), 303);
     }
 
     const returnTo = formData.get("returnTo");
@@ -125,15 +131,29 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
           <span class="font-medium">Pending Approval</span>
           <span>This character is awaiting admin approval.</span>
           {ctx.state.isAdmin && (
-            <form method="POST" class="ml-auto">
-              <input type="hidden" name="action" value="approve" />
-              <button
-                type="submit"
-                class="px-3 py-1 bg-success text-primary-content rounded hover:bg-success/90 transition-colors text-xs"
+            <div class="ml-auto flex gap-2">
+              <form method="POST">
+                <input type="hidden" name="action" value="approve" />
+                <button
+                  type="submit"
+                  class="px-3 py-1 bg-success text-primary-content rounded hover:bg-success/90 transition-colors text-xs"
+                >
+                  Approve
+                </button>
+              </form>
+              <form
+                method="POST"
+                data-confirm={`Permanently delete "${character.name}" and all its data? This cannot be undone.`}
               >
-                Approve
-              </button>
-            </form>
+                <input type="hidden" name="action" value="delete" />
+                <button
+                  type="submit"
+                  class="px-3 py-1 bg-error text-error-content rounded hover:bg-error/90 transition-colors text-xs"
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
           )}
         </div>
       )}
@@ -141,15 +161,29 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         <div class="flex items-center gap-3 px-3 py-2 bg-primary/10 border border-primary/50 rounded text-primary text-sm">
           <span class="font-medium">Approved</span>
           <span>Disapprove to allow name/description edits again.</span>
-          <form method="POST" class="ml-auto">
-            <input type="hidden" name="action" value="disapprove" />
-            <button
-              type="submit"
-              class="px-3 py-1 bg-primary text-primary-content rounded hover:bg-primary/90 transition-colors text-xs"
+          <div class="ml-auto flex gap-2">
+            <form method="POST">
+              <input type="hidden" name="action" value="disapprove" />
+              <button
+                type="submit"
+                class="px-3 py-1 bg-primary text-primary-content rounded hover:bg-primary/90 transition-colors text-xs"
+              >
+                Disapprove
+              </button>
+            </form>
+            <form
+              method="POST"
+              data-confirm={`Permanently delete "${character.name}" and all its data? This cannot be undone.`}
             >
-              Disapprove
-            </button>
-          </form>
+              <input type="hidden" name="action" value="delete" />
+              <button
+                type="submit"
+                class="px-3 py-1 bg-error text-error-content rounded hover:bg-error/90 transition-colors text-xs"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
         </div>
       )}
       {canEdit && (
@@ -172,6 +206,14 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         </div>
       )}
       {justSaved && <p class="text-success">Character saved.</p>}
+      {ctx.state.isAdmin && (
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              `document.querySelectorAll('form[data-confirm]').forEach(function(f){f.addEventListener('submit',function(e){if(!confirm(f.getAttribute('data-confirm')))e.preventDefault();});});`,
+          }}
+        />
+      )}
       <CharacterSheetViewer
         character={viewCharacter}
         perks={PERKS}

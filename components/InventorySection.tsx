@@ -1142,7 +1142,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 showGenericButton: true,
               }}
               renderItem={(att) => {
-                const addCost = slotCost();
+                const addCost = att.isFree ? 0 : slotCost();
                 return (
                   <li
                     key={att.id}

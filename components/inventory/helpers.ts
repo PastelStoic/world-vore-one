@@ -128,10 +128,9 @@ function mergedFreeAttachmentIds(
   inventory: CharacterInventory,
   perkIds?: string[],
 ): Set<string> {
-  const sig = getSignatureFreeAttachmentIds(inventory, perkIds);
-  const inherent = getInherentlyFreeAttachmentIds(inventory);
-  for (const id of inherent) sig.add(id);
-  return sig;
+  // Only signature-weapon attachment IDs go here; isFree attachments are
+  // already skipped directly inside the slot-counting loops.
+  return getSignatureFreeAttachmentIds(inventory, perkIds);
 }
 
 export function countAllItemSlotsWithPerks(

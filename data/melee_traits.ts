@@ -26,7 +26,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "crushing",
     name: "Crushing",
     description:
-      "Weapon is meant to bludgeon enemies dead. Ignores damage penalties such as armor, or a lizardgirl's scales.",
+      "Weapon is meant to bludgeon enemies dead. Ignores damage penalties such as armor, or a lizardgirl's scales. Deals +1 damage against enemies that'd otherwise give you a damage penalty.",
   },
   {
     id: "extra-long",

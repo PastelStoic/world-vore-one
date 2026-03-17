@@ -32,7 +32,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "extra-long",
     name: "Extra long",
     description:
-      "This melee weapon is much longer than its contemporaries. If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet. -2d6 if used in cramped spaces (indoors, inside ships, tanks, etc.).",
+      "This melee weapon is much longer than its contemporaries. If attacked in melee, can use your action to attack them first, taking your action if it hasn't been used yet.",
   },
   {
     id: "ridiculously-long",

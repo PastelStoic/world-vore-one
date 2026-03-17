@@ -16,6 +16,7 @@ import {
   getRacesForSex,
   getStartingStatPoints,
   isPilzRace,
+  isTierRace,
   mapRaceForSex,
   PERK_COST_STAT_POINTS,
   type Sex,
@@ -700,7 +701,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 </select>
               </label>
 
-              {isPilzRace(race) && (
+              {(isPilzRace(race) || isTierRace(race)) && (
                 <label class="flex items-center gap-2">
                   <input
                     type="checkbox"

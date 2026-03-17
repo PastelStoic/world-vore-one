@@ -56,7 +56,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "rapid-shanking",
     name: "Rapid shanking",
     description:
-      "This weapon can be used to quickly shank enemies. If you choose to take a -2d6 when attacking, having an additional success doubles your damage.",
+      "This weapon can be used to quickly shank enemies. If you choose to take a -2d6 when attacking, having an additional success over your opponent deals an additional instance of damage. If you are grappling your target, you have no penalty when rapid shanking.",
   },
   {
     id: "duelling",

@@ -805,8 +805,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <input
                   class="input w-full border rounded px-3 py-2"
                   type="text"
-                  placeholder={isPilzRace(race)
-                    ? "Biological age is 21 by default. Include chronological age."
+                  placeholder={isPilzRace(race) || isTierRace(race)
+                    ? "Biological age is 21 by default. Include chronological age. Year is 1923."
                     : "Must be 18+. Include chronological age (year 1923)."}
                   value={description.age}
                   onInput={(event) =>

@@ -16,6 +16,7 @@ import {
   getSignatureAdjustedPointCost,
   getWeaponPointCost,
   type InventoryLocation,
+  isSignatureUniqueAttachment,
 } from "./helpers.ts";
 
 interface WeaponCardProps {
@@ -153,7 +154,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   const availableAttachments = def.compatibleAttachmentIds
     .filter((aId) =>
       !w.attachedIds.includes(aId) &&
-      (isSignature || ownedAttachmentIds.has(aId)) &&
+      ownedAttachmentIds.has(aId) &&
       canAttachToWeapon(aId, w.attachedIds)
     )
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
@@ -161,7 +162,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   const blockedByPrerequisiteCount =
     def.compatibleAttachmentIds.filter((aId) =>
       !w.attachedIds.includes(aId) &&
-      (isSignature || ownedAttachmentIds.has(aId)) &&
+      ownedAttachmentIds.has(aId) &&
       !canAttachToWeapon(aId, w.attachedIds)
     ).length;
 
@@ -679,6 +680,11 @@ export default function WeaponCard(props: WeaponCardProps) {
                         (W:{aDef.weight})
                       </span>
                     )}
+                    {isSignature && isSignatureUniqueAttachment(def, aId) && (
+                      <span class="ml-1 text-xs font-semibold text-primary">
+                        [Signature Weapon]
+                      </span>
+                    )}
                   </span>
                   {!readOnly && (
                     <button
@@ -772,9 +778,7 @@ export default function WeaponCard(props: WeaponCardProps) {
             }}
           >
             <option value="">
-              {isSignature
-                ? "+ Attach compatible…"
-                : "+ Attach from inventory…"}
+              + Attach from inventory…
             </option>
             {availableAttachments.map((a) => (
               <option key={a!.id} value={a!.id}>
@@ -785,7 +789,6 @@ export default function WeaponCard(props: WeaponCardProps) {
         </div>
       )}
       {!readOnly && availableAttachments.length === 0 &&
-        !isSignature &&
         def.compatibleAttachmentIds.filter((aId) =>
             !w.attachedIds.includes(aId)
           ).length > 0 &&

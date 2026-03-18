@@ -222,6 +222,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       {justSaved && <p class="text-success">Character saved.</p>}
       {ctx.state.isAdmin && (
         <script
+          // deno-lint-ignore react-no-danger
           dangerouslySetInnerHTML={{
             __html:
               `document.querySelectorAll('form[data-confirm]').forEach(function(f){f.addEventListener('submit',function(e){if(!confirm(f.getAttribute('data-confirm')))e.preventDefault();});});`,

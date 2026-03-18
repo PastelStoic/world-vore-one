@@ -138,23 +138,6 @@ export function isSignatureUniqueAttachment(
     UNIQUE_ATTACHMENT_IDS.has(attachmentId);
 }
 
-/** Collect all attachment IDs present in the inventory that are marked isFree. */
-function getInherentlyFreeAttachmentIds(
-  inventory: CharacterInventory,
-): Set<string> {
-  const result = new Set<string>();
-  const allIds: string[] = [
-    ...inventory.carried.weapons.flatMap((w) => w.attachedIds),
-    ...(inventory.carried.attachments ?? []).map((a) => a.attachmentId),
-    ...inventory.stowed.weapons.flatMap((w) => w.attachedIds),
-    ...(inventory.stowed.attachments ?? []).map((a) => a.attachmentId),
-  ];
-  for (const id of allIds) {
-    if (ATTACHMENTS_BY_ID.get(id)?.isFree) result.add(id);
-  }
-  return result;
-}
-
 function mergedFreeAttachmentIds(
   inventory: CharacterInventory,
   perkIds?: string[],

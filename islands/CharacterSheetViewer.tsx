@@ -129,6 +129,16 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
           <div class="space-y-1 mt-2">
             <p>
               <strong>Race:</strong> {character.race}
+              {canSeeDisguisedPerks &&
+                character.perkDisguises?.["pilzherr-femboy"] && (
+                <span class="block ml-5 text-purple-600 italic text-xs">
+                  Displayed as: {character.race === "Pilzherr"
+                    ? "Pilzfraun"
+                    : character.race === "Tierherr"
+                    ? "Tierfraun"
+                    : character.race}
+                </span>
+              )}
             </p>
             <p>
               <strong>Sex:</strong> {desc.sex}
@@ -206,8 +216,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
             )}
             {desc.generalAppearance && (
               <p>
-                <strong>General Appearance:</strong>{" "}
-                {desc.generalAppearance}
+                <strong>General Appearance:</strong> {desc.generalAppearance}
               </p>
             )}
             {desc.generalHealth && (
@@ -252,8 +261,10 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
               ...mainStats.map((k) => character.baseStats[k]),
             );
             for (const k of mainStats) {
-              if (character.baseStats[k] === maxValue) {addictionAffectedStats
-                  .add(k);}
+              if (character.baseStats[k] === maxValue) {
+                addictionAffectedStats
+                  .add(k);
+              }
             }
           }
           return (

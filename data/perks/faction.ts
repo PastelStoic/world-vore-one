@@ -25,7 +25,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
 Advantages:
 *This perk is free.
 *Start with an additional 3 points.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 
 Disadvantages:
 *Only one per player.
@@ -61,7 +61,7 @@ Disadvantages:
 
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 *Cheaper restricted GERMAN weapons.
 
 Disadvantages:
@@ -96,7 +96,7 @@ Disadvantages:
 
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 *Cheaper restricted AMERICAN weapons.
 
 Disadvantages:
@@ -127,7 +127,7 @@ Disadvantages:
 
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 *Cheaper restricted FRENCH weapons.
 
 Disadvantages:
@@ -158,7 +158,7 @@ Disadvantages:
 Advantages:
 *This perk is free.
 *Start with an additional 3 points.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 
 Disadvantages:
 *Only one per player.
@@ -187,7 +187,7 @@ Disadvantages:
  
 Advantages:
 *Start with an additional 2 points compared to normal PFs.
-*Better gear: You are the best, so you get the best. Pick from a selection of provided perks.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 *Cheaper restricted AMERICAN weapons.
 
 Disadvantages:

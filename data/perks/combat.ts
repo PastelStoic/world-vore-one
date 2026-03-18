@@ -98,7 +98,6 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "signature-weapon",
     name: "Signature weapon",
     category: "combat",
-    customInput: "Your signature weapon",
     description: `You have a special weapon that belongs to you, and only you! 
 
 *It must be grabbed from the weapon's list, or reflavoured from there.

@@ -179,40 +179,36 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                 <strong>Weight:</strong> {desc.weight}
               </p>
             )}
-            {!imageUrl && (
-              <>
-                {desc.skinColor && (
-                  <p>
-                    <strong>Skin Color:</strong> {desc.skinColor}
-                  </p>
-                )}
-                {desc.hairColor && (
-                  <p>
-                    <strong>Hair Color:</strong> {desc.hairColor}
-                  </p>
-                )}
-                {desc.eyeColor && (
-                  <p>
-                    <strong>Eye Color:</strong> {desc.eyeColor}
-                  </p>
-                )}
-                {desc.ethnicity && (
-                  <p>
-                    <strong>Ethnicity:</strong> {desc.ethnicity}
-                  </p>
-                )}
-                {desc.bodyType && (
-                  <p>
-                    <strong>Body Type:</strong> {desc.bodyType}
-                  </p>
-                )}
-                {desc.generalAppearance && (
-                  <p>
-                    <strong>General Appearance:</strong>{" "}
-                    {desc.generalAppearance}
-                  </p>
-                )}
-              </>
+            {desc.skinColor && (
+              <p>
+                <strong>Skin Color:</strong> {desc.skinColor}
+              </p>
+            )}
+            {desc.hairColor && (
+              <p>
+                <strong>Hair Color:</strong> {desc.hairColor}
+              </p>
+            )}
+            {desc.eyeColor && (
+              <p>
+                <strong>Eye Color:</strong> {desc.eyeColor}
+              </p>
+            )}
+            {desc.ethnicity && (
+              <p>
+                <strong>Ethnicity:</strong> {desc.ethnicity}
+              </p>
+            )}
+            {desc.bodyType && (
+              <p>
+                <strong>Body Type:</strong> {desc.bodyType}
+              </p>
+            )}
+            {desc.generalAppearance && (
+              <p>
+                <strong>General Appearance:</strong>{" "}
+                {desc.generalAppearance}
+              </p>
             )}
             {desc.generalHealth && (
               <p>

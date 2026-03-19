@@ -90,6 +90,8 @@ export interface InventoryAttachment {
    * Preserved so re-attaching restores the exact magazine state.
    */
   savedMagazineStates?: number[];
+  /** If set, this item was granted by the named perk and is removed when that perk's effect ends */
+  perkGranted?: string;
 }
 
 /**

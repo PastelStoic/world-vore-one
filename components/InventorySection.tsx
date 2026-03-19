@@ -177,13 +177,34 @@ export default function InventorySection(props: InventorySectionProps) {
     }
   }
 
+  /** Remove all attachments granted by the signature-weapon perk from inventory */
+  function removeSignatureAttachments(inv: CharacterInventory) {
+    for (const loc of ["carried", "stowed"] as const) {
+      inv[loc].attachments = inv[loc].attachments.filter(
+        (a) => a.perkGranted !== "signature-weapon",
+      );
+    }
+  }
+
   /** Toggle a ranged weapon as signature */
   function toggleSignatureWeapon(location: InventoryLocation, index: number) {
     update((inv) => {
       const isAlready = inv[location].weapons[index].isSignatureWeapon;
       clearSignatureFlags(inv);
+      removeSignatureAttachments(inv);
       if (!isAlready) {
         inv[location].weapons[index].isSignatureWeapon = true;
+        const weaponId = inv[location].weapons[index].weaponId;
+        const def = WEAPONS_BY_ID.get(weaponId);
+        for (const aId of def?.compatibleAttachmentIds ?? []) {
+          const aDef = ATTACHMENTS_BY_ID.get(aId);
+          inv[location].attachments.push({
+            attachmentId: aId,
+            totalCharges: aDef?.isCharge ? 1 : 0,
+            usedCharges: 0,
+            perkGranted: "signature-weapon",
+          });
+        }
       }
       return inv;
     });
@@ -194,6 +215,7 @@ export default function InventorySection(props: InventorySectionProps) {
     update((inv) => {
       const isAlready = inv[location].meleeWeapons[index].isSignatureWeapon;
       clearSignatureFlags(inv);
+      removeSignatureAttachments(inv);
       if (!isAlready) {
         inv[location].meleeWeapons[index].isSignatureWeapon = true;
       }

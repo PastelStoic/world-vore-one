@@ -436,6 +436,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     // Remove perk-granted items from inventory
     setInventory((inv) => {
       const newInv = structuredClone(inv);
+      const removingSignatureWeapon = allRemovedIds.includes(
+        "signature-weapon",
+      );
       for (const location of ["carried", "stowed"] as const) {
         newInv[location].equipment = newInv[location].equipment.filter(
           (e) => !allRemovedIds.includes(e.perkGranted ?? ""),
@@ -443,6 +446,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         newInv[location].meleeWeapons = newInv[location].meleeWeapons.filter(
           (mw) => !allRemovedIds.includes(mw.perkGranted ?? ""),
         );
+        newInv[location].attachments = newInv[location].attachments.filter(
+          (a) => !allRemovedIds.includes(a.perkGranted ?? ""),
+        );
+        if (removingSignatureWeapon) {
+          for (const w of newInv[location].weapons) w.isSignatureWeapon = false;
+          for (const mw of newInv[location].meleeWeapons) {
+            mw.isSignatureWeapon = false;
+          }
+        }
       }
       return newInv;
     });

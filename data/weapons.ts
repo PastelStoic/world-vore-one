@@ -5,7 +5,12 @@ import type { WeaponDefinition } from "./equipment_types.ts";
 // ---------------------------------------------------------------------------
 
 // Helper to build compatible attachment lists
-const LONG_GUN_ATTACHMENTS = ["bayonet", "scope", "bipod", "strong-sling"];
+export const LONG_GUN_ATTACHMENTS = [
+  "bayonet",
+  "scope",
+  "bipod",
+  "strong-sling",
+];
 const REVOLVER_ATTACHMENTS = ["quickloader"];
 
 export const WEAPONS: WeaponDefinition[] = [

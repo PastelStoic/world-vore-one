@@ -9,6 +9,7 @@ import {
   WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
+import { LONG_GUN_ATTACHMENTS } from "@/data/weapons.ts";
 import type {
   CharacterInventory,
   InventoryAttachment,
@@ -128,14 +129,18 @@ export function getSignatureFreeAttachmentIds(
   );
 }
 
-/** Check if an attachment is unique to the given weapon (for signature weapon free-attach). */
+/** Check if an attachment is unique to the given weapon (for signature weapon free-attach).
+ * Generic long-gun attachments (bayonet, scope, bipod, strong-sling) are explicitly excluded
+ * even if they somehow counted as unique.
+ */
 export function isSignatureUniqueAttachment(
   weaponDef: { compatibleAttachmentIds: string[] } | undefined,
   attachmentId: string,
 ): boolean {
   return !!weaponDef &&
     weaponDef.compatibleAttachmentIds.includes(attachmentId) &&
-    UNIQUE_ATTACHMENT_IDS.has(attachmentId);
+    UNIQUE_ATTACHMENT_IDS.has(attachmentId) &&
+    !LONG_GUN_ATTACHMENTS.includes(attachmentId);
 }
 
 function mergedFreeAttachmentIds(

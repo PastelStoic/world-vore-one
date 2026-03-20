@@ -4,6 +4,7 @@
 
 import type { InventoryAttachment } from "@/lib/inventory_types.ts";
 import { ATTACHMENTS_BY_ID } from "@/data/equipment.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 
@@ -54,6 +55,10 @@ export default function AttachmentCard(props: AttachmentCardProps) {
     ? Math.max(0, att.totalCharges - att.usedCharges)
     : 0;
   const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
+  const isPerkGranted = !!att.perkGranted;
+  const grantingPerkName = isPerkGranted
+    ? PERKS_BY_ID.get(att.perkGranted!)?.name ?? att.perkGranted
+    : null;
 
   return (
     <div class="border rounded p-2 space-y-1 bg-base-100">
@@ -63,8 +68,13 @@ export default function AttachmentCard(props: AttachmentCardProps) {
           <span class="text-xs text-base-content/60">
             (W:{currentWeight} · For: {def.appliesTo})
           </span>
+          {isPerkGranted && (
+            <span class="ml-1 text-xs font-semibold text-primary">
+              [{grantingPerkName}]
+            </span>
+          )}
         </div>
-        {!readOnly && (
+        {!readOnly && !isPerkGranted && (
           <div class="flex gap-1">
             <button
               type="button"

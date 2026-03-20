@@ -197,6 +197,7 @@ export default function InventorySection(props: InventorySectionProps) {
         const weaponId = inv[location].weapons[index].weaponId;
         const def = WEAPONS_BY_ID.get(weaponId);
         for (const aId of def?.compatibleAttachmentIds ?? []) {
+          if (!isSignatureUniqueAttachment(def, aId)) continue;
           const aDef = ATTACHMENTS_BY_ID.get(aId);
           inv[location].attachments.push({
             attachmentId: aId,

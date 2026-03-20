@@ -93,7 +93,7 @@ export function getSignatureAdjustedPointCost(
 }
 
 /** Set of attachment IDs that appear in only one weapon's compatibleAttachmentIds. */
-const UNIQUE_ATTACHMENT_IDS: Set<string> = (() => {
+const _UNIQUE_ATTACHMENT_IDS: Set<string> = (() => {
   const counts = new Map<string, number>();
   for (const w of WEAPONS) {
     for (const aId of w.compatibleAttachmentIds) {
@@ -125,13 +125,15 @@ export function getSignatureFreeAttachmentIds(
 
   // Only attachments unique to this weapon (not compatible with any other) are free
   return new Set(
-    def.compatibleAttachmentIds.filter((aId) => UNIQUE_ATTACHMENT_IDS.has(aId)),
+    def.compatibleAttachmentIds.filter((aId) =>
+      !LONG_GUN_ATTACHMENTS.includes(aId)
+    ),
   );
 }
 
-/** Check if an attachment is unique to the given weapon (for signature weapon free-attach).
- * Generic long-gun attachments (bayonet, scope, bipod, strong-sling) are explicitly excluded
- * even if they somehow counted as unique.
+/** Check if an attachment is a signature-weapon perk attachment for the given weapon.
+ * All compatible attachments except generic long-gun attachments (bayonet, scope, bipod,
+ * strong-sling) are granted free by the perk.
  */
 export function isSignatureUniqueAttachment(
   weaponDef: { compatibleAttachmentIds: string[] } | undefined,
@@ -139,7 +141,6 @@ export function isSignatureUniqueAttachment(
 ): boolean {
   return !!weaponDef &&
     weaponDef.compatibleAttachmentIds.includes(attachmentId) &&
-    UNIQUE_ATTACHMENT_IDS.has(attachmentId) &&
     !LONG_GUN_ATTACHMENTS.includes(attachmentId);
 }
 

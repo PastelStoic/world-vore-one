@@ -526,7 +526,7 @@ export default function WeaponCard(props: WeaponCardProps) {
             onClick={() =>
               props.onEjectDrumAndReload!(location, index, drumAttachmentId)}
           >
-            Eject drum + reload ({def.ammo})
+            Eject + reload ({def.ammo})
           </button>
         )}
         {/* Standard reload option: for magazine-fed weapons without a drum */}

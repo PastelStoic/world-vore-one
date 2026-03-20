@@ -265,6 +265,10 @@ export default function InventorySection(props: InventorySectionProps) {
         });
       }
     }
+    // If this was the signature weapon, remove its perk-granted loose attachments too
+    if (weapon.isSignatureWeapon) {
+      removeSignatureAttachments(inv);
+    }
     inv[location].weapons.splice(index, 1);
   }
 

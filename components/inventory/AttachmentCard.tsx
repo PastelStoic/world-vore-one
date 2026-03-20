@@ -92,6 +92,17 @@ export default function AttachmentCard(props: AttachmentCardProps) {
             </button>
           </div>
         )}
+        {!readOnly && isPerkGranted && (
+          <div class="flex gap-1">
+            <button
+              type="button"
+              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+              onClick={() => onMove(location, index, otherLocation)}
+            >
+              → {otherLocation === "carried" ? "Carry" : "Stow"}
+            </button>
+          </div>
+        )}
       </div>
 
       <div class="text-xs text-base-content/70 whitespace-pre-line ml-2">

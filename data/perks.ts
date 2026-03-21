@@ -91,6 +91,12 @@ export interface PerkDefinition {
   excludesPerks?: string[];
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
+  /**
+   * When set, the player chooses a number of stat points to gain within this
+   * range (e.g. rival perk lets the player pick 1–6 points). The chosen value
+   * is stored in perkPointChoices on the character draft.
+   */
+  variablePointsGranted?: { min: number; max: number };
   /** When true, this perk can be taken multiple times, stacking its effects. */
   upgradable?: boolean;
   /** Maximum number of times this perk can be taken (undefined = no limit). */

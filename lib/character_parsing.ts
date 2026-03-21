@@ -195,6 +195,40 @@ export function parsePerkSelections(
   });
 }
 
+/**
+ * Parse perkPointChoices — player-chosen point values for perks with
+ * variablePointsGranted (e.g. rival). Values are clamped to the perk's range.
+ */
+export function parsePerkPointChoices(
+  raw: string,
+  ownedPerkIds: string[],
+): Record<string, number> {
+  try {
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" || parsed === null || Array.isArray(parsed)
+    ) {
+      return {};
+    }
+    const result: Record<string, number> = {};
+    for (const perkId of ownedPerkIds) {
+      const perk = PERKS_BY_ID.get(perkId);
+      if (!perk?.variablePointsGranted) continue;
+      const val = (parsed as Record<string, unknown>)[perkId];
+      if (typeof val === "number" && Number.isInteger(val)) {
+        const clamped = Math.min(
+          perk.variablePointsGranted.max,
+          Math.max(perk.variablePointsGranted.min, val),
+        );
+        result[perkId] = clamped;
+      }
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 export function parseDescription(raw: string): CharacterDescription | null {
   try {
     const parsed = JSON.parse(raw) as Record<string, unknown>;
@@ -280,6 +314,7 @@ export function calculatePerksCost(
   perkRanks?: Record<string, number>,
   perkSelections?: Record<string, string[]>,
   faction?: string,
+  perkPointChoices?: Record<string, number>,
 ): number {
   if (perkIds.length <= 0) return 0;
 
@@ -291,7 +326,11 @@ export function calculatePerksCost(
   for (const perkId of perkIds) {
     const perk = PERKS_BY_ID.get(perkId);
     const rank = perkRanks?.[perkId] ?? 1;
-    totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
+    if (perk?.variablePointsGranted) {
+      totalPointsGranted += (perkPointChoices?.[perkId] ?? 0) * rank;
+    } else {
+      totalPointsGranted += (perk?.pointsGranted ?? 0) * rank;
+    }
     totalFreePerks += (perk?.freePerks ?? 0) * rank;
     if (perk?.isFree) continue;
 
@@ -347,6 +386,7 @@ export function validateCharacterProgression(
     input.perkRanks,
     input.perkSelections,
     input.description.faction,
+    input.perkPointChoices,
   );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 

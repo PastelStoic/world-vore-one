@@ -139,6 +139,7 @@ export async function upsertCharacter(
       perkRanks: input.perkRanks,
       perkDisguises: input.perkDisguises,
       perkSelections: input.perkSelections,
+      perkPointChoices: input.perkPointChoices,
       inventory: input.inventory,
     },
   };

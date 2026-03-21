@@ -11,6 +11,7 @@ import {
   parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
+  parsePerkPointChoices,
   parsePerkRanks,
   parsePerkSelections,
   parsePerkStatChoices,
@@ -46,6 +47,7 @@ export interface ParsedCharacterFields {
   perkRanks: Record<string, number>;
   perkDisguises: Record<string, string>;
   perkSelections: Record<string, string[]>;
+  perkPointChoices: Record<string, number>;
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
   pendingImageId: string;
@@ -84,6 +86,7 @@ export function parseCharacterFormData(
     String(formData.get("perkSelections") ?? "{}"),
   );
   // perkRanks is parsed after perkIds so we can scope it to owned perks
+  // perkPointChoices is parsed after perkIds so we can scope values to owned perks with variablePointsGranted
   const perkStatChoices = parsePerkStatChoices(
     String(formData.get("perkStatChoices") ?? "{}"),
   );
@@ -116,6 +119,10 @@ export function parseCharacterFormData(
     String(formData.get("perkRanks") ?? "{}"),
     perkIds,
   );
+  const perkPointChoices = parsePerkPointChoices(
+    String(formData.get("perkPointChoices") ?? "{}"),
+    perkIds,
+  );
 
   return {
     name,
@@ -131,6 +138,7 @@ export function parseCharacterFormData(
     perkRanks,
     perkDisguises,
     perkSelections,
+    perkPointChoices,
     unallocatedStatPoints,
     basedOnSnapshotId,
     pendingImageId,
@@ -167,6 +175,9 @@ export function buildAndValidateDraft(
       : undefined,
     perkSelections: Object.keys(fields.perkSelections).length > 0
       ? fields.perkSelections
+      : undefined,
+    perkPointChoices: Object.keys(fields.perkPointChoices).length > 0
+      ? fields.perkPointChoices
       : undefined,
     inventory: fields.inventory ?? undefined,
   };

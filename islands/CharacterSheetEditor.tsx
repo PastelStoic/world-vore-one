@@ -96,6 +96,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   >(
     props.initialCharacter.perkSelections ?? {},
   );
+  const [perkPointChoices, setPerkPointChoices] = useState<
+    Record<string, number>
+  >(
+    props.initialCharacter.perkPointChoices ?? {},
+  );
   const [inventory, setInventory] = useState<CharacterInventory>(
     props.initialCharacter.inventory ?? createEmptyInventory(),
   );
@@ -137,6 +142,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkDisguises,
     perkSelections: Object.keys(perkSelections).length > 0
       ? perkSelections
+      : undefined,
+    perkPointChoices: Object.keys(perkPointChoices).length > 0
+      ? perkPointChoices
       : undefined,
     inventory,
   };
@@ -405,12 +413,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       perkRanks,
       perkSelections,
       description.faction,
+      perkPointChoices,
     ) -
       calculatePerksCost(
         newPerkIds,
         perkRanks,
         selectionsWithoutSource,
         description.faction,
+        perkPointChoices,
       );
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
@@ -422,6 +432,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         perkRanks,
         perkDisguises,
         perkSelections,
+        perkPointChoices,
       },
       allRemovedIds,
     );
@@ -431,6 +442,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkRanks(cleaned.perkRanks);
     setPerkDisguises(cleaned.perkDisguises);
     setPerkSelections(cleaned.perkSelections);
+    setPerkPointChoices(cleaned.perkPointChoices);
     setUnallocatedStatPoints((current) => current + refund);
 
     // Remove perk-granted items from inventory
@@ -458,6 +470,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       }
       return newInv;
     });
+  }
+
+  function handlePerkPointChoiceChange(perkId: string, value: number) {
+    const oldValue = perkPointChoices[perkId] ?? 0;
+    const delta = value - oldValue;
+    setPerkPointChoices((current) => ({ ...current, [perkId]: value }));
+    setUnallocatedStatPoints((current) => current + delta);
   }
 
   function upgradePerk(perkId: string) {
@@ -578,6 +597,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         name="perkSelections"
         value={JSON.stringify(perkSelections)}
       />
+      <input
+        type="hidden"
+        name="perkPointChoices"
+        value={JSON.stringify(perkPointChoices)}
+      />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
         type="hidden"
@@ -656,8 +680,20 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         keptPerkIds.includes(id)
                       ),
                     );
-                    const perkRefund = calculatePerksCost(perkIds, perkRanks) -
-                      calculatePerksCost(keptPerkIds, keptRanks);
+                    const perkRefund = calculatePerksCost(
+                      perkIds,
+                      perkRanks,
+                      undefined,
+                      undefined,
+                      perkPointChoices,
+                    ) -
+                      calculatePerksCost(
+                        keptPerkIds,
+                        keptRanks,
+                        undefined,
+                        undefined,
+                        perkPointChoices,
+                      );
                     if (keptPerkIds.length !== perkIds.length) {
                       const removedIds = perkIds.filter((id) =>
                         !keptPerkIds.includes(id)
@@ -670,6 +706,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           perkRanks,
                           perkDisguises,
                           perkSelections,
+                          perkPointChoices,
                         },
                         removedIds,
                       );
@@ -679,6 +716,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       setPerkRanks(keptRanks);
                       setPerkDisguises(cleaned.perkDisguises);
                       setPerkSelections(cleaned.perkSelections);
+                      setPerkPointChoices(cleaned.perkPointChoices);
                       setPerkIds(keptPerkIds);
                     }
                     setRace(newRace);
@@ -1394,6 +1432,37 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </div>
                               )}
                             {/* Non-upgradable perk: single note input */}
+                            {!isUpgradable && perk?.variablePointsGranted && (
+                              <div class="mt-1 flex items-center gap-2">
+                                <label class="text-xs text-base-content/70 whitespace-nowrap">
+                                  Points gained:
+                                </label>
+                                <select
+                                  class="select border rounded px-2 py-1 text-sm"
+                                  value={perkPointChoices[id] ?? ""}
+                                  onChange={(e) => {
+                                    const val = Number(
+                                      (e.target as HTMLSelectElement).value,
+                                    );
+                                    if (!Number.isNaN(val) && val > 0) {
+                                      handlePerkPointChoiceChange(id, val);
+                                    }
+                                  }}
+                                >
+                                  <option value="">— Choose —</option>
+                                  {Array.from(
+                                    {
+                                      length: perk.variablePointsGranted.max -
+                                        perk.variablePointsGranted.min + 1,
+                                    },
+                                    (_, i) =>
+                                      perk.variablePointsGranted!.min + i,
+                                  ).map((n) => (
+                                    <option key={n} value={n}>{n}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
                             {!isUpgradable && perk?.customInput && (
                               <input
                                 type="text"

@@ -5,7 +5,9 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
     id: "rival",
     name: "Rival",
     category: "negative",
-    customInput: "Points gained (1–6) and rival description",
+    isFree: true,
+    variablePointsGranted: { min: 1, max: 6 },
+    customInput: "Rival description",
     description:
       `You became someone's worst enemy, and they hate you with a burning passion.
 

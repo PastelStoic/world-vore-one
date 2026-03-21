@@ -420,11 +420,23 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                           )}
                           {/* Show legacy perk notes for non-upgradable perks */}
                           {!displayOnly && !perkDef?.upgradable &&
-                            character.perkNotes?.[id] && (
-                            <span class="block ml-5 text-base-content/70 italic">
-                              {character.perkNotes[id]}
-                            </span>
-                          )}
+                            (character.perkPointChoices?.[id] !== undefined ||
+                              character.perkNotes?.[id]) &&
+                            (
+                              <span class="block ml-5 text-base-content/70 italic">
+                                {character.perkPointChoices?.[id] !==
+                                    undefined &&
+                                  (
+                                    <span class="text-success font-semibold not-italic">
+                                      +{character.perkPointChoices[id]} pts
+                                    </span>
+                                  )}
+                                {character.perkPointChoices?.[id] !==
+                                    undefined &&
+                                  character.perkNotes?.[id] && " — "}
+                                {character.perkNotes?.[id]}
+                              </span>
+                            )}
                         </li>
                       );
                     })}

@@ -169,6 +169,11 @@ export interface CharacterDraft {
    * Chosen perks are treated as derived / free (like includesPerks but player-chosen).
    */
   perkSelections?: Record<string, string[]>;
+  /**
+   * Player-chosen stat point values for perks with variablePointsGranted (e.g. rival).
+   * Key = perk ID, value = chosen number of points to gain.
+   */
+  perkPointChoices?: Record<string, number>;
   inventory?: CharacterInventory;
 }
 

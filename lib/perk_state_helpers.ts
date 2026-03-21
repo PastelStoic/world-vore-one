@@ -14,6 +14,7 @@ export interface PerkCustomizationState {
   perkRanks: Record<string, number>;
   perkDisguises: Record<string, string>;
   perkSelections: Record<string, string[]>;
+  perkPointChoices: Record<string, number>;
 }
 
 /**

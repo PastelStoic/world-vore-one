@@ -352,6 +352,22 @@ export const WEAPONS: WeaponDefinition[] = [
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, "gewehr98-smk"],
   },
   {
+    id: "flieger-selbstlader-karabiner-1916",
+    name: "Flieger Selbstlader Karabiner 1916",
+    type: "Semiautomatic rifle",
+    kind: "semiautomatic-rifle",
+    nation: "Germany",
+    damage: "3",
+    ammo: 20,
+    rateOfFire: 2,
+    weight: 2,
+    pointCost: 1,
+    traitIds: ["two-handed",],
+    compatibleAttachmentIds: [
+      ...LONG_GUN_ATTACHMENTS,
+    ],
+  },
+  {
     id: "c96-mauser",
     name: 'C96 "Mauser"',
     type: "Semiautomatic pistol",

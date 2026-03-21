@@ -28,7 +28,7 @@ export default define.page(function WikiEquipment() {
       <section class="space-y-2">
         <h2 class="text-xl font-semibold border-b pb-1">General Equipment</h2>
         <div class="space-y-2">
-          {EQUIPMENT.map((item) => {
+          {EQUIPMENT.filter((item) => !item.isGhost).map((item) => {
             const lines = item.description.split("\n");
             const brief = lines[0];
             const rest = lines.slice(1).join("\n").trim();

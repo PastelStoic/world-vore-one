@@ -32,6 +32,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Entrenching gear",
     weight: 1,
     isBulky: true,
+    ghostVersionId: "entrenching-gear-sapper",
     description:
       `Shovel, hatchet, pickaxe, hammer, nails – the minimum required to dig a trench, fortify a position or to break things down!
 *It takes hours to build any field fortifications worth a damned thing. Same for breaking things down, based on how big they are!
@@ -42,6 +43,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Explosives kit",
     weight: 1,
     isBulky: true,
+    ghostVersionId: "explosives-kit-sapper",
     description:
       `Detonator and a whole lot of dynamite. Will destroy anything short of the thickest walls there are.
 *The explosives are potent enough that any cover is immediately pulverized, vehicles are destroyed immediately.
@@ -157,6 +159,28 @@ export const EQUIPMENT: EquipmentDefinition[] = [
   *The wagon can carry 50 weight maximum.
   *So long as your wagon is around, you can access your stowed-away equipment.
   *The animal pulling this wagon can only move 1 distance per turn, regardless of weight.`,
+  },
+  // ── Ghost items (perk-granted only, hidden from picker and wiki) ────────────
+  {
+    id: "entrenching-gear-sapper",
+    name: "Entrenching gear",
+    weight: 0,
+    isGhost: true,
+    description:
+      `Shovel, hatchet, pickaxe, hammer, nails – the minimum required to dig a trench, fortify a position or to break things down!
+*It takes hours to build any field fortifications worth a damned thing. Same for breaking things down, based on how big they are!
+*Granted by the Sapper perk: no weight, not a bulky kit.`,
+  },
+  {
+    id: "explosives-kit-sapper",
+    name: "Explosives kit",
+    weight: 0,
+    isGhost: true,
+    description:
+      `Detonator and a whole lot of dynamite. Will destroy anything short of the thickest walls there are.
+*The explosives are potent enough that any cover is immediately pulverized, vehicles are destroyed immediately.
+*Cannot be thrown, explosives must be carefully planted and blown with a proper detonator.
+*Granted by the Sapper perk: no weight, not a bulky kit.`,
   },
 ];
 

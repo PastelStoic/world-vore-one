@@ -132,16 +132,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Destroying fortifications with explosives, cutting barbed wire, breaking down walls, you do it in one turn, without fail.
 *Sapper extends to vehicles as well, you can repair, modify and upgrade vehicles without fail.`,
     grantsEquipment: [
-      {
-        equipmentId: "entrenching-gear",
-        weightOverride: 0,
-        isBulkyOverride: false,
-      },
-      {
-        equipmentId: "explosives-kit",
-        weightOverride: 0,
-        isBulkyOverride: false,
-      },
+      { equipmentId: "entrenching-gear-sapper" },
+      { equipmentId: "explosives-kit-sapper" },
     ],
   },
   {

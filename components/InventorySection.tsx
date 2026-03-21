@@ -899,7 +899,16 @@ export default function InventorySection(props: InventorySectionProps) {
     );
   });
 
+  const inventoryEquipmentIds = new Set([
+    ...inventory.carried.equipment.map((eq) => eq.equipmentId),
+    ...inventory.stowed.equipment.map((eq) => eq.equipmentId),
+  ]);
+
   const filteredEquipment = EQUIPMENT.filter((e) => {
+    if (e.isGhost) return false;
+    if (e.ghostVersionId && inventoryEquipmentIds.has(e.ghostVersionId)) {
+      return false;
+    }
     if (!equipmentFilter) return true;
     return e.name.toLowerCase().includes(equipmentFilter.toLowerCase());
   });

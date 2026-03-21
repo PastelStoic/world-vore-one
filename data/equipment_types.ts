@@ -116,6 +116,17 @@ export interface EquipmentDefinition {
   isCharge?: boolean;
   /** Equipment that is bulky (cannot stack with other bulky kits) */
   isBulky?: boolean;
+  /**
+   * When true, this item is hidden from the purchase picker and the wiki.
+   * It can only be obtained by perk grants.
+   */
+  isGhost?: boolean;
+  /**
+   * ID of a ghost version of this item (set on the regular purchasable item).
+   * If the player already has the ghost version in their inventory, the regular
+   * version is excluded from the purchase picker.
+   */
+  ghostVersionId?: string;
 }
 
 // ── Weapon traits (gun / ranged) ────────────────────────────────────────────

@@ -59,7 +59,7 @@ export const WEAPONS: WeaponDefinition[] = [
     nation: "Any",
     damage: "3",
     ammo: 10,
-    rateOfFire: 1,
+    rateOfFire: 5,
     weight: 3,
     pointCost: 3,
     traitIds: [
@@ -69,6 +69,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "flamethrower",
       "volatile",
       "bulky-kit",
+      "multi-target",
     ],
     compatibleAttachmentIds: [],
   },

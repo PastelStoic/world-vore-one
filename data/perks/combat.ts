@@ -191,4 +191,19 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *If your ally is unwilling, you may do a STR vs STR contested check against them. On a success, they take all of the damage in your stead.
 *Officers and higher-ups can punish you for this behavior; it is great cowardice and poor conduct!`,
   },
+  {
+    id: "unstoppable",
+    name: "Unstoppable",
+    category: "combat",
+    description:
+      `You manage to push well past your limits, even at the detriment of your own life.
+
+*Even if your HP goes into the negatives, you are never put into critical condition, you're only ever considered incapacitated.
+*When reduced to 0HP, you are not incapacitated, and can continue fighting as normal, as you are hit with an 'adrenaline rush'.
+*You must roll your constitution when you are reduced to 0HP, and every turn thereafter.
+*You need 1 + [how negative your HP is] / 2 successes in order to keep standing.
+*You are forcefully incapacitated - NOT put into critical condition - if you fail your constitution check or if 20 turns pass, whichever comes earlier.
+*Once this ability is over, you 'crash' out. While crashed out, you are incapacitated and you cannot do any escape rolls if you are eaten.
+*\`Crashed out\` lasts until your HP regenerates to full.`,
+  },
 ];

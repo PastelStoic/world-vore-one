@@ -56,6 +56,9 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You're not very attractive.
 *Gain +2 strenght and +2 constitution, but your intelligence and carisma are capped to 1. 
 *You're dumb and you speak with your muscles, not your words. Ooga booga.`,
+    modifiers: {
+      baseStatBonuses: { constitution: 2, strength: 2 },
+    },
   },
   {
     id: "speisfraun",
@@ -176,6 +179,34 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Prey must climb back into the first stomach to escape.`,
     modifiers: {
       baseStatBonuses: { constitution: 2, strength: 1 },
+    },
+  },
+  {
+    id: "tierfraun-caprinae",
+    name: "Tierfraun (CAPRINAE)",
+    category: "pf-type",
+    requiredRaces: ["Tierfraun", "Tierherr"],
+    lockCategory: "tierfraun-type",
+    includesPerks: ["inescapable", "heavy", "brawler"],
+    pointsGranted: -3,
+    description:
+      `You have animal genes in you, making you stronger in certain areas.
+
+*You must have at least one clear animal characteristic: Tail, animal ears, fins, something else.
+*Anyone can tell you are a tierfraun based on your characteristics.
+
+*+2 Strength, +1 Constitution, -3 stat points
+*You have the Heavy perk from Vore perks
+*You have the Inescapable perk from Vore perks
+*You have the Brawler perk from Combat perks
+*Your horns and hooves count as makeshift weapons, and when attacking someone who has drawn your attention like with the baiter or defender perk, you deal an additional +1 damage on a hit
+*You have four stomachs. Every two escape attempt fails, your prey slides into the deeper one.
+*Your organ capacity is not increased by the four stomachs, your skin can only stretch so far!
+*A escape success makes them climb back up a stomach and resets the fail counter.
+*Prey must climb back into the first stomach to escape.
+*Your prey have +3d6 to their escape rolls`,
+    modifiers: {
+      baseStatBonuses: { constitution: 1, strength: 2 },
     },
   },
   {

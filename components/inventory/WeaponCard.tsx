@@ -800,8 +800,8 @@ export default function WeaponCard(props: WeaponCardProps) {
         )}
       {!readOnly && blockedByPrerequisiteCount > 0 && (
         <div class="ml-2 text-xs text-base-content/50 italic">
-          Some attachments are currently blocked until their required attachment
-          is already attached.
+          Some attachments are currently blocked due to missing prerequisites or
+          conflicts with already-attached items.
         </div>
       )}
     </div>

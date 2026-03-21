@@ -268,12 +268,36 @@ export function getMissingRequiredAttachmentIds(
   );
 }
 
+export function getConflictingAttachmentIds(
+  attachmentId: string,
+  attachedIds: readonly string[],
+): string[] {
+  const def = ATTACHMENTS_BY_ID.get(attachmentId);
+  const conflicts: string[] = [];
+  // Check this attachment's excludes list
+  if (def?.excludesAttachmentIds) {
+    for (const excId of def.excludesAttachmentIds) {
+      if (attachedIds.includes(excId)) conflicts.push(excId);
+    }
+  }
+  // Check if any already-attached attachment excludes this one
+  for (const otherId of attachedIds) {
+    if (conflicts.includes(otherId)) continue;
+    const otherDef = ATTACHMENTS_BY_ID.get(otherId);
+    if (otherDef?.excludesAttachmentIds?.includes(attachmentId)) {
+      conflicts.push(otherId);
+    }
+  }
+  return conflicts;
+}
+
 export function canAttachToWeapon(
   attachmentId: string,
   attachedIds: readonly string[],
 ): boolean {
   return getMissingRequiredAttachmentIds(attachmentId, attachedIds).length ===
-    0;
+      0 &&
+    getConflictingAttachmentIds(attachmentId, attachedIds).length === 0;
 }
 
 export function getDependentAttachmentIds(

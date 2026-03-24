@@ -60,7 +60,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "alt-ammotype",
     name: "Alternative ammo types",
     description:
-      "Weapon has multiple types of ammo. Check its description to find out the details. When firing, declare which ammo is being used - you may use any ammo type you own.",
+      "Weapon has multiple types of ammo. Check its description to find out the details. At combat start, declare the order in which your ammo types are loaded. When reloading, declare which ammo type is being loaded and in what order.",
   },
   {
     id: "double-barrel-shotgun",

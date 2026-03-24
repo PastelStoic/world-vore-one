@@ -247,11 +247,27 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     requiresMagazines: true,
     damageOverride: 2,
     rateOfFireBonus: 1,
+    excludesAttachmentIds?: ["springfield-flyboy",],
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield deals 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
 *The Springfield has 40 rounds whilst the device is on.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 40 round magazine. Each charge has 1 weight.`,
+  },
+  {
+    id: "springfield-flyboy",
+    name: "Springfield: Flyboy device",
+    appliesTo: "M1903 Springfield",
+    nation: "United States",
+    weight: 2,
+    ammoOverride: 25,
+    excludesAttachmentIds?: ["springfield-pedersen",],
+    addsTraitIds: ["impossible-to-remove"],
+    description: `*Your rifle gets a 25 round magazine.
+    *The magazine cannot be removed easily mid-combat.
+    *The spring tension prevents usage of stripper clips; you're loading shots one by one.
+    *The spring tension would cause the Pedersen Device to malfunction.
+    *2 weight instead of the typical 1.`,
   },
   {
     id: "springfield-suppressor",

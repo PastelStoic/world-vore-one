@@ -66,7 +66,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Birdshot",
     appliesTo: "Shotguns",
     nation: "Any",
-    weight: 1,
+    weight: 0,
+    addsTraitIds: ["alt-ammotype"],
     description:
       `Alternative ammo type for Shotguns.
   *Deals 6 damage to targets up to 1 distance away.
@@ -81,7 +82,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Slug",
     appliesTo: "Shotguns",
     nation: "Any",
-    weight: 1,
+    weight: 0,
+    addsTraitIds: ["alt-ammotype"],
     description:
       `Alternative ammo type for Shotguns.
   *Deals 4 damage to targets at distance 8 or beyond.
@@ -94,7 +96,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Buck 'n ball",
     appliesTo: "Shotguns",
     nation: "Any",
-    weight: 1,
+    weight: 0,
+    addsTraitIds: ["alt-ammotype"],
     description:
       `Alternative ammo type for Shotguns.
   *Deals 3 damage to targets at all ranges.`,

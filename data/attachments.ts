@@ -5,7 +5,7 @@ import type { AttachmentDefinition } from "./equipment_types.ts";
 // ---------------------------------------------------------------------------
 
 export const ATTACHMENTS: AttachmentDefinition[] = [
-  // ── Generic (Long guns / Revolvers) ──
+  // ── Generic (Long guns / Revolvers / Shotguns) ──
   {
     id: "bayonet",
     name: "Bayonet",
@@ -60,6 +60,44 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description:
       `Revolvers no longer need to be reloaded bullets one-by-one, they're reloaded in one go.
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
+  },
+  {
+    id: "birdshot",
+    name: "Birdshot",
+    appliesTo: "Shotguns",
+    nation: "Any",
+    weight: 1,
+    description:
+      `Alternative ammo type for Shotguns.
+  *Deals 6 damage to targets up to 1 distance away.
+  *Deals 2 damage to targets between 1-3 distances away.
+  *Deals 1 damage to targets between 4-9 distances away.
+  *Deals no damage to targets at distance 10 or beyond.
+  *Flying targets, when shot at and hit, immediately fall to the ground. They are stunned for their next turn in such a case.
+  *If the target has a cuirass, shield, lizardgirl's scales - or *any* kind of damage reduction effect - birdshot deals no damage at all.`,
+  },
+  {
+    id: "slug",
+    name: "Slug",
+    appliesTo: "Shotguns",
+    nation: "Any",
+    weight: 1,
+    description:
+      `Alternative ammo type for Shotguns.
+  *Deals 4 damage to targets at distance 8 or beyond.
+  *Deals 2 damage to targets at distance 7 or closer.
+  *Ignores damage penalties, such as a lizardgirl's scales.
+  *Weak cover (2d6) is destroyed upon being hit.`,
+  },
+  {
+    id: "buck-n-ball",
+    name: "Buck 'n ball",
+    appliesTo: "Shotguns",
+    nation: "Any",
+    weight: 1,
+    description:
+      `Alternative ammo type for Shotguns.
+  *Deals 3 damage to targets at all ranges.`,
   },
 
   // ── Civilian ──

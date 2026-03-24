@@ -247,7 +247,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     requiresMagazines: true,
     damageOverride: 2,
     rateOfFireBonus: 1,
-    excludesAttachmentIds?: ["springfield-flyboy",],
+    excludesAttachmentIds: ["springfield-flyboy",],
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield deals 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
@@ -261,7 +261,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "United States",
     weight: 2,
     ammoOverride: 25,
-    excludesAttachmentIds?: ["springfield-pedersen",],
+    excludesAttachmentIds: ["springfield-pedersen",],
     addsTraitIds: ["impossible-to-remove"],
     description: `*Your rifle gets a 25 round magazine.
     *The magazine cannot be removed easily mid-combat.

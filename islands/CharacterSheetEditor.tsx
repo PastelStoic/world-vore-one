@@ -250,12 +250,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   function getStatFloor(statKey: BaseStatKey): number {
     const baseFloor = statFloor ?? initialBaseStats[statKey];
-    // digestionStrength can go to -4 with extremely-inefficient-digestion perk
+    // digestionStrength can go to 0 with extremely-inefficient-digestion perk
     if (
       statKey === "digestionStrength" &&
       perkIds.includes("extremely-inefficient-digestion")
     ) {
-      return Math.max(-4, baseFloor);
+      return 0;
     }
     // All other stats: minimum of 1
     return Math.max(1, baseFloor);

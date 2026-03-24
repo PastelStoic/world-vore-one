@@ -71,7 +71,7 @@ export function parseBaseStats(
     const defaults = createDefaultBaseStats();
     const result = { ...defaults };
 
-    const allowNegativeDigestion =
+    const allowLowDigestion =
       perkIds?.includes("extremely-inefficient-digestion") ?? false;
 
     for (const stat of BASE_STAT_FIELDS) {
@@ -80,8 +80,8 @@ export function parseBaseStats(
         return null;
       }
 
-      if (stat.key === "digestionStrength" && allowNegativeDigestion) {
-        if (value < -4) return null;
+      if (stat.key === "digestionStrength" && allowLowDigestion) {
+        if (value < 0) return null;
       } else {
         if (value < 1) return null;
       }

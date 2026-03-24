@@ -329,8 +329,10 @@ export default function WeaponCard(props: WeaponCardProps) {
           }
         }
         const allTraitIds = [
-          ...def.traitIds.filter((tid) => !removedTraitIds.has(tid)),
-          ...addedTraitIds,
+          ...new Set([
+            ...def.traitIds.filter((tid) => !removedTraitIds.has(tid)),
+            ...addedTraitIds,
+          ]),
         ];
         if (allTraitIds.length === 0) return null;
         return (

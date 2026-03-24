@@ -125,7 +125,6 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Civilian",
     weight: 0,
     isFree: true,
-    removesTraitIds: ["buckshot"],
     addsTraitIds: ["sawn-off"],
     description: `*Modification is free.
 *Can be fired even at distance 0. Can be unholstered and holstered at no action cost.

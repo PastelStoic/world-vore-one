@@ -443,6 +443,7 @@ export const WEAPONS: WeaponDefinition[] = [
       ...LONG_GUN_ATTACHMENTS,
       "springfield-pedersen",
       "springfield-suppressor",
+      "springfield-flyboy",
     ],
   },
   {

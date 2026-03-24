@@ -12,6 +12,11 @@ export const LONG_GUN_ATTACHMENTS = [
   "strong-sling",
 ];
 const REVOLVER_ATTACHMENTS = ["quickloader"];
+const SHOTGUN_ATTACHMENTS = [
+  "birdshot",
+  "slug",
+  "buck-n-ball",
+];
 
 export const WEAPONS: WeaponDefinition[] = [
   // ── Civilian / Generic ──
@@ -95,6 +100,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "dbs-single-barrel",
       "dbs-sawn-off",
       "dbs-alofs-device",
+      ...SHOTGUN_ATTACHMENTS
     ],
     reloadsIndividually: true,
   },
@@ -479,7 +485,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "trench-sweeper",
       "slam-fire",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,...SHOTGUN_ATTACHMENTS],
     reloadsIndividually: true,
   },
   {
@@ -528,7 +534,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "tubular-magazine-shells",
       "trench-sweeper",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,...SHOTGUN_ATTACHMENTS],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadsIndividually: true,
   },

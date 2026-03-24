@@ -57,6 +57,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
       "Deals 4 damage to enemies 3 distances or closer. Deals 2 damage to enemies 4 distances or beyond.",
   },
   {
+    id: "alt-ammotype",
+    name: "Alternative ammo types",
+    description:
+      "Weapon has multiple types of ammo. Check its description to find out the details.",
+  },
+  {
     id: "double-barrel-shotgun",
     name: "Double barrel Shotgun",
     description: "Loads each shell individually, 1 shell per turn.",
@@ -303,7 +309,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "sawn-off",
     name: "Sawn-off",
     description:
-      "Can be fired even at distance 0. Can be unholstered and holstered at no action cost.\nDeals 4 damage to enemies 2 distances or closer. Deals 2 damage to enemies 3 distances or beyond.\nDeals no damage to enemies 10 distances or beyond.",
+      "Can be fired even at distance 0. Can be unholstered and holstered at no action cost.\nThe effective range of buckshot and birdshot go down by 1. The effective range of slugs go up to 10.",
   },
   {
     id: "alofs-device",

@@ -255,7 +255,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       statKey === "digestionStrength" &&
       perkIds.includes("extremely-inefficient-digestion")
     ) {
-      return 0;
+      return -4;
     }
     // All other stats: minimum of 1
     return Math.max(1, baseFloor);

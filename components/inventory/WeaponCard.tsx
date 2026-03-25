@@ -183,7 +183,13 @@ export default function WeaponCard(props: WeaponCardProps) {
 
   // Check if weapon reloads individually (tubular magazine, cylinder without quickloader)
   const hasQuickloader = w.attachedIds.includes("quickloader");
-  const reloadsIndividually = def.reloadsIndividually && !hasQuickloader;
+  const attachmentReloadsIndividually = w.attachedIds.some((aId) => {
+    const aDef = ATTACHMENTS_BY_ID.get(aId);
+    return aDef?.reloadsIndividually;
+  });
+  const reloadsIndividually =
+    (def.reloadsIndividually || attachmentReloadsIndividually) &&
+    !hasQuickloader;
 
   // Weapon is at full ammo
   const isAmmoFull = w.currentAmmo >= effectiveAmmo;

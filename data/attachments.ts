@@ -68,8 +68,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Any",
     weight: 0,
     addsTraitIds: ["alt-ammotype"],
-    description:
-      `Alternative ammo type for Shotguns.
+    description: `Alternative ammo type for Shotguns.
   *Deals 6 damage to targets up to 1 distance away.
   *Deals 2 damage to targets between 1-3 distances away.
   *Deals 1 damage to targets between 4-9 distances away.
@@ -84,8 +83,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Any",
     weight: 0,
     addsTraitIds: ["alt-ammotype"],
-    description:
-      `Alternative ammo type for Shotguns.
+    description: `Alternative ammo type for Shotguns.
   *Deals 4 damage to targets at distance 8 or beyond.
   *Deals 2 damage to targets at distance 7 or closer.
   *Ignores damage penalties, such as a lizardgirl's scales.
@@ -98,8 +96,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Any",
     weight: 0,
     addsTraitIds: ["alt-ammotype"],
-    description:
-      `Alternative ammo type for Shotguns.
+    description: `Alternative ammo type for Shotguns.
   *Deals 3 damage to targets at all ranges.`,
   },
 
@@ -288,7 +285,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     requiresMagazines: true,
     damageOverride: 2,
     rateOfFireBonus: 1,
-    excludesAttachmentIds: ["springfield-flyboy",],
+    excludesAttachmentIds: ["springfield-flyboy"],
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield deals 2 damage instead of 3.
 *The Springfield gains +1 rate of fire.
@@ -302,8 +299,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "United States",
     weight: 2,
     ammoOverride: 25,
-    excludesAttachmentIds: ["springfield-pedersen",],
+    excludesAttachmentIds: ["springfield-pedersen"],
     reloadTurnsOverride: 1,
+    reloadsIndividually: true,
     addsTraitIds: ["impossible-to-remove"],
     description: `*Your rifle gets a 25 round magazine.
     *The magazine cannot be removed easily mid-combat.

@@ -100,7 +100,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "dbs-single-barrel",
       "dbs-sawn-off",
       "dbs-alofs-device",
-      ...SHOTGUN_ATTACHMENTS
+      ...SHOTGUN_ATTACHMENTS,
     ],
     reloadsIndividually: true,
   },
@@ -368,7 +368,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed",],
+    traitIds: ["two-handed"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
     ],
@@ -485,7 +485,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "trench-sweeper",
       "slam-fire",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
     reloadsIndividually: true,
   },
   {
@@ -534,7 +534,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "tubular-magazine-shells",
       "trench-sweeper",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadsIndividually: true,
   },

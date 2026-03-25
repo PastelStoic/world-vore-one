@@ -81,7 +81,7 @@ export function parseBaseStats(
       }
 
       if (stat.key === "digestionStrength" && allowLowDigestion) {
-        if (value < 0) return null;
+        if (value < -4) return null;
       } else {
         if (value < 1) return null;
       }

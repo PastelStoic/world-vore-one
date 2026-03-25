@@ -44,7 +44,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "braceable",
     name: "Braceable",
     description:
-      `This melee weapon can be braced against incoming cavalry. If you brace, a mounted enemy or horse moving into attacking distance will take an unavoidable instance of damage and negates the "cavalry-weapon" trait of a weapon.`,
+      `This melee weapon can be braced against incoming cavalry. You automatically brace at the end of your action as a free action. While bracing, a mounted enemy AND their mount moving into attacking distance will take an unavoidable instance of damage, they will be stopped on the distance they're attacked at and negates the "cavalry-weapon" trait of a weapon. This can target only one mounted enemy.`,
   },
   {
     id: "flourishing",

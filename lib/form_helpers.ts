@@ -19,6 +19,8 @@ import {
   parseRace,
   validateCharacterProgression,
 } from "./characters.ts";
+import { validateStatCaps } from "./draft_validation.ts";
+import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 export function parseNonNegativeInt(
   rawValue: FormDataEntryValue | null,
@@ -187,10 +189,16 @@ export function buildAndValidateDraft(
     return new Response(progressionError, { status: 400 });
   }
 
+  const statCapError = validateStatCaps(draft);
+  if (statCapError) {
+    return new Response(statCapError, { status: 400 });
+  }
+
   const perkRequirementError = validatePerkRequirements(
     draft.race,
     draft.description.sex,
     draft.perkIds,
+    draft.description.faction,
   );
   if (perkRequirementError) {
     return new Response(perkRequirementError, { status: 400 });
@@ -207,6 +215,19 @@ export function buildAndValidateDraft(
       "Only one bulky equipment item can be carried at a time.",
       { status: 400 },
     );
+  }
+
+  if (draft.inventory) {
+    const inventoryPointCost = calculateInventoryPointCostWithPerks(
+      draft.inventory,
+      draft.perkIds,
+    );
+    if (draft.unallocatedStatPoints < inventoryPointCost) {
+      return new Response(
+        "Not enough stat points to cover inventory costs.",
+        { status: 400 },
+      );
+    }
   }
 
   return draft;

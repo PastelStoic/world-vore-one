@@ -147,6 +147,7 @@ export function validatePerkRequirements(
   race: Race,
   sex: Sex,
   perkIds: string[],
+  faction?: string,
 ): string | null {
   const selectedByLockCategory = new Map<string, string>();
 
@@ -166,6 +167,17 @@ export function validatePerkRequirements(
       return `Perk "${perk.name}" requires sex: ${
         perk.requiredSex.join(" or ")
       }.`;
+    }
+
+    if (perk.requiredFaction) {
+      const factions = Array.isArray(perk.requiredFaction)
+        ? perk.requiredFaction
+        : [perk.requiredFaction];
+      if (!faction || !factions.includes(faction as typeof factions[number])) {
+        return `Perk "${perk.name}" requires faction: ${
+          factions.join(" or ")
+        }.`;
+      }
     }
 
     if (perk.lockCategory) {

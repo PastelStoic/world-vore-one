@@ -19,6 +19,7 @@ import {
 } from "./character_types.ts";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
+import { getStatFloor } from "./draft_validation.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -71,20 +72,13 @@ export function parseBaseStats(
     const defaults = createDefaultBaseStats();
     const result = { ...defaults };
 
-    const allowLowDigestion =
-      perkIds?.includes("extremely-inefficient-digestion") ?? false;
-
     for (const stat of BASE_STAT_FIELDS) {
       const value = parsed[stat.key];
       if (typeof value !== "number" || !Number.isInteger(value)) {
         return null;
       }
 
-      if (stat.key === "digestionStrength" && allowLowDigestion) {
-        if (value < -4) return null;
-      } else {
-        if (value < 1) return null;
-      }
+      if (value < getStatFloor(stat.key, perkIds ?? [])) return null;
 
       result[stat.key] = value;
     }
@@ -366,13 +360,11 @@ export function validateCharacterProgression(
     return total + input.baseStats[stat.key];
   }, 0);
 
-  // Minimum valid stat total: normally 8 (all at 1), but digestionStrength
-  // can go to -4 with extremely-inefficient-digestion
-  const hasNegativeDigestion = input.perkIds.includes(
-    "extremely-inefficient-digestion",
+  // Minimum valid stat total is the sum of each stat's floor
+  const minStatTotal = BASE_STAT_FIELDS.reduce(
+    (total, stat) => total + getStatFloor(stat.key, input.perkIds),
+    0,
   );
-  const minDigestionStrength = hasNegativeDigestion ? -4 : 1;
-  const minStatTotal = (BASE_STAT_FIELDS.length - 1) + minDigestionStrength;
 
   if (statTotal < minStatTotal) {
     return "Base stats cannot go below their minimum values.";

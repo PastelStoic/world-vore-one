@@ -24,6 +24,10 @@ import {
 } from "@/lib/character_types.ts";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
+import {
+  getStatFloor as getSharedStatFloor,
+  isPerkEligible,
+} from "@/lib/draft_validation.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
 import { cleanupPerkData } from "@/lib/perk_state_helpers.ts";
@@ -171,11 +175,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     description.faction,
   );
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
-  const ownedLockCategories = new Set(
-    ownedPerks
-      .map((item) => item.perk?.lockCategory)
-      .filter((lockCategory): lockCategory is string => Boolean(lockCategory)),
-  );
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
@@ -184,36 +183,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     .filter((group) => group.items.length > 0);
   const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
 
-  const eligiblePerks = props.perks.filter((perk) => {
-    if (perkIds.includes(perk.id)) return false;
-    if (derivedPerkIds.has(perk.id)) return false;
-    if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
-      return false;
-    }
-    if (perk.requiredSex && !perk.requiredSex.includes(description.sex)) {
-      return false;
-    }
-    if (perk.requiredFaction) {
-      const factions = Array.isArray(perk.requiredFaction)
-        ? perk.requiredFaction
-        : [perk.requiredFaction];
-      if (!factions.includes(description.faction as typeof factions[number])) {
-        return false;
-      }
-    }
-    if (perk.lockCategory && ownedLockCategories.has(perk.lockCategory)) {
-      return false;
-    }
-    if (perk.excludesPerks?.some((id) => perkIds.includes(id))) {
-      return false;
-    }
-    // Also hide perks that are excluded BY a currently-owned perk
-    const isExcludedByOwned = ownedPerks.some((owned) =>
-      owned.perk?.excludesPerks?.includes(perk.id)
-    );
-    if (isExcludedByOwned) return false;
-    return true;
-  });
+  const eligiblePerks = props.perks.filter((perk) =>
+    isPerkEligible(perk, {
+      race,
+      sex: description.sex,
+      faction: description.faction,
+      ownedPerkIds: perkIds,
+      derivedPerkIds,
+      perksById,
+    })
+  );
 
   const availablePerks = eligiblePerks.filter((perk) => {
     if (perkCategoryFilter && perk.category !== perkCategoryFilter) {
@@ -249,16 +228,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }, [draft.perkIds, draft.perkStatChoices]);
 
   function getStatFloor(statKey: BaseStatKey): number {
-    const baseFloor = statFloor ?? initialBaseStats[statKey];
-    // digestionStrength can go to 0 with extremely-inefficient-digestion perk
-    if (
-      statKey === "digestionStrength" &&
-      perkIds.includes("extremely-inefficient-digestion")
-    ) {
-      return -4;
-    }
-    // All other stats: minimum of 1
-    return Math.max(1, baseFloor);
+    const sharedFloor = getSharedStatFloor(statKey, perkIds);
+    // Perk-based floors below the normal minimum (e.g. -4 for digestion) always apply
+    if (sharedFloor < 1) return sharedFloor;
+    const editFloor = statFloor ?? initialBaseStats[statKey];
+    return Math.max(sharedFloor, editFloor);
   }
 
   function increaseStat(statKey: BaseStatKey) {

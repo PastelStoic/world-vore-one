@@ -242,6 +242,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Germany",
     weight: 0,
     isCharge: true,
+    ammoOverride: 5,
     description:
       `*Armor piercing ammunition. Ignores damage reduction from perks and gear.
 (Lizard tierfraun, prey-as-armour, etc.)

@@ -78,13 +78,12 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *This perk is free.
 *Gain 4 points by picking this perk.
 
-*On every scene you start, until you take your 'hit', your highest stat of: STR, DEX, CONS, INT, CHAR, is lowered to 1.
-*Your stat is only restored after you take your hit.
-*If stats are tied, roll a die to choose which one is lowered.
-*The subject of your addiction must be illegal and deeply frowned down upon.
-*Anyone who knows about your addiction can use it against you.
-*You immediately fail charisma checks against those who know of your addiction, you repulse them.
-*You cannot take a 'hit' within the first 20 posts (yours) of a scene, only after.`,
+*On every scene you start, until you take your hit, your highest stat of: STR, DEX, CONS, INT, CHAR, is lowered to 1. Priority is in that order.
+*Your other stats are halved, rounded down, until you take your hit.
+*The subject of your addiction must be illegal and deeply frowned down upon. Anyone who knows about your addiction can use it against you.
+*After taking your 'hit', every check you perform requires 1 additional success in order to succeed, as your high distracts you.
+*Your high lasts 10 posts, of which case, you need to retake your substance or suffer the penalties again.
+*Each dose of your drug has 1 weight. Declare at scene start how many doses you have.`,
   },
   {
     id: "crippling-health-condition",

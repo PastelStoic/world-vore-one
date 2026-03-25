@@ -11,6 +11,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 1,
     isCharge: true,
     description: `Throwable explosive.
+*You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
 *Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed.
@@ -22,6 +23,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 1,
     isCharge: true,
     description: `Throwable smoke.
+*You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
 *Anyone shooting into or past the smoke is firing entirely blind; their accuracy is a fixed 1d6, with successes only on 6's. You cannot see past it.

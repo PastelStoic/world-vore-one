@@ -230,6 +230,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.`,
     modifiers: {
       baseStatBonuses: { strength: 2, constitution: 1 },
+      carryCapacityMultiplier: 3,
     },
   },
   {

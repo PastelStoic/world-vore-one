@@ -175,7 +175,8 @@ export default function WeaponCard(props: WeaponCardProps) {
     : undefined;
 
   // Weapon requires magazines to reload (no fallback to standard reload)
-  const weaponRequiresMags = def.requiresMagazines || attachmentRequiresMags;
+  const weaponRequiresMags = def.requiresMagazines ||
+    attachmentRequiresMags || attachmentMagazineSystem;
 
   // Total available mags (full + partial)
   const totalAvailableMags = w.magazines + (w.partialMagazines ?? []).length;

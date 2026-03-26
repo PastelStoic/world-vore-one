@@ -233,11 +233,11 @@ export function calculateEffectiveDigestionResilience(input: CharacterDraft) {
 }
 
 export function calculateBaseHealth(input: CharacterDraft) {
-  return input.baseStats.constitution;
+  return input.baseStats.constitution * 2;
 }
 
 export function calculateEffectiveHealth(input: CharacterDraft) {
-  const base = calculateEffectiveConstitution(input);
+  const base = calculateEffectiveConstitution(input) * 2;
   const multiplier = getMultiplier(input, "healthMultiplier");
   return base * multiplier;
 }

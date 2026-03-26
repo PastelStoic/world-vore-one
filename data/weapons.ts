@@ -325,7 +325,6 @@ export const WEAPONS: WeaponDefinition[] = [
       ...LONG_GUN_ATTACHMENTS,
       "rsc-chauchat-magazines",
     ],
-    reloadTurns: 2,
   },
   {
     id: "chauchat",

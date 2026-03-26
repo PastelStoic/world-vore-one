@@ -13,7 +13,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Free perk: This perk is free, we just want this on your sheet so others are aware of what this entails.
 *One of the biggest advantages of PFs is the fact that they reproduce so quickly. 
 *By nature of wanting to shaft just about anything, attacking their reproductive capabilities is a valid strategy.
-*This is where you come in: Whenever you impregnate a PF, that PF can only birth Pilzherrs from there on out.
+*This is where you come in: Whenever you orgasm inside a PF - pregnancy is not required - that PF can only birth Pilzherrs from there on out.
 *The Pilzherrs she births do not share any of her skills or memories; they're worthless to her. 
 *You are capable of vore all the same as a regular PF.`,
   },
@@ -29,7 +29,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Variant of the 'Pilzherr' perk. This one is not free. YOU DO NOT NEED THIS PERK TO BE A FEMBOY. It exists only for secrecy stuffs. Read below.
 *One of the biggest advantages of PFs is the fact that they reproduce so quickly. 
 *By nature of wanting to shaft just about anything, attacking their reproductive capabilities is a valid strategy.
-*This is where you come in: Whenever you impregnate a PF, that PF can only birth Pilzherrs from there on out.
+*This is where you come in: Whenever you orgasm inside a PF - pregnancy is not required - that PF can only birth Pilzherrs from there on out.
 *The Pilzherrs she births do not share any of her skills or memories; they're worthless to her. 
 *You are capable of vore all the same as a regular PF.
 
@@ -49,7 +49,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Variant of the 'Pilzherr' perk. This one is not free.
 *One of the biggest advantages of PFs is the fact that they reproduce so quickly. 
 *By nature of wanting to shaft just about anything, attacking their reproductive capabilities is a valid strategy.
-*This is where you come in: Whenever you impregnate a PF, that PF can only birth Pilzherrs from there on out.
+*This is where you come in: Whenever you orgasm inside a PF - pregnancy is not required - that PF can only birth Pilzherrs from there on out.
 *The Pilzherrs she births do not share any of her skills or memories; they're worthless to her. 
 *You are capable of vore all the same as a regular PF.
 

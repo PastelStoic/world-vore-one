@@ -77,19 +77,19 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "double-fire",
     name: "Double-fire",
     description:
-      "Double-firing does not require a stance swap.\n+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.",
+      "Alternative firing technique, you may choose to gain +1 rate of fire, -3d6 to accuracy, and gain no accuracy bonuses from the fastened fire.",
   },
   {
     id: "slam-fire",
     name: "Slam fire",
     description:
-      "Takes one turn to swap into this technique.\n+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.",
+      "Alternative firing technique, you may choose to gain +1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.",
   },
   {
     id: "mad-minute",
     name: "Mad-minute technique",
     description:
-      "Takes one turn to swap into this technique.\n+1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.",
+      "Alternative firing technique, you may choose to gain +1 rate of fire, -3d6 to accuracy, gain no accuracy bonuses from the fastened fire.",
   },
   {
     id: "tubular-magazine-bullets",
@@ -141,13 +141,13 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "light-machinegun",
     name: "Light-machinegun",
     description:
-      "Comes with a bipod but gains no benefit from it.\nAutomatic fire whilst not set up awards a -1d6 for every shot fired.",
+      "Comes with a bipod but gains no benefit from it.\nAutomatic fire whilst not set up awards a -1d6 for every shot fired past the first, rather than an accuracy bonus..",
   },
   {
     id: "heavy-machinegun",
     name: "Heavy-machinegun",
     description:
-      "Comes with a bipod, but gains no benefit from it.\nAutomatic fire whilst not set up awards a -3d6 for every shot fired.\nTakes 3 turns to set up the bipod. Allies can help in setting the gun up.",
+      "Comes with a bipod, but gains no benefit from it.\nAutomatic fire whilst not set up awards a -3d6 for every shot fired past the first, rather than an accuracy bonus.\nTakes 3 turns to set up the bipod. Allies can help in setting the gun up.",
   },
   {
     id: "multi-target",
@@ -171,13 +171,13 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "select-fire",
     name: "Select fire",
     description:
-      "Takes one action to choose between full auto or slower full auto.\nThe former has the weapon work normally.\nThe latter disregards the downside of light-machinegun, but gains a -2 to its rate of fire.",
+      "Takes one action to choose between full auto or slower full auto.\nThe former has the weapon work normally.\nThe latter disregards the downside of light-machinegun, but reduces firerate to 3.",
   },
   {
     id: "walking-fire",
     name: "Walking fire",
     description:
-      "Takes one turn to swap into this technique.\n-3d6 to shooting. May move and fire as part of the same action.",
+      "Alternative firing technique, you may choose to gain -3d6 to accuracy, but may move and fire as part of the same action.",
   },
   {
     id: "jams-frequently",

@@ -20,13 +20,13 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "bastard-weapon",
     name: "Bastard weapon",
     description:
-      "Can be used with either one hand or two hands. +1 damage if used with two hands.",
+      "Can be used with either one hand or two hands. +2 damage if used with two hands.",
   },
   {
     id: "crushing",
     name: "Crushing",
     description:
-      "Weapon is meant to bludgeon enemies dead. Ignores damage penalties such as armor, or a lizardgirl's scales. Deals +1 damage against enemies that'd otherwise give you a damage penalty.",
+      "Weapon is meant to bludgeon enemies dead. Ignores damage penalties such as armor, or a lizardgirl's scales. Deals +2 damage against enemies that'd otherwise give you a damage penalty.",
   },
   {
     id: "extra-long",
@@ -50,7 +50,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "flourishing",
     name: "Flourishing",
     description:
-      "This weapon can be used to make incredibly wide swings, which make it difficult for enemies to approach. If you flourish, an enemy moving into distance 0 will take an unavoidable instance of damage. You cannot flourish in cramped spaces (indoors, inside ships, tanks, etc.).",
+      "Does not apply against mounted enemies or their mounts, they'd just run you over. This weapon can be used to make incredibly wide swings, which make it difficult for enemies to approach. If you flourish, an enemy moving into distance 0 will take an unavoidable instance of damage. You cannot flourish in cramped spaces (indoors, inside ships, tanks, etc.).",
   },
   {
     id: "rapid-shanking",
@@ -92,7 +92,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "throwable",
     name: "Throwable",
     description:
-      "The weapon is meant, first and foremost, to be thrown. You can throw it 5 + STR distances away, hitting the target is a DEX vs Cover contested check. Deals -1 damage when used as a melee weapon, damage cannot be brought to 0 through this.",
+      "The weapon is meant, first and foremost, to be thrown. You can throw it 5 + STR distances away, hitting the target is a DEX vs Cover contested check. Deals -2 damage when used as a melee weapon, damage cannot be brought to 0 through this.",
   },
   {
     id: "barbed-hooked",

@@ -31,6 +31,9 @@ import { FACTIONS } from "@/lib/character_types.ts";
 const FACTION_BONUS_DEFINITIONS: Partial<
   Record<Faction, Omit<FactionDefinition, "id">>
 > = {
+  "The Church of Provisional Rations": {
+    grantsPerkIds: ["free-range"],
+  },
   // Example (remove the leading // to activate):
   // "SWITZERLAND - King's Royal Army": {
   //   grantsPerkIds: ["runner"],

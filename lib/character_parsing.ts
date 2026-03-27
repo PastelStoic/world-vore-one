@@ -303,6 +303,22 @@ export function getDerivedPerkIds(
   return derived;
 }
 
+export function getFactionPerkCompensation(
+  perkIds: string[],
+  faction?: string,
+  factionCompensatedPerkIds?: string[],
+): number {
+  if (!faction || !factionCompensatedPerkIds?.length) return 0;
+
+  const grantedPerkIds = new Set(
+    FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? [],
+  );
+
+  return factionCompensatedPerkIds.filter((id) =>
+    perkIds.includes(id) && grantedPerkIds.has(id)
+  ).length * 2;
+}
+
 export function calculatePerksCost(
   perkIds: string[],
   perkRanks?: Record<string, number>,
@@ -381,8 +397,21 @@ export function validateCharacterProgression(
     input.perkPointChoices,
   );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
+  const maxAvailablePoints = getStartingStatPoints(input.race) +
+    (FACTION_DEFINITIONS_BY_ID.get(input.description.faction)
+      ?.grantsStatPoints ??
+      0) +
+    getFactionPerkCompensation(
+      input.perkIds,
+      input.description.faction,
+      input.factionCompensatedPerkIds,
+    );
 
   if (totalUsed < getStartingStatPoints(input.race)) {
+    return "Invalid stat/perk point allocation.";
+  }
+
+  if (totalUsed > maxAvailablePoints) {
     return "Invalid stat/perk point allocation.";
   }
 

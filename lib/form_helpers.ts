@@ -50,6 +50,7 @@ export interface ParsedCharacterFields {
   perkDisguises: Record<string, string>;
   perkSelections: Record<string, string[]>;
   perkPointChoices: Record<string, number>;
+  factionCompensatedPerkIds: string[];
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
   pendingImageId: string;
@@ -87,6 +88,9 @@ export function parseCharacterFormData(
   const perkSelections = parsePerkSelections(
     String(formData.get("perkSelections") ?? "{}"),
   );
+  const factionCompensatedPerkIds = parsePerkIds(
+    String(formData.get("factionCompensatedPerkIds") ?? "[]"),
+  );
   // perkRanks is parsed after perkIds so we can scope it to owned perks
   // perkPointChoices is parsed after perkIds so we can scope values to owned perks with variablePointsGranted
   const perkStatChoices = parsePerkStatChoices(
@@ -108,7 +112,8 @@ export function parseCharacterFormData(
   }
 
   if (
-    !description || !baseStats || !perkIds || unallocatedStatPoints === null
+    !description || !baseStats || !perkIds || !factionCompensatedPerkIds ||
+    unallocatedStatPoints === null
   ) {
     return new Response("Invalid character payload.", { status: 400 });
   }
@@ -141,6 +146,7 @@ export function parseCharacterFormData(
     perkDisguises,
     perkSelections,
     perkPointChoices,
+    factionCompensatedPerkIds,
     unallocatedStatPoints,
     basedOnSnapshotId,
     pendingImageId,
@@ -181,6 +187,9 @@ export function buildAndValidateDraft(
     perkPointChoices: Object.keys(fields.perkPointChoices).length > 0
       ? fields.perkPointChoices
       : undefined,
+    factionCompensatedPerkIds: fields.factionCompensatedPerkIds.filter((id) =>
+      fields.perkIds.includes(id)
+    ),
     inventory: fields.inventory ?? undefined,
   };
 

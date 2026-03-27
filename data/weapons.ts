@@ -318,7 +318,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 3,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed", "walking-fire",],
+    traitIds: ["two-handed", "walking-fire"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "rsc-chauchat-magazines",

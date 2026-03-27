@@ -21,6 +21,7 @@ export {
 export {
   calculatePerksCost,
   getDerivedPerkIds,
+  getFactionPerkCompensation,
   parseBaseStats,
   parseDescription,
   parsePerkDisguises,

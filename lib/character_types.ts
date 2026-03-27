@@ -60,6 +60,7 @@ export const FACTIONS = [
   "JAPAN - Imperial House of Japan",
   "JAPAN - Tokugawa Clan",
   "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
+  "The Church of Provisional Rations",
 ] as const;
 export type Faction = (typeof FACTIONS)[number];
 
@@ -174,6 +175,11 @@ export interface CharacterDraft {
    * Key = perk ID, value = chosen number of points to gain.
    */
   perkPointChoices?: Record<string, number>;
+  /**
+   * Perks already owned when the current faction started granting them.
+   * Each active ID grants 2 compensation points while that faction remains selected.
+   */
+  factionCompensatedPerkIds?: string[];
   inventory?: CharacterInventory;
 }
 

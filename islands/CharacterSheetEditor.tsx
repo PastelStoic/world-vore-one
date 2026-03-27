@@ -106,6 +106,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   >(
     props.initialCharacter.perkPointChoices ?? {},
   );
+  const [factionCompensatedPerkIds, setFactionCompensatedPerkIds] = useState<
+    string[]
+  >(props.initialCharacter.factionCompensatedPerkIds ?? []);
   const [inventory, setInventory] = useState<CharacterInventory>(
     props.initialCharacter.inventory ?? createEmptyInventory(),
   );
@@ -151,6 +154,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkPointChoices: Object.keys(perkPointChoices).length > 0
       ? perkPointChoices
       : undefined,
+    factionCompensatedPerkIds,
     inventory,
   };
 
@@ -216,6 +220,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     value: CharacterDescription[K],
   ) {
     setDescription((current) => ({ ...current, [key]: value }));
+  }
+
+  function withoutRemovedCompensations(removedIds: string[]) {
+    return factionCompensatedPerkIds.filter((id) => !removedIds.includes(id));
   }
 
   // When pending approval, allow full re-allocation (no floor on decreases)
@@ -423,6 +431,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkDisguises(cleaned.perkDisguises);
     setPerkSelections(cleaned.perkSelections);
     setPerkPointChoices(cleaned.perkPointChoices);
+    setFactionCompensatedPerkIds(withoutRemovedCompensations(allRemovedIds));
     setUnallocatedStatPoints((current) => current + refund);
 
     // Remove perk-granted items from inventory
@@ -582,6 +591,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         name="perkPointChoices"
         value={JSON.stringify(perkPointChoices)}
       />
+      <input
+        type="hidden"
+        name="factionCompensatedPerkIds"
+        value={JSON.stringify(factionCompensatedPerkIds)}
+      />
       <input type="hidden" name="pendingImageId" value={pendingImageId} />
       <input
         type="hidden"
@@ -697,6 +711,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       setPerkDisguises(cleaned.perkDisguises);
                       setPerkSelections(cleaned.perkSelections);
                       setPerkPointChoices(cleaned.perkPointChoices);
+                      setFactionCompensatedPerkIds(
+                        withoutRemovedCompensations(removedIds),
+                      );
                       setPerkIds(keptPerkIds);
                     }
                     setRace(newRace);
@@ -775,16 +792,32 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     const oldFaction = description.faction;
                     updateDescription("faction", newFaction);
 
-                    // Auto-manage faction-granted perks
                     const oldDef = FACTION_DEFINITIONS_BY_ID.get(oldFaction);
                     const newDef = FACTION_DEFINITIONS_BY_ID.get(newFaction);
                     const oldGranted = oldDef?.grantsPerkIds ?? [];
                     const newGranted = newDef?.grantsPerkIds ?? [];
+                    const derivedAfterChange = getDerivedPerkIds(
+                      perkIds,
+                      perkSelections,
+                      newFaction,
+                    );
+                    const removedCompensated = factionCompensatedPerkIds.filter(
+                      (id) =>
+                        oldGranted.includes(id) && !newGranted.includes(id),
+                    );
+                    const keptCompensated = factionCompensatedPerkIds.filter((
+                      id,
+                    ) => newGranted.includes(id));
+                    const newlyCompensated = newGranted.filter((id) =>
+                      !oldGranted.includes(id) &&
+                      perkIds.includes(id) &&
+                      !derivedPerkIds.has(id)
+                    );
 
-                    // Remove old faction perks that aren't granted by the new faction
-                    // and aren't derived from other sources
                     const toRemove = oldGranted.filter((id) =>
-                      !newGranted.includes(id)
+                      !newGranted.includes(id) &&
+                      !factionCompensatedPerkIds.includes(id) &&
+                      !derivedAfterChange.has(id)
                     );
                     const toAdd = newGranted.filter((id) =>
                       !perkIds.includes(id)
@@ -794,17 +827,69 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       !toRemove.includes(id)
                     );
                     updatedPerkIds = [...updatedPerkIds, ...toAdd];
+                    const nextCompensated = [
+                      ...keptCompensated,
+                      ...newlyCompensated,
+                    ].filter((id, index, arr) =>
+                      updatedPerkIds.includes(id) && arr.indexOf(id) === index
+                    );
 
-                    // Calculate stat point delta from the faction switch
                     const oldPoints = oldDef?.grantsStatPoints ?? 0;
                     const newPoints = newDef?.grantsStatPoints ?? 0;
-                    const pointsDelta = newPoints - oldPoints;
+                    const pointsDelta = newPoints - oldPoints +
+                      ((newlyCompensated.length - removedCompensated.length) *
+                        2);
 
                     if (
                       updatedPerkIds.length !== perkIds.length ||
                       toAdd.length > 0
                     ) {
                       setPerkIds(updatedPerkIds);
+                    }
+                    if (toRemove.length > 0) {
+                      const cleaned = cleanupPerkData(
+                        {
+                          perkNotes,
+                          perkUpgradeNotes,
+                          perkStatChoices,
+                          perkRanks,
+                          perkDisguises,
+                          perkSelections,
+                          perkPointChoices,
+                        },
+                        toRemove,
+                      );
+                      setPerkNotes(cleaned.perkNotes);
+                      setPerkUpgradeNotes(cleaned.perkUpgradeNotes);
+                      setPerkStatChoices(cleaned.perkStatChoices);
+                      setPerkRanks(cleaned.perkRanks);
+                      setPerkDisguises(cleaned.perkDisguises);
+                      setPerkSelections(cleaned.perkSelections);
+                      setPerkPointChoices(cleaned.perkPointChoices);
+                      setInventory((inv) => {
+                        const newInv = structuredClone(inv);
+                        for (const location of ["carried", "stowed"] as const) {
+                          newInv[location].equipment = newInv[location]
+                            .equipment
+                            .filter((item) =>
+                              !toRemove.includes(item.perkGranted ?? "")
+                            );
+                          newInv[location].meleeWeapons = newInv[location]
+                            .meleeWeapons.filter((weapon) =>
+                              !toRemove.includes(weapon.perkGranted ?? "")
+                            );
+                        }
+                        return newInv;
+                      });
+                    }
+                    if (
+                      nextCompensated.length !==
+                        factionCompensatedPerkIds.length ||
+                      nextCompensated.some((id, index) =>
+                        factionCompensatedPerkIds[index] !== id
+                      )
+                    ) {
+                      setFactionCompensatedPerkIds(nextCompensated);
                     }
                     if (pointsDelta !== 0) {
                       setUnallocatedStatPoints((current) =>

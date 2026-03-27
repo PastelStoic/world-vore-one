@@ -11,6 +11,7 @@ import {
   parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
+  parsePerkOrigins,
   parsePerkPointChoices,
   parsePerkRanks,
   parsePerkSelections,
@@ -50,6 +51,7 @@ export interface ParsedCharacterFields {
   perkDisguises: Record<string, string>;
   perkSelections: Record<string, string[]>;
   perkPointChoices: Record<string, number>;
+  perkOrigins: Record<string, import("./character_types.ts").PerkOrigin>;
   factionCompensatedPerkIds: string[];
   unallocatedStatPoints: number;
   basedOnSnapshotId: string;
@@ -84,6 +86,9 @@ export function parseCharacterFormData(
   );
   const perkDisguises = parsePerkDisguises(
     String(formData.get("perkDisguises") ?? "{}"),
+  );
+  const perkOrigins = parsePerkOrigins(
+    String(formData.get("perkOrigins") ?? "{}"),
   );
   const perkSelections = parsePerkSelections(
     String(formData.get("perkSelections") ?? "{}"),
@@ -146,6 +151,7 @@ export function parseCharacterFormData(
     perkDisguises,
     perkSelections,
     perkPointChoices,
+    perkOrigins,
     factionCompensatedPerkIds,
     unallocatedStatPoints,
     basedOnSnapshotId,
@@ -187,6 +193,11 @@ export function buildAndValidateDraft(
     perkPointChoices: Object.keys(fields.perkPointChoices).length > 0
       ? fields.perkPointChoices
       : undefined,
+    perkOrigins: Object.fromEntries(
+      Object.entries(fields.perkOrigins).filter(([id]) =>
+        fields.perkIds.includes(id)
+      ),
+    ),
     factionCompensatedPerkIds: fields.factionCompensatedPerkIds.filter((id) =>
       fields.perkIds.includes(id)
     ),

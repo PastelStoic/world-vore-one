@@ -19,6 +19,7 @@ import {
   isTierRace,
   mapRaceForSex,
   PERK_COST_STAT_POINTS,
+  type PerkOrigin,
   type Sex,
   SEX_OPTIONS,
 } from "@/lib/character_types.ts";
@@ -54,6 +55,34 @@ interface CharacterSheetEditorProps {
   imageUrl?: string;
   /** Whether the character is still pending admin approval */
   isPending?: boolean;
+}
+
+function inferInitialPerkOrigins(
+  initialCharacter: CharacterDraft | CharacterSheet,
+): Record<string, PerkOrigin> {
+  const result = { ...(initialCharacter.perkOrigins ?? {}) };
+  const currentFactionPerkIds = new Set(
+    FACTION_DEFINITIONS_BY_ID.get(initialCharacter.description.faction)
+      ?.grantsPerkIds ?? [],
+  );
+  const compensatedPerkIds = new Set(
+    initialCharacter.factionCompensatedPerkIds ?? [],
+  );
+
+  for (const perkId of initialCharacter.perkIds) {
+    if (result[perkId]) continue;
+
+    if (
+      currentFactionPerkIds.has(perkId) && !compensatedPerkIds.has(perkId)
+    ) {
+      result[perkId] = "faction";
+      continue;
+    }
+
+    result[perkId] = "purchased";
+  }
+
+  return result;
 }
 
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
@@ -106,6 +135,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   >(
     props.initialCharacter.perkPointChoices ?? {},
   );
+  const [perkOrigins, setPerkOrigins] = useState<Record<string, PerkOrigin>>(
+    () => inferInitialPerkOrigins(props.initialCharacter),
+  );
   const [factionCompensatedPerkIds, setFactionCompensatedPerkIds] = useState<
     string[]
   >(props.initialCharacter.factionCompensatedPerkIds ?? []);
@@ -154,6 +186,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkPointChoices: Object.keys(perkPointChoices).length > 0
       ? perkPointChoices
       : undefined,
+    perkOrigins: Object.keys(perkOrigins).length > 0 ? perkOrigins : undefined,
     factionCompensatedPerkIds,
     inventory,
   };
@@ -226,6 +259,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     return factionCompensatedPerkIds.filter((id) => !removedIds.includes(id));
   }
 
+  function withoutRemovedOrigins(removedIds: string[]) {
+    return Object.fromEntries(
+      Object.entries(perkOrigins).filter(([id]) => !removedIds.includes(id)),
+    );
+  }
+
   // When pending approval, allow full re-allocation (no floor on decreases)
   const statFloor = props.isPending ? 0 : undefined;
   const canRemoveOldPerks = !!props.isPending;
@@ -293,6 +332,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (unallocatedStatPoints - inventoryPointCost < cost) return;
 
     setPerkIds(newPerkIds);
+    setPerkOrigins((current) => ({ ...current, [perkId]: "purchased" }));
     setUnallocatedStatPoints((current) => current - cost);
 
     // Enforce stat caps from the new perk (e.g. Speisfraun caps STR/DEX to 1)
@@ -431,6 +471,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkDisguises(cleaned.perkDisguises);
     setPerkSelections(cleaned.perkSelections);
     setPerkPointChoices(cleaned.perkPointChoices);
+    setPerkOrigins(withoutRemovedOrigins(allRemovedIds));
     setFactionCompensatedPerkIds(withoutRemovedCompensations(allRemovedIds));
     setUnallocatedStatPoints((current) => current + refund);
 
@@ -593,6 +634,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       />
       <input
         type="hidden"
+        name="perkOrigins"
+        value={JSON.stringify(perkOrigins)}
+      />
+      <input
+        type="hidden"
         name="factionCompensatedPerkIds"
         value={JSON.stringify(factionCompensatedPerkIds)}
       />
@@ -711,6 +757,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       setPerkDisguises(cleaned.perkDisguises);
                       setPerkSelections(cleaned.perkSelections);
                       setPerkPointChoices(cleaned.perkPointChoices);
+                      setPerkOrigins(withoutRemovedOrigins(removedIds));
                       setFactionCompensatedPerkIds(
                         withoutRemovedCompensations(removedIds),
                       );
@@ -827,6 +874,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       !toRemove.includes(id)
                     );
                     updatedPerkIds = [...updatedPerkIds, ...toAdd];
+                    const nextPerkOrigins = {
+                      ...withoutRemovedOrigins(toRemove),
+                    };
+                    for (const perkId of toAdd) {
+                      nextPerkOrigins[perkId] = "faction";
+                    }
                     const nextCompensated = [
                       ...keptCompensated,
                       ...newlyCompensated,
@@ -881,6 +934,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                         }
                         return newInv;
                       });
+                    }
+                    if (
+                      Object.keys(nextPerkOrigins).length !==
+                        Object.keys(perkOrigins).length ||
+                      Object.entries(nextPerkOrigins).some(([id, origin]) =>
+                        perkOrigins[id] !== origin
+                      )
+                    ) {
+                      setPerkOrigins(nextPerkOrigins);
                     }
                     if (
                       nextCompensated.length !==
@@ -1276,6 +1338,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             (perkSelections[op.id] ?? []).includes(id)
                           )?.perk
                           : undefined;
+                        const perkOrigin = perkOrigins[id];
+                        const factionGrantStatus = perkOrigin === "faction"
+                          ? (FACTION_DEFINITIONS_BY_ID.get(description.faction)
+                              ?.grantsPerkIds ?? []).includes(id)
+                            ? "Added by current faction"
+                            : "Added by former faction"
+                          : perkOrigin === "race"
+                          ? "Added by race"
+                          : undefined;
                         const canRemove = !isDerived && (canRemoveOldPerks ||
                           !initialPerkIds.includes(id));
                         const currentRank = perkRanks[id] ?? 1;
@@ -1337,6 +1408,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 {isDerived && sourcePerk && (
                                   <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
                                     included by {sourcePerk.name}
+                                  </span>
+                                )}
+                                {!sourcePerk && factionGrantStatus && (
+                                  <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
+                                    {factionGrantStatus}
                                   </span>
                                 )}
                                 {isUpgradable && currentRank > 1 && (

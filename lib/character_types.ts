@@ -74,6 +74,8 @@ export interface FactionDefinition {
   grantsStatPoints?: number;
 }
 
+export type PerkOrigin = "purchased" | "race" | "faction";
+
 export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];
 
@@ -175,6 +177,8 @@ export interface CharacterDraft {
    * Key = perk ID, value = chosen number of points to gain.
    */
   perkPointChoices?: Record<string, number>;
+  /** How each directly-owned perk was acquired. */
+  perkOrigins?: Record<string, PerkOrigin>;
   /**
    * Perks already owned when the current faction started granting them.
    * Each active ID grants 2 compensation points while that faction remains selected.

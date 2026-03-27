@@ -12,6 +12,7 @@ import {
   createDefaultDescription,
   getStartingStatPoints,
   PERK_COST_STAT_POINTS,
+  type PerkOrigin,
   type Race,
   RACES,
   type Sex,
@@ -167,6 +168,17 @@ export function parsePerkRanks(
 export function parsePerkDisguises(raw: string): Record<string, string> {
   return parseJsonRecord(raw, (_key, value) => {
     if (typeof value === "string" && value.trim()) return value.trim();
+    return undefined;
+  });
+}
+
+export function parsePerkOrigins(raw: string): Record<string, PerkOrigin> {
+  return parseJsonRecord(raw, (_key, value) => {
+    if (
+      value === "purchased" || value === "race" || value === "faction"
+    ) {
+      return value;
+    }
     return undefined;
   });
 }

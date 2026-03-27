@@ -27,6 +27,7 @@ export {
   parsePerkDisguises,
   parsePerkIds,
   parsePerkNotes,
+  parsePerkOrigins,
   parsePerkPointChoices,
   parsePerkRanks,
   parsePerkSelections,
@@ -50,4 +51,5 @@ export {
   type CharacterSnapshot,
   createDefaultCharacterDraft,
   createDefaultDescription,
+  type PerkOrigin,
 } from "./character_types.ts";

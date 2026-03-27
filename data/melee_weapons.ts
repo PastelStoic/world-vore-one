@@ -9,7 +9,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "dagger",
     name: "Dagger",
-    damage: 2,
+    damage: 3,
     weight: 1,
     traitIds: ["one-handed", "concealable"],
     description:
@@ -18,7 +18,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "throwing-dagger",
     name: "Throwing Dagger",
-    damage: 2,
+    damage: 3,
     weight: 1,
     traitIds: ["one-handed", "throwable", "concealable"],
     description:
@@ -27,7 +27,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "combat-knife",
     name: "Combat Knife",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "rapid-shanking"],
     description:
@@ -36,7 +36,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "throwing-knife",
     name: "Throwing Knife",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "rapid-shanking", "throwable"],
     description: "Light, balanced blade optimised for throwing.",
@@ -44,7 +44,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "machete",
     name: "Machete",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "path-clearer"],
     description:
@@ -53,7 +53,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "sabre",
     name: "Sabre",
-    damage: 3,
+    damage: 6,
     weight: 1,
     traitIds: ["one-handed"],
     description:
@@ -62,7 +62,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "cavalry-sabre",
     name: "Cavalry sabre",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["one-handed", "cavalry-weapon"],
     description:
@@ -71,7 +71,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "rapier",
     name: "Rapier",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["one-handed", "duelling"],
     description: "Long, thin thrusting sword favoured by duelists.",
@@ -79,7 +79,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "parrying-dagger",
     name: "Parrying dagger",
-    damage: 2,
+    damage: 3,
     weight: 1,
     traitIds: ["one-handed", "parrying"],
     description: "A short dagger meant to assist a duellist's main weapon.",
@@ -87,7 +87,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "broadsword",
     name: "Broadsword",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["bastard-weapon"],
     description: "Heavy blade that can be wielded with either hand.",
@@ -95,7 +95,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "longsword",
     name: "Longsword",
-    damage: 4,
+    damage: 8,
     weight: 3,
     traitIds: ["two-handed", "flourishing"],
     description: "A remarkably long sword, the kinds you'd see knights use.",
@@ -103,7 +103,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "greatsword",
     name: "Greatsword",
-    damage: 5,
+    damage: 10,
     weight: 4,
     traitIds: ["two-handed", "flourishing", "razor-bladed"],
     description: "Massive, oversized blade, meant for wide swings.",
@@ -113,7 +113,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "spear",
     name: "Spear",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["two-handed", "extra-long", "braceable"],
     description: "Long-shafted thrusting weapon.",
@@ -121,7 +121,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "greatclub",
     name: "Great club",
-    damage: 4,
+    damage: 8,
     weight: 3,
     traitIds: ["two-handed", "crushing"],
     description: "A massive, two-handed club, meant for beating people up!",
@@ -129,7 +129,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "pike",
     name: "Pike",
-    damage: 3,
+    damage: 6,
     weight: 3,
     traitIds: ["two-handed", "ridiculously-long", "braceable"],
     description: "Infantry polearm; longer and heavier than a spear.",
@@ -137,7 +137,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "halberd",
     name: "Halberd",
-    damage: 4,
+    damage: 8,
     weight: 3,
     traitIds: [
       "two-handed",
@@ -153,7 +153,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "warhammer",
     name: "Warhammer",
-    damage: 3,
+    damage: 6,
     weight: 3,
     traitIds: [
       "two-handed",
@@ -169,7 +169,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "lance",
     name: "Lance",
-    damage: 3,
+    damage: 6,
     weight: 3,
     traitIds: ["two-handed", "cavalry-weapon", "extra-long"],
     description: "Long cavalry charging weapon, devastating on horseback.",
@@ -177,7 +177,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "harpoon",
     name: "Harpoon",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["one-handed", "throwable", "barbed-hooked"],
     description: "Throwing harpoon, mostly meant to fight sea creatures.",
@@ -187,7 +187,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "trench-club",
     name: "Trench Club",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "crushing"],
     description: "Improvised spiked club fashioned in the trenches.",
@@ -195,7 +195,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "mace",
     name: "Mace",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["one-handed", "crushing"],
     description: "Flanged bludgeoning weapon.",
@@ -203,7 +203,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "military-pickaxe",
     name: "Military Pickaxe",
-    damage: 3,
+    damage: 6,
     weight: 3,
     traitIds: ["one-handed", "crushing", "breaching"],
     description:
@@ -214,7 +214,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "hand-axe",
     name: "Hand Axe",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "path-clearer"],
     description: "Short-handled axe for chopping.",
@@ -222,15 +222,15 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "throwing-axe",
     name: "Throwing Axe",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "throwable", "path-clearer"],
     description: "Balanced axe optimised for throwing.",
   },
   {
-    id: "long  axe",
+    id: "long axe",
     name: "long axe",
-    damage: 3,
+    damage: 6,
     weight: 2,
     traitIds: ["bastard-weapon", "path-clearer"],
     description: "Large axe that can be wielded one- or two-handed.",
@@ -240,7 +240,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "whip",
     name: "Whip",
-    damage: 2,
+    damage: 4,
     weight: 1,
     traitIds: ["one-handed", "barbed-hooked"],
     description: "Leather lash that entangles as it strikes.",
@@ -248,7 +248,7 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   {
     id: "flail",
     name: "Flail",
-    damage: 3,
+    damage: 6,
     weight: 4,
     traitIds: ["one-handed", "crushing", "barbed-hooked"],
     description: "Spiked iron ball on a chain that entangles as it strikes.",

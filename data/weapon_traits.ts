@@ -171,7 +171,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "select-fire",
     name: "Select fire",
     description:
-      "Takes one action to choose between full auto or slower full auto.\nThe former has the weapon work normally.\nThe latter disregards the downside of light-machinegun, but reduces firerate to 3.",
+      "Takes one action to choose between full auto or slower full auto.\nThe former has the weapon work normally.\nThe latter disregards the downside of light-machinegun, but reduces firerate to 3. You now gain the typical accuracy bonus from the fastened fire.",
   },
   {
     id: "walking-fire",

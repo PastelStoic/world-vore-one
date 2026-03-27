@@ -82,8 +82,20 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     isBulky: true,
     description:
       `Body armour, mostly cerimonial, but some still used it during WW1 – mostly the French.
-*Melee attacks deal -1 damage to you. Damage can be brought to 0 through this.
+*Melee attacks deal halved damage to you, rounded down. Unarmed attacks and makeshift melee weapons deal no damage.
 *You may only bring one full reload of ammo and reloading a weapon takes +1 turn.
+*Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
+  },
+  {
+    id: "full-suit-of-armor",
+    name: "Full suit of armor",
+    weight: 6,
+    isBulky: true,
+    description:
+      `An entirely outdated suit of armoured plates, ultimate protection against melee.
+*Melee attacks deal 1 damage to you. Unarmed attacks and makeshift melee weapons deal no damage.
+*Beware of the 'Crushing' trait!
+*You cannot bring any additional ammo, you have no pockets whatsoever!
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },
   {

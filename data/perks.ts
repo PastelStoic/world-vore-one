@@ -128,6 +128,8 @@ export interface PerkDefinition {
   selectablePerkIds?: string[];
   /** How many perks the player may choose via selectablePerkIds (default 1). */
   selectablePerksCount?: number;
+  /** Maximum number of characters on one account that may own this perk. */
+  maxCharactersPerAccount?: number;
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -142,6 +144,17 @@ export const PERKS: PerkDefinition[] = [
 
 export const PERKS_BY_ID = new Map(PERKS.map((perk) => [perk.id, perk]));
 export const PERK_IDS = new Set(PERKS.map((perk) => perk.id));
+
+function formatPerkAccountLimitError(perk: PerkDefinition): string {
+  const limit = perk.maxCharactersPerAccount;
+  if (!limit) {
+    return `Perk "${perk.name}" cannot be taken on this account.`;
+  }
+
+  return `Perk "${perk.name}" is limited to ${limit} ${
+    limit === 1 ? "character" : "characters"
+  } per account.`;
+}
 
 export function validatePerkRequirements(
   race: Race,
@@ -197,6 +210,24 @@ export function validatePerkRequirements(
           }".`;
         }
       }
+    }
+  }
+
+  return null;
+}
+
+export function getPerkAccountLimitError(
+  perkIds: string[],
+  perkCountsByAccount: ReadonlyMap<string, number>,
+): string | null {
+  for (const perkId of new Set(perkIds)) {
+    const perk = PERKS_BY_ID.get(perkId);
+    if (!perk?.maxCharactersPerAccount) continue;
+
+    if (
+      (perkCountsByAccount.get(perkId) ?? 0) >= perk.maxCharactersPerAccount
+    ) {
+      return formatPerkAccountLimitError(perk);
     }
   }
 

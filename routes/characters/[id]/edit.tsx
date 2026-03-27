@@ -3,8 +3,10 @@ import CharacterSheetEditor from "@/islands/CharacterSheetEditor.tsx";
 import { PERKS } from "@/data/perks.ts";
 import {
   getCharacter,
+  getUserPerkCharacterCounts,
   upsertCharacter,
   upsertCharacterDirect,
+  validateAccountLimitedPerksForUser,
 } from "@/lib/characters.ts";
 import {
   buildAndValidateDraft,
@@ -59,6 +61,15 @@ export const handler = define.handlers({
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
 
+    const perkAccountLimitError = await validateAccountLimitedPerksForUser(
+      existing.userId,
+      draft,
+      { excludeCharacterId: id },
+    );
+    if (perkAccountLimitError) {
+      return new Response(perkAccountLimitError, { status: 400 });
+    }
+
     // If an admin is editing someone else's character, note it in the changelog
     const changelog = !isOwner
       ? `[Admin edit by ${user.username}] ${parsed.changelog}`
@@ -104,6 +115,13 @@ export default define.page<typeof handler>(
       return new Response("Forbidden", { status: 403 });
     }
 
+    const accountPerkCounts = await getUserPerkCharacterCounts(
+      character.userId,
+      {
+        excludeCharacterId: character.id,
+      },
+    );
+
     return (
       <CharacterPageLayout
         title={`Edit: ${character.name}`}
@@ -118,6 +136,7 @@ export default define.page<typeof handler>(
           basedOnSnapshotId={character.latestSnapshotId}
           initialCharacter={character}
           perks={PERKS}
+          accountPerkCounts={accountPerkCounts}
           isPending={character.status === "pending"}
           imageUrl={character.imageId
             ? cfImageUrl(character.imageId)

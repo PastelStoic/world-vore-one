@@ -6,6 +6,7 @@ export {
   deleteCharacter,
   getCharacter,
   getCharacterSnapshot,
+  getUserPerkCharacterCounts,
   listCharacters,
   listCharacterSnapshots,
   setCharacterHidden,
@@ -14,6 +15,7 @@ export {
   updateCharacterInventory,
   upsertCharacter,
   upsertCharacterDirect,
+  validateAccountLimitedPerksForUser,
 } from "./character_db.ts";
 
 export {

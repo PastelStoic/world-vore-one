@@ -66,6 +66,7 @@ export interface PerkEligibilityContext {
   ownedPerkIds: string[];
   derivedPerkIds: ReadonlySet<string>;
   perksById: ReadonlyMap<string, PerkDefinition>;
+  accountPerkCounts?: ReadonlyMap<string, number>;
 }
 
 /**
@@ -106,6 +107,13 @@ export function isPerkEligible(
     if (!factions.includes(ctx.faction as typeof factions[number])) {
       return false;
     }
+  }
+
+  if (
+    perk.maxCharactersPerAccount !== undefined &&
+    (ctx.accountPerkCounts?.get(perk.id) ?? 0) >= perk.maxCharactersPerAccount
+  ) {
+    return false;
   }
 
   // Lock category — only one perk per lock category

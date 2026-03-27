@@ -3,8 +3,10 @@ import CharacterSheetEditor from "@/islands/CharacterSheetEditor.tsx";
 import { PERKS } from "@/data/perks.ts";
 import {
   createDefaultCharacterDraft,
+  getUserPerkCharacterCounts,
   setCharacterImageId,
   upsertCharacterDirect,
+  validateAccountLimitedPerksForUser,
 } from "@/lib/characters.ts";
 import {
   buildAndValidateDraft,
@@ -44,6 +46,14 @@ export const handler = define.handlers({
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
 
+    const perkAccountLimitError = await validateAccountLimitedPerksForUser(
+      user.id,
+      draft,
+    );
+    if (perkAccountLimitError) {
+      return new Response(perkAccountLimitError, { status: 400 });
+    }
+
     const id = crypto.randomUUID();
     await upsertCharacterDirect({
       id,
@@ -76,6 +86,8 @@ export default define.page<typeof handler>(async (ctx) => {
       status: 403,
     });
   }
+
+  const accountPerkCounts = await getUserPerkCharacterCounts(ctx.state.user.id);
   return (
     <CharacterPageLayout
       title="Create Character"
@@ -88,6 +100,7 @@ export default define.page<typeof handler>(async (ctx) => {
         submitLabel="Create Character"
         initialCharacter={createDefaultCharacterDraft()}
         perks={PERKS}
+        accountPerkCounts={accountPerkCounts}
       />
     </CharacterPageLayout>
   );

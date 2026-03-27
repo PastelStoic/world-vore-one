@@ -6,6 +6,7 @@ export const FACTION_PERKS: PerkDefinition[] = [
     name: "King's royal army",
     category: "faction",
     requiredFaction: "SWITZERLAND - King's Royal Army",
+    maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 3,
     selectablePerkIds: [
@@ -38,6 +39,7 @@ Disadvantages:
     id: "sturmtruppen",
     name: "Sturmtruppen",
     category: "faction",
+    maxCharactersPerAccount: 3,
     requiredFaction: [
       "GERMANY - German Imperial Army",
       "GERMANY - The 7th Western Army",
@@ -74,6 +76,7 @@ Disadvantages:
     id: "british-trench-raider",
     name: "British Trench Raider",
     category: "faction",
+    maxCharactersPerAccount: 3,
     requiredFaction: [
       "BRITAIN - British Expeditionary Force (BEF)",
       "BRITAIN - Canadian Expeditionary Force (CEF)",
@@ -110,6 +113,7 @@ Disadvantages:
     name: "French Foreign Legionnaire",
     category: "faction",
     requiredFaction: ["FRANCE - French Foreign Legion"],
+    maxCharactersPerAccount: 3,
     pointsGranted: 2,
     selectablePerkIds: [
       "sapper",
@@ -139,6 +143,7 @@ Disadvantages:
     name: "Chasseur Alpin",
     category: "faction",
     requiredFaction: "FRANCE - Chasseurs Alpins",
+    maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 3,
     selectablePerkIds: [
@@ -170,6 +175,7 @@ Disadvantages:
     name: "Harlem Hellfighter",
     category: "faction",
     requiredFaction: ["AMERICA - Harlem Hellfighters"],
+    maxCharactersPerAccount: 3,
     pointsGranted: 2,
     selectablePerkIds: [
       "sapper",
@@ -199,6 +205,7 @@ Disadvantages:
     id: "capo",
     name: "Capo",
     category: "faction",
+    maxCharactersPerAccount: 1,
     requiredFaction: [
       "AMERICA - 'Las Manos Apertas' Mafia",
       "AMERICA - 'Chernoye Zoloto' Mafia",

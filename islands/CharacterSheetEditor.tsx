@@ -49,6 +49,7 @@ interface CharacterSheetEditorProps {
   basedOnSnapshotId?: string;
   initialCharacter: CharacterDraft | CharacterSheet;
   perks: PerkDefinition[];
+  accountPerkCounts?: Record<string, number>;
   /** Cloudflare Images delivery URL for existing character image */
   imageUrl?: string;
   /** Whether the character is still pending admin approval */
@@ -169,6 +170,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   );
 
   const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
+  const accountPerkCounts = useMemo(
+    () => new Map(Object.entries(props.accountPerkCounts ?? {})),
+    [props.accountPerkCounts],
+  );
   const derivedPerkIds = getDerivedPerkIds(
     perkIds,
     perkSelections,
@@ -191,6 +196,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       ownedPerkIds: perkIds,
       derivedPerkIds,
       perksById,
+      accountPerkCounts,
     })
   );
 

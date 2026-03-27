@@ -9,6 +9,7 @@ import type {
   CharacterStatus,
 } from "./character_types.ts";
 import type { CharacterInventory } from "./inventory_types.ts";
+import { getPerkAccountLimitError } from "@/data/perks.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
 const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
@@ -97,6 +98,38 @@ export async function listCharacters(userId?: string) {
     return tb.localeCompare(ta);
   });
   return characters;
+}
+
+export async function getUserPerkCharacterCounts(
+  userId: string,
+  options?: { excludeCharacterId?: string },
+) {
+  const counts: Record<string, number> = {};
+  const characters = await listCharacters(userId);
+
+  for (const character of characters) {
+    if (character.id === options?.excludeCharacterId) {
+      continue;
+    }
+
+    for (const perkId of new Set(character.perkIds)) {
+      counts[perkId] = (counts[perkId] ?? 0) + 1;
+    }
+  }
+
+  return counts;
+}
+
+export async function validateAccountLimitedPerksForUser(
+  userId: string,
+  draft: Pick<CharacterDraft, "perkIds">,
+  options?: { excludeCharacterId?: string },
+) {
+  const perkCounts = await getUserPerkCharacterCounts(userId, options);
+  return getPerkAccountLimitError(
+    draft.perkIds,
+    new Map(Object.entries(perkCounts)),
+  );
 }
 
 export async function getCharacter(id: string) {

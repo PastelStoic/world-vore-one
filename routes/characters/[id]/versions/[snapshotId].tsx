@@ -5,6 +5,7 @@ import {
   getCharacter,
   getCharacterSnapshot,
   upsertCharacter,
+  validateAccountLimitedPerksForUser,
 } from "@/lib/characters.ts";
 import { Button } from "@/components/Button.tsx";
 import {
@@ -59,6 +60,15 @@ export const handler = define.handlers({
 
     if (!snapshot) {
       return new Response("Snapshot not found.", { status: 404 });
+    }
+
+    const perkAccountLimitError = await validateAccountLimitedPerksForUser(
+      character.userId,
+      snapshot.data,
+      { excludeCharacterId: characterId },
+    );
+    if (perkAccountLimitError) {
+      return new Response(perkAccountLimitError, { status: 400 });
     }
 
     // If an admin is restoring someone else's snapshot, note it in the changelog

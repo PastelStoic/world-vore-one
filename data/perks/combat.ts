@@ -114,8 +114,9 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `You are a natural brawler, and fight with whatever you have on hands. 
 
-*Tier 0 and tier 1 weapons ( unarmed and makeshift weapons respectively ) deal +1 damage. 
-*When attacking with tier 0 and tier 1 weapons, gain +3d6 to attack with them.
+*Tier 0 and tier 1 weapons ( unarmed and makeshift weapons respectively ) deal +2 damage.
+*Ignore damage penalties whilst using those weapons such as armor or a lizardgirl's scales.
+*When attacking with tier 0 and tier 1 weapons, gain +4d6 to attack with them and count successes on a 4 or above, instead of a 5 and above.
 *Does nothing for tier 2 ( military ) weapons.`,
   },
   {

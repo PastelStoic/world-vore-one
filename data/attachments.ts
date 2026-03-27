@@ -13,7 +13,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Any",
     weight: 1,
     description:
-      `3 damage when attached to the end of a long gun; 2 damage otherwise.
+      `6 damage when attached to the end of a long gun; 4 damage otherwise.
 *-2d6 to shooting if attached. Usable by any rifle and most other long guns.
 *It takes 1 turn to put the bayonet on the gun, or to remove it.`,
   },

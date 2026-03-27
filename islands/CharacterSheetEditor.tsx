@@ -215,6 +215,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkIds,
     perkSelections,
     description.faction,
+    perkOrigins,
   );
   const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
   const ownedPerkGroups = PERK_CATEGORY_ORDER
@@ -326,8 +327,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       !perkIds.includes(id)
     );
     const newPerkIds = [...perkIds, perkId, ...includedIds];
-    const cost = calculatePerksCost(newPerkIds, perkRanks) -
-      calculatePerksCost(perkIds, perkRanks);
+    const cost = calculatePerksCost(
+      newPerkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      perkOrigins,
+    ) -
+      calculatePerksCost(
+        perkIds,
+        perkRanks,
+        perkSelections,
+        description.faction,
+        perkPointChoices,
+        perkOrigins,
+      );
 
     if (unallocatedStatPoints - inventoryPointCost < cost) return;
 
@@ -424,6 +439,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       perkIdsWithoutSource,
       selectionsWithoutSource,
       description.faction,
+      perkOrigins,
     );
     const orphanedIncluded = (perk?.includesPerks ?? []).filter(
       (id) => !stillDerived.has(id),
@@ -442,6 +458,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       perkSelections,
       description.faction,
       perkPointChoices,
+      perkOrigins,
     ) -
       calculatePerksCost(
         newPerkIds,
@@ -449,6 +466,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         selectionsWithoutSource,
         description.faction,
         perkPointChoices,
+        perkOrigins,
       );
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
@@ -516,8 +534,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perk.maxRanks !== undefined && currentRank >= perk.maxRanks) return;
 
     const newRanks = { ...perkRanks, [perkId]: currentRank + 1 };
-    const upgradeCost = calculatePerksCost(perkIds, newRanks) -
-      calculatePerksCost(perkIds, perkRanks);
+    const upgradeCost = calculatePerksCost(
+      perkIds,
+      newRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      perkOrigins,
+    ) -
+      calculatePerksCost(
+        perkIds,
+        perkRanks,
+        perkSelections,
+        description.faction,
+        perkPointChoices,
+        perkOrigins,
+      );
 
     if (unallocatedStatPoints - inventoryPointCost < upgradeCost) return;
 
@@ -554,8 +586,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
 
     const newRanks = { ...perkRanks, [perkId]: currentRank - 1 };
-    const refund = calculatePerksCost(perkIds, perkRanks) -
-      calculatePerksCost(perkIds, newRanks);
+    const refund = calculatePerksCost(
+      perkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      perkOrigins,
+    ) -
+      calculatePerksCost(
+        perkIds,
+        newRanks,
+        perkSelections,
+        description.faction,
+        perkPointChoices,
+        perkOrigins,
+      );
 
     setPerkRanks(newRanks);
     setUnallocatedStatPoints((current) => current + refund);
@@ -723,16 +769,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     const perkRefund = calculatePerksCost(
                       perkIds,
                       perkRanks,
-                      undefined,
-                      undefined,
+                      perkSelections,
+                      description.faction,
                       perkPointChoices,
+                      perkOrigins,
                     ) -
                       calculatePerksCost(
                         keptPerkIds,
                         keptRanks,
-                        undefined,
-                        undefined,
+                        perkSelections,
+                        description.faction,
                         perkPointChoices,
+                        withoutRemovedOrigins(
+                          perkIds.filter((id) =>
+                            !keptPerkIds.includes(id)
+                          ),
+                        ),
                       );
                     if (keptPerkIds.length !== perkIds.length) {
                       const removedIds = perkIds.filter((id) =>
@@ -784,9 +836,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     const newSex = event.currentTarget.value as Sex;
                     updateDescription("sex", newSex);
                     // Swap gendered race name to match new sex
-                    setRace((prev) =>
-                      mapRaceForSex(prev, newSex)
-                    );
+                    setRace((prev) => mapRaceForSex(prev, newSex));
                   }}
                 >
                   {SEX_OPTIONS.map((option) => (
@@ -847,6 +897,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       perkIds,
                       perkSelections,
                       newFaction,
+                      perkOrigins,
                     );
                     const removedCompensated = factionCompensatedPerkIds.filter(
                       (id) =>
@@ -1380,8 +1431,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           [id]: currentRank + 1,
                         };
                         const upgradeCost = canUpgrade
-                          ? calculatePerksCost(perkIds, upgradeRanks) -
-                            calculatePerksCost(perkIds, perkRanks)
+                          ? calculatePerksCost(
+                            perkIds,
+                            upgradeRanks,
+                            perkSelections,
+                            description.faction,
+                            perkPointChoices,
+                            perkOrigins,
+                          ) -
+                            calculatePerksCost(
+                              perkIds,
+                              perkRanks,
+                              perkSelections,
+                              description.faction,
+                              perkPointChoices,
+                              perkOrigins,
+                            )
                           : 0;
                         const canAffordUpgrade =
                           (unallocatedStatPoints - inventoryPointCost) >=
@@ -1728,6 +1793,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                     withoutOld,
                                                     newSelections,
                                                     description.faction,
+                                                    perkOrigins,
                                                   );
                                                 if (!stillDerived.has(oldId)) {
                                                   newPerkIds = withoutOld;
@@ -1846,9 +1912,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   : (
                     <ul class="space-y-2">
                       {availablePerks.map((perk) => {
-                        const cost =
-                          calculatePerksCost([...perkIds, perk.id], perkRanks) -
-                          calculatePerksCost(perkIds, perkRanks);
+                        const cost = calculatePerksCost(
+                          [...perkIds, perk.id],
+                          perkRanks,
+                          perkSelections,
+                          description.faction,
+                          perkPointChoices,
+                          perkOrigins,
+                        ) -
+                          calculatePerksCost(
+                            perkIds,
+                            perkRanks,
+                            perkSelections,
+                            description.faction,
+                            perkPointChoices,
+                            perkOrigins,
+                          );
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;
                         const costLabel = cost < 0

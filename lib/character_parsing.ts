@@ -287,6 +287,7 @@ export function getDerivedPerkIds(
   perkIds: string[],
   perkSelections?: Record<string, string[]>,
   faction?: string,
+  perkOrigins?: Record<string, PerkOrigin>,
 ): Set<string> {
   const derived = new Set<string>();
   for (const perkId of perkIds) {
@@ -308,7 +309,9 @@ export function getDerivedPerkIds(
     const factionDef = FACTION_DEFINITIONS_BY_ID.get(faction);
     if (factionDef?.grantsPerkIds) {
       for (const id of factionDef.grantsPerkIds) {
-        derived.add(id);
+        if (perkOrigins?.[id] === "faction") {
+          derived.add(id);
+        }
       }
     }
   }
@@ -337,10 +340,16 @@ export function calculatePerksCost(
   perkSelections?: Record<string, string[]>,
   faction?: string,
   perkPointChoices?: Record<string, number>,
+  perkOrigins?: Record<string, PerkOrigin>,
 ): number {
   if (perkIds.length <= 0) return 0;
 
-  const derived = getDerivedPerkIds(perkIds, perkSelections, faction);
+  const derived = getDerivedPerkIds(
+    perkIds,
+    perkSelections,
+    faction,
+    perkOrigins,
+  );
   let paidPerkCount = 0;
   let totalPointsGranted = 0;
   let totalFreePerks = 0;
@@ -407,6 +416,7 @@ export function validateCharacterProgression(
     input.perkSelections,
     input.description.faction,
     input.perkPointChoices,
+    input.perkOrigins,
   );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
   const maxAvailablePoints = getStartingStatPoints(input.race) +

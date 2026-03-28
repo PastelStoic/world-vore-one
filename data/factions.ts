@@ -34,6 +34,14 @@ const FACTION_BONUS_DEFINITIONS: Partial<
   "ROLEPLAYER - The Church of Provisional Rations": {
     grantsPerkIds: ["free-range"],
   },
+  {
+  "ROLEPLAYER - Gambling And Guts (GAG)": {
+    grantsPerkIds: ["patron"],
+  },
+  {
+  "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess": {
+    grantsPerkIds: ["hidden-personality"],
+  },
   // Example (remove the leading // to activate):
   // "SWITZERLAND - King's Royal Army": {
   //   grantsPerkIds: ["runner"],

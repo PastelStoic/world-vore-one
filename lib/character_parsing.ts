@@ -419,21 +419,8 @@ export function validateCharacterProgression(
     input.perkOrigins,
   );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
-  const maxAvailablePoints = getStartingStatPoints(input.race) +
-    (FACTION_DEFINITIONS_BY_ID.get(input.description.faction)
-      ?.grantsStatPoints ??
-      0) +
-    getFactionPerkCompensation(
-      input.perkIds,
-      input.description.faction,
-      input.factionCompensatedPerkIds,
-    );
 
   if (totalUsed < getStartingStatPoints(input.race)) {
-    return "Invalid stat/perk point allocation.";
-  }
-
-  if (totalUsed > maxAvailablePoints) {
     return "Invalid stat/perk point allocation.";
   }
 

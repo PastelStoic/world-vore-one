@@ -60,6 +60,7 @@ export const FACTIONS = [
   "JAPAN - Imperial House of Japan",
   "JAPAN - Tokugawa Clan",
   "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
+  "JAPAN - Miscellaneous Japanese Clans",
   "ROLEPLAYER - The Church of Provisional Rations",
   "ROLEPLAYER - Gambling And Guts (GAG)",
   "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess",

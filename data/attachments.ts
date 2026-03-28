@@ -254,6 +254,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "C96 Mauser",
     nation: "Germany",
     weight: 1,
+    rateOfFireBonus: 1,
     removesTraitIds: ["agile", "one-handed"],
     addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
@@ -285,11 +286,11 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 40,
     requiresMagazines: true,
     damageOverride: 2,
-    rateOfFireBonus: 1,
+    rateOfFireBonus: 2,
     excludesAttachmentIds: ["springfield-flyboy"],
     description: `*It takes 3 turns to put the pedersen on/off.
 *The Springfield deals 2 damage instead of 3.
-*The Springfield gains +1 rate of fire.
+*The Springfield gains +2 rate of fire.
 *The Springfield has 40 rounds whilst the device is on.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional 40 round magazine. Each charge has 1 weight.`,
   },
@@ -339,10 +340,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 0,
-    rateOfFireBonus: 2,
+    rateOfFireBonus: 3,
     addsTraitIds: ["uncontrollable"],
     description: `*Attachment has no weight.
-*Weapon gains +2 rate of fire.
+*Weapon gains +3 rate of fire.
 *Gain the 'uncontrollable' gimmick.
 *May be used alongside the other attachments of this weapon.`,
   },

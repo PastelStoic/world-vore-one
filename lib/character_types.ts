@@ -60,7 +60,7 @@ export const FACTIONS = [
   "JAPAN - Imperial House of Japan",
   "JAPAN - Tokugawa Clan",
   "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
-  "The Church of Provisional Rations",
+  "ROLEPLAYER - The Church of Provisional Rations",
 ] as const;
 export type Faction = (typeof FACTIONS)[number];
 

@@ -5,6 +5,8 @@ import {
   EQUIPMENT,
   FREE_ACCESSORIES,
   MELEE_TRAITS,
+  MELEE_TRAITS_BY_ID,
+  MELEE_WEAPONS,
 } from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
@@ -19,8 +21,8 @@ export default define.page(function WikiEquipment() {
         <BackLink href="/wiki">← Wiki</BackLink>
         <h1 class="text-3xl font-bold mt-2">Equipment &amp; Attachments</h1>
         <p class="text-base-content">
-          General gear, weapon attachments, free accessories, and melee weapon
-          traits.
+          General gear, weapon attachments, free accessories, melee weapons, and
+          melee weapon traits.
         </p>
       </header>
 
@@ -169,6 +171,65 @@ export default define.page(function WikiEquipment() {
                   {acc.description}
                 </p>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Melee Weapons ── */}
+      {MELEE_WEAPONS.length > 0 && (
+        <section class="space-y-2">
+          <h2 class="text-xl font-semibold border-b pb-1">Melee Weapons</h2>
+          <p class="text-sm text-base-content/70">
+            Premade melee weapons, with their base damage, weight, and traits.
+          </p>
+          <div class="space-y-2">
+            {MELEE_WEAPONS.map((weapon) => (
+              <details
+                key={weapon.id}
+                class="border rounded-lg bg-base-100/80 px-4 py-2"
+              >
+                <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
+                  <span class="font-semibold">{weapon.name}</span>
+                  <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
+                    <span>DMG: {weapon.damage}</span>
+                    <span>Wt: {weapon.weight}</span>
+                    <span class="text-base-content/50">▶ details</span>
+                  </span>
+                </summary>
+                <div class="mt-2 text-sm text-base-content border-t pt-2 space-y-2">
+                  <div class="flex flex-wrap gap-3 text-xs text-base-content/70">
+                    <span>
+                      <span class="font-medium">Damage:</span> {weapon.damage}
+                    </span>
+                    <span>
+                      <span class="font-medium">Weight:</span> {weapon.weight}
+                    </span>
+                  </div>
+                  <p class="text-base-content/70 whitespace-pre-line">
+                    {weapon.description}
+                  </p>
+                  {weapon.traitIds.length > 0 && (
+                    <div class="space-y-1">
+                      <span class="text-xs font-medium">Traits:</span>
+                      {weapon.traitIds.map((traitId) => {
+                        const trait = MELEE_TRAITS_BY_ID.get(traitId);
+                        return (
+                          <div
+                            key={`${weapon.id}-${traitId}`}
+                            class="text-xs text-base-content/70 ml-2"
+                          >
+                            <span class="font-medium">
+                              {trait?.name ?? traitId}:
+                            </span>{" "}
+                            {trait?.description ?? ""}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </details>
             ))}
           </div>
         </section>

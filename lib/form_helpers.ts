@@ -22,6 +22,7 @@ import {
 } from "./characters.ts";
 import { validateStatCaps } from "./draft_validation.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
+import { normalizePerkIds } from "./perk_state_helpers.ts";
 
 export function parseNonNegativeInt(
   rawValue: FormDataEntryValue | null,
@@ -127,13 +128,19 @@ export function parseCharacterFormData(
     return new Response("Invalid perk id in payload.", { status: 400 });
   }
 
+  const normalizedPerkIds = normalizePerkIds(
+    perkIds,
+    perkSelections,
+    description.faction,
+    perkOrigins,
+  );
   const perkRanks = parsePerkRanks(
     String(formData.get("perkRanks") ?? "{}"),
-    perkIds,
+    normalizedPerkIds,
   );
   const perkPointChoices = parsePerkPointChoices(
     String(formData.get("perkPointChoices") ?? "{}"),
-    perkIds,
+    normalizedPerkIds,
   );
 
   return {
@@ -143,7 +150,7 @@ export function parseCharacterFormData(
     race,
     description,
     baseStats,
-    perkIds,
+    perkIds: normalizedPerkIds,
     perkNotes,
     perkUpgradeNotes,
     perkStatChoices,

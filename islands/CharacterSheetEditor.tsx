@@ -31,7 +31,10 @@ import {
 } from "@/lib/draft_validation.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
-import { cleanupPerkData } from "@/lib/perk_state_helpers.ts";
+import {
+  cleanupPerkData,
+  normalizeCharacterPerkIds,
+} from "@/lib/perk_state_helpers.ts";
 import { useImageUpload } from "@/lib/useImageUpload.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
@@ -172,34 +175,37 @@ function inferInitialPerkState(
 }
 
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
+  const [initialCharacter] = useState(() =>
+    normalizeCharacterPerkIds(props.initialCharacter)
+  );
   const [initialPerkState] = useState(() =>
-    inferInitialPerkState(props.initialCharacter)
+    inferInitialPerkState(initialCharacter)
   );
-  const [name, setName] = useState(props.initialCharacter.name);
-  const [race, setRace] = useState(props.initialCharacter.race);
+  const [name, setName] = useState(initialCharacter.name);
+  const [race, setRace] = useState(initialCharacter.race);
   const [description, setDescription] = useState<CharacterDescription>(
-    props.initialCharacter.description,
+    initialCharacter.description,
   );
-  const [initialBaseStats] = useState(props.initialCharacter.baseStats);
-  const [baseStats, setBaseStats] = useState(props.initialCharacter.baseStats);
-  const [initialPerkIds] = useState(props.initialCharacter.perkIds);
-  const [initialPerkRanks] = useState(props.initialCharacter.perkRanks ?? {});
+  const [initialBaseStats] = useState(initialCharacter.baseStats);
+  const [baseStats, setBaseStats] = useState(initialCharacter.baseStats);
+  const [initialPerkIds] = useState(initialCharacter.perkIds);
+  const [initialPerkRanks] = useState(initialCharacter.perkRanks ?? {});
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
-    props.initialCharacter.unallocatedStatPoints,
+    initialCharacter.unallocatedStatPoints,
   );
-  const [perkIds, setPerkIds] = useState(props.initialCharacter.perkIds);
+  const [perkIds, setPerkIds] = useState(initialCharacter.perkIds);
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
-    props.initialCharacter.perkNotes ?? {},
+    initialCharacter.perkNotes ?? {},
   );
   const [perkUpgradeNotes, setPerkUpgradeNotes] = useState<
     Record<string, string[]>
   >(() => {
-    const result = { ...(props.initialCharacter.perkUpgradeNotes ?? {}) };
+    const result = { ...(initialCharacter.perkUpgradeNotes ?? {}) };
     // Migrate existing perkNotes entries for upgradable perks
-    for (const perkId of props.initialCharacter.perkIds) {
+    for (const perkId of initialCharacter.perkIds) {
       const perk = PERKS_BY_ID.get(perkId);
       if (perk?.upgradable && perk.customInput && !result[perkId]) {
-        const oldNote = props.initialCharacter.perkNotes?.[perkId];
+        const oldNote = initialCharacter.perkNotes?.[perkId];
         if (oldNote) result[perkId] = [oldNote];
       }
     }
@@ -207,22 +213,22 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   });
   const [perkStatChoices, setPerkStatChoices] = useState<
     Record<string, BaseStatKey[]>
-  >(props.initialCharacter.perkStatChoices ?? {});
+  >(initialCharacter.perkStatChoices ?? {});
   const [perkRanks, setPerkRanks] = useState<Record<string, number>>(
-    props.initialCharacter.perkRanks ?? {},
+    initialCharacter.perkRanks ?? {},
   );
   const [perkDisguises, setPerkDisguises] = useState<Record<string, string>>(
-    props.initialCharacter.perkDisguises ?? {},
+    initialCharacter.perkDisguises ?? {},
   );
   const [perkSelections, setPerkSelections] = useState<
     Record<string, string[]>
   >(
-    props.initialCharacter.perkSelections ?? {},
+    initialCharacter.perkSelections ?? {},
   );
   const [perkPointChoices, setPerkPointChoices] = useState<
     Record<string, number>
   >(
-    props.initialCharacter.perkPointChoices ?? {},
+    initialCharacter.perkPointChoices ?? {},
   );
   const [perkOrigins, setPerkOrigins] = useState<Record<string, PerkOrigin>>(
     initialPerkState.perkOrigins,
@@ -231,7 +237,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     string[]
   >(initialPerkState.factionCompensatedPerkIds);
   const [inventory, setInventory] = useState<CharacterInventory>(
-    props.initialCharacter.inventory ?? createEmptyInventory(),
+    initialCharacter.inventory ?? createEmptyInventory(),
   );
   const [changelog, setChangelog] = useState("");
   const [showDescription, setShowDescription] = useState(true);

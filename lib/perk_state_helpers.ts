@@ -2,7 +2,13 @@
 // Perk state cleanup helpers
 // ---------------------------------------------------------------------------
 
-import type { BaseStatKey } from "./character_types.ts";
+import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
+import { PERKS_BY_ID } from "@/data/perks.ts";
+import type {
+  BaseStatKey,
+  CharacterDraft,
+  PerkOrigin,
+} from "./character_types.ts";
 
 /**
  * The six perk customization state maps that live on CharacterDraft.
@@ -34,4 +40,70 @@ export function cleanupPerkData<K extends keyof PerkCustomizationState>(
     result[key] = obj;
   }
   return result;
+}
+
+export function normalizePerkIds(
+  perkIds: string[],
+  perkSelections?: Record<string, string[]>,
+  faction?: string,
+  perkOrigins?: Record<string, PerkOrigin>,
+): string[] {
+  const normalized = new Set(perkIds);
+  const queue = [...perkIds];
+
+  if (perkSelections) {
+    for (const selectedIds of Object.values(perkSelections)) {
+      for (const id of selectedIds) {
+        if (normalized.has(id)) continue;
+        normalized.add(id);
+        queue.push(id);
+      }
+    }
+  }
+
+  if (faction) {
+    for (
+      const id of FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? []
+    ) {
+      if (perkOrigins?.[id] !== "faction" || normalized.has(id)) continue;
+      normalized.add(id);
+      queue.push(id);
+    }
+  }
+
+  while (queue.length > 0) {
+    const perkId = queue.shift();
+    if (!perkId) continue;
+
+    for (const includedId of PERKS_BY_ID.get(perkId)?.includesPerks ?? []) {
+      if (normalized.has(includedId)) continue;
+      normalized.add(includedId);
+      queue.push(includedId);
+    }
+  }
+
+  return [...normalized];
+}
+
+export function normalizeCharacterPerkIds<T extends CharacterDraft>(
+  character: T,
+): T {
+  const perkIds = normalizePerkIds(
+    character.perkIds,
+    character.perkSelections,
+    character.description.faction,
+    character.perkOrigins,
+  );
+
+  if (
+    perkIds.length === character.perkIds.length &&
+    perkIds.every((id, index) => id === character.perkIds[index])
+  ) {
+    return character;
+  }
+
+  return {
+    ...character,
+    perkIds,
+  };
 }

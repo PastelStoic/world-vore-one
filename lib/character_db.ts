@@ -10,6 +10,7 @@ import type {
 } from "./character_types.ts";
 import type { CharacterInventory } from "./inventory_types.ts";
 import { getPerkAccountLimitError } from "@/data/perks.ts";
+import { normalizeCharacterPerkIds } from "./perk_state_helpers.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
 const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
@@ -79,7 +80,7 @@ export async function listCharacters(userId?: string) {
       })
     ) {
       if (entry.value) {
-        characters.push(entry.value);
+        characters.push(normalizeCharacterPerkIds(entry.value));
       }
     }
   } else {
@@ -87,7 +88,7 @@ export async function listCharacters(userId?: string) {
       const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
     ) {
       if (entry.value) {
-        characters.push(entry.value);
+        characters.push(normalizeCharacterPerkIds(entry.value));
       }
     }
   }
@@ -135,7 +136,7 @@ export async function validateAccountLimitedPerksForUser(
 export async function getCharacter(id: string) {
   const kv = await getKv();
   const entry = await kv.get<CharacterSheet>([...CHARACTER_PREFIX, id]);
-  return entry.value;
+  return entry.value ? normalizeCharacterPerkIds(entry.value) : entry.value;
 }
 
 export async function upsertCharacter(
@@ -146,6 +147,7 @@ export async function upsertCharacter(
   const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
+  const normalizedInput = normalizeCharacterPerkIds(input);
   const snapshotId = crypto.randomUUID();
   const basedOnSnapshotId = options?.basedOnSnapshotId?.trim();
   const changelogWithBase = basedOnSnapshotId && existing &&
@@ -155,30 +157,30 @@ export async function upsertCharacter(
 
   const snapshot: CharacterSnapshot = {
     snapshotId,
-    characterId: input.id,
+    characterId: normalizedInput.id,
     timestamp: now,
     changelog: changelogWithBase,
     basedOnSnapshotId: basedOnSnapshotId || undefined,
     data: {
-      name: input.name,
-      race: input.race,
-      description: input.description,
-      baseStats: input.baseStats,
-      unallocatedStatPoints: input.unallocatedStatPoints,
-      perkIds: input.perkIds,
-      perkNotes: input.perkNotes,
-      perkUpgradeNotes: input.perkUpgradeNotes,
-      perkStatChoices: input.perkStatChoices,
-      perkRanks: input.perkRanks,
-      perkDisguises: input.perkDisguises,
-      perkSelections: input.perkSelections,
-      perkPointChoices: input.perkPointChoices,
-      inventory: input.inventory,
+      name: normalizedInput.name,
+      race: normalizedInput.race,
+      description: normalizedInput.description,
+      baseStats: normalizedInput.baseStats,
+      unallocatedStatPoints: normalizedInput.unallocatedStatPoints,
+      perkIds: normalizedInput.perkIds,
+      perkNotes: normalizedInput.perkNotes,
+      perkUpgradeNotes: normalizedInput.perkUpgradeNotes,
+      perkStatChoices: normalizedInput.perkStatChoices,
+      perkRanks: normalizedInput.perkRanks,
+      perkDisguises: normalizedInput.perkDisguises,
+      perkSelections: normalizedInput.perkSelections,
+      perkPointChoices: normalizedInput.perkPointChoices,
+      inventory: normalizedInput.inventory,
     },
   };
 
   const character: CharacterSheet = {
-    ...input,
+    ...normalizedInput,
     latestSnapshotId: snapshotId,
     imageId: existing?.imageId,
     hidden: existing?.hidden,
@@ -195,7 +197,7 @@ export async function upsertCharacter(
   ], snapshot);
   await kv.set([
     ...CHARACTER_SNAPSHOT_BY_ID_PREFIX,
-    input.id,
+    normalizedInput.id,
     snapshotId,
   ], snapshot);
   await saveCharacter(kv, character);
@@ -227,9 +229,10 @@ export async function upsertCharacterDirect(
   const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
+  const normalizedInput = normalizeCharacterPerkIds(input);
 
   const character: CharacterSheet = {
-    ...input,
+    ...normalizedInput,
     latestSnapshotId: existing?.latestSnapshotId ?? "",
     imageId: existing?.imageId,
     hidden: existing?.hidden,
@@ -287,7 +290,10 @@ export async function listCharacterSnapshots(characterId: string) {
     })
   ) {
     if (entry.value) {
-      snapshots.push(entry.value);
+      snapshots.push({
+        ...entry.value,
+        data: normalizeCharacterPerkIds(entry.value.data),
+      });
     }
   }
 
@@ -305,7 +311,9 @@ export async function getCharacterSnapshot(
     characterId,
     snapshotId,
   ]);
-  return entry.value;
+  return entry.value
+    ? { ...entry.value, data: normalizeCharacterPerkIds(entry.value.data) }
+    : entry.value;
 }
 
 /**

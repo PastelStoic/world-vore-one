@@ -87,6 +87,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
   *Deals 4 damage to targets at distance 8 or beyond.
   *Deals 2 damage to targets at distance 7 or closer.
   *Ignores damage penalties, such as a lizardgirl's scales.
+  *Damage transference effects ( prey-as-armour, veteran, etc ) have you deal full damage to both the original target and the transferee.
   *Weak cover (2d6) is destroyed upon being hit.`,
   },
   {
@@ -241,8 +242,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     isCharge: true,
     ammoOverride: 5,
     description:
-      `*Armor piercing ammunition. Ignores damage reduction from perks and gear.
-(Lizard tierfraun, prey-as-armour, etc.)
+      `*Armor piercing ammunition. Ignores damage reduction from perks and gear. ( Lizard tierfraun, defender's shield, etc )
+*Damage transference effects ( prey-as-armour, veteran, etc ) have you deal full damage to both the original target and the transferee.
 *May pierce lightly armoured vehicles once we actually add those.
 *When buying this piece of gear, you're paying for charges of it. Each charge is 5 rounds.
 *Weightless.`,

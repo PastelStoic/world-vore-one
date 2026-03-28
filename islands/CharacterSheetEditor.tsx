@@ -57,35 +57,124 @@ interface CharacterSheetEditorProps {
   isPending?: boolean;
 }
 
-function inferInitialPerkOrigins(
+function inferInitialPerkState(
   initialCharacter: CharacterDraft | CharacterSheet,
-): Record<string, PerkOrigin> {
-  const result = { ...(initialCharacter.perkOrigins ?? {}) };
-  const currentFactionPerkIds = new Set(
-    FACTION_DEFINITIONS_BY_ID.get(initialCharacter.description.faction)
-      ?.grantsPerkIds ?? [],
-  );
-  const compensatedPerkIds = new Set(
-    initialCharacter.factionCompensatedPerkIds ?? [],
+): {
+  perkOrigins: Record<string, PerkOrigin>;
+  factionCompensatedPerkIds: string[];
+} {
+  const perkOrigins = { ...(initialCharacter.perkOrigins ?? {}) };
+  const faction = initialCharacter.description.faction;
+  const factionGrantedOwnedIds = (
+    FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? []
+  ).filter((id) => initialCharacter.perkIds.includes(id));
+  const explicitCompensatedIds = (
+    initialCharacter.factionCompensatedPerkIds ?? []
+  ).filter((id) => factionGrantedOwnedIds.includes(id));
+  const unresolvedFactionIds = factionGrantedOwnedIds.filter((id) =>
+    !perkOrigins[id]
   );
 
-  for (const perkId of initialCharacter.perkIds) {
-    if (result[perkId]) continue;
+  const spentOnStats = BASE_STAT_FIELDS.reduce(
+    (total, stat) => total + initialCharacter.baseStats[stat.key],
+    0,
+  ) - BASE_STAT_FIELDS.length;
+  const baseAvailablePoints = getStartingStatPoints(initialCharacter.race) +
+    (FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsStatPoints ?? 0);
 
-    if (
-      currentFactionPerkIds.has(perkId) && !compensatedPerkIds.has(perkId)
-    ) {
-      result[perkId] = "faction";
-      continue;
+  let bestOrigins: Record<string, PerkOrigin> | undefined;
+  let bestCompensatedIds: string[] | undefined;
+  let bestFactionCount = Number.POSITIVE_INFINITY;
+  let bestCompensationCount = Number.NEGATIVE_INFINITY;
+
+  for (
+    let originMask = 0;
+    originMask < 2 ** unresolvedFactionIds.length;
+    originMask++
+  ) {
+    const candidateOrigins = { ...perkOrigins };
+    const purchasedFactionIds: string[] = [];
+
+    for (const perkId of initialCharacter.perkIds) {
+      if (!candidateOrigins[perkId]) {
+        candidateOrigins[perkId] = "purchased";
+      }
     }
 
-    result[perkId] = "purchased";
+    for (const [index, perkId] of unresolvedFactionIds.entries()) {
+      if ((originMask & (1 << index)) !== 0) {
+        candidateOrigins[perkId] = "faction";
+      } else {
+        candidateOrigins[perkId] = "purchased";
+        purchasedFactionIds.push(perkId);
+      }
+    }
+
+    for (
+      let compensationMask = 0;
+      compensationMask < 2 ** purchasedFactionIds.length;
+      compensationMask++
+    ) {
+      const candidateCompensatedIds = [...explicitCompensatedIds];
+
+      for (const [index, perkId] of purchasedFactionIds.entries()) {
+        if ((compensationMask & (1 << index)) !== 0) {
+          candidateCompensatedIds.push(perkId);
+        }
+      }
+
+      const spentOnPerks = calculatePerksCost(
+        initialCharacter.perkIds,
+        initialCharacter.perkRanks,
+        initialCharacter.perkSelections,
+        faction,
+        initialCharacter.perkPointChoices,
+        candidateOrigins,
+      );
+      const totalUsed = spentOnStats + spentOnPerks +
+        initialCharacter.unallocatedStatPoints;
+      const totalAvailable = baseAvailablePoints +
+        (candidateCompensatedIds.length * 2);
+
+      if (totalUsed !== totalAvailable) {
+        continue;
+      }
+
+      const inferredFactionCount = unresolvedFactionIds.filter((id) =>
+        candidateOrigins[id] === "faction"
+      ).length;
+      if (
+        inferredFactionCount < bestFactionCount ||
+        (
+          inferredFactionCount === bestFactionCount &&
+          candidateCompensatedIds.length > bestCompensationCount
+        )
+      ) {
+        bestOrigins = candidateOrigins;
+        bestCompensatedIds = candidateCompensatedIds;
+        bestFactionCount = inferredFactionCount;
+        bestCompensationCount = candidateCompensatedIds.length;
+      }
+    }
   }
 
-  return result;
+  const finalOrigins = bestOrigins ?? { ...perkOrigins };
+  for (const perkId of initialCharacter.perkIds) {
+    if (!finalOrigins[perkId]) {
+      finalOrigins[perkId] = "purchased";
+    }
+  }
+
+  return {
+    perkOrigins: finalOrigins,
+    factionCompensatedPerkIds: bestCompensatedIds ?? explicitCompensatedIds,
+  };
 }
 
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
+  const [initialPerkState] = useState(() =>
+    inferInitialPerkState(props.initialCharacter)
+  );
   const [name, setName] = useState(props.initialCharacter.name);
   const [race, setRace] = useState(props.initialCharacter.race);
   const [description, setDescription] = useState<CharacterDescription>(
@@ -136,11 +225,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     props.initialCharacter.perkPointChoices ?? {},
   );
   const [perkOrigins, setPerkOrigins] = useState<Record<string, PerkOrigin>>(
-    () => inferInitialPerkOrigins(props.initialCharacter),
+    initialPerkState.perkOrigins,
   );
   const [factionCompensatedPerkIds, setFactionCompensatedPerkIds] = useState<
     string[]
-  >(props.initialCharacter.factionCompensatedPerkIds ?? []);
+  >(initialPerkState.factionCompensatedPerkIds);
   const [inventory, setInventory] = useState<CharacterInventory>(
     props.initialCharacter.inventory ?? createEmptyInventory(),
   );

@@ -98,9 +98,11 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     description:
       `Through some abysmal fuckery, you are born extremely tiny - no more than four inches tall at most.
 
-*You are considered to have values of 1 in Strenght, Dex and Constitution when dealing with someone normal sized. 
+*You are considered to have values of 1 in Strenght, Dex and Constitution when dealing with someone normal sized.
 *Any investments into those stats only apply when dealing with other equally sized beings.
-*You can pass through extremely tiny openings. You cannot lift anything normal sized. 
+*You may only carry a single 1 weight item on your person. You cannot operate firearms.
+*You can pass through extremely tiny openings. You cannot lift anything normal sized other than that single 1 weight item of choice.
+*You have a permanent 6d6 cover, and gain +6d6 strength to avoid being melee'd, as you are too tiny to hit! Does NOT apply to grapple checks!
 *You cannot escape the stomachs or grips of someone normal sized no matter how much you try.
 *You are extremely stretchy, You can take testicles without issue, and you can eat ONE normal-sized person at all. 
 *If you do manage to eat someone normal-sized, they are incapable of escaping you due to the sheer tightness.

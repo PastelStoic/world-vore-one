@@ -207,6 +207,16 @@ export const EQUIPMENT: EquipmentDefinition[] = [
   *If you're holding this shield, damage from all sources is lowered to 1. Unarmed and makeshift weapons deal no damage.. You must be facing the target, or there is no reduction.
   *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
   },
+  {
+    id: "dradnoughts-armor",
+    name: "Dradnought's armor",
+    weight: 4,
+    isGhost: true,
+    description:
+      `The Dreadnaught's Armor! Especially tailored to you.
+  *You are immune to small arms fire and melee weapons, unless they have a trait to circunvent it. Explosions, anti-tank weapons and similar threats still present a very real danger.
+  *It is tailored for you specifically. Nobody else can wear it.`,
+  },
 ];
 
 export const EQUIPMENT_BY_ID = new Map(

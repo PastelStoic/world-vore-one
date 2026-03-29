@@ -248,6 +248,7 @@ Disadvantages:
       "JAPAN - Imperial House of Japan",
       "JAPAN - Tokugawa Clan",
       "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
+      "JAPAN - Miscellaneous Japanesee Clans",
     ],
     maxCharactersPerAccount: 1,
     isFree: true,

@@ -208,8 +208,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
   *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
   },
   {
-    id: "dradnoughts-armor",
-    name: "Dradnought's armor",
+    id: "dreadnoughts-armor",
+    name: "Dreadnought's armor",
     weight: 4,
     isGhost: true,
     description:

@@ -31,8 +31,16 @@ import { FACTIONS } from "@/lib/character_types.ts";
 const FACTION_BONUS_DEFINITIONS: Partial<
   Record<Faction, Omit<FactionDefinition, "id">>
 > = {
-  "The Church of Provisional Rations": {
+  "ROLEPLAYER - The Church of Provisional Rations": {
     grantsPerkIds: ["free-range"],
+  },
+  {
+  "ROLEPLAYER - Gambling And Guts (GAG)": {
+    grantsPerkIds: ["patron"],
+  },
+  {
+  "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess": {
+    grantsPerkIds: ["hidden-personality"],
   },
   // Example (remove the leading // to activate):
   // "SWITZERLAND - King's Royal Army": {

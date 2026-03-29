@@ -204,7 +204,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     description:
       `The Defender's shield! Will protect you and others from external harm!
   *You may use a one-handed melee weapon OR one-handed firearm whilst holding the shield, but you have -3d6 to attack with them.
-  *If you're holding this shield, damage from all sources is lowered to 1. Unarmed and makeshift weapons deal no damage.. You must be facing the target, or there is no reduction.
+  *If you're holding this shield, damage from all sources is lowered to 1. Unarmed and makeshift weapons deal no damage. You must be facing the target, or there is no reduction.
   *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
   },
   {

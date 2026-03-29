@@ -234,6 +234,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You like to see others get stuffed to the very brim - and then push them past it!
 
+*Does not apply to feed baseliners, those cannot eat anyone!
 *You gain +4d6 to grapple prey and to force-feed them to someone.
 *You now count successes on 4 and above, rather than 5 and above, to do that.
 *Alternatively, stuff someone with food: 

@@ -237,6 +237,163 @@ Disadvantages:
 *Crimes can be linked back to you if you’re not careful! Your goons should do the work, not you!
 *Must be in America and be part of one of three mafias.`,
   },
+  {
+    id: "japanese-kami-champion",
+    name: "Japanese Kami-Champion",
+    category: "faction",
+    requiredRaces: ["Tierfraun"],
+    requiresTemplate: true,
+    customInput: "Number of daughters at character creation",
+    requiredFaction: [
+      "JAPAN - Imperial House of Japan",
+      "JAPAN - Tokugawa Clan",
+      "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
+    ],
+    maxCharactersPerAccount: 1,
+    isFree: true,
+    pointsGranted: 15,
+    selectablePerkIds: [
+      "japanese-kami-champion-war-strength",
+      "japanese-kami-champion-war-dexterity",
+      "japanese-kami-champion-war-constitution",
+      "japanese-kami-champion-arts-dexterity",
+      "japanese-kami-champion-arts-intelligence",
+      "japanese-kami-champion-carousing",
+    ],
+    selectablePerksCount: 1,
+    description:
+      `You are the incarnation of Japanese deities, the 'Yokai'. A god or goddess, a 'Kami', and a champion of your clan.
+
+*Incredibly complex perk for newcomers, requires a lot of setting knowledge. Don't pick this if you don't know what you're doing.
+
+Advantages:
+*Must be KPF. In current sheet terms this is enforced as a Japanese faction-aligned Tierfraun template.
+*This perk is free.
+*Your sheet starts with 20 points instead of the typical 5.
+*The general Japanese populous worships you to no end. Most will do your bidding even if it costs them their lives.
+*You may be up to 15 feet tall. You don't have to be; you can be normal-sized if preferred.
+*When digesting a Pilzfraun, you acquire all of her points and perks so long as the perk is a type of skill. Allies, Patron, Signature Weapon and similar perks are not absorbed.
+*When you die from non-digestion causes, your memories and consciousness overwrite your oldest daughter and you live on.
+*Choose one Lady aspect below.
+
+Disadvantages:
+*Only one per player. You may make another if yours dies.
+*You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type.
+*At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
+*When starting a scene, roll 1d100. If the roll is less than or equal to your number of daughters, your partner may choose to ambush one of your daughters in this scene or any future scene.
+*If you are digested, your consciousness remains in the body of your predator until your predator dies from non-digestion.
+*If one of your daughters is digested, roll 1d[number of daughters]. This determines which daughter she is in line of inheritance; note down that daughter number X has been digested.
+*If you die and the next daughter in line of inheritance has been digested, you will inhabit the fat in the body of the predator who ate her.
+*You must have at least 3 points in Strength, Dexterity, Constitution, Intelligence and Charisma.`,
+  },
+  {
+    id: "japanese-kami-champion-war-strength",
+    name: "Lady of War (Strength)",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { strength: 3 },
+    },
+    description: `You are a warlike Kami-Champion who leads by personal might.
+
+*+3 Strength.
+*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You are a tank, in person.
+*Pick this for a stronger individual character.`,
+  },
+  {
+    id: "japanese-kami-champion-war-dexterity",
+    name: "Lady of War (Dexterity)",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { dexterity: 3 },
+    },
+    description:
+      `You are a warlike Kami-Champion who leads through martial precision.
+
+*+3 Dexterity.
+*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You are a tank, in person.
+*Pick this for a stronger individual character.`,
+  },
+  {
+    id: "japanese-kami-champion-war-constitution",
+    name: "Lady of War (Constitution)",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { constitution: 3 },
+    },
+    description:
+      `You are a warlike Kami-Champion whose body shrugs off punishment.
+
+*+3 Constitution.
+*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You are a tank, in person.
+*Pick this for a stronger individual character.`,
+  },
+  {
+    id: "japanese-kami-champion-arts-dexterity",
+    name: "Lady of the Arts (Dexterity)",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { dexterity: 3 },
+    },
+    description:
+      `You are a patron Kami whose mastery expresses itself through practiced grace.
+
+*+3 Dexterity.
+*Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*Many seek your wisdom, and your opinions are held in high regard.
+*You own an important artistic or religious tool.`,
+  },
+  {
+    id: "japanese-kami-champion-arts-intelligence",
+    name: "Lady of the Arts (Intelligence)",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { intelligence: 3 },
+    },
+    description:
+      `You are a patron Kami whose mastery is rooted in scholarship and taste.
+
+*+3 Intelligence.
+*Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*Many seek your wisdom, and your opinions are held in high regard.
+*You own an important artistic or religious tool.`,
+  },
+  {
+    id: "japanese-kami-champion-carousing",
+    name: "Lady of Carousing",
+    category: "faction",
+    requiredPerkIds: ["japanese-kami-champion"],
+    lockCategory: "japanese-kami-champion-aspect",
+    selectionOnly: true,
+    modifiers: {
+      baseStatBonuses: { charisma: 3 },
+    },
+    description: `You are a convivial, politically dangerous Kami-Champion.
+
+*+3 Charisma.
+*Your very presence demands respect.
+*You rank higher even amongst other goddesses, mostly due to your connections.
+*It is much easier to form alliances and convince others to do your bidding.
+*You may enlist help from foreign nations much more easily than others.
+*Pick this to be the ultimate politician.`,
+  },
   // ─────────────────────────────────────────────────────────────────────────
   // TEMPLATE: How to add a new faction perk
   // ─────────────────────────────────────────────────────────────────────────

@@ -32,6 +32,19 @@ export function getStatFloor(
   perkIds: string[],
 ): number {
   if (
+    perkIds.includes("japanese-kami-champion") &&
+    (
+      statKey === "strength" ||
+      statKey === "dexterity" ||
+      statKey === "constitution" ||
+      statKey === "intelligence" ||
+      statKey === "charisma"
+    )
+  ) {
+    return 3;
+  }
+
+  if (
     statKey === "digestionStrength" &&
     perkIds.includes("extremely-inefficient-digestion")
   ) {
@@ -63,6 +76,7 @@ export interface PerkEligibilityContext {
   race: Race;
   sex: Sex;
   faction: string;
+  isTemplate: boolean;
   ownedPerkIds: string[];
   derivedPerkIds: ReadonlySet<string>;
   perksById: ReadonlyMap<string, PerkDefinition>;
@@ -85,6 +99,8 @@ export function isPerkEligible(
   perk: PerkDefinition,
   ctx: PerkEligibilityContext,
 ): boolean {
+  if (perk.selectionOnly) return false;
+
   // Already owned or derived
   if (ctx.ownedPerkIds.includes(perk.id)) return false;
   if (ctx.derivedPerkIds.has(perk.id)) return false;
@@ -99,6 +115,10 @@ export function isPerkEligible(
     return false;
   }
 
+  if (perk.requiresTemplate && !ctx.isTemplate) {
+    return false;
+  }
+
   // Faction restriction
   if (perk.requiredFaction) {
     const factions = Array.isArray(perk.requiredFaction)
@@ -107,6 +127,10 @@ export function isPerkEligible(
     if (!factions.includes(ctx.faction as typeof factions[number])) {
       return false;
     }
+  }
+
+  if (perk.requiredPerkIds?.some((id) => !ctx.ownedPerkIds.includes(id))) {
+    return false;
   }
 
   if (

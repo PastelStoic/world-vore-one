@@ -326,6 +326,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       race,
       sex: description.sex,
       faction: description.faction,
+      isTemplate: description.isTemplate,
       ownedPerkIds: perkIds,
       derivedPerkIds,
       perksById,

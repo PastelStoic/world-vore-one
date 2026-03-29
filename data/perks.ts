@@ -78,6 +78,10 @@ export interface PerkDefinition {
   requiredRaces?: Race[];
   requiredSex?: Sex[];
   requiredFaction?: Faction | Faction[];
+  /** When true, the character must be marked as a template. */
+  requiresTemplate?: boolean;
+  /** Active perk IDs that must already be present. */
+  requiredPerkIds?: string[];
   lockCategory?: string;
   /** When true, this perk costs nothing and doesn't consume the first-perk freebie. */
   isFree?: boolean;
@@ -130,6 +134,8 @@ export interface PerkDefinition {
   selectablePerksCount?: number;
   /** Maximum number of characters on one account that may own this perk. */
   maxCharactersPerAccount?: number;
+  /** When true, hide this perk from the normal add-perk picker. */
+  selectionOnly?: boolean;
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -161,6 +167,9 @@ export function validatePerkRequirements(
   sex: Sex,
   perkIds: string[],
   faction?: string,
+  options?: {
+    isTemplate?: boolean;
+  },
 ): string | null {
   const selectedByLockCategory = new Map<string, string>();
 
@@ -182,6 +191,10 @@ export function validatePerkRequirements(
       }.`;
     }
 
+    if (perk.requiresTemplate && !options?.isTemplate) {
+      return `Perk "${perk.name}" requires the character to be a template.`;
+    }
+
     if (perk.requiredFaction) {
       const factions = Array.isArray(perk.requiredFaction)
         ? perk.requiredFaction
@@ -190,6 +203,17 @@ export function validatePerkRequirements(
         return `Perk "${perk.name}" requires faction: ${
           factions.join(" or ")
         }.`;
+      }
+    }
+
+    if (perk.requiredPerkIds) {
+      for (const requiredPerkId of perk.requiredPerkIds) {
+        if (!perkIds.includes(requiredPerkId)) {
+          const requiredPerk = PERKS_BY_ID.get(requiredPerkId);
+          return `Perk "${perk.name}" requires "${
+            requiredPerk?.name ?? requiredPerkId
+          }".`;
+        }
       }
     }
 

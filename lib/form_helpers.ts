@@ -226,6 +226,9 @@ export function buildAndValidateDraft(
     draft.description.sex,
     draft.perkIds,
     draft.description.faction,
+    {
+      isTemplate: draft.description.isTemplate,
+    },
   );
   if (perkRequirementError) {
     return new Response(perkRequirementError, { status: 400 });

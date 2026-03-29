@@ -245,9 +245,6 @@ Disadvantages:
     requiresTemplate: true,
     customInput: "Number of daughters at character creation",
     requiredFaction: [
-      "JAPAN - Imperial House of Japan",
-      "JAPAN - Tokugawa Clan",
-      "JAPAN - The Kurokawa Sect (黒川教団) – The Black River Sect",
       "JAPAN - Miscellaneous Japanese Clans",
     ],
     maxCharactersPerAccount: 1,

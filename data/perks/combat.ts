@@ -161,8 +161,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *If at distance 0 with any number of teammates, as an action you may protect any number of them, forcing the enemy to target you instead. 
 *If you're holding your shield, damage from all sources is lowered to 1. Unarmed and makeshift weapons deal no damage. You must be facing the target, or there is no reduction.
 *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
-    grantsMeleeWeapons: [
-      { meleeWeaponId: "shield" },
+    grantsEquipment: [
+      { equipmentId: "defenders-shield" },
     ],
   },
   {

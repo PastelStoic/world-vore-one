@@ -295,10 +295,14 @@ Disadvantages:
     modifiers: {
       baseStatBonuses: { strength: 3 },
     },
+    grantsEquipment: [
+      { equipmentId: "dreadnoughts-armor" },
+    ],
     description: `You are a warlike Kami-Champion who leads by personal might.
 
 *+3 Strength.
 *You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*It is tailored for you specifically. Nobody else can wear it.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },
@@ -312,11 +316,15 @@ Disadvantages:
     modifiers: {
       baseStatBonuses: { dexterity: 3 },
     },
+    grantsEquipment: [
+      { equipmentId: "dreadnoughts-armor" },
+    ],
     description:
       `You are a warlike Kami-Champion who leads through martial precision.
 
 *+3 Dexterity.
 *You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*It is tailored for you specifically. Nobody else can wear it.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },
@@ -330,11 +338,15 @@ Disadvantages:
     modifiers: {
       baseStatBonuses: { constitution: 3 },
     },
+    grantsEquipment: [
+      { equipmentId: "dreadnoughts-armor" },
+    ],
     description:
       `You are a warlike Kami-Champion whose body shrugs off punishment.
 
 *+3 Constitution.
 *You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*It is tailored for you specifically. Nobody else can wear it.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },

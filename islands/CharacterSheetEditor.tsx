@@ -13,6 +13,7 @@ import {
   type CharacterDraft,
   type CharacterSheet,
   FACTIONS,
+  getDisplayedRaceName,
   getRacesForSex,
   getStartingStatPoints,
   isPilzRace,
@@ -344,6 +345,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
     return true;
   });
+  const displayedRaceName = getDisplayedRaceName(race, perkIds);
 
   function updateDescription<K extends keyof CharacterDescription>(
     key: K,
@@ -1003,6 +1005,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
+                {displayedRaceName !== race && (
+                  <span class="block mt-1 text-xs text-base-content/70">
+                    Displayed as: {displayedRaceName}
+                  </span>
+                )}
               </label>
 
               <label class="block">

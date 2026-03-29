@@ -1,6 +1,10 @@
 import { define } from "@/utils.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
-import { BASE_STAT_FIELDS, ORGAN_LABELS } from "@/lib/character_types.ts";
+import {
+  BASE_STAT_FIELDS,
+  getDisplayedRaceName,
+  ORGAN_LABELS,
+} from "@/lib/character_types.ts";
 import {
   getCharacter,
   getCharacterSnapshot,
@@ -133,7 +137,8 @@ export default define.page<typeof handler>(
             <strong>Changelog:</strong> {snapshot.changelog}
           </p>
           <p>
-            <strong>Race:</strong> {draft.race}
+            <strong>Race:</strong>{" "}
+            {getDisplayedRaceName(draft.race, draft.perkIds)}
           </p>
 
           <div class="space-y-1">

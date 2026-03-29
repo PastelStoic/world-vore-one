@@ -10,6 +10,7 @@ import {
   type BaseStatKey,
   type CharacterDraft,
   type CharacterSheet,
+  getDisplayedRaceName,
 } from "@/lib/character_types.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
@@ -45,6 +46,10 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     canEditCombatState = false,
   } = props;
   const desc = character.description;
+  const displayedRaceName = getDisplayedRaceName(
+    character.race,
+    character.perkIds,
+  );
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
   const ownedPerks = character.perkIds.map((id) => ({
     id,
@@ -128,15 +133,15 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         {showDescription && (
           <div class="space-y-1 mt-2">
             <p>
-              <strong>Race:</strong> {character.race}
+              <strong>Race:</strong> {displayedRaceName}
               {canSeeDisguisedPerks &&
                 character.perkDisguises?.["pilzherr-femboy"] && (
                 <span class="block ml-5 text-purple-600 italic text-xs">
-                  Displayed as: {character.race === "Pilzherr"
+                  Displayed as: {displayedRaceName === "Pilzherr"
                     ? "Pilzfraun"
-                    : character.race === "Tierherr"
+                    : displayedRaceName === "Tierherr"
                     ? "Tierfraun"
-                    : character.race}
+                    : displayedRaceName}
                 </span>
               )}
             </p>

@@ -108,6 +108,17 @@ export function mapRaceForSex(race: Race, sex: Sex): Race {
   return race;
 }
 
+export function getDisplayedRaceName(
+  race: Race,
+  perkIds: string[],
+): string {
+  if (perkIds.includes("japanese-kami-champion") && isTierRace(race)) {
+    return race === "Tierherr" ? "Kronprinz Tierherr" : "Kronprinz Tierfraun";
+  }
+
+  return race;
+}
+
 export const BASE_STAT_FIELDS = [
   { key: "strength", label: "Strength" },
   { key: "dexterity", label: "Dexterity" },

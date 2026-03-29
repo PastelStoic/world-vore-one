@@ -403,6 +403,60 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     return { nextBaseStats, requiredPoints };
   }
 
+  function applyPerkGrantedInventoryChanges(
+    addedPerkIds: string[],
+    removedPerkIds: string[],
+  ) {
+    if (addedPerkIds.length === 0 && removedPerkIds.length === 0) {
+      return;
+    }
+
+    setInventory((inv) => {
+      const nextInventory = structuredClone(inv);
+
+      for (const location of ["carried", "stowed"] as const) {
+        if (removedPerkIds.length > 0) {
+          nextInventory[location].equipment = nextInventory[location].equipment
+            .filter((item) => !removedPerkIds.includes(item.perkGranted ?? ""));
+          nextInventory[location].meleeWeapons = nextInventory[location]
+            .meleeWeapons.filter((weapon) =>
+              !removedPerkIds.includes(weapon.perkGranted ?? "")
+            );
+          nextInventory[location].attachments = nextInventory[location]
+            .attachments.filter((attachment) =>
+              !removedPerkIds.includes(attachment.perkGranted ?? "")
+            );
+        }
+      }
+
+      for (const perkId of addedPerkIds) {
+        const perk = perksById.get(perkId);
+
+        for (const grant of perk?.grantsEquipment ?? []) {
+          nextInventory.carried.equipment.push({
+            equipmentId: grant.equipmentId,
+            totalCharges: 0,
+            usedCharges: 0,
+            perkGranted: perkId,
+            weightOverride: grant.weightOverride,
+            isBulkyOverride: grant.isBulkyOverride,
+          });
+        }
+
+        for (const grant of perk?.grantsMeleeWeapons ?? []) {
+          nextInventory.carried.meleeWeapons.push({
+            instanceId: crypto.randomUUID(),
+            meleeWeaponId: grant.meleeWeaponId,
+            isSignatureWeapon: true,
+            perkGranted: perkId,
+          });
+        }
+      }
+
+      return nextInventory;
+    });
+  }
+
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints - inventoryPointCost < 1) {
       return;
@@ -1907,6 +1961,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                               };
                                               setPerkSelections(newSelections);
                                               let newPerkIds = [...perkIds];
+                                              const removedPerkIds: string[] =
+                                                [];
+                                              const addedPerkIds: string[] = [];
                                               if (oldId && oldId !== newId) {
                                                 const withoutOld = newPerkIds
                                                   .filter((pid) =>
@@ -1921,6 +1978,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                   );
                                                 if (!stillDerived.has(oldId)) {
                                                   newPerkIds = withoutOld;
+                                                  removedPerkIds.push(oldId);
                                                 }
                                               }
                                               if (
@@ -1931,8 +1989,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                   ...newPerkIds,
                                                   newId,
                                                 ];
+                                                addedPerkIds.push(newId);
                                               }
                                               setPerkIds(newPerkIds);
+                                              applyPerkGrantedInventoryChanges(
+                                                addedPerkIds,
+                                                removedPerkIds,
+                                              );
                                             }}
                                           >
                                             <option value="">

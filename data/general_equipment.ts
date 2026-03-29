@@ -212,8 +212,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Dreadnought's armor",
     weight: 4,
     isGhost: true,
-    description:
-      `The Dreadnaught's Armor! Especially tailored to you.
+    description: `The Dreadnaught's Armor! Especially tailored to you.
   *You are immune to small arms fire and melee weapons, unless they have a trait to circunvent it. Explosions, anti-tank weapons and similar threats still present a very real danger.
   *It is tailored for you specifically. Nobody else can wear it.`,
   },

@@ -276,6 +276,7 @@ Advantages:
 
 Disadvantages:
 *Only one per player. You may make another if yours dies.
+*You must purchase the tierfraun perk.
 *You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type.
 *At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
 *When starting a scene, roll 1d100. If the roll is less than or equal to your number of daughters, your partner may choose to ambush one of your daughters in this scene or any future scene.
@@ -297,7 +298,7 @@ Disadvantages:
     description: `You are a warlike Kami-Champion who leads by personal might.
 
 *+3 Strength.
-*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },
@@ -315,7 +316,7 @@ Disadvantages:
       `You are a warlike Kami-Champion who leads through martial precision.
 
 *+3 Dexterity.
-*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },
@@ -333,7 +334,7 @@ Disadvantages:
       `You are a warlike Kami-Champion whose body shrugs off punishment.
 
 *+3 Constitution.
-*You have a set of 'Dreadnaught' armour, making you immune to small arms fire. Explosions, anti-tank weapons and similar threats still present a very real danger.
+*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
 *You are a tank, in person.
 *Pick this for a stronger individual character.`,
   },
@@ -352,6 +353,7 @@ Disadvantages:
 
 *+3 Dexterity.
 *Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*You may ask the current GM for advice and answers in order to help you IRP, receiving advice you otherwise wouldn't get. Basically 'ask god for assistance'.
 *Many seek your wisdom, and your opinions are held in high regard.
 *You own an important artistic or religious tool.`,
   },
@@ -370,6 +372,7 @@ Disadvantages:
 
 *+3 Intelligence.
 *Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*You may ask the current GM for advice and answers in order to help you IRP, receiving advice you otherwise wouldn't get. Basically 'ask god for assistance'.
 *Many seek your wisdom, and your opinions are held in high regard.
 *You own an important artistic or religious tool.`,
   },

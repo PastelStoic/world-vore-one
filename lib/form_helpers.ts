@@ -117,10 +117,22 @@ export function parseCharacterFormData(
     return new Response("Name is required.", { status: 400 });
   }
 
-  if (
-    !description || !baseStats || !perkIds || !factionCompensatedPerkIds ||
-    unallocatedStatPoints === null
-  ) {
+  if (!description) {
+    return new Response("Invalid description payload.", { status: 400 });
+  }
+
+  if (!perkIds) {
+    return new Response("Invalid perk payload.", { status: 400 });
+  }
+
+  if (!baseStats) {
+    return new Response(
+      "Base stats are invalid or below the required minimum for the selected perks.",
+      { status: 400 },
+    );
+  }
+
+  if (!factionCompensatedPerkIds || unallocatedStatPoints === null) {
     return new Response("Invalid character payload.", { status: 400 });
   }
 

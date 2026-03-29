@@ -385,6 +385,24 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     return Math.max(sharedFloor, editFloor);
   }
 
+  function applyRequiredStatFloors(
+    nextPerkIds: string[],
+    currentBaseStats: typeof baseStats,
+  ) {
+    const nextBaseStats = { ...currentBaseStats };
+    let requiredPoints = 0;
+
+    for (const field of BASE_STAT_FIELDS) {
+      const floor = getSharedStatFloor(field.key, nextPerkIds);
+      if (nextBaseStats[field.key] >= floor) continue;
+
+      requiredPoints += floor - nextBaseStats[field.key];
+      nextBaseStats[field.key] = floor;
+    }
+
+    return { nextBaseStats, requiredPoints };
+  }
+
   function increaseStat(statKey: BaseStatKey) {
     if (unallocatedStatPoints - inventoryPointCost < 1) {
       return;
@@ -440,11 +458,21 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         perkOrigins,
       );
 
-    if (unallocatedStatPoints - inventoryPointCost < cost) return;
+    const { nextBaseStats, requiredPoints } = applyRequiredStatFloors(
+      newPerkIds,
+      baseStats,
+    );
+
+    if (unallocatedStatPoints - inventoryPointCost < cost + requiredPoints) {
+      return;
+    }
 
     setPerkIds(newPerkIds);
     setPerkOrigins((current) => ({ ...current, [perkId]: "purchased" }));
-    setUnallocatedStatPoints((current) => current - cost);
+    if (requiredPoints > 0) {
+      setBaseStats(nextBaseStats);
+    }
+    setUnallocatedStatPoints((current) => current - cost - requiredPoints);
 
     // Enforce stat caps from the new perk (e.g. Speisfraun caps STR/DEX to 1)
     if (perk?.modifiers?.statCaps) {

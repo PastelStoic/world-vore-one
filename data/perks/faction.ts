@@ -250,6 +250,7 @@ Disadvantages:
     maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 15,
+    excludesPerks: ["free-range",],
     selectablePerkIds: [
       "japanese-kami-champion-war-strength",
       "japanese-kami-champion-war-dexterity",
@@ -277,6 +278,7 @@ Advantages:
 Disadvantages:
 *Only one per player. You may make another if yours dies.
 *You must purchase the tierfraun perk.
+*No 'free range' perk.
 *You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type.
 *At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
 *When starting a scene, roll 1d100. If the roll is less than or equal to your number of daughters, your partner may choose to ambush one of your daughters in this scene or any future scene.

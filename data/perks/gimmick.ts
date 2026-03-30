@@ -60,8 +60,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *You have a vast connection of allies who are reliable and support you, who may be called upon when needed.
 *While they will support you, they aren't brainless, and won't allow you to blatantly scam, kill or harm them!
 *Your allies should be described in your sheet; NOT on the spreadsheet, that one's just for stats
-*It should be a decently broad group, whom can help you directly. 
-*These can be goon NPCs to help you in combat, people you can call upon for advice, so on and so forth.`,
+*It should be a decently broad group, whom can help you directly.
+*These can be goon NPCs to help you in combat, people you can call upon for advice, so on and so forth.
+*You may be accompanied by up to 3 goons, with TWO stats set at 3, and ONE stat set at 4, for each goon.`,
   },
   {
     id: "patron",
@@ -76,7 +77,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *They will assist your endeavours in their respective ways, but will not go out of their way to personally assist you.
 *Your patron(s) should be described in your sheet; NOT on the spreadsheet, that one's just for stats.
 *You must define who your patrons are, what they provide, and your relation with them
-*This perk can partially fill in for another perk so long as such a perk is acquired through some sort of funding or material.`,
+*This perk can partially fill in for another perk so long as such a perk is acquired through some sort of funding or material.
+*You may be accompanied by 1 specialist provided by your patron, so long as they fit what you are trying to do.
+*The specialist may have TWO stats set at 6, and ONE stat set at 7.`,
   },
   {
     id: "spy",

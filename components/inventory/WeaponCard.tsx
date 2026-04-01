@@ -343,7 +343,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         ];
         if (allTraitIds.length === 0) return null;
         return (
-          <div class="space-y-1 ml-2">
+          <div class="flex flex-wrap gap-1">
             {allTraitIds.map((tid) => {
               const trait = WEAPON_TRAITS_BY_ID.get(tid);
               return (

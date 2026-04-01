@@ -1054,25 +1054,18 @@ export default function InventorySection(props: InventorySectionProps) {
                           : `Add (${costLabel(addCost)})`}
                       </button>
                     </div>
-                    {w.traitIds.length > 0 && (
-                      <div class="ml-2 mt-1 space-y-1 text-xs text-base-content/70">
-                        {w.traitIds.map((tid) => {
+                    <div class="text-xs text-base-content/70 ml-2">
+                      <PerkDescription
+                        name=""
+                        description={w.traitIds.map((tid) => {
                           const trait = WEAPON_TRAITS_BY_ID.get(tid);
-                          return (
-                            <div key={tid}>
-                              <span class="font-medium text-base-content">
-                                {trait?.name ?? tid}
-                              </span>
-                              {trait?.description && (
-                                <span class="ml-1 whitespace-pre-line text-base-content/80">
-                                  {trait.description}
-                                </span>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                          return trait
+                            ? `${trait.name}: ${trait.description}`
+                            : tid;
+                        }).join("\n")}
+                        hideByDefault
+                      />
+                    </div>
                   </li>
                 );
               }}

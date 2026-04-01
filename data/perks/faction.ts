@@ -280,7 +280,7 @@ Disadvantages:
     maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 15,
-    excludesPerks: ["free-range"],
+    excludesPerks: ["free-range",],
     selectablePerkIds: [
       "japanese-kami-champion-war-strength",
       "japanese-kami-champion-war-dexterity",

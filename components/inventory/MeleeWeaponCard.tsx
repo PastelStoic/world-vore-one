@@ -161,7 +161,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
 
       {/* Traits */}
       {displayedTraitIds.length > 0 && (
-        <div class="space-y-1 ml-2">
+        <div class="flex flex-wrap gap-1">
           {displayedTraitIds.map((tid) => {
             const trait = MELEE_TRAITS_BY_ID.get(tid);
             return (

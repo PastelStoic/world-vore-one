@@ -62,7 +62,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "duelling",
     name: "Duelling",
     description:
-      "This weapon is meant for duels and one-on-one's. Only applies if you are holding nothing else but this weapon. If a single enemy is in melee range, gain +3d6 to attack them. If there is more than one, gain -1d6 to attack anyone for each enemy, up to -3d6.",
+      "This weapon is meant for duels and one-on-one's. Only applies if you are holding nothing else but this weapon. If a single enemy is in melee range, gain +3d6 to attack and defend yourself against them. If there is more than one, gain -1d6 to attack and defend yourself against anyone, for each enemy, up to -3d6. Cannot be reduced below 1 by this effect.",
   },
   {
     id: "parrying",

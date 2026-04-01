@@ -324,14 +324,19 @@ export default function WeaponCard(props: WeaponCardProps) {
         const addedTraitIds: string[] = [];
         for (const aId of w.attachedIds) {
           const aDef = ATTACHMENTS_BY_ID.get(aId);
-          if (aDef?.removesTraitIds) {
-            for (const tid of aDef.removesTraitIds) {
-              removedTraitIds.add(tid);
-            }
-          }
+
+          // add traits
           if (aDef?.addsTraitIds) {
             for (const tid of aDef.addsTraitIds) {
               addedTraitIds.push(tid);
+            }
+          }
+
+          // remove traits
+          // done in this order as some attatchments remove traits added by others
+          if (aDef?.removesTraitIds) {
+            for (const tid of aDef.removesTraitIds) {
+              removedTraitIds.add(tid);
             }
           }
         }

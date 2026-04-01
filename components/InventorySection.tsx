@@ -4,6 +4,7 @@ import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT,
   EQUIPMENT_BY_ID,
+  MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
   type Nation,
   WEAPON_TRAITS_BY_ID,
@@ -28,6 +29,7 @@ import EquipmentCard from "./inventory/EquipmentCard.tsx";
 import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
+import TraitBadge from "./inventory/TraitBadge.tsx";
 import {
   calculateInventoryPointCostWithPerks,
   canAttachToWeapon,
@@ -1054,18 +1056,20 @@ export default function InventorySection(props: InventorySectionProps) {
                           : `Add (${costLabel(addCost)})`}
                       </button>
                     </div>
-                    <div class="text-xs text-base-content/70 ml-2">
-                      <PerkDescription
-                        name=""
-                        description={w.traitIds.map((tid) => {
+                    {w.traitIds.length > 0 && (
+                      <div class="flex flex-wrap gap-1 ml-2 mt-1">
+                        {w.traitIds.map((tid) => {
                           const trait = WEAPON_TRAITS_BY_ID.get(tid);
-                          return trait
-                            ? `${trait.name}: ${trait.description}`
-                            : tid;
-                        }).join("\n")}
-                        hideByDefault
-                      />
-                    </div>
+                          return (
+                            <TraitBadge
+                              key={tid}
+                              name={trait?.name ?? tid}
+                              description={trait?.description ?? ""}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                   </li>
                 );
               }}
@@ -1151,6 +1155,20 @@ export default function InventorySection(props: InventorySectionProps) {
                         Add ({costLabel(addCost)})
                       </button>
                     </div>
+                    {mw.traitIds.length > 0 && (
+                      <div class="flex flex-wrap gap-1 ml-2 mt-1">
+                        {mw.traitIds.map((tid) => {
+                          const trait = MELEE_TRAITS_BY_ID.get(tid);
+                          return (
+                            <TraitBadge
+                              key={tid}
+                              name={trait?.name ?? tid}
+                              description={trait?.description ?? ""}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                     {mw.description && (
                       <div class="text-xs text-base-content/70 ml-2">
                         <PerkDescription

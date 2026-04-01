@@ -238,6 +238,36 @@ Disadvantages:
 *Must be in America and be part of one of three mafias.`,
   },
   {
+    id: "champion-retainer",
+    name: "Champion's retainer",
+    category: "faction",
+    customInput: "Office held by your character.",
+    requiredFaction: [
+      "JAPAN - Miscellaneous Japanese Clans",
+    ],
+    maxCharactersPerAccount: 2,
+    isFree: true,
+    pointsGranted: 4,
+    description:
+      `You are a retainer of a Champion. This means you serve their every wish to the best of your ability. Goddess needs her retainers!
+
+Advantages:
+*You have four additional points.
+*You hold some sort of office within your clan. Perhaps you manage the treasury, perhaps commerce, perhaps housing. Your employiment is stable and respectable.
+If a Human, you are not endlessly loyal. You may betray your Champion if you have a good justificative.
+Like your champion, you have a very high standard of living.
+You may be snacked on by your champion.
+
+Disadvantages:
+*Two per player at maximum.
+*A champion must accept you as their retainer - ask other roleplayers if you can become their retainers. You cannot make a retainer for your own champion.
+*You must obey your champion. You are supposidely loyal to them, and may not betray them unless you have a justificative. 
+*If you are a PF, you are endlessly loyal no matter what.
+*Unlike your champion, you do not hold nearly as much authority. You are not above the law, unless doing your champion's bidding.
+*You must serve a purpose for your champion. If you are useless, you'd be removed from office.
+*You may be snacked on by your champion`,
+  },
+  {
     id: "japanese-kami-champion",
     name: "Japanese Kami-Champion",
     category: "faction",

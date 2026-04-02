@@ -12,6 +12,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
       `You became someone's worst enemy, and they hate you with a burning passion.
 
 *You need another player in order to use this perk. They will control your rival if they are ever brought up.
+*Both characters must own the perk, and both must gain the same amount of points from it.
 *Pick how many points you wish to gain, from 1 to 6. 
 *Whenever you start a scene, roll a 1d6, and if your roll is below that number, your rival appears.
 

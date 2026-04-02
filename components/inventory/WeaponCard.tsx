@@ -13,6 +13,7 @@ import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
   canAttachToWeapon,
   getDependentAttachmentIds,
+  getEffectiveWeaponTraitIds,
   getSignatureAdjustedPointCost,
   getWeaponPointCost,
   type InventoryLocation,
@@ -320,32 +321,7 @@ export default function WeaponCard(props: WeaponCardProps) {
 
       {/* Traits + traits added/removed by equipped attachments */}
       {(() => {
-        const removedTraitIds = new Set<string>();
-        const addedTraitIds: string[] = [];
-        for (const aId of w.attachedIds) {
-          const aDef = ATTACHMENTS_BY_ID.get(aId);
-
-          // add traits
-          if (aDef?.addsTraitIds) {
-            for (const tid of aDef.addsTraitIds) {
-              addedTraitIds.push(tid);
-            }
-          }
-
-          // remove traits
-          // done in this order as some attatchments remove traits added by others
-          if (aDef?.removesTraitIds) {
-            for (const tid of aDef.removesTraitIds) {
-              removedTraitIds.add(tid);
-            }
-          }
-        }
-        const allTraitIds = [
-          ...new Set([
-            ...def.traitIds.filter((tid) => !removedTraitIds.has(tid)),
-            ...addedTraitIds,
-          ]),
-        ];
+        const allTraitIds = getEffectiveWeaponTraitIds(def, w.attachedIds);
         if (allTraitIds.length === 0) return null;
         return (
           <div class="flex flex-wrap gap-1">

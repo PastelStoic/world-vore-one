@@ -10,6 +10,7 @@ import {
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import { LONG_GUN_ATTACHMENTS } from "@/data/weapons.ts";
+import type { WeaponDefinition } from "@/data/equipment_types.ts";
 import type {
   CharacterInventory,
   InventoryAttachment,
@@ -90,6 +91,36 @@ export function getSignatureAdjustedPointCost(
   //  Every other weapon is free."
   if (def.pointCost >= 3) return 1; // Originally restricted → still 1pt as signature
   return 0;
+}
+
+export function getEffectiveWeaponTraitIds(
+  weaponDef: Pick<WeaponDefinition, "traitIds">,
+  attachedIds: readonly string[],
+): string[] {
+  const baseTraitIds = new Set(weaponDef.traitIds);
+  const addedTraitIds = new Set<string>();
+  const removedTraitIds = new Set<string>();
+
+  for (const attachmentId of attachedIds) {
+    const attachmentDef = ATTACHMENTS_BY_ID.get(attachmentId);
+    for (const traitId of attachmentDef?.addsTraitIds ?? []) {
+      addedTraitIds.add(traitId);
+    }
+    for (const traitId of attachmentDef?.removesTraitIds ?? []) {
+      removedTraitIds.add(traitId);
+    }
+  }
+
+  const effectiveBaseTraitIds = weaponDef.traitIds.filter((traitId) =>
+    !removedTraitIds.has(traitId)
+  );
+  const effectiveAddedTraitIds = [...addedTraitIds]
+    .filter((traitId) =>
+      !removedTraitIds.has(traitId) && !baseTraitIds.has(traitId)
+    )
+    .sort();
+
+  return [...effectiveBaseTraitIds, ...effectiveAddedTraitIds];
 }
 
 /** Set of attachment IDs that appear in only one weapon's compatibleAttachmentIds. */

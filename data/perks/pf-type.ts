@@ -88,7 +88,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *When a pair ( or more ) PFs are birthed and are twins, they gain a special ability: 
 *Twins can communicate with one another from any range, as well as share mental images/thoughts and read one anothers'. 
 *You may or not be templates - but both must be OR not be templates.
-*You MUST either make the other twin, or have someone play them for you.`,
+*You MUST either make the other twin, or have someone play them for you.
+*Both characters must own the perk.`,
   },
   {
     id: "tiny",

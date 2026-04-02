@@ -19,9 +19,11 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
 *The Rival sheet does not need to be elaborate. It must, at minimum, just have stats.
 *Your rival, at character creation, must have as many points as you do.
 *Your rival must be reasonably capable of competing against you in your role! 
-Example 1: I you're a soldier, they must be reasonably capable of defeating you. 
+Example 1: If you're a soldier, they must be reasonably capable of defeating you. 
 Example 2 If you're a merchant, they must be reasonably capable of outbidding you!
 
+*As a rival, you're meant to be as disruptive as possible and attempt to ruin your rival's scene to the best of your ability.
+*Mess their plans up, prevent them from eating/being eaten depending on their role, get the police involved to ruin their life, etc!
 *This perk is intentionally disruptive. Don't pick it if you don't want a scene or two ruined!`,
   },
   {

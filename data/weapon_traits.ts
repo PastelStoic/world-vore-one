@@ -331,7 +331,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "rifled-musket",
     name: "Rifled musket",
-    description: "Reloading takes 30 turns.",
+    description: "Reloading takes 30 turns. Accuracy penalty returns to normal instead of being doubled.",
   },
 ];
 

@@ -126,7 +126,7 @@ export const VORE_PERKS: PerkDefinition[] = [
 
 *When rolling your "escape training", you may choose to, instead of trying to escape, damage your predator! 
 *This must be declared before rolling, otherwise, it will automatically default to an escape attempt. 
-*For every success over your predator, you deal 1 damage. A predator can be killed through these means.
+*For every success over your predator, you deal 2 damage. A predator can be killed through these means.
 *An incapacitated predator is still actively trying to keep you down, reducing them to 0 HP does not release you.
 *A dead predator can be escaped from without any rolls.
 *Fighting your predator is not considered an "escape" attempt, perks that'd help in keeping prey inside do not apply.
@@ -165,7 +165,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `Your prey is MEANT to stay inside you! They better not fight back, lest they want to be punished! 
 
-*If your prey rolls to escape your stomach and fails, they take 1 damage for every success you have over their own.
+*If your prey rolls to escape your stomach and fails, they take 2 damage for every success you have over their own.
 *Prey can be killed through these means! Digesting their body still takes the usual time, this does not speed it up at all.
 *Incapacitated prey is still fighting back! Prey only stop fighting if they're dead or have run out of escape attempts.`,
   },

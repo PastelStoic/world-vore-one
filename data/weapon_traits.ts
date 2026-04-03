@@ -228,6 +228,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
       "Takes 20 turns to reload. Accuracy penalty from ranged shooting is doubled.",
   },
   {
+    id: "musket-breech-loader",
+    name: "Breech Loader",
+    description:
+      "Takes 1 turn to reload, instead of the typical 20/30.",
+  },
+  {
     id: "recoverable-ammo-arrows",
     name: "Recoverable ammo",
     description: "At combat end, all arrows can be recovered.",

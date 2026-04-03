@@ -165,7 +165,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Civilian",
     weight: 0,
     reloadTurnsOverride: 1,
-    addsTraitIds: ["breech-loader"],
+    addsTraitIds: ["musket=breech-loader"],
     description: `*Reloading the musket now only takes 1 turn.`,
   },
   {

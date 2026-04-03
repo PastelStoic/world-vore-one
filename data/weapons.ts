@@ -381,7 +381,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed", "wasteful-reload", "agile"],
+    traitIds: ["one-handed", "wasteful-reload", "half-agile"],
     compatibleAttachmentIds: ["c96-extended-stock"],
   },
   {

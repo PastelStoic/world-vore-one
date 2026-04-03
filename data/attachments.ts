@@ -364,6 +364,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Austria-Hungary",
     weight: 1,
     ammoOverride: 16,
+    reloadAmountOverride: 8,
     description: `*Holds 16 rounds instead of the default.
 *Stripper clips can only load 8 shots at a time. The magazine is not detachable.
 *May be used alongside the other attachments of this weapon.`,

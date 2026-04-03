@@ -107,6 +107,7 @@ export default define.page(function WikiEquipment() {
                   {(att.ammoOverride !== undefined ||
                     att.weightOverride !== undefined ||
                     att.reloadTurnsOverride !== undefined ||
+                    att.reloadAmountOverride !== undefined ||
                     att.damageOverride !== undefined ||
                     (att.requiresAttachmentIds?.length ?? 0) > 0 ||
                     att.rateOfFireBonus !== undefined) && (
@@ -120,6 +121,11 @@ export default define.page(function WikiEquipment() {
                       {att.reloadTurnsOverride !== undefined && (
                         <span>
                           Reload turns override: {att.reloadTurnsOverride}
+                        </span>
+                      )}
+                      {att.reloadAmountOverride !== undefined && (
+                        <span>
+                          Reload amount override: {att.reloadAmountOverride}
                         </span>
                       )}
                       {att.damageOverride !== undefined && (

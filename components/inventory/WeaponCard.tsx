@@ -109,6 +109,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   let effectiveRateOfFire = def.rateOfFire;
   let attachmentMagazineSystem = false;
   let attachmentRequiresMags = false;
+  let reloadAmountOverride: number | undefined;
   for (const aId of w.attachedIds) {
     const aDef = ATTACHMENTS_BY_ID.get(aId);
     if (aDef?.ammoOverride) {
@@ -126,6 +127,9 @@ export default function WeaponCard(props: WeaponCardProps) {
     if (aDef?.requiresMagazines) {
       attachmentRequiresMags = true;
       attachmentMagazineSystem = true;
+    }
+    if (aDef?.reloadAmountOverride != null) {
+      reloadAmountOverride = aDef.reloadAmountOverride;
     }
     if (aDef?.ammoOverride && aDef?.isCharge) {
       attachmentMagazineSystem = true;
@@ -191,6 +195,24 @@ export default function WeaponCard(props: WeaponCardProps) {
   const reloadsIndividually =
     (def.reloadsIndividually || attachmentReloadsIndividually) &&
     !hasQuickloader;
+  const effectiveReloadAmount = Math.min(
+    reloadAmountOverride ?? effectiveAmmo,
+    effectiveAmmo,
+  );
+  const getReloadedAmmo = (currentAmmo: number) => {
+    if (reloadsIndividually) {
+      return Math.min(currentAmmo + 1, effectiveAmmo);
+    }
+    if (effectiveReloadAmount < effectiveAmmo) {
+      return Math.min(currentAmmo + effectiveReloadAmount, effectiveAmmo);
+    }
+    return effectiveAmmo;
+  };
+  const reloadActionLabel = reloadsIndividually
+    ? "Reload +1"
+    : effectiveReloadAmount < effectiveAmmo
+    ? `Reload +${effectiveReloadAmount}`
+    : "Reload";
 
   // Weapon is at full ammo
   const isAmmoFull = w.currentAmmo >= effectiveAmmo;
@@ -376,10 +398,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                   // Reload complete!
                   weapon.reloadProgress = 0;
                   if (reloadsIndividually && !hasMagazines) {
-                    weapon.currentAmmo = Math.min(
-                      weapon.currentAmmo + 1,
-                      effectiveAmmo,
-                    );
+                    weapon.currentAmmo = getReloadedAmmo(weapon.currentAmmo);
                   } else if (hasMagazines && totalAvailableMags > 0) {
                     const oldAmmo = weapon.currentAmmo;
                     if (weapon.magazines > 0) {
@@ -398,12 +417,9 @@ export default function WeaponCard(props: WeaponCardProps) {
                     }
                   } else if (!hasMagazines || !weaponRequiresMags) {
                     if (reloadsIndividually) {
-                      weapon.currentAmmo = Math.min(
-                        weapon.currentAmmo + 1,
-                        effectiveAmmo,
-                      );
+                      weapon.currentAmmo = getReloadedAmmo(weapon.currentAmmo);
                     } else {
-                      weapon.currentAmmo = effectiveAmmo;
+                      weapon.currentAmmo = getReloadedAmmo(weapon.currentAmmo);
                     }
                   }
                 } else {
@@ -420,7 +436,7 @@ export default function WeaponCard(props: WeaponCardProps) {
               props.onSetAmmo(
                 location,
                 index,
-                Math.min(w.currentAmmo + 1, effectiveAmmo),
+                getReloadedAmmo(w.currentAmmo),
               );
             } else if (hasMagazines && totalAvailableMags > 0) {
               // Magazine-fed reload: consume a full magazine
@@ -456,11 +472,14 @@ export default function WeaponCard(props: WeaponCardProps) {
                 props.onSetAmmo(
                   location,
                   index,
-                  Math.min(w.currentAmmo + 1, effectiveAmmo),
+                  getReloadedAmmo(w.currentAmmo),
                 );
               } else {
-                // Full reload
-                props.onSetAmmo(location, index, effectiveAmmo);
+                props.onSetAmmo(
+                  location,
+                  index,
+                  getReloadedAmmo(w.currentAmmo),
+                );
               }
             }
           }}
@@ -473,6 +492,8 @@ export default function WeaponCard(props: WeaponCardProps) {
             ? "Reload (uses a full magazine)"
             : reloadsIndividually
             ? "Load 1 round"
+            : effectiveReloadAmount < effectiveAmmo
+            ? `Load ${effectiveReloadAmount} rounds`
             : "Reload"}
         >
           {isReloading
@@ -482,12 +503,12 @@ export default function WeaponCard(props: WeaponCardProps) {
               ? `Reload +1 (${effectiveReloadTurns} turns)`
               : hasMagazines
               ? `Reload (${w.magazines} full mag · ${effectiveReloadTurns} turns)`
-              : `Reload (${effectiveReloadTurns} turns)`)
+              : `${reloadActionLabel} (${effectiveReloadTurns} turns)`)
             : (reloadsIndividually && !hasMagazines
-              ? "Reload +1"
+              ? reloadActionLabel
               : hasMagazines
               ? `Reload (${w.magazines} full mag)`
-              : "Reload")}
+              : reloadActionLabel)}
         </button>
         {isReloading && (
           <button
@@ -531,10 +552,14 @@ export default function WeaponCard(props: WeaponCardProps) {
                 props.onSetAmmo(
                   location,
                   index,
-                  Math.min(w.currentAmmo + 1, effectiveAmmo),
+                  getReloadedAmmo(w.currentAmmo),
                 );
               } else {
-                props.onSetAmmo(location, index, effectiveAmmo);
+                props.onSetAmmo(
+                  location,
+                  index,
+                  getReloadedAmmo(w.currentAmmo),
+                );
               }
             }}
           >

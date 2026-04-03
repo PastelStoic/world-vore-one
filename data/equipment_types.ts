@@ -91,6 +91,8 @@ export interface AttachmentDefinition {
   requiresMagazines?: boolean;
   /** If set, overrides the weapon's reloadTurns when this attachment is active */
   reloadTurnsOverride?: number;
+  /** If set, reloads this many rounds per reload action instead of filling to full */
+  reloadAmountOverride?: number;
   /** If true, the weapon reloads one round at a time while this attachment is active */
   reloadsIndividually?: boolean;
   /** If set, overrides the weapon's base damage when this attachment is active */

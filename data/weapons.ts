@@ -577,7 +577,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun","stripper-clip fed",],
+    traitIds: ["two-handed", "light-machinegun","stripper-clip-fed",],
     compatibleAttachmentIds: [],
   },
   {

@@ -137,6 +137,12 @@ export default define.page(function WikiWeapons() {
                           {weapon.reloadTurns}
                         </div>
                       )}
+                      {weapon.reloadAmountOverride !== undefined && (
+                        <div>
+                          <span class="font-medium">Reload amount:</span>{" "}
+                          {weapon.reloadAmountOverride}
+                        </div>
+                      )}
                     </div>
                     {weapon.requiresMagazines && (
                       <p class="text-xs text-warning">

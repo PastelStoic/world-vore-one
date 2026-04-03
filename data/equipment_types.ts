@@ -68,6 +68,8 @@ export interface WeaponDefinition {
   reloadsIndividually?: boolean;
   /** How many turns it takes to reload (default: 1). If > 1, reload button must be pressed that many times. */
   reloadTurns?: number;
+  /** If set, reloads this many rounds per reload action instead of filling to full */
+  reloadAmountOverride?: number;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────

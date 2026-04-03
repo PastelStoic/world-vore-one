@@ -109,7 +109,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   let effectiveRateOfFire = def.rateOfFire;
   let attachmentMagazineSystem = false;
   let attachmentRequiresMags = false;
-  let reloadAmountOverride: number | undefined;
+  let reloadAmountOverride = def.reloadAmountOverride;
   for (const aId of w.attachedIds) {
     const aDef = ATTACHMENTS_BY_ID.get(aId);
     if (aDef?.ammoOverride) {

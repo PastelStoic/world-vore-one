@@ -115,7 +115,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 0,
     traitIds: ["two-handed", "extra-long-bayonet", "musket"],
-    compatibleAttachmentIds: ["musket-rifled", ...LONG_GUN_ATTACHMENTS],
+    compatibleAttachmentIds: ["musket-rifled","musket-breech-loader", ...LONG_GUN_ATTACHMENTS],
     reloadsIndividually: true,
     reloadTurns: 20,
   },

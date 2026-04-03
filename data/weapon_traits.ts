@@ -303,6 +303,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "Gain -3d6 for every shot after the first one instead of an accuracy bonus.",
   },
+  {
+    id: "stripper-clip-fed",
+    name: "Stripper-clip fed",
+    description:
+      "Weapon is fed by several stripper clips stacked upon one another, and as such, you can only reload 5 shots at a time. Any teammate with an Arisaka rifle OR its respective ammunition can use their action to insert a clip into it.",
+  },
 
   // ── Traits added by attachments ──
   {

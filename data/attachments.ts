@@ -159,6 +159,16 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Accuracy penalty returns to normal.`,
   },
   {
+    id: "musket-breech-loader",
+    name: "Musket: Breech Loader",
+    appliesTo: "Flintlock Musket",
+    nation: "Civilian",
+    weight: 0,
+    reloadTurnsOverride: 1,
+    addsTraitIds: ["breech-loader"],
+    description: `*Reloading the musket now only takes 1 turn.`,
+  },
+  {
     id: "colt-walker-bullets",
     name: "Colt walker: Bullets",
     appliesTo: "Colt Walker",

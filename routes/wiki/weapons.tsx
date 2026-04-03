@@ -137,7 +137,8 @@ export default define.page(function WikiWeapons() {
                           {weapon.reloadTurns}
                         </div>
                       )}
-                      {weapon.reloadAmountOverride !== undefined && (
+                      {weapon.reloadAmountOverride !== undefined &&
+                        weapon.reloadAmountOverride > 1 && (
                         <div>
                           <span class="font-medium">Reload amount:</span>{" "}
                           {weapon.reloadAmountOverride}
@@ -149,7 +150,7 @@ export default define.page(function WikiWeapons() {
                         Requires magazines to reload.
                       </p>
                     )}
-                    {weapon.reloadsIndividually && (
+                    {weapon.reloadAmountOverride === 1 && (
                       <p class="text-xs text-warning">
                         Reloads one round at a time.
                       </p>

@@ -64,8 +64,6 @@ export interface WeaponDefinition {
   discountFactionPerkIds?: string[];
   /** Whether this weapon REQUIRES magazines to reload (cannot reload without one) */
   requiresMagazines?: boolean;
-  /** Whether this weapon reloads one round at a time (tubular magazines, cylinders, etc.) */
-  reloadsIndividually?: boolean;
   /** How many turns it takes to reload (default: 1). If > 1, reload button must be pressed that many times. */
   reloadTurns?: number;
   /** If set, reloads this many rounds per reload action instead of filling to full */
@@ -95,8 +93,6 @@ export interface AttachmentDefinition {
   reloadTurnsOverride?: number;
   /** If set, reloads this many rounds per reload action instead of filling to full */
   reloadAmountOverride?: number;
-  /** If true, the weapon reloads one round at a time while this attachment is active */
-  reloadsIndividually?: boolean;
   /** If set, overrides the weapon's base damage when this attachment is active */
   damageOverride?: number;
   /** If set, adds this value to the weapon's rate of fire when this attachment is active */

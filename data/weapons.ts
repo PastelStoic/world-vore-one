@@ -38,7 +38,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "overloaded-chamber",
     ],
     compatibleAttachmentIds: ["colt-walker-bullets"],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
     reloadTurns: 4,
   },
   {
@@ -54,7 +54,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: [],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "flamethrower",
@@ -101,7 +101,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "dbs-alofs-device",
       ...SHOTGUN_ATTACHMENTS,
     ],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "flintlock-musket",
@@ -115,8 +115,12 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 0,
     traitIds: ["two-handed", "extra-long-bayonet", "musket"],
-    compatibleAttachmentIds: ["musket-rifled","musket-breech-loader", ...LONG_GUN_ATTACHMENTS],
-    reloadsIndividually: true,
+    compatibleAttachmentIds: [
+      "musket-rifled",
+      "musket-breech-loader",
+      ...LONG_GUN_ATTACHMENTS,
+    ],
+    reloadAmountOverride: 1,
     reloadTurns: 20,
   },
   {
@@ -137,7 +141,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "utterly-silent-bow",
     ],
     compatibleAttachmentIds: [],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "crossbow",
@@ -156,7 +160,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "utterly-silent-crossbow",
     ],
     compatibleAttachmentIds: [],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
 
   // ── British ──
@@ -190,7 +194,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "huot-automatic-rifle",
@@ -244,7 +248,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["two-handed", "tubular-magazine-bullets", "extra-long-bayonet"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "modele-1892-revolver",
@@ -259,7 +263,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "berthier-m1916",
@@ -411,7 +415,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: [],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "mp-18",
@@ -483,7 +487,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "slam-fire",
     ],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "m1911",
@@ -512,7 +516,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "bar",
@@ -548,7 +552,7 @@ export const WEAPONS: WeaponDefinition[] = [
     ],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
 
   // ── Japanese ──
@@ -577,7 +581,12 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun","6mm-arisaka","stripper-clip-fed",],
+    traitIds: [
+      "two-handed",
+      "light-machinegun",
+      "6mm-arisaka",
+      "stripper-clip-fed",
+    ],
     compatibleAttachmentIds: [],
   },
   {
@@ -593,7 +602,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
 
   // ── Russian ──
@@ -624,7 +633,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "loading-gate"],
     compatibleAttachmentIds: ["nagant-suppressor"],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "fedorov-avtomat",
@@ -731,7 +740,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "loading-gate", "agile"],
     compatibleAttachmentIds: [],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
 
   // ── Swiss ──
@@ -763,7 +772,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
     compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS],
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
   },
   {
     id: "mg11",

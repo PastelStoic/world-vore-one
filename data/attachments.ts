@@ -313,7 +313,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     ammoOverride: 25,
     excludesAttachmentIds: ["springfield-pedersen"],
     reloadTurnsOverride: 1,
-    reloadsIndividually: true,
+    reloadAmountOverride: 1,
     addsTraitIds: ["impossible-to-remove"],
     description: `*Your rifle gets a 25 round magazine.
     *The magazine cannot be removed easily mid-combat.

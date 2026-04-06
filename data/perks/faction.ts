@@ -309,7 +309,7 @@ Disadvantages:
 *Only one per player. You may make another if yours dies.
 *You must purchase the tierfraun perk.
 *No 'free range' perk.
-*You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type.
+*You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type. They must purchase the tierfraun perk.
 *At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
 *When starting a scene, roll 1d100. If the roll is less than or equal to your number of daughters, your partner may choose to ambush one of your daughters in this scene or any future scene.
 *If you are digested, your consciousness remains in the body of your predator until your predator dies from non-digestion.

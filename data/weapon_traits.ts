@@ -189,7 +189,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "overhead-magazine",
     name: "Overhead magazine",
     description:
-      "The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target.\nIf you spend a turn not attacking that target, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.",
+      "The first shot against a target has a -2d6 to its accuracy. This penalty is ignored on consecutive turns if you continue attacking the same target.\nIf you spend a turn not attacking that target, or if you target multiple targets in one turn, the penalty resets and applies again the next time you attack it. Accuracy cannot be brought below 1d6 due to this.",
   },
   {
     id: "wasteful-reload",

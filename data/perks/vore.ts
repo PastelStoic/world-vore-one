@@ -224,8 +224,10 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You actively want to shove yourself into the tummies of your predators and keep yourself in!
 
-*You gain 4d6 to grapple, stuff yourself into a predator and keep yourself in there! 
-*You now count successes on a 4 and above, rather than 5 and above, to do that.`,
+*You gain 4d6 to stuff yourself into a predator and keep yourself in there! 
+*You now count successes on a 4 and above, rather than 5 and above, to do that.
+*This perk makes it so you do not need to grapple a predator in order to self-feed; you can simply feed yourself straight away!
+*You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regurtitation disgust.`,
   },
   {
     id: "forceful-feeder",

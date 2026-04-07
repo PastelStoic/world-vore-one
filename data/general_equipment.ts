@@ -125,7 +125,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *You have a tiny cyanide pill on your person, hidden away in some tiny compartment.
 *It takes one action to pull the pill out, and another to swallow it.
 *Once swallowed, you die within 3 turns. This cannot be stopped in any way.
-*Alternatively, feed it to someone else somehow. That's what a sane person would do.`,
+*Alternatively, feed it to someone else somehow. That's what a sane person would do.
+*Don't forget! You are disarmed when swallowed by a predator. No dropping this into their stomach after you're eaten!`,
   },
   {
     id: "warhorse",

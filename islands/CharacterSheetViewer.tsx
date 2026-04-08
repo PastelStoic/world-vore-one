@@ -12,6 +12,8 @@ import {
   type CharacterSheet,
   getDisplayedRaceName,
 } from "@/lib/character_types.ts";
+import { getDerivedPerkIds } from "@/lib/character_parsing.ts";
+import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
@@ -51,6 +53,12 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     character.perkIds,
   );
   const perksById = new Map(perks.map((perk) => [perk.id, perk]));
+  const derivedPerkIds = getDerivedPerkIds(
+    character.perkIds,
+    character.perkSelections,
+    desc.faction,
+    character.perkOrigins,
+  );
   const ownedPerks = character.perkIds.map((id) => ({
     id,
     perk: perksById.get(id),
@@ -329,6 +337,22 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                     {group.items.map(({ id, perk, displayOnly }) => {
                       const rank = character.perkRanks?.[id] ?? 1;
                       const perkDef = perk ? PERKS_BY_ID.get(id) : undefined;
+                      const isDerived = derivedPerkIds.has(id);
+                      const sourcePerk = isDerived
+                        ? ownedPerks.find((op) =>
+                          op.perk?.includesPerks?.includes(id) ||
+                          (character.perkSelections?.[op.id] ?? []).includes(id)
+                        )?.perk
+                        : undefined;
+                      const perkOrigin = character.perkOrigins?.[id];
+                      const factionGrantStatus = perkOrigin === "faction"
+                        ? (FACTION_DEFINITIONS_BY_ID.get(desc.faction)
+                            ?.grantsPerkIds ?? []).includes(id)
+                          ? "Added by current faction"
+                          : "Added by former faction"
+                        : perkOrigin === "race"
+                        ? "Added by race"
+                        : undefined;
                       const statLabelMap = BASE_STAT_FIELDS.reduce(
                         (m, f) => {
                           m[f.key] = f.label;
@@ -346,6 +370,16 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                               />
                             )
                             : id}
+                          {isDerived && sourcePerk && (
+                            <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
+                              included by {sourcePerk.name}
+                            </span>
+                          )}
+                          {!sourcePerk && factionGrantStatus && (
+                            <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
+                              {factionGrantStatus}
+                            </span>
+                          )}
                           {perkDef?.upgradable && rank > 1 && (
                             <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
                               Rank {rank}

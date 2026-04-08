@@ -72,11 +72,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You are built to transform inedible things something edible (yourself.) 
 *You can eat anything organic, from actual food, into things such as grass and hay, as well as rotting food!
 *Such things do not taste good.
-*Because of your nature, you are worth four X [CONSTITUTION] times as much nutrition towards whoever eats you. 
-*our strength and dexterity are capped to 1. You're not meant for fighting and you don't put on a lot of muscle - you are nutrition!`,
-    modifiers: {
-      statCaps: { strength: 1, dexterity: 1 },
-    },
+*Because of your nature, you are worth four X [CONSTITUTION] times as much nutrition towards whoever eats you.`,
   },
   {
     id: "twins",

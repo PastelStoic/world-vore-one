@@ -110,6 +110,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   let attachmentMagazineSystem = false;
   let attachmentRequiresMags = false;
   let reloadAmountOverride = def.reloadAmountOverride;
+  let attachedWeight = 0;
   for (const aId of w.attachedIds) {
     const aDef = ATTACHMENTS_BY_ID.get(aId);
     if (aDef?.ammoOverride) {
@@ -134,7 +135,11 @@ export default function WeaponCard(props: WeaponCardProps) {
     if (aDef?.ammoOverride && aDef?.isCharge) {
       attachmentMagazineSystem = true;
     }
+    if (aDef) {
+      attachedWeight += aDef.weight;
+    }
   }
+  const displayedWeight = effectiveWeight + attachedWeight;
 
   // Detect charge-based magazine attachment currently in the chamber (e.g. Thompson drum)
   const drumAttachmentId = w.attachedIds.find((aId) => {
@@ -251,7 +256,7 @@ export default function WeaponCard(props: WeaponCardProps) {
           )}
           <strong>{def.name}</strong>{" "}
           <span class="text-xs text-base-content/60">
-            ({def.type} · {def.nation} · W:{effectiveWeight}{" "}
+            ({def.type} · {def.nation} · W:{displayedWeight}{" "}
             · DMG:{damageDisplay} · ROF:{effectiveRateOfFire})
           </span>
           {isSignature && (
@@ -656,7 +661,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                     {aDef?.name ?? aId}
                     {aDef && aDef.weight > 0 && (
                       <span class="text-base-content/50">
-                        (W:{aDef.weight})
+                        (adds {aDef.weight}W)
                       </span>
                     )}
                     {isSignature && isSignatureUniqueAttachment(def, aId) && (

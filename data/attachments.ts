@@ -143,7 +143,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     addsTraitIds: ["alofs-device"],
     requiresAttachmentIds: ["dbs-single-barrel"],
     description:
-      `*Extends the ammo capacity of the Double-barrel shotgun, from 1/2 to 5.`,
+      `*Shotgun must be single-barelled in order to fit this attachment.
+  *Extends the ammo capacity of the Double-barrel shotgun, from 1 to 5.`,
   },
   {
     id: "musket-rifled",

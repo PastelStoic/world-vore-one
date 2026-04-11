@@ -66,16 +66,14 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Armor piercing rounds",
     appliesTo: "Long guns",
     nation: "Any",
-    weight: 1,
-    isCharge: true,
+    weight: 0,
     addsTraitIds: ["alt-ammotype"],
-    requiresMagazines: true,
     description:
       `*Armor piercing armor, meant to handle the cowards hiding behind steel.
+  *Shooting at a target without a damage reduction effect causes overpenetration, decreasing damage by 1.
   *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.
   *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.
-  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.
-  *When buying this piece of gear, you're paying for charges of it. Each charge is 10 bullets.`,
+  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.`,
   },
   {
     id: "birdshot",

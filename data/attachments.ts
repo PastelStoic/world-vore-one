@@ -62,6 +62,21 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Replaces the 'cylinder' gimmick from revolvers with itself.`,
   },
   {
+    id: "armor-piercing-rounds",
+    name: "Armor piercing rounds",
+    appliesTo: "Long guns",
+    nation: "Any",
+    weight: 1,
+    isCharge: true,
+    requiresMagazines: true,
+    addsTraitIds: ["light-armor-piercing"],
+    description:
+      `*Armor piercing armor, meant to handle the cowards hiding behind steel.
+  *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.
+  *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.
+  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.`,
+  },
+  {
     id: "birdshot",
     name: "Birdshot",
     appliesTo: "Shotguns",

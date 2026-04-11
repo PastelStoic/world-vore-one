@@ -215,6 +215,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     isGhost: true,
     description: `The Dreadnaught's Armor! Especially tailored to you.
   *You are immune to small arms fire and melee weapons, unless they have a trait to circunvent it. Explosions, anti-tank weapons and similar threats still present a very real danger.
+  *If you are set on fire, you cannot put the fire out until you remove the armor in its entirety.
+  *It takes 3 turns to put on/remove the armor. Allies can help with it.
   *It is tailored for you specifically. Nobody else can wear it.`,
   },
 ];

@@ -370,7 +370,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 0,
     traitIds: ["two-handed", "reliable"],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, "gewehr98-smk"],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,],
   },
   {
     id: "flieger-selbstlader-karabiner-1916",

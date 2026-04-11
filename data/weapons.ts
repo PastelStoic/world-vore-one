@@ -10,6 +10,7 @@ export const LONG_GUN_ATTACHMENTS = [
   "scope",
   "bipod",
   "strong-sling",
+  "armor-piercing-rounds",
 ];
 const REVOLVER_ATTACHMENTS = ["quickloader"];
 const SHOTGUN_ATTACHMENTS = [

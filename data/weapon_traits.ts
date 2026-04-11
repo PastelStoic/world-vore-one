@@ -265,7 +265,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "flamethrower",
     name: "Flamethrower",
     description:
-      "Maximum range of 3 distances; cannot target anyone beyond. Ignores cover.\nIf a target is hit:\nTarget is set on fire, takes 3 damage immediately and 3 damage every turn thereafter. A target on fire can only do one of two things: Create distance between themselves and you. OR Try to put the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well.\nAttacking a target that is already on fire does not deal any more damage. Rate of fire does increase the damage of this weapon against individual targets.",
+      "Maximum range of 3 distances; cannot target anyone beyond. Ignores cover.\nIf a target is hit:\nTarget is set on fire, takes 3 damage immediately and 3 damage every turn thereafter. A target on fire can only do one the following: Create distance between themselves and you, try to put the fire out, or do an action that contributes towards putting the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well.\nAttacking a target that is already on fire does not deal any more damage. Rate of fire doesn't increase the damage of this weapon against individual targets.",
   },
   {
     id: "volatile",

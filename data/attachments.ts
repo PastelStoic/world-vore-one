@@ -69,7 +69,6 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     isCharge: true,
     requiresMagazines: true,
-    addsTraitIds: ["light-armor-piercing"],
     description:
       `*Armor piercing armor, meant to handle the cowards hiding behind steel.
   *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.

@@ -36,7 +36,9 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description: `You're careful and very much prefer to preserve your life! 
 
-*Every tier of cover is rated one tier higher than it actually is - except for the highest tier, which has no effect.`,
+*Every tier of cover is rated one tier higher than it actually is - except for the highest tier (8d6), which has no effect.
+*If you are not in cover at all - such as being wide in the open - you will always have at least 2d6 cover.
+*When rolling your cover, you obtain successes on 4 and above, rather than 5 and above.`,
   },
   {
     id: "terrain-specialist",

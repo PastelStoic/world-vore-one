@@ -245,21 +245,6 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 
   // ── German ──
   {
-    id: "gewehr98-smk",
-    name: "Gewehr 98: Spitzgeschoss mit Kern rounds",
-    appliesTo: "Gewehr 98",
-    nation: "Germany",
-    weight: 0,
-    isCharge: true,
-    ammoOverride: 5,
-    description:
-      `*Armor piercing ammunition. Ignores damage reduction from perks and gear. ( Lizard tierfraun, defender's shield, etc )
-*Damage transference effects ( prey-as-armour, veteran, etc ) have you deal full damage to both the original target and the transferee.
-*May pierce lightly armoured vehicles once we actually add those.
-*When buying this piece of gear, you're paying for charges of it. Each charge is 5 rounds.
-*Weightless.`,
-  },
-  {
     id: "c96-extended-stock",
     name: "C96 Mauser: Extended stock",
     appliesTo: "C96 Mauser",

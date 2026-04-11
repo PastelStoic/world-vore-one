@@ -69,7 +69,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 0,
     addsTraitIds: ["alt-ammotype"],
     description:
-      `*Armor piercing armor, meant to handle the cowards hiding behind steel.
+      `*Armor piercing ammo, meant to handle the cowards hiding behind steel.
   *Shooting at a target without a damage reduction effect causes overpenetration, decreasing damage by 1.
   *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.
   *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.

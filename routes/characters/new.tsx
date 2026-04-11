@@ -14,6 +14,7 @@ import {
 } from "@/lib/form_helpers.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 import { isUserBanned } from "@/lib/admin.ts";
+import { isModeratorOnlyFaction } from "@/data/factions.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -45,6 +46,14 @@ export const handler = define.handlers({
 
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
+
+    if (
+      !ctx.state.isAdmin && isModeratorOnlyFaction(draft.description.faction)
+    ) {
+      return new Response("That faction can only be assigned by a moderator.", {
+        status: 403,
+      });
+    }
 
     const perkAccountLimitError = await validateAccountLimitedPerksForUser(
       user.id,
@@ -101,6 +110,7 @@ export default define.page<typeof handler>(async (ctx) => {
         initialCharacter={createDefaultCharacterDraft()}
         perks={PERKS}
         accountPerkCounts={accountPerkCounts}
+        isModerator={ctx.state.isAdmin}
       />
     </CharacterPageLayout>
   );

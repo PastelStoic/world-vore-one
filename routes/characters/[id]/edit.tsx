@@ -14,6 +14,7 @@ import {
 } from "@/lib/form_helpers.ts";
 import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
+import { isModeratorOnlyFaction } from "@/data/factions.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {
@@ -60,6 +61,16 @@ export const handler = define.handlers({
 
     const draft = buildAndValidateDraft(parsed);
     if (draft instanceof Response) return draft;
+
+    if (
+      !ctx.state.isAdmin &&
+      draft.description.faction !== existing.description.faction &&
+      isModeratorOnlyFaction(draft.description.faction)
+    ) {
+      return new Response("That faction can only be assigned by a moderator.", {
+        status: 403,
+      });
+    }
 
     const perkAccountLimitError = await validateAccountLimitedPerksForUser(
       existing.userId,
@@ -137,6 +148,7 @@ export default define.page<typeof handler>(
           initialCharacter={character}
           perks={PERKS}
           accountPerkCounts={accountPerkCounts}
+          isModerator={ctx.state.isAdmin}
           isPending={character.status === "pending"}
           imageUrl={character.imageId
             ? cfImageUrl(character.imageId)

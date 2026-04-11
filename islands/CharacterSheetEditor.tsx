@@ -24,7 +24,10 @@ import {
   type Sex,
   SEX_OPTIONS,
 } from "@/lib/character_types.ts";
-import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
+import {
+  canSelectFaction,
+  FACTION_DEFINITIONS_BY_ID,
+} from "@/data/factions.ts";
 import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
 import {
   getStatFloor as getSharedStatFloor,
@@ -55,6 +58,7 @@ interface CharacterSheetEditorProps {
   initialCharacter: CharacterDraft | CharacterSheet;
   perks: PerkDefinition[];
   accountPerkCounts?: Record<string, number>;
+  isModerator?: boolean;
   /** Cloudflare Images delivery URL for existing character image */
   imageUrl?: string;
   /** Whether the character is still pending admin approval */
@@ -345,6 +349,14 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
     return true;
   });
+  const availableFactions = useMemo(
+    () =>
+      FACTIONS.filter((faction) =>
+        canSelectFaction(faction, { isModerator: props.isModerator }) ||
+        faction === description.faction
+      ),
+    [description.faction, props.isModerator],
+  );
   const displayedRaceName = getDisplayedRaceName(race, perkIds);
 
   function updateDescription<K extends keyof CharacterDescription>(
@@ -1197,7 +1209,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   }}
                 >
                   <option value="">— None —</option>
-                  {FACTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
+                  {availableFactions.map((f) => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
                 </select>
               </label>
 

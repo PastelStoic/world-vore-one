@@ -64,6 +64,7 @@ export const FACTIONS = [
   "ROLEPLAYER - The Church of Provisional Rations",
   "ROLEPLAYER - Gambling And Guts (GAG)",
   "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess",
+  "SWITZERLAND - King's Royal Artificers",
 ] as const;
 export type Faction = (typeof FACTIONS)[number];
 
@@ -71,10 +72,14 @@ export type Faction = (typeof FACTIONS)[number];
 
 export interface FactionDefinition {
   id: Faction;
+  /** Placeholder description text for the faction. */
+  description?: string;
   /** Perk IDs automatically granted when this faction is selected (free, derived). */
   grantsPerkIds?: string[];
   /** Extra stat points granted when this faction is selected. */
   grantsStatPoints?: number;
+  /** When true, only moderators may newly assign this faction in the editor. */
+  moderatorOnly?: boolean;
 }
 
 export type PerkOrigin = "purchased" | "race" | "faction";

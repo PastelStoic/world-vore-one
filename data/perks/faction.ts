@@ -2,6 +2,14 @@ import type { PerkDefinition } from "@/data/perks.ts";
 
 export const FACTION_PERKS: PerkDefinition[] = [
   {
+    id: "pilzfraun-artificer",
+    name: "Pilzfraun Artificer",
+    category: "faction",
+    requiredFaction: "SWITZERLAND - King's Royal Artificers",
+    selectionOnly: true,
+    description: "TODO: Add Pilzfraun Artificer perk description.",
+  },
+  {
     id: "king-s-royal-army-pf",
     name: "King's royal army",
     category: "faction",
@@ -280,7 +288,7 @@ Disadvantages:
     maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 15,
-    excludesPerks: ["free-range",],
+    excludesPerks: ["free-range"],
     selectablePerkIds: [
       "japanese-kami-champion-war-strength",
       "japanese-kami-champion-war-dexterity",

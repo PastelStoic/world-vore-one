@@ -1,4 +1,5 @@
 import { PERK_IDS, validatePerkRequirements } from "@/data/perks.ts";
+import { isKnownFaction } from "@/data/factions.ts";
 import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
 import { type CharacterDraft, type Race } from "./character_types.ts";
 import {
@@ -223,6 +224,10 @@ export function buildAndValidateDraft(
     inventory: fields.inventory ?? undefined,
   };
 
+  if (draft.description.faction && !isKnownFaction(draft.description.faction)) {
+    return new Response("Invalid faction selected.", { status: 400 });
+  }
+
   const progressionError = validateCharacterProgression(draft);
   if (progressionError) {
     return new Response(progressionError, { status: 400 });
@@ -240,6 +245,8 @@ export function buildAndValidateDraft(
     draft.description.faction,
     {
       isTemplate: draft.description.isTemplate,
+      perkSelections: draft.perkSelections,
+      perkOrigins: draft.perkOrigins,
     },
   );
   if (perkRequirementError) {

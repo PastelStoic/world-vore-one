@@ -31,6 +31,11 @@ import { FACTIONS } from "@/lib/character_types.ts";
 const FACTION_BONUS_DEFINITIONS: Partial<
   Record<Faction, Omit<FactionDefinition, "id">>
 > = {
+  "SWITZERLAND - King's Royal Artificers": {
+    description: "TODO: Add King's Royal Artificers faction description.",
+    grantsPerkIds: ["pilzfraun-artificer"],
+    moderatorOnly: true,
+  },
   "ROLEPLAYER - The Church of Provisional Rations": {
     grantsPerkIds: ["free-range"],
   },
@@ -57,3 +62,23 @@ export const FACTION_DEFINITIONS: FactionDefinition[] = FACTIONS.map((id) => ({
 export const FACTION_DEFINITIONS_BY_ID = new Map<string, FactionDefinition>(
   FACTION_DEFINITIONS.map((f) => [f.id as string, f]),
 );
+
+export function isKnownFaction(faction: string): faction is Faction {
+  return FACTION_DEFINITIONS_BY_ID.has(faction);
+}
+
+export function isModeratorOnlyFaction(faction: string): boolean {
+  return FACTION_DEFINITIONS_BY_ID.get(faction)?.moderatorOnly === true;
+}
+
+export function canSelectFaction(
+  faction: string,
+  options?: { isModerator?: boolean },
+): boolean {
+  if (!faction) return true;
+
+  const definition = FACTION_DEFINITIONS_BY_ID.get(faction);
+  if (!definition) return false;
+
+  return options?.isModerator === true || definition.moderatorOnly !== true;
+}

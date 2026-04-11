@@ -2,9 +2,11 @@ import type {
   BaseStatKey,
   Faction,
   OrganType,
+  PerkOrigin,
   Race,
   Sex,
 } from "@/lib/character_types.ts";
+import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -162,6 +164,49 @@ function formatPerkAccountLimitError(perk: PerkDefinition): string {
   } per account.`;
 }
 
+function getLegitimateDerivedPerkIds(
+  perkIds: string[],
+  perkSelections?: Record<string, string[]>,
+  faction?: string,
+  perkOrigins?: Record<string, PerkOrigin>,
+): Set<string> {
+  const derived = new Set<string>();
+  const queue = [...perkIds];
+
+  if (perkSelections) {
+    for (const selectedIds of Object.values(perkSelections)) {
+      for (const id of selectedIds) {
+        if (derived.has(id)) continue;
+        derived.add(id);
+        queue.push(id);
+      }
+    }
+  }
+
+  if (faction) {
+    for (
+      const id of FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? []
+    ) {
+      if (perkOrigins?.[id] !== "faction" || derived.has(id)) continue;
+      derived.add(id);
+      queue.push(id);
+    }
+  }
+
+  while (queue.length > 0) {
+    const perkId = queue.shift();
+    if (!perkId) continue;
+
+    for (const includedId of PERKS_BY_ID.get(perkId)?.includesPerks ?? []) {
+      if (derived.has(includedId)) continue;
+      derived.add(includedId);
+      queue.push(includedId);
+    }
+  }
+
+  return derived;
+}
+
 export function validatePerkRequirements(
   race: Race,
   sex: Sex,
@@ -169,8 +214,16 @@ export function validatePerkRequirements(
   faction?: string,
   options?: {
     isTemplate?: boolean;
+    perkSelections?: Record<string, string[]>;
+    perkOrigins?: Record<string, PerkOrigin>;
   },
 ): string | null {
+  const legitimateDerivedPerkIds = getLegitimateDerivedPerkIds(
+    perkIds,
+    options?.perkSelections,
+    faction,
+    options?.perkOrigins,
+  );
   const selectedByLockCategory = new Map<string, string>();
 
   for (const perkId of perkIds) {
@@ -193,6 +246,10 @@ export function validatePerkRequirements(
 
     if (perk.requiresTemplate && !options?.isTemplate) {
       return `Perk "${perk.name}" requires the character to be a template.`;
+    }
+
+    if (perk.selectionOnly && !legitimateDerivedPerkIds.has(perkId)) {
+      return `Perk "${perk.name}" cannot be selected directly.`;
     }
 
     if (perk.requiredFaction) {

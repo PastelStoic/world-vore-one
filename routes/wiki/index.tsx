@@ -14,11 +14,16 @@ export default define.page(function WikiIndex() {
         <BackLink href="/">← Home</BackLink>
         <h1 class="text-3xl font-bold mt-2">Wiki</h1>
         <p class="text-base-content">
-          Reference pages for game rules, perks, and equipment.
+          Reference pages for game rules, factions, perks, and equipment.
         </p>
       </header>
 
       <div class="grid gap-4 sm:grid-cols-2">
+        <WikiCard
+          href="/wiki/factions"
+          title="Factions"
+          description="Reference information for every faction, including automatic bonuses and moderator-only restrictions."
+        />
         <WikiCard
           href="/wiki/perks"
           title="Perks"

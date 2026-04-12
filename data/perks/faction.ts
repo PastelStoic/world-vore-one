@@ -252,12 +252,15 @@ Disadvantages:
   },
   {
     id: "arditi",
-    name: "Ardity",
+    name: "Arditi",
     category: "faction",
     requiredFaction: "ITALY - Royal italian army remnants - The Arditi",
     maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 2,
+    modifiers: {
+      baseStatBonuses: { strength: 3 },
+    },
     grantsEquipment: [
       { equipmentId: "arditi-armor" },],
     description: `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.

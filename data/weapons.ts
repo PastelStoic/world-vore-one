@@ -190,8 +190,9 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed",],
+    traitIds: ["two-handed","tubular-magazine"],
     compatibleAttachmentIds: ["strong-sling"],
+    reloadAmountOverride: 1,
   },
 
   // ── British ──

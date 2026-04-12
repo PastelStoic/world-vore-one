@@ -312,7 +312,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
     discountFactionPerkIds: ["french-foreign-legion", "chasseurs-alpins"],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["bayonet","strong-sling","armor-piercing-rounds"],
   },
   {
     id: "ruby-pistol",
@@ -446,7 +446,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["bayonet","strong-sling",],
     discountFactionPerkIds: ["sturmtruppen"],
   },
 
@@ -482,7 +482,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: ["thompson-drum-magazines"],
+    compatibleAttachmentIds: ["thompson-drum-magazines","bayonet","strong-sling",],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
   },
   {
@@ -503,7 +503,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "trench-sweeper",
       "slam-fire",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: ["bayonet","strong-sling", ...SHOTGUN_ATTACHMENTS],
     reloadAmountOverride: 1,
   },
   {
@@ -567,7 +567,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "tubular-magazine-shells",
       "trench-sweeper",
     ],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS, ...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: ["bayonet","strong-sling", ...SHOTGUN_ATTACHMENTS],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadAmountOverride: 1,
   },
@@ -665,7 +665,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted", "6mm-arisaka"],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["bayonet","strong-sling","armor-piercing-rounds",],
   },
 
   // ── Austro-Hungarian ──
@@ -746,7 +746,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 3,
     traitIds: ["two-handed", "restricted", "overhead-magazine"],
     discountFactionPerkIds: ["italian-veteran",],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+    compatibleAttachmentIds: ["bayonet","strong-sling",],
   },
   {
     id: "bodeo-1889",

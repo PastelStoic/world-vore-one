@@ -99,6 +99,18 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },
   {
+    id: "ballistic-armor",
+    name: "Ballistic armor",
+    weight: 6,
+    description: `A thick set of metal plates meant to deflect bullets! Especially tailored to you.
+  *Every 10 distances, gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
+  *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.
+  *It takes 3 turns to put on/remove the armor. Allies can help with it.
+  *If you are pinned by an enemy, they and their allies can deal damage to you by exploiting gaps in your armor. They must be at distance 0 to do this.
+  *If you are set on fire, you cannot put the fire out until you remove the armor in its entirety.
+  *It is tailored for you specifically. Nobody else can wear it.`,
+  },
+  {
     id: "signal-flares",
     name: "Signal flares & flare gun",
     weight: 1,
@@ -211,10 +223,24 @@ export const EQUIPMENT: EquipmentDefinition[] = [
   {
     id: "dreadnoughts-armor",
     name: "Dreadnought's armor",
-    weight: 4,
+    weight: 6,
     isGhost: true,
     description: `The Dreadnaught's Armor! Especially tailored to you.
   *You are immune to small arms fire and melee weapons, unless they have a trait to circunvent it. Explosions, anti-tank weapons and similar threats still present a very real danger.
+  *It takes 3 turns to put on/remove the armor. Allies can help with it.
+  *If you are pinned by an enemy, they and their allies can deal damage to you by exploiting gaps in your armor. They must be at distance 0 to do this.
+  *If you are set on fire, you cannot put the fire out until you remove the armor in its entirety.
+  *It is tailored for you specifically. Nobody else can wear it.`,
+  },
+  {
+    id: "arditi-armor",
+    name: "Arditi armor",
+    weight: 8,
+    isGhost: true,
+    description: `Especially thick suit of armor. Extremely heavy and inconvenient to use, but remarkably useful. Especially tailored to you.
+  *Gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
+  *Every 5 distances, gunshots deal another -1 damage to you. Damage cannot be brought below 1 through this.
+  *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.
   *It takes 3 turns to put on/remove the armor. Allies can help with it.
   *If you are pinned by an enemy, they and their allies can deal damage to you by exploiting gaps in your armor. They must be at distance 0 to do this.
   *If you are set on fire, you cannot put the fire out until you remove the armor in its entirety.

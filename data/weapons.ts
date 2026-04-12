@@ -179,6 +179,20 @@ export const WEAPONS: WeaponDefinition[] = [
     compatibleAttachmentIds: [],
     reloadAmountOverride: 1,
   },
+  {
+    id: "winchester-m1887",
+    name: "Winchester M1887",
+    type: "Lever-action rifle",
+    kind: "lever-action-rifle",
+    nation: "America",
+    damage: "2",
+    ammo: 11,
+    rateOfFire: 3,
+    weight: 2,
+    pointCost: 1,
+    traitIds: ["two-handed",],
+    compatibleAttachmentIds: ["strong-sling"],
+  },
 
   // ── British ──
   {

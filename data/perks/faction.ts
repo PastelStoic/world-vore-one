@@ -273,8 +273,8 @@ Advantages:
 
 Disadvantages:
 *Only one per player.
-*Must be French-born.
-*Must be part of the Chasseurs Alpins in #factions`,
+*Must be Italian-born
+*Must be part of the 'Royal italian army remnants - The Arditi' faction in #factions`,
   },
   {
     id: "capo",

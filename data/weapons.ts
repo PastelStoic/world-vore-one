@@ -180,7 +180,7 @@ export const WEAPONS: WeaponDefinition[] = [
     reloadAmountOverride: 1,
   },
   {
-    id: "winchester-m1887",
+    id: "winchester-m1894",
     name: "Winchester M1887",
     type: "Lever-action rifle",
     kind: "lever-action-rifle",

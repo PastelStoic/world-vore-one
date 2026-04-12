@@ -258,9 +258,6 @@ Disadvantages:
     maxCharactersPerAccount: 1,
     isFree: true,
     pointsGranted: 2,
-    modifiers: {
-      baseStatBonuses: { strength: 4 },
-    },
     grantsEquipment: [
       { equipmentId: "arditi-armor" },],
     description: `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.
@@ -268,7 +265,6 @@ Disadvantages:
 Advantages:
 *This perk is free.
 *Start with an additional 2 points.
-*Start with an additional 3 strength due to training with the heavy armor.
 *Gain a special 'arditi armor' gear, only available for this faction.
 
 Disadvantages:

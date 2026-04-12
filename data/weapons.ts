@@ -187,7 +187,7 @@ export const WEAPONS: WeaponDefinition[] = [
     nation: "America",
     damage: "2",
     ammo: 11,
-    rateOfFire: 3,
+    rateOfFire: 2,
     weight: 2,
     pointCost: 1,
     traitIds: ["two-handed",],

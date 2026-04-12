@@ -259,7 +259,7 @@ Disadvantages:
     isFree: true,
     pointsGranted: 2,
     modifiers: {
-      baseStatBonuses: { strength: 3 },
+      baseStatBonuses: { strength: 4 },
     },
     grantsEquipment: [
       { equipmentId: "arditi-armor" },],

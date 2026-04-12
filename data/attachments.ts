@@ -73,7 +73,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
   *Shooting at a target without a damage reduction effect causes overpenetration, decreasing damage by 1.
   *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.
   *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.
-  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.`,
+  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.
+  *Only the main target can roll their cover, the transferee is hit if the target fails.`,
   },
   {
     id: "birdshot",

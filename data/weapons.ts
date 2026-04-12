@@ -82,6 +82,8 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 5,
     weight: 3,
     pointCost: 3,
+    freeAccessoryIds: ["fuel-canister"],
+    requiresMagazines: true,
     traitIds: [
       "two-handed",
       "restricted",

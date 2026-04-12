@@ -730,6 +730,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 1,
     traitIds: ["two-handed", "overhead-magazine"],
+    discountFactionPerkIds: ["italian-veteran",],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -744,6 +745,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted", "overhead-magazine"],
+    discountFactionPerkIds: ["italian-veteran",],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {

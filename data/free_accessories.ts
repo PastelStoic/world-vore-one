@@ -29,6 +29,14 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
     description:
       "A detachable magazine for the Schmidt–Rubin Model 1911. Choose how many to bring at scene start.",
   },
+  {
+    id: "fuel-canister",
+    name: "Fuel Canister",
+    weight: 1,
+    ammo: 10,
+    description:
+      "A canister full of fuel for a flamethrower. Very dangerous! Handle with care!.",
+  },
 ];
 
 export const FREE_ACCESSORIES_BY_ID = new Map(

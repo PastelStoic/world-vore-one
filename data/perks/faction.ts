@@ -7,7 +7,16 @@ export const FACTION_PERKS: PerkDefinition[] = [
     category: "faction",
     requiredFaction: "SWITZERLAND - King's Royal Artificers",
     selectionOnly: true,
-    description: "TODO: Add Pilzfraun Artificer perk description.",
+    description: `You have uncovered secrets that few are able to ever peer into. It will take a long time to learn them properly, though.
+    
+  *You can turn Baseliners into Pilzfrauns and/or Template Pilzfrauns. It costs 3 points to do so. You may pay for it yourself, or the target may do so. You both may contribute towards it too, if preferred.
+  *You can turn Pilzfrauns into Templates. It costs 3 points to do so, same deal as above.
+  *You can turn Pilzfrauns into Tierfrauns. It costs 3 points to do so, same deal as above.
+  *To perform any of these transformations, you must roll your intelligence - you need 2 successes.
+  *On 0 successes, the target is killed outright.
+  *On 1 success, the target survives and gains the 'crippling health condition' perk, applied to constitution, and they gain no points from the perk.
+  *If you attempt to turn that surviving target into a PF or its variants once more, their PF will have the crippling health condition and still not get any points from it.
+  *Whether you get 0 or 1 successes will kill the target if they've survived your procedure once.`,
   },
   {
     id: "king-s-royal-army-pf",

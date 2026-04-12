@@ -325,7 +325,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed"],
+    traitIds: ["one-handed","walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -416,7 +416,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed"],
+    traitIds: ["one-handed","walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -517,7 +517,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed"],
+    traitIds: ["one-handed","walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -695,7 +695,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed"],
+    traitIds: ["one-handed","walking-fire"],
     compatibleAttachmentIds: [
       "steyr-automatic-fire",
       "steyr-extended-magazine",

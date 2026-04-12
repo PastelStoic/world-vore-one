@@ -220,6 +220,60 @@ Disadvantages:
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
+    id: "italian-veteran",
+    name: "Italian Veteran",
+    category: "faction",
+    requiredFaction: ["ITALY - Italian Army In Exile","ITALY - Royal italian army remnants - The Arditi","ITALY - Standing Italian Army"],
+    maxCharactersPerAccount: 3,
+    pointsGranted: 2,
+    selectablePerkIds: [
+      "sapper",
+      "scrounger",
+      "signature-weapon",
+      "defender",
+      "weapon-master",
+      "melee-fighter",
+      "gunner",
+      "runner",
+      "effective-cover-use",
+      "veteran",
+    ],
+    description: `You are a veteran of the Italian forces.
+ 
+Advantages:
+*Start with an additional 2 points compared to normal PFs.
+*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Cheaper restricted ITALIAN weapons.
+
+Disadvantages:
+*Only three per player.
+*Must be Italian
+*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
+  },
+  {
+    id: "arditi",
+    name: "Ardity",
+    category: "faction",
+    requiredFaction: "ITALY - Royal italian army remnants - The Arditi",
+    maxCharactersPerAccount: 1,
+    isFree: true,
+    pointsGranted: 2,
+    grantsEquipment: [
+      { equipmentId: "arditi-armor" },],
+    description: `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.
+
+Advantages:
+*This perk is free.
+*Start with an additional 2 points.
+*Start with an additional 3 strength due to training with the heavy armor.
+*Gain a special 'arditi armor' gear, only available for this faction.
+
+Disadvantages:
+*Only one per player.
+*Must be French-born.
+*Must be part of the Chasseurs Alpins in #factions`,
+  },
+  {
     id: "capo",
     name: "Capo",
     category: "faction",

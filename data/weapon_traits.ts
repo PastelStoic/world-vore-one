@@ -309,6 +309,24 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "Weapon is fed by several stripper clips stacked upon one another, and as such, you can only reload 5 shots at a time. Any teammate with an Arisaka rifle OR its respective ammunition can use their action to insert a clip into it.",
   },
+  {
+    id: "kolibri",
+    name: "THE Kolibri",
+    description:
+      "Shooting someone only does damage if they're at distance 2 or closer. Throwing this weapon at someone deals 2 damage.",
+  },
+  {
+    id: "extended-barrel",
+    name: "Extended barrel",
+    description:
+      "The accuracy penalties apply at every 15 distances, instead of the typical 10 distances.",
+  },
+  {
+    id: "overpowered-cartridge",
+    name: "Overpowered cartridge",
+    description:
+      "Every shot, including the first one, adds a cumulative -1d6 to your shooting. The overpowered round makes the gun kick very hard!",
+  },
 
   // ── Traits added by attachments ──
   {

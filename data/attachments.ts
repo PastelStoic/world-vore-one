@@ -281,6 +281,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     isCharge: true,
     ammoOverride: 20,
+    reloadTurnsOverride: 1,
     description: `*Holds 20 rounds instead of the default.
 *When buying this piece of gear, you're paying for charges of it. Each charge is a magazine. Each charge has 1 weight.
 *Magazines can be unloaded without dumping the ammunition within them.

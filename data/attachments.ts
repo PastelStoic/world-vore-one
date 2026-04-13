@@ -291,15 +291,21 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "C96: Extended Barrel",
     appliesTo: "C96 mauser",
     nation: "Germany",
+    removesTraitIds: ["overpowered-cartridge"],
+    addsTraitIds: ["extended-barrel"],
+    requiresAttachmentIds: ["c96-extended-magazine"],
     weight: 1,
     description: `*An extended barrel for the C96 mauser, required in order to properly utilize its special ammunition.
-*The barrel allows for more effective powder burning and accuracy for a pistol round: Accuracy penalties apply every 15 ranges instead of the typical 10.`,
+*The barrel allows for more effective powder burning and accuracy for a pistol round: Accuracy penalties apply every 15 ranges instead of the typical 10.
+*Requires the extended stock in order to be used.`,
   },
   {
     id: "c96-9x25mm",
     name: "C96: 9x25mm Mauser",
     appliesTo: "C96 mauser",
     nation: "Germany",
+    addsTraitIds: ["overpowered-cartridge"],
+    damageOverride: 3,
     weight: 0,
     description: `*Special ammunition for the C96 mauser. Weightless attachment.
 *Larger, harder hitting, but more difficult to control. A longer barrel is required for proper usage.

@@ -94,12 +94,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "tubular-magazine-bullets",
     name: "Tubular magazine",
-    description: "Reloads each bullet individually, taking 1 turn per bullet.",
+    description: "Reloads each bullet individually, taking 1 turn per bullet. Optionally, roll dexterity, with a -3d6 penalty, to load two bullets at once. Failure means no reloading is done, as you fumble it.",
   },
   {
     id: "tubular-magazine-shells",
     name: "Tubular magazine",
-    description: "Reloads each shell individually, taking 1 turn per shell.",
+    description: "Reloads each shell individually, taking 1 turn per shell. Optionally, roll dexterity, with a -3d6 penalty, to load two shells at once. Failure means no reloading is done, as you fumble it.",
   },
   {
     id: "en-block-clip",

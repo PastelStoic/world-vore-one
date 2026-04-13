@@ -414,6 +414,7 @@ export const WEAPONS: WeaponDefinition[] = [
     nation: "Germany",
     damage: "2",
     ammo: 10,
+    reloadAmountOverride: 10,
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,

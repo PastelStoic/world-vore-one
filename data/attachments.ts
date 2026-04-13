@@ -376,7 +376,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 1,
-    removesTraitIds: ["agile", "one-handed", "uncontrollable"],
+    removesTraitIds: ["agile", "one-handed", "uncontrollable","walking-fire",],
     addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.

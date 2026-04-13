@@ -273,6 +273,38 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Gains the 'inconvenient' gimmick.
 *+1 rate of fire.`,
   },
+  {
+    id: "c96-extended-magazine",
+    name: "C96: Extended Magazine",
+    appliesTo: "C96 mauser",
+    nation: "Germany",
+    weight: 1,
+    isCharge: true,
+    ammoOverride: 20,
+    description: `*Holds 20 rounds instead of the default.
+*When buying this piece of gear, you're paying for charges of it. Each charge is a magazine. Each charge has 1 weight.
+*Magazines can be unloaded without dumping the ammunition within them.
+*Once out of charges, you must reload with stripper clips once more! Only loads 10 bullets at a time and must dump the ammo inside the magazine before reloading.`,
+  },
+  {
+    id: "c96-extended-barrel",
+    name: "C96: Extended Barrel",
+    appliesTo: "C96 mauser",
+    nation: "Germany",
+    weight: 1,
+    description: `*An extended barrel for the C96 mauser, required in order to properly utilize its special ammunition.
+*The barrel allows for more effective powder burning and accuracy for a pistol round: Accuracy penalties apply every 15 ranges instead of the typical 10.`,
+  },
+  {
+    id: "c96-9x25mm",
+    name: "C96: 9x25mm Mauser",
+    appliesTo: "C96 mauser",
+    nation: "Germany",
+    weight: 0,
+    description: `*Special ammunition for the C96 mauser. Weightless attachment.
+*Larger, harder hitting, but more difficult to control. A longer barrel is required for proper usage.
+*Deals +1 damage.`,
+  },
 
   // ── American ──
   {

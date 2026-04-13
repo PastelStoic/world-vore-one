@@ -285,7 +285,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description: `*Holds 20 rounds instead of the default.
 *When buying this piece of gear, you're paying for charges of it. Each charge is a magazine. Each charge has 1 weight.
 *Magazines can be unloaded without dumping the ammunition within them.
-*Once out of charges, you must reload with stripper clips once more! Only loads 10 bullets at a time and must dump the ammo inside the magazine before reloading.`,
+*Once out of charges, you must reload with stripper clips once more! Only loads 10 bullets at a time, and you can only reload if you are at 10 rounds or below.
+*Blame the last line on how the gun worked, it was very finnicky and gimmicky. You can ask me about it.`,
   },
   {
     id: "c96-extended-barrel",

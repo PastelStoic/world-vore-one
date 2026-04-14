@@ -68,7 +68,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 0,
-    traitIds: ["one-handed", "agile","waking-fire","kolibri"],
+    traitIds: ["one-handed", "agile","walking-fire","kolibri"],
     compatibleAttachmentIds: [],
   },
   {
@@ -190,7 +190,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed","walking-fire","tubular-magazine"],
+    traitIds: ["two-handed","walking-fire","tubular-magazine-bullets"],
     compatibleAttachmentIds: ["strong-sling"],
     reloadAmountOverride: 1,
   },

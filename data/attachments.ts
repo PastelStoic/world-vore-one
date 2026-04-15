@@ -266,7 +266,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Germany",
     weight: 1,
     rateOfFireBonus: 1,
-    removesTraitIds: ["half-agile", "one-handed"],
+    removesTraitIds: ["one-handed"],
     addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *While the stock is on, loses half-agile gimmick. Becomes two-handed.

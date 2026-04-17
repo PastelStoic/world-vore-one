@@ -188,8 +188,10 @@ export default function WeaponCard(props: WeaponCardProps) {
   const weaponRequiresMags = def.requiresMagazines ||
     attachmentRequiresMags || attachmentMagazineSystem;
 
-  // Total available mags (full + partial)
-  const totalAvailableMags = w.magazines + (w.partialMagazines ?? []).length;
+  const availableFullMagazines = w.magazines;
+  const availablePartialMagazines = (w.partialMagazines ?? []).length;
+  const canUseMagazineReload = hasMagazines && availableFullMagazines > 0;
+  const canUseStandardReload = !hasMagazines || !weaponRequiresMags;
 
   // Quickloader upgrades single-round cylinder reloads to a full reload.
   const hasQuickloader = w.attachedIds.includes("quickloader");
@@ -217,9 +219,8 @@ export default function WeaponCard(props: WeaponCardProps) {
   const isAmmoFull = w.currentAmmo >= effectiveAmmo;
 
   // Can reload?
-  const canReload = !isAmmoFull && (
-    hasMagazines ? totalAvailableMags > 0 || !weaponRequiresMags : true
-  );
+  const canReload = !isAmmoFull &&
+    (canUseMagazineReload || canUseStandardReload);
 
   // Multi-turn reload tracking
   let effectiveReloadTurns = def.reloadTurns ?? 1;
@@ -396,7 +397,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                 if (newProgress >= effectiveReloadTurns) {
                   // Reload complete!
                   weapon.reloadProgress = 0;
-                  if (hasMagazines && totalAvailableMags > 0) {
+                  if (hasMagazines && weapon.magazines > 0) {
                     const oldAmmo = weapon.currentAmmo;
                     if (weapon.magazines > 0) {
                       weapon.magazines -= 1;
@@ -424,7 +425,7 @@ export default function WeaponCard(props: WeaponCardProps) {
             }
 
             // Single-turn reload (original behavior)
-            if (hasMagazines && totalAvailableMags > 0) {
+            if (canUseMagazineReload) {
               // Magazine-fed reload: consume a full magazine
               props.onUpdateCombat((inv) => {
                 const weapon = inv[location].weapons[index];
@@ -464,7 +465,11 @@ export default function WeaponCard(props: WeaponCardProps) {
           title={isReloading
             ? `Reloading: ${reloadProgress}/${effectiveReloadTurns} turns`
             : !canReload
-            ? (isAmmoFull ? "Weapon is fully loaded" : "No spare magazines")
+            ? (isAmmoFull
+              ? "Weapon is fully loaded"
+              : hasMagazines && availablePartialMagazines > 0
+              ? "No full spare magazines"
+              : "No spare magazines")
             : hasMagazines
             ? "Reload (uses a full magazine)"
             : usesRoundReloadUi

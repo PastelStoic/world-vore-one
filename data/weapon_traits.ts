@@ -32,7 +32,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "reliable",
     name: "Reliable",
     description:
-      "No debuff from having a bayonet attached. Does not break easily, maintenance isn't difficult, mud is no problem.",
+      "Ignores the debuffs of these attachments: Bayonet, scope, strong sling and bipod. Does not break easily, maintenance isn't difficult, mud is no problem.",
   },
   {
     id: "restricted",

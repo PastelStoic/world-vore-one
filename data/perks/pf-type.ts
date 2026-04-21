@@ -270,9 +270,10 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 dexterity, +1 charisma, -3 stat points.
-*You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa.
+*You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.
 *While flying and engaging with something that is grounded: Have +4d6 strength. 
 *While flying and engaging something in the air: +4d6 strength and dexterity.
+*You may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
 *You have 4d6 cover when in the air, due to being hard to hit.
 *While flying, you may move up to two distances per turn.
 *You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,

@@ -558,9 +558,16 @@ export default function InventorySection(props: InventorySectionProps) {
       if (idx >= 0) ids.splice(idx, 1);
 
       const attDef = ATTACHMENTS_BY_ID.get(attachmentId);
+      const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
+      const isSignaturePerkAttachment = hasSignatureWeaponPerk &&
+        weapon.isSignatureWeapon &&
+        isSignatureUniqueAttachment(weaponDef, attachmentId);
 
       if (attDef?.isCharge && attDef.ammoOverride) {
         const restored = convertMagazinesToAttachment(weapon, attachmentId);
+        if (isSignaturePerkAttachment) {
+          restored.perkGranted = "signature-weapon";
+        }
         inv[location].attachments.push(restored);
         const wDef = WEAPONS_BY_ID.get(weapon.weaponId);
         weapon.currentAmmo = Math.min(weapon.currentAmmo, wDef?.ammo ?? 999);
@@ -571,6 +578,9 @@ export default function InventorySection(props: InventorySectionProps) {
           totalCharges: savedChargeData?.totalCharges ??
             (attDef?.isCharge ? 1 : 0),
           usedCharges: savedChargeData?.usedCharges ?? 0,
+          perkGranted: isSignaturePerkAttachment
+            ? "signature-weapon"
+            : undefined,
         });
         if (weapon.attachmentChargeData) {
           delete weapon.attachmentChargeData[attachmentId];
@@ -593,8 +603,15 @@ export default function InventorySection(props: InventorySectionProps) {
       ids.splice(idx, 1);
 
       const attDef = ATTACHMENTS_BY_ID.get(drumAttachmentId);
+      const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
+      const isSignaturePerkAttachment = hasSignatureWeaponPerk &&
+        weapon.isSignatureWeapon &&
+        isSignatureUniqueAttachment(weaponDef, drumAttachmentId);
       if (attDef?.isCharge && attDef.ammoOverride) {
         const restored = convertMagazinesToAttachment(weapon, drumAttachmentId);
+        if (isSignaturePerkAttachment) {
+          restored.perkGranted = "signature-weapon";
+        }
         inv[location].attachments.push(restored);
       }
 

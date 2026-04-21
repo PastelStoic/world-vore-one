@@ -259,8 +259,10 @@ export const VORE_PERKS: PerkDefinition[] = [
 ---->If you're inside someone and you're at 0 HP or below ( not self-inflicted ), 
 *You gain +6d6 to escape their stomach.
 *You now count successess on a 4 and above, rather than a 5 and above, to do that.
-*If you escape, you are hit with an adrenaline boost: 
-*You have 'runner' for the ten minutes, or for 10 turns if in combat, and you cannot be incapacitated again for the duration.
+*If you escape, you are hit with an 'adrenaline rush': 
+*You have 'runner' for ten minutes, or for 10 turns if in combat.
+*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] / 2 successes in order to keep standing.
+*Failing your roll makes your adrenaline boost run out.
 *Once the adrenaline boost is over, you crash out, and are incapacitated/critical condition'd based on your HP. 
 *While crashed out, if you are eaten again, you cannot do any escape rolls. 
 *\`Crashed out\` lasts until your HP regenerates to full.`,

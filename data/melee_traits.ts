@@ -86,7 +86,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "concealable",
     name: "Concealable",
     description:
-      "The weapon is remarkably tiny, one can hide it away with ease. So long as it is holstered, enemies are not aware of it.",
+      "The weapon is remarkably tiny, one can hide it away with ease. So long as it is holstered, enemies are not aware of it. Ambushing someone makes no noise and deals triple the damage.",
   },
   {
     id: "throwable",

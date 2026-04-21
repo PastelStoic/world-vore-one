@@ -289,4 +289,16 @@ export const VORE_PERKS: PerkDefinition[] = [
 *You have no mouth; you cannot vocalize any sounds and cannot eat normally.
 *Once prey is brought to your stomach, they must escape into the tail, as escaping through your mouth is impossible.`,
   },
+  {
+    id: "survival-experience",
+    name: "Survival experience",
+    category: "vore",
+    description:
+      `Whenever you come close to death, your experience is always remembered and you take good mental notes for the future!
+
+*As unwilling prey, if you escape a predator and live to tell the tale, you gain +2 points.
+*As unwilling prey, if you digest AND are a template, you gain +1 point, as natural selection killed off a weak link of your template!
+*You may only get the first or second conditionals, both do not trigger together in a single scene.
+*The first conditional stacks - escaping multiple predators in a single scene and living grants cumulative points.`,
+  },
 ];

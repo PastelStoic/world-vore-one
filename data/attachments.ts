@@ -372,6 +372,16 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
 *May be used alongside this weapon's other attachments..`,
   },
+  {
+    id: "m1917-moon-clips",
+    name: "Colt M1917: moon clips",
+    appliesTo: "Colt M1917",
+    nation: "United States",
+    weight: 0,
+    reloadAmountOverride: 3,
+    description: `*Weightless.
+*A half-quickloader, which loads three shots at a time, instead of all six.`,
+  },
 
   // ── Russian ──
   {

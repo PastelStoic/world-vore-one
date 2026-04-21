@@ -274,6 +274,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *While flying and engaging with something that is grounded: Have +4d6 strength. 
 *While flying and engaging something in the air: +4d6 strength and dexterity.
 *You may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
+*Failing to vore them, or falling from the sky due to any other reason, deals a flat 4 damage to you.
 *You have 4d6 cover when in the air, due to being hard to hit.
 *While flying, you may move up to two distances per turn.
 *You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,

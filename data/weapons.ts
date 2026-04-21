@@ -548,7 +548,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 1,
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
-    compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS,"moon-clips",],
+    compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS,"m1917-moon-clips",],
     reloadAmountOverride: 1,
   },
   {

@@ -45,6 +45,10 @@ const FACTION_BONUS_DEFINITIONS: Partial<
   "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess": {
     grantsPerkIds: ["hidden-personality"],
   },
+  "ROLEPLAYER - testing purposes do not pick this faction if you're seeing it": {
+    grantsPerkIds: ["tierfraun-avian"],
+  },
+
   // Example (remove the leading // to activate):
   // "SWITZERLAND - King's Royal Army": {
   //   grantsPerkIds: ["runner"],

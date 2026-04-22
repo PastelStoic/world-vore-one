@@ -67,7 +67,7 @@ export const FACTIONS = [
   "ROLEPLAYER - The Church of Provisional Rations",
   "ROLEPLAYER - Gambling And Guts (GAG)",
   "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess",
-  "ROLEPLAYER - testing purposes do not pick this faction if you're seeing it",
+  "ROLEPLAYER - Scarlet Pyre",
   "SWITZERLAND - King's Royal Artificers",
 ] as const;
 export type Faction = (typeof FACTIONS)[number];

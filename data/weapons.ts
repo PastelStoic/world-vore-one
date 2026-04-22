@@ -184,7 +184,7 @@ export const WEAPONS: WeaponDefinition[] = [
     name: "Winchester M1887",
     type: "Lever-action rifle",
     kind: "lever-action-rifle",
-    nation: "America",
+    nation: "Civilian",
     damage: "2",
     ammo: 11,
     rateOfFire: 2,

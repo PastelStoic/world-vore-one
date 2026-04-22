@@ -45,8 +45,8 @@ const FACTION_BONUS_DEFINITIONS: Partial<
   "ROLEPLAYER - The Shinyakaze - Right Hand of the Goddess": {
     grantsPerkIds: ["hidden-personality"],
   },
-  "ROLEPLAYER - testing purposes do not pick this faction if you're seeing it": {
-    grantsPerkIds: ["tierfraun-avian"],
+  "ROLEPLAYER - Scarlet Pyre": {
+    grantsPerkIds: ["milky"],
   },
 
   // Example (remove the leading // to activate):

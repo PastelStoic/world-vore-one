@@ -318,6 +318,15 @@ export function getDerivedPerkIds(
   return derived;
 }
 
+function shouldChargeFactionGrantedPerk(
+  perkId: string,
+  perkOrigins?: Record<string, PerkOrigin>,
+): boolean {
+  if (perkOrigins?.[perkId] !== "faction") return false;
+
+  return PERKS_BY_ID.get(perkId)?.lockCategory === "tierfraun-type";
+}
+
 export function getFactionPerkCompensation(
   perkIds: string[],
   faction?: string,
@@ -365,7 +374,10 @@ export function calculatePerksCost(
     totalFreePerks += (perk?.freePerks ?? 0) * rank;
     if (perk?.isFree) continue;
 
-    if (derived.has(perkId)) {
+    if (
+      derived.has(perkId) &&
+      !shouldChargeFactionGrantedPerk(perkId, perkOrigins)
+    ) {
       paidPerkCount += Math.max(0, rank - 1);
       continue;
     }

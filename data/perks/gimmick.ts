@@ -172,6 +172,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
       `You regularly have to tend to people on the very verge of death!
 
 *With this perk, you immediately succeed in stabilizing anyone.
+*You may stabilize someone if they're at 0HP or below.
 *When you stabilize someone for the first time in a scene, their HP is healed back to 1.
 *Only applies once; further stabilizations of the same target do not change their HP.
 *Any checks regarding medicine or human biology immediately succeed as well.`,

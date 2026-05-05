@@ -336,6 +336,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       derivedPerkIds,
       perksById,
       accountPerkCounts,
+      isModerator: props.isModerator,
     })
   );
 
@@ -2154,14 +2155,21 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 description={perk.description}
                               />
                             </span>
-                            <button
-                              type="button"
-                              class="px-2 py-1 border rounded disabled:opacity-40"
-                              disabled={!canAfford}
-                              onClick={() => buyPerk(perk.id)}
-                            >
-                              {costLabel}
-                            </button>
+                            <div class="flex items-center gap-2">
+                              <button
+                                type="button"
+                                class="px-2 py-1 border rounded disabled:opacity-40"
+                                disabled={!canAfford}
+                                onClick={() => buyPerk(perk.id)}
+                              >
+                                {costLabel}
+                              </button>
+                              {perk.adminOnly && (
+                                <span class="text-[11px] uppercase tracking-[0.15em] text-warning">
+                                  Admin only
+                                </span>
+                              )}
+                            </div>
                           </li>
                         );
                       })}

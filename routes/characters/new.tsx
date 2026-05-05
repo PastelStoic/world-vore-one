@@ -35,6 +35,7 @@ export const handler = define.handlers({
     const formData = await ctx.req.formData();
     const parsed = parseCharacterFormData(formData);
     if (parsed instanceof Response) return parsed;
+    parsed.isAdmin = ctx.state.isAdmin;
 
     if (parsed.action !== "create") {
       return new Response("Invalid form action.", { status: 400 });

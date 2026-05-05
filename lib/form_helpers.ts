@@ -56,6 +56,7 @@ export interface ParsedCharacterFields {
   perkOrigins: Record<string, import("./character_types.ts").PerkOrigin>;
   factionCompensatedPerkIds: string[];
   unallocatedStatPoints: number;
+  isAdmin?: boolean;
   basedOnSnapshotId: string;
   pendingImageId: string;
   inventory: ReturnType<typeof parseInventory>;
@@ -247,6 +248,7 @@ export function buildAndValidateDraft(
       isTemplate: draft.description.isTemplate,
       perkSelections: draft.perkSelections,
       perkOrigins: draft.perkOrigins,
+      isAdmin: fields.isAdmin,
     },
   );
   if (perkRequirementError) {

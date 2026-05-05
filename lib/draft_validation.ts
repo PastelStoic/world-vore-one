@@ -81,6 +81,7 @@ export interface PerkEligibilityContext {
   derivedPerkIds: ReadonlySet<string>;
   perksById: ReadonlyMap<string, PerkDefinition>;
   accountPerkCounts?: ReadonlyMap<string, number>;
+  isModerator?: boolean;
 }
 
 /**
@@ -100,6 +101,7 @@ export function isPerkEligible(
   ctx: PerkEligibilityContext,
 ): boolean {
   if (perk.selectionOnly) return false;
+  if (perk.adminOnly && !ctx.isModerator) return false;
 
   // Already owned or derived
   if (ctx.ownedPerkIds.includes(perk.id)) return false;

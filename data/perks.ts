@@ -97,6 +97,8 @@ export interface PerkDefinition {
   excludesPerks?: string[];
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
+  /** When true, this perk is hidden from normal users and only selectable by admins. */
+  adminOnly?: boolean;
   /**
    * When set, the player chooses a number of stat points to gain within this
    * range (e.g. rival perk lets the player pick 1–6 points). The chosen value
@@ -216,6 +218,7 @@ export function validatePerkRequirements(
     isTemplate?: boolean;
     perkSelections?: Record<string, string[]>;
     perkOrigins?: Record<string, PerkOrigin>;
+    isAdmin?: boolean;
   },
 ): string | null {
   const legitimateDerivedPerkIds = getLegitimateDerivedPerkIds(
@@ -246,6 +249,10 @@ export function validatePerkRequirements(
 
     if (perk.requiresTemplate && !options?.isTemplate) {
       return `Perk "${perk.name}" requires the character to be a template.`;
+    }
+
+    if (perk.adminOnly && !options?.isAdmin) {
+      return `Perk "${perk.name}" can only be selected by a moderator.`;
     }
 
     if (perk.selectionOnly && !legitimateDerivedPerkIds.has(perkId)) {

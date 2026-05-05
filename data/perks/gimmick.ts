@@ -175,6 +175,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *You may stabilize someone if they're at 0HP or below.
 *When you stabilize someone for the first time in a scene, their HP is healed back to 1.
 *Only applies once; further stabilizations of the same target do not change their HP.
+*You always have the resources to treat poisons or other conditions/ailments someone has.
 *Any checks regarding medicine or human biology immediately succeed as well.`,
   },
   {

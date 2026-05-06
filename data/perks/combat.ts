@@ -209,4 +209,17 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Once this ability is over, you 'crash' out. While crashed out, you are incapacitated and you cannot do any escape rolls if you are eaten.
 *\`Crashed out\` lasts until your HP regenerates to full.`,
   },
+  {
+    id: "ambidextrous",
+    name: "Ambidextrous",
+    category: "combat",
+    description:
+      `You have no dominant hand - you can use either one perfectly! You're awfully agile with them, too.
+
+*Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
+*You can dual wield one-handed weapons, either ranged or melee. When attacking an opponent, you may optionally take a -3d6 to attack with your second weapon.
+*If your second weapon can fire/swing multiple times per turn, you gain -3d6 for every additional shot/attack.
+*If a weapon takes multiple turns to reload, when reloading them, you add an extra +1 reloading progress.
+*Throwing weapons no longer deal decreased damage when you use them for melee.`,
+  },
 ];

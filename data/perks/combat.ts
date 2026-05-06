@@ -217,7 +217,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
       `You have no dominant hand - you can use either one perfectly! You're awfully agile with them, too.
 
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
-*You can dual wield one-handed weapons, either ranged or melee. After attacking an opponent, you may optionally take a -3d6 in order to attack again with your second weapon.
+*You can dual wield pistols OR one-handed melees. You can attack with both weapons in one turn.
+*Hefties do not get to use two-handed weapons as if they were one-handed for this, sorry lads.
 *If your second weapon can fire/swing multiple times per turn, you gain -3d6 for every additional shot/attack.
 *In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
 *Throwing weapons no longer deal decreased damage when you use them for melee.`,

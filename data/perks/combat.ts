@@ -218,8 +218,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
 *You can dual wield pistols OR one-handed melees. You can attack with both weapons in one turn.
-*Hefties do not get to use two-handed weapons as if they were one-handed for this, sorry lads.
-*If your second weapon can fire/swing multiple times per turn, you gain -3d6 for every additional shot/attack.
+*Hefties, when using two-handed weapons as if they were one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it.
 *In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
 *Throwing weapons no longer deal decreased damage when you use them for melee.`,
   },

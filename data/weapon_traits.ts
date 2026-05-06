@@ -32,7 +32,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "reliable",
     name: "Reliable",
     description:
-      "Ignores the debuffs of these attachments: Bayonet, scope, strong sling and bipod. Does not break easily, maintenance isn't difficult, mud is no problem.",
+      "Ignores the debuffs of these attachments: Bayonet, strong sling and bipod. The Scope has no ranging nor ROF penalties from shooting enemies within 10 distances, but maintains the fixed ROF when firing and using the scope. Does not break easily, maintenance isn't difficult, mud is no problem.",
   },
   {
     id: "restricted",

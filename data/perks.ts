@@ -7,6 +7,7 @@ import type {
   Sex,
 } from "@/lib/character_types.ts";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
+import { ADMIN_PERKS } from "./perks/admin.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
 import { SMUT_PERKS } from "./perks/smut.ts";
@@ -143,6 +144,7 @@ export interface PerkDefinition {
 }
 
 export const PERKS: PerkDefinition[] = [
+  ...ADMIN_PERKS,
   ...COMBAT_PERKS,
   ...VORE_PERKS,
   ...SMUT_PERKS,

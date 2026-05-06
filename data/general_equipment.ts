@@ -79,7 +79,6 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     id: "cuirass",
     name: "Cuirass",
     weight: 3,
-    isBulky: true,
     description:
       `Body armour, mostly cerimonial, but some still used it during WW1 – mostly the French.
 *Melee attacks deal halved damage to you, rounded down. Unarmed attacks and makeshift melee weapons deal no damage.
@@ -90,7 +89,6 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     id: "full-suit-of-armor",
     name: "Full suit of armor",
     weight: 6,
-    isBulky: true,
     description:
       `An entirely outdated suit of armoured plates, ultimate protection against melee.
 *Melee attacks deal 1 damage to you. Unarmed attacks and makeshift melee weapons deal no damage.

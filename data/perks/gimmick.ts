@@ -89,9 +89,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description: `You are a spy, infiltrated in an enemy faction! Sneaky sneak.
 
 *Specify which faction you are loyal to, and which faction you're spying on, when making your character.
-*When attacked by your rael faction, you have a signal  that identifies your true alignment, and they always recognize it. 
+*When attacked by your real faction, you have a signal that identifies your true alignment, and they always recognize it. 
 *When doing your spy missions, you are assumed to have all the neccessary tools to carry it out: 
 *Lockpicks, silenced gun, cyanide pills, anything that'd be fitting for a spy to have, you can simply conjure out of thin air.
+*You cannot be entirely disarmed, you always have items hidden in your body somehow.
 *The enemy is right to punish you if you're caught!`,
   },
   {

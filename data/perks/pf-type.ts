@@ -329,7 +329,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You always immobilize your predator, even if they have the 'hauling-meat' perk. Does not apply if they're a hefty too.
 *Double your pred's penalties from being immobilized.
 *You should taller and bulkier than average - you're huge!
-*You can handle weapons that require bipods without issues. Ignore the penalty from not being set up.`,
+*You can handle weapons that require bipods without issues. Ignore the penalty from not being set up.
+*You can use two-handed weapons, melee or ranged, with one hand.`,
     modifiers: {
       baseStatBonuses: { constitution: 2, strength: 1 },
     },

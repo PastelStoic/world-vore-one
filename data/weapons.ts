@@ -683,6 +683,20 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: ["two-handed", "restricted", "6mm-arisaka"],
     compatibleAttachmentIds: ["bayonet","strong-sling","armor-piercing-rounds",],
   },
+  {
+    id: "winchester-m1895",
+    name: "Winchester M1895",
+    type: "Lever-action rifle",
+    kind: "lever-action-rifle",
+    nation: "Russia",
+    damage: "3",
+    ammo: 5,
+    rateOfFire: 2,
+    weight: 2,
+    pointCost: 1,
+    traitIds: ["two-handed","walking-fire",],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+  },
 
   // ── Austro-Hungarian ──
   {

@@ -861,6 +861,20 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: ["two-handed", "light-machinegun"],
     compatibleAttachmentIds: [],
   },
+  {
+    id: "furrer-mp19",
+    name: "Furrer MP19",
+    type: "SMG",
+    kind: "smg",
+    nation: "Switzerland",
+    damage: "3",
+    ammo: 40,
+    rateOfFire: 5,
+    weight: 2,
+    pointCost: 3,
+    traitIds: ["two-handed", "restricted"],
+    compatibleAttachmentIds: ["bayonet","strong-sling",],
+  },
 ];
 
 export const WEAPONS_BY_ID = new Map(

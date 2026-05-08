@@ -147,7 +147,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "heavy-machinegun",
     name: "Heavy-machinegun",
     description:
-      "Comes with a bipod, but gains no benefit from it.\nAutomatic fire whilst not set up awards a -3d6 for every shot fired past the first, rather than an accuracy bonus.\nTakes 3 turns to set up the bipod. Allies can help in setting the gun up.",
+      "Comes with a bipod, but gains no benefit from it.\nAutomatic fire whilst not set up awards a -3d6 for every shot fired past the first, rather than an accuracy bonus.\nTakes 3 turns to set up the bipod. Allies can help in setting the gun up.\nAfter the gun is set up, manning/unmanning it is a free action.",
   },
   {
     id: "multi-target",

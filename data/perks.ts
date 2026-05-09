@@ -253,10 +253,6 @@ export function validatePerkRequirements(
       return `Perk "${perk.name}" requires the character to be a template.`;
     }
 
-    if (perk.adminOnly && !options?.isAdmin) {
-      return `Perk "${perk.name}" can only be selected by a moderator.`;
-    }
-
     if (perk.selectionOnly && !legitimateDerivedPerkIds.has(perkId)) {
       return `Perk "${perk.name}" cannot be selected directly.`;
     }

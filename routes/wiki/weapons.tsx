@@ -10,6 +10,7 @@ import { BackLink } from "@/components/BackLink.tsx";
 
 const KIND_LABELS: Record<WeaponKind, string> = {
   "bolt-action-rifle": "Bolt-action Rifles",
+  "lever-action-rifle": "Lever-action Rifles",
   "semiautomatic-rifle": "Semi-automatic Rifles",
   "assault-rifle": "Assault Rifles",
   "smg": "Submachine Guns",

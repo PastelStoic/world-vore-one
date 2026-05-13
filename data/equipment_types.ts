@@ -24,6 +24,7 @@ export type Nation = (typeof NATIONS)[number];
 
 export type WeaponKind =
   | "bolt-action-rifle"
+  | "lever-action-rifle"
   | "semiautomatic-rifle"
   | "assault-rifle"
   | "smg"

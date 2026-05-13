@@ -5,8 +5,7 @@ import { isAdmin } from "./lib/admin.ts";
 import { cacheStaticFiles } from "./middleware/static_files.ts";
 import { PERKS_BY_ID } from "./data/perks.ts";
 
-// access to initialize
-PERKS_BY_ID.size;
+console.log("Initialized", PERKS_BY_ID.size, "perks");
 
 export const app = new App<State>();
 

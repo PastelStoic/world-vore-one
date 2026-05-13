@@ -6,7 +6,7 @@
 // character sheet rules.
 // ---------------------------------------------------------------------------
 
-import type { PerkDefinition } from "@/data/perks.ts";
+import { PERKS_BY_ID, type PerkDefinition } from "@/data/perks.ts";
 import { getStatCap } from "./stat_calculations.ts";
 import {
   BASE_STAT_FIELDS,
@@ -79,7 +79,6 @@ export interface PerkEligibilityContext {
   isTemplate: boolean;
   ownedPerkIds: string[];
   derivedPerkIds: ReadonlySet<string>;
-  perksById: ReadonlyMap<string, PerkDefinition>;
   accountPerkCounts?: ReadonlyMap<string, number>;
   isModerator?: boolean;
 }
@@ -145,7 +144,7 @@ export function isPerkEligible(
   // Lock category — only one perk per lock category
   if (perk.lockCategory) {
     for (const id of ctx.ownedPerkIds) {
-      const owned = ctx.perksById.get(id);
+      const owned = PERKS_BY_ID.get(id);
       if (owned?.lockCategory === perk.lockCategory) return false;
     }
   }
@@ -157,7 +156,7 @@ export function isPerkEligible(
 
   // Excluded BY a currently-owned perk
   for (const id of ctx.ownedPerkIds) {
-    const owned = ctx.perksById.get(id);
+    const owned = PERKS_BY_ID.get(id);
     if (owned?.excludesPerks?.includes(perk.id)) return false;
   }
 

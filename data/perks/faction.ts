@@ -7,7 +7,8 @@ export const FACTION_PERKS: PerkDefinition[] = [
     category: "faction",
     requiredFaction: "SWITZERLAND - King's Royal Artificers",
     selectionOnly: true,
-    description: `You have uncovered secrets that few are able to ever peer into. It will take a long time to learn them properly, though.
+    description:
+      `You have uncovered secrets that few are able to ever peer into. It will take a long time to learn them properly, though.
     
   *You can turn Baseliners into Pilzfrauns. It costs 3 points to do so. You may pay for it yourself, or the target may do so. You both may contribute towards it too, if preferred.
   *You can turn Pilzfrauns into Templates. It costs 1 point to do so, same deal as above.
@@ -223,7 +224,11 @@ Disadvantages:
     id: "italian-veteran",
     name: "Italian Veteran",
     category: "faction",
-    requiredFaction: ["ITALY - Italian Army In Exile","ITALY - Royal italian army remnants - The Arditi","ITALY - Standing Italian Army"],
+    requiredFaction: [
+      "ITALY - Italian Army In Exile",
+      "ITALY - Royal italian army remnants - The Arditi",
+      "ITALY - Standing Italian Army",
+    ],
     maxCharactersPerAccount: 3,
     pointsGranted: 2,
     selectablePerkIds: [
@@ -259,8 +264,10 @@ Disadvantages:
     isFree: true,
     pointsGranted: 2,
     grantsEquipment: [
-      { equipmentId: "arditi-armor" },],
-    description: `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.
+      { equipmentId: "arditi-armor" },
+    ],
+    description:
+      `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.
 
 Advantages:
 *This perk is free.
@@ -343,6 +350,10 @@ Disadvantages:
     name: "Japanese Kami-Champion",
     category: "faction",
     requiredRaces: ["Tierfraun"],
+    overridesRaceName: [
+      { oldName: "Tierfraun", newName: "Kronprinz Tierfraun" },
+      { oldName: "Tierherr", newName: "Kronprinz Tierherr" },
+    ],
     requiresTemplate: true,
     customInput: "Number of daughters at character creation",
     requiredFaction: [

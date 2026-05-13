@@ -1,5 +1,5 @@
 import { define } from "@/utils.ts";
-import { PERKS_BY_ID } from "@/data/perks.ts";
+import { DefaultPerkDefinition, PERKS_BY_ID } from "@/data/perks.ts";
 import {
   BASE_STAT_FIELDS,
   getDisplayedRaceName,
@@ -122,6 +122,10 @@ export default define.page<typeof handler>(
       digestionResilience: calculateEffectiveDigestionResilience(draft),
     };
 
+    const ownedPerks = draft.perkIds.map((id) =>
+      PERKS_BY_ID.get(id) ?? DefaultPerkDefinition
+    );
+
     return (
       <CharacterPageLayout
         title={`${character.name} - Snapshot`}
@@ -138,7 +142,7 @@ export default define.page<typeof handler>(
           </p>
           <p>
             <strong>Race:</strong>{" "}
-            {getDisplayedRaceName(draft.race, draft.perkIds)}
+            {getDisplayedRaceName(draft.race, ownedPerks)}
           </p>
 
           <div class="space-y-1">

@@ -72,6 +72,13 @@ export interface PerkGrantedMeleeWeapon {
   meleeWeaponId: string;
 }
 
+export const DefaultPerkDefinition: PerkDefinition = {
+  id: "default-perk",
+  name: "[PH] Default Perk",
+  category: "gimmick",
+  description: "Default perk. You should not be seeing this.",
+};
+
 export interface PerkDefinition {
   id: string;
   name: string;
@@ -141,6 +148,7 @@ export interface PerkDefinition {
   maxCharactersPerAccount?: number;
   /** When true, hide this perk from the normal add-perk picker. */
   selectionOnly?: boolean;
+  overridesRaceName?: { oldName: string; newName: string }[];
 }
 
 export const PERKS: PerkDefinition[] = [
@@ -153,6 +161,8 @@ export const PERKS: PerkDefinition[] = [
   ...FACTION_PERKS,
   ...NEGATIVE_PERKS,
 ];
+
+export const PERK_ID_LOOKUP = new Map(PERKS.map((perk) => [perk.id, perk]));
 
 export const PERKS_BY_ID = new Map(PERKS.map((perk) => [perk.id, perk]));
 export const PERK_IDS = new Set(PERKS.map((perk) => perk.id));

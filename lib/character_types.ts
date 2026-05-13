@@ -1,3 +1,4 @@
+import { PerkDefinition } from "../data/perks.ts";
 import type { CharacterInventory } from "./inventory_types.ts";
 import { createEmptyInventory } from "./inventory_types.ts";
 
@@ -119,10 +120,16 @@ export function mapRaceForSex(race: Race, sex: Sex): Race {
 
 export function getDisplayedRaceName(
   race: Race,
-  perkIds: string[],
+  perks: PerkDefinition[],
 ): string {
-  if (perkIds.includes("japanese-kami-champion") && isTierRace(race)) {
-    return race === "Tierherr" ? "Kronprinz Tierherr" : "Kronprinz Tierfraun";
+  for (const perk of perks) {
+    if (perk.overridesRaceName) {
+      for (const override of perk.overridesRaceName) {
+        if (race === override.oldName) {
+          return override.newName;
+        }
+      }
+    }
   }
 
   return race;

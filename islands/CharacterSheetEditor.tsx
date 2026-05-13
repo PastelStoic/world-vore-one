@@ -1,5 +1,6 @@
 import { useMemo, useState } from "preact/hooks";
 import {
+  DefaultPerkDefinition,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
   type PerkCategory,
@@ -306,7 +307,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     perkIds,
   );
 
-  const perksById = new Map(props.perks.map((perk) => [perk.id, perk]));
   const accountPerkCounts = useMemo(
     () => new Map(Object.entries(props.accountPerkCounts ?? {})),
     [props.accountPerkCounts],
@@ -317,14 +317,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     description.faction,
     perkOrigins,
   );
-  const ownedPerks = perkIds.map((id) => ({ id, perk: perksById.get(id) }));
+  const ownedPerks = perkIds.map((id) =>
+    PERKS_BY_ID.get(id) ?? DefaultPerkDefinition
+  );
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
-      items: ownedPerks.filter((item) => item.perk?.category === category),
+      items: ownedPerks.filter((item) => item.category === category),
     }))
     .filter((group) => group.items.length > 0);
-  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item.perk);
+  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item);
 
   const eligiblePerks = props.perks.filter((perk) =>
     isPerkEligible(perk, {
@@ -334,7 +336,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       isTemplate: description.isTemplate,
       ownedPerkIds: perkIds,
       derivedPerkIds,
-      perksById,
       accountPerkCounts,
       isModerator: props.isModerator,
     })
@@ -358,7 +359,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       ),
     [description.faction, props.isModerator],
   );
-  const displayedRaceName = getDisplayedRaceName(race, perkIds);
+  const displayedRaceName = getDisplayedRaceName(
+    race,
+    ownedPerks,
+  );
 
   function updateDescription<K extends keyof CharacterDescription>(
     key: K,
@@ -445,7 +449,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       }
 
       for (const perkId of addedPerkIds) {
-        const perk = perksById.get(perkId);
+        const perk = PERKS_BY_ID.get(perkId);
 
         for (const grant of perk?.grantsEquipment ?? []) {
           nextInventory.carried.equipment.push({
@@ -505,7 +509,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   function buyPerk(perkId: string) {
     if (perkIds.includes(perkId)) return;
 
-    const perk = perksById.get(perkId);
+    const perk = PERKS_BY_ID.get(perkId);
     const includedIds = (perk?.includesPerks ?? []).filter((id) =>
       !perkIds.includes(id)
     );
@@ -576,7 +580,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     // Auto-add perk-granted equipment and melee weapons
     const allNewPerks = [perkId, ...includedIds];
     const hasGrantedItems = allNewPerks.some((id) => {
-      const p = perksById.get(id);
+      const p = PERKS_BY_ID.get(id);
       return (p?.grantsEquipment?.length ?? 0) > 0 ||
         (p?.grantsMeleeWeapons?.length ?? 0) > 0;
     });
@@ -584,7 +588,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       setInventory((inv) => {
         const newInv = structuredClone(inv);
         for (const id of allNewPerks) {
-          const p = perksById.get(id);
+          const p = PERKS_BY_ID.get(id);
           for (const grant of p?.grantsEquipment ?? []) {
             newInv.carried.equipment.push({
               equipmentId: grant.equipmentId,
@@ -623,7 +627,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
     // Determine which included perks should also be removed (those that are no
     // longer derived from any remaining source perk)
-    const perk = perksById.get(perkId);
+    const perk = PERKS_BY_ID.get(perkId);
     const perkIdsWithoutSource = perkIds.filter((id) => id !== perkId);
     // Selections from OTHER perks remain active; only selections FROM this perk are cleared
     const selectionsWithoutSource = { ...perkSelections };
@@ -721,7 +725,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function upgradePerk(perkId: string) {
-    const perk = perksById.get(perkId);
+    const perk = PERKS_BY_ID.get(perkId);
     if (!perk?.upgradable) return;
     const currentRank = perkRanks[perkId] ?? 1;
     if (perk.maxRanks !== undefined && currentRank >= perk.maxRanks) return;
@@ -767,7 +771,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function downgradePerk(perkId: string) {
-    const perk = perksById.get(perkId);
+    const perk = PERKS_BY_ID.get(perkId);
     if (!perk?.upgradable) return;
     const currentRank = perkRanks[perkId] ?? 1;
 
@@ -1581,35 +1585,35 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                       {PERK_CATEGORY_LABELS[group.category]}
                     </h5>
                     <ul class="space-y-2">
-                      {group.items.map(({ id, perk }) => {
-                        const isDerived = derivedPerkIds.has(id);
+                      {group.items.map((perk) => {
+                        const isDerived = derivedPerkIds.has(perk.id);
                         const sourcePerk = isDerived
                           ? ownedPerks.find((op) =>
-                            op.perk?.includesPerks?.includes(id) ||
-                            (perkSelections[op.id] ?? []).includes(id)
-                          )?.perk
+                            op.includesPerks?.includes(perk.id) ||
+                            (perkSelections[op.id] ?? []).includes(perk.id)
+                          )
                           : undefined;
-                        const perkOrigin = perkOrigins[id];
+                        const perkOrigin = perkOrigins[perk.id];
                         const factionGrantStatus = perkOrigin === "faction"
                           ? (FACTION_DEFINITIONS_BY_ID.get(description.faction)
-                              ?.grantsPerkIds ?? []).includes(id)
+                              ?.grantsPerkIds ?? []).includes(perk.id)
                             ? "Added by current faction"
                             : "Added by former faction"
                           : perkOrigin === "race"
                           ? "Added by race"
                           : undefined;
                         const canRemove = !isDerived && (canRemoveOldPerks ||
-                          !initialPerkIds.includes(id));
-                        const currentRank = perkRanks[id] ?? 1;
+                          !initialPerkIds.includes(perk.id));
+                        const currentRank = perkRanks[perk.id] ?? 1;
                         const isUpgradable = perk?.upgradable ?? false;
-                        const initialRank = initialPerkRanks[id] ??
-                          (initialPerkIds.includes(id) ? 1 : 0);
+                        const initialRank = initialPerkRanks[perk.id] ??
+                          (initialPerkIds.includes(perk.id) ? 1 : 0);
                         const canDowngrade = isUpgradable &&
                           (canRemoveOldPerks || currentRank > initialRank) &&
                           // Derived perks cannot be downgraded below rank 1
                           (!isDerived || currentRank > 1);
                         const chosenStats =
-                          (perkStatChoices[id] ?? []) as BaseStatKey[];
+                          (perkStatChoices[perk.id] ?? []) as BaseStatKey[];
                         const hasUnsatisfiedStatChoices =
                           perk?.requiresStatChoice
                             ? chosenStats.length < currentRank ||
@@ -1628,7 +1632,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           hasRemainingStats;
                         const upgradeRanks = {
                           ...perkRanks,
-                          [id]: currentRank + 1,
+                          [perk.id]: currentRank + 1,
                         };
                         const upgradeCost = canUpgrade
                           ? calculatePerksCost(
@@ -1659,17 +1663,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           {} as Record<string, string>,
                         );
                         return (
-                          <li key={id}>
+                          <li key={perk.id}>
                             <div class="flex items-center gap-2 flex-wrap">
                               <span>
-                                {perk
-                                  ? (
-                                    <PerkDescription
-                                      name={perk.name}
-                                      description={perk.description}
-                                    />
-                                  )
-                                  : id}
+                                <PerkDescription
+                                  name={perk.name}
+                                  description={perk.description}
+                                />
                                 {isDerived && sourcePerk && (
                                   <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
                                     included by {sourcePerk.name}
@@ -1691,7 +1691,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   <button
                                     type="button"
                                     class="px-2 py-0.5 text-xs border rounded text-primary hover:bg-primary/10"
-                                    onClick={() => upgradePerk(id)}
+                                    onClick={() => upgradePerk(perk.id)}
                                   >
                                     Upgrade{upgradeCost < 0
                                       ? ` (+${-upgradeCost} SP)`
@@ -1704,7 +1704,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 <button
                                   type="button"
                                   class="px-2 py-0.5 text-xs border rounded text-warning hover:bg-warning/10"
-                                  onClick={() => downgradePerk(id)}
+                                  onClick={() => downgradePerk(perk.id)}
                                 >
                                   {currentRank > 1 ? "Downgrade" : "Remove"}
                                 </button>
@@ -1713,7 +1713,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 <button
                                   type="button"
                                   class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-                                  onClick={() => unbuyPerk(id)}
+                                  onClick={() => unbuyPerk(perk.id)}
                                 >
                                   Remove
                                 </button>
@@ -1754,7 +1754,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                   setPerkStatChoices(
                                                     (current) => {
                                                       const choices = [
-                                                        ...(current[id] ??
+                                                        ...(current[perk.id] ??
                                                           Array(currentRank)
                                                             .fill(
                                                               "" as BaseStatKey,
@@ -1763,7 +1763,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                       choices[ri] = val;
                                                       return {
                                                         ...current,
-                                                        [id]: choices,
+                                                        [perk.id]: choices,
                                                       };
                                                     },
                                                   );
@@ -1807,7 +1807,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                               type="text"
                                               class="w-full border rounded px-2 py-1 text-xs"
                                               placeholder={perk.customInput}
-                                              value={(perkUpgradeNotes[id] ??
+                                              value={(perkUpgradeNotes[perk.id] ??
                                                 [])[ri] ?? ""}
                                               onInput={(e) => {
                                                 const value =
@@ -1816,7 +1816,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                 setPerkUpgradeNotes(
                                                   (current) => {
                                                     const notes = [
-                                                      ...(current[id] ??
+                                                      ...(current[perk.id] ??
                                                         Array(currentRank).fill(
                                                           "",
                                                         )),
@@ -1824,7 +1824,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                     notes[ri] = value;
                                                     return {
                                                       ...current,
-                                                      [id]: notes,
+                                                      [perk.id]: notes,
                                                     };
                                                   },
                                                 );
@@ -1845,13 +1845,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </label>
                                 <select
                                   class="select border rounded px-2 py-1 text-sm"
-                                  value={perkPointChoices[id] ?? ""}
+                                  value={perkPointChoices[perk.id] ?? ""}
                                   onChange={(e) => {
                                     const val = Number(
                                       (e.target as HTMLSelectElement).value,
                                     );
                                     if (!Number.isNaN(val) && val > 0) {
-                                      handlePerkPointChoiceChange(id, val);
+                                      handlePerkPointChoiceChange(perk.id, val);
                                     }
                                   }}
                                 >
@@ -1874,13 +1874,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 type="text"
                                 class="mt-1 w-full border rounded px-2 py-1 text-sm"
                                 placeholder={perk.customInput}
-                                value={perkNotes[id] ?? ""}
+                                value={perkNotes[perk.id] ?? ""}
                                 onInput={(e) => {
                                   const value =
                                     (e.target as HTMLInputElement).value;
                                   setPerkNotes((current) => ({
                                     ...current,
-                                    [id]: value,
+                                    [perk.id]: value,
                                   }));
                                 }}
                               />
@@ -1892,17 +1892,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 </label>
                                 <select
                                   class="select ml-2 border rounded px-2 py-1 text-sm"
-                                  value={perkDisguises[id] ?? ""}
+                                  value={perkDisguises[perk.id] ?? ""}
                                   onChange={(e) => {
                                     const value =
                                       (e.target as HTMLSelectElement).value;
                                     setPerkDisguises((current) => {
                                       if (!value) {
                                         const next = { ...current };
-                                        delete next[id];
+                                        delete next[perk.id];
                                         return next;
                                       }
-                                      return { ...current, [id]: value };
+                                      return { ...current, [perk.id]: value };
                                     });
                                   }}
                                 >
@@ -1911,7 +1911,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   </option>
                                   {props.perks
                                     .filter((p) =>
-                                      p.id !== id &&
+                                      p.id !== perk.id &&
                                       !p.canDisguise &&
                                       !p.isFree
                                     )
@@ -1930,9 +1930,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   <div class="mt-1 space-y-1">
                                     {Array.from({ length: count }, (_, si) => {
                                       const currentSelectionId =
-                                        perkSelections[id]?.[si] ?? "";
+                                        perkSelections[perk.id]?.[si] ?? "";
                                       const otherSelectedIds =
-                                        (perkSelections[id] ?? [])
+                                        (perkSelections[perk.id] ?? [])
                                           .filter((sel, i) =>
                                             i !== si && Boolean(sel)
                                           );
@@ -1969,9 +1969,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                 (e.target as HTMLSelectElement)
                                                   .value;
                                               const oldId =
-                                                perkSelections[id]?.[si] ?? "";
+                                                perkSelections[perk.id]?.[si] ?? "";
                                               const currentArr = [
-                                                ...(perkSelections[id] ?? []),
+                                                ...(perkSelections[perk.id] ?? []),
                                               ];
                                               while (currentArr.length <= si) {
                                                 currentArr.push("");
@@ -1979,7 +1979,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                               currentArr[si] = newId;
                                               const newSelections = {
                                                 ...perkSelections,
-                                                [id]: currentArr,
+                                                [perk.id]: currentArr,
                                               };
                                               setPerkSelections(newSelections);
                                               let newPerkIds = [...perkIds];

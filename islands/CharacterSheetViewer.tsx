@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import {
+  DefaultPerkDefinition,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
   type PerkDefinition,
@@ -48,29 +49,32 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     canEditCombatState = false,
   } = props;
   const desc = character.description;
+
+  // TODO figure out if the displayOnly variable is still needed
+  const ownedPerks = character.perkIds.map((id) => ({
+    id,
+    perk: PERKS_BY_ID.get(id) ?? DefaultPerkDefinition,
+    displayOnly: false,
+  }));
+
   const displayedRaceName = getDisplayedRaceName(
     character.race,
-    character.perkIds,
+    ownedPerks.map((p) => p.perk),
   );
-  const perksById = new Map(perks.map((perk) => [perk.id, perk]));
+  const PERKS_BY_ID = new Map(perks.map((perk) => [perk.id, perk]));
   const derivedPerkIds = getDerivedPerkIds(
     character.perkIds,
     character.perkSelections,
     desc.faction,
     character.perkOrigins,
   );
-  const ownedPerks = character.perkIds.map((id) => ({
-    id,
-    perk: perksById.get(id),
-    displayOnly: false,
-  }));
 
   // Merge display-only perks (fake perks shown to non-owners in place of disguised ones).
   const allDisplayPerks = [
     ...ownedPerks,
     ...displayOnlyPerkIds.map((id) => ({
       id,
-      perk: perksById.get(id),
+      perk: PERKS_BY_ID.get(id),
       displayOnly: true,
     })),
   ];
@@ -388,7 +392,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                           {/* Owner/admin: show which perk this is disguised as */}
                           {canSeeDisguisedPerks &&
                             character.perkDisguises?.[id] && (() => {
-                              const fakePerk = perksById.get(
+                              const fakePerk = PERKS_BY_ID.get(
                                 character.perkDisguises![id],
                               );
                               return (

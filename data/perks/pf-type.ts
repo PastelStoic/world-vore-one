@@ -299,7 +299,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+3 constitution, -3 stat point.
-*You have thick scales that protect you! Every attack deals -1 damage, unarmed attacks deal no damage.
+*You have thick scales that protect you! Every attack deals -1 damage, unarmed combat deals no damage if reduced to 0.
 *You have the Tough perk from Combat perks.
 *You have the Heavy perk from Vore Perks.
 *You are always last in initiative, regardless of any modifiers.

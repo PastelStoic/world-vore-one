@@ -19,6 +19,12 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     adminOnly: true,
     includesPerks: ["brawler", "runner", "heavy", "unreal-capacity", "hauling-meat"],
     maxCharactersPerAccount: 1,
+    overridesRaceName: [
+      { oldName: "Pilzfraun", newName: "Munsterfraun" },
+      { oldName: "Pilzherr", newName: "Munsterherr" },
+      { oldName: "Tierfraun", newName: "Munsterfraun" },
+      { oldName: "Tierherr", newName: "Munsterherr" },
+    ],
     description:
       `You are a monster, not meant to be roaming this earth yet. Filthy creature!
       

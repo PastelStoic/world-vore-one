@@ -43,7 +43,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
 *Cover is always one tier lower, allies cannot protect you with their perks, such as Defender. You're just too big!
 *You cannot get damage transference perks, such as Veteran or Prey-as-armour. You're too big for them to be of any help!
 *You cannot use firearms. Equipment has to be custom-tailored for you and costs 3 times as much.
-*All damage sources deal -2 damage to you due to your thick scales!`,
+*All damage sources deal -2 damage to you due to your thick scales! Unarmed combat deals no damage if reduced to 0.`,
     modifiers: {
       baseStatBonuses: { strength: 2, constitution: 1 },
     },

@@ -3,7 +3,6 @@ import {
   DefaultPerkDefinition,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
-  type PerkDefinition,
   PERKS_BY_ID,
 } from "@/data/perks.ts";
 import {
@@ -25,7 +24,6 @@ import { calculateInventoryPointCostWithPerks } from "@/components/inventory/hel
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
-  perks: PerkDefinition[];
   /** Cloudflare Images delivery URL for existing character image */
   imageUrl?: string;
   /** Character ID for auto-saving combat state (ammo, charges, magazines) */
@@ -41,7 +39,6 @@ interface CharacterSheetViewerProps {
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   const {
     character,
-    perks,
     imageUrl,
     characterId,
     canSeeDisguisedPerks = false,
@@ -61,7 +58,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     character.race,
     ownedPerks.map((p) => p.perk),
   );
-  const PERKS_BY_ID = new Map(perks.map((perk) => [perk.id, perk]));
+
   const derivedPerkIds = getDerivedPerkIds(
     character.perkIds,
     character.perkSelections,

@@ -1,7 +1,6 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import CharacterSheetViewer from "@/islands/CharacterSheetViewer.tsx";
-import { PERKS } from "@/data/perks.ts";
 import {
   deleteCharacter,
   getCharacter,
@@ -231,7 +230,6 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
       )}
       <CharacterSheetViewer
         character={viewCharacter}
-        perks={PERKS}
         imageUrl={imageUrl}
         characterId={id}
         canSeeDisguisedPerks={canSeeDisguisedPerks}

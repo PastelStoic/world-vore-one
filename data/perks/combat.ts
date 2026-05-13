@@ -7,7 +7,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description:
       `Your character is remarkably strong, or particularly precise with their strikes! 
-*When rolling to attack someone through melee means, roll +4d6 
+*When rolling to attack or defend against someone through melee means, roll +4d6 
 *You now count a success on a 4 and above, instead of a 5 and above.`,
   },
   {
@@ -118,7 +118,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *Tier 0 and tier 1 weapons ( unarmed and makeshift weapons respectively ) deal +2 damage.
 *Ignore damage penalties whilst using those weapons such as armor or a lizardgirl's scales.
-*When attacking with tier 0 and tier 1 weapons, gain +4d6 to attack with them and count successes on a 4 or above, instead of a 5 and above.
+*When attacking or defending with tier 0 and tier 1 weapons, gain +4d6 to attack with them and count successes on a 4 or above, instead of a 5 and above.
 *Does nothing for tier 2 ( military ) weapons.`,
   },
   {

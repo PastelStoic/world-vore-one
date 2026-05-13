@@ -3,6 +3,10 @@ import { define, type State } from "./utils.ts";
 import { getSession, getSessionIdFromRequest } from "./lib/auth.ts";
 import { isAdmin } from "./lib/admin.ts";
 import { cacheStaticFiles } from "./middleware/static_files.ts";
+import { PERKS_BY_ID } from "./data/perks.ts";
+
+// access to initialize
+PERKS_BY_ID.size;
 
 export const app = new App<State>();
 

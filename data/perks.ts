@@ -162,8 +162,6 @@ export const PERKS: PerkDefinition[] = [
   ...NEGATIVE_PERKS,
 ];
 
-export const PERK_ID_LOOKUP = new Map(PERKS.map((perk) => [perk.id, perk]));
-
 export const PERKS_BY_ID = new Map(PERKS.map((perk) => [perk.id, perk]));
 export const PERK_IDS = new Set(PERKS.map((perk) => perk.id));
 

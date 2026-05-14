@@ -140,7 +140,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
           Description {showDescription ? "▲" : "▼"}
         </button>
         {showDescription && (
-          <div class="space-y-1 mt-2">
+          <div class="space-y-1 mt-2 whitespace-pre-wrap">
             <p>
               <strong>Race:</strong> {displayedRaceName}
               {canSeeDisguisedPerks &&
@@ -229,7 +229,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
               </p>
             )}
             {desc.generalAppearance && (
-              <p>
+              <p class="">
                 <strong>General Appearance:</strong> {desc.generalAppearance}
               </p>
             )}

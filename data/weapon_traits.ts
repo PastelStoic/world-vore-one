@@ -271,7 +271,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "volatile",
     name: "Volatile",
     description:
-      "If you are shot from the back OR a grenade explodes:\nRoll a 1d6. On a 2, your canister is set ablaze, you are set on fire. On a 1, your canister explodes, setting you and everyone 1 distance away on fire. You cannot put the fire out until the canister is removed from your back in either circumstance.",
+      "If you are shot from the back OR a grenade explodes:\nRoll a 1d6. On a 5, your canister is set ablaze, you are set on fire, and it'll explode in 2 turns. On a 6, your canister explodes, setting you and everyone 1 distance away on fire. You cannot put the fire out until the canister is removed from your back in either circumstance.",
   },
   {
     id: "canister",

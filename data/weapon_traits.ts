@@ -327,6 +327,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "Every shot, including the first one, adds a cumulative -1d6 to your shooting. The overpowered round makes the gun kick very hard!",
   },
+  {
+    id: "smg-hybrid",
+    name: "SMG hybrid",
+    description:
+      "You may spend an ation to swap between using the weapon as an LMG or an SMG. The former has the weapon behave normally. The latter disregards 'light-machinegun', reduces firerate to 5, but gain no benefit from the hastened fire.",
+  },
 
   // ── Traits added by attachments ──
   {

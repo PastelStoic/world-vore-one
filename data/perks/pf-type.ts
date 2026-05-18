@@ -101,6 +101,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You may only carry a single 1 weight item on your person. You cannot operate firearms.
 *You can pass through extremely tiny openings. You cannot lift anything normal sized other than that single 1 weight item of choice.
 *You have a permanent 6d6 cover, and gain +6d6 strength to avoid being melee'd, as you are too tiny to hit! Does NOT apply to grapple checks!
+*You gain +4d6 to hide and sneak around, thanks to your tiny size!
 *You cannot escape the stomachs or grips of someone normal sized no matter how much you try.
 *You are extremely stretchy, You can take dick without issue, and you can eat ONE normal-sized person at all. You are immobile if you eat someone normal sized.
 *If you do manage to eat someone normal-sized, they are incapable of escaping you due to the sheer tightness.

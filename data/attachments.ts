@@ -209,8 +209,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
       `*Takes 1 turn to put the grenade launcher on/off. Cannot fire normally without removing it first, even if no grenade is slotted.
 *Roll DEX to hit your target, you only need 1 success regardless of cover. If you fail, roll 1d[DISTANCE TO TARGET]-1 - that is where the grenade lands.
 *Reloading a grenade after firing takes 1 turn.
-*Fires a grenade, which explodes on impact, so long as the enemy is 3 distances away or more.
-*Does not detonate if the enemy is within 2 distances. Deals 2 damage to the target.
+*Fires a grenade, which explodes on impact, so long as the enemy is 3 distances away or more. Follows the same damage rules as typical grenades.
+*Does not detonate if the enemy is within 2 distances. Deals 2 damage to the target instead.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an additional grenade. Each charge has 1 weight.`,
   },
   {

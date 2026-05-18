@@ -46,6 +46,7 @@ Advantages:
 *This perk is free.
 *Start with an additional 3 points.
 *Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Cheaper restricted SWISS weapons.
 
 Disadvantages:
 *Only one per player.

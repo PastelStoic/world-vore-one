@@ -83,10 +83,10 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 
 *On every scene you start, until you take your hit, your highest stat of: STR, DEX, CONS, INT, CHAR, is lowered to 1. Priority is in that order.
 *Your other stats are halved, rounded down, until you take your hit.
+*Each dose of your drug has 1 weight. Declare at scene start how many doses you have.
+*Your high lasts 10 posts, turns, minutes OR until combat end, whichever is faster, of which case, you need to retake your substance or suffer the penalties again.
 *The subject of your addiction must be illegal and deeply frowned down upon. Anyone who knows about your addiction can use it against you.
-*After taking your 'hit', every check you perform requires 1 additional success in order to succeed, as your high distracts you.
-*Your high lasts 10 posts, of which case, you need to retake your substance or suffer the penalties again.
-*Each dose of your drug has 1 weight. Declare at scene start how many doses you have.`,
+*Authorities seeing you utilize your drug will immediately report it and arrest you for using it.`,
   },
   {
     id: "crippling-health-condition",

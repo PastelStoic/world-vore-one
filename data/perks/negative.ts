@@ -114,7 +114,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 
 *Charisma checks require 1 additional success. You are clearly ill and repulse people.
 *One of: STR, DEX, CONS, INT, CHAR, is permanently locked at 1, and you always fail such checks.
-*The locked stat should be related to your disaability. You may justify your disability through any means, with respect to any of the locked stats below:
+*The locked stat should be related to your disability. You may justify your disability through any means, so long as they're as bad, or worse, than the options offered below:
 
 *Strength: You have zero muscle mass. Lifting your own body is a struggle - you may be wheelchair bound, or require someone else to carry you around.
 *Dexterity: You have no fine motor functions - you cannot write or do anything that requires any degree of precision or accuracy.

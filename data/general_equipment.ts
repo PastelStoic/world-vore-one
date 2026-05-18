@@ -15,6 +15,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
 *Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed.
+*Only up to 5 targets may be damaged by a grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
   },
   {

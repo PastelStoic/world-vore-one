@@ -9,7 +9,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     isFree: true,
     description: `You find yourself under the protection of someone special ...
 
-*"When you need be most, I will be there."
+*"When you need me most, I will be there."
 *Only applies on scenes after the one it was given in.`,
   },
   {

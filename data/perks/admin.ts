@@ -6,6 +6,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     name: "Under the protection of the Progenitor of Vampires",
     category: "gimmick",
     adminOnly: true,
+    isFree: true,
     description: `You find yourself under the protection of someone special ...
 
 *"When you need be most, I will be there."

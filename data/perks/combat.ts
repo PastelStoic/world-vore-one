@@ -188,8 +188,9 @@ export const COMBAT_PERKS: PerkDefinition[] = [
       `You have a knack for keeping yourself alive, at the cost of your teammates. You don't live long by being a dummy.
 
 *When being attacked, you may pull an ally/enemy in the same distance as you into the way. Does not apply if you were ambushed.
+*The target you pull must not be incapacitated/critical, only targets you can quickly reach out for and pull into your way are valid.
 *You may only protect yourself from a single attack per round, and it is a free action.
-*Your target may be pulled before or after you perform your cover/defense roll. If your target is incapacitated, you must be actively holding them before you can use them as cover.
+*Your target may be pulled before or after you perform your cover/defense roll.
 *If your target is willing, they take all of the damage in your stead.
 *If your target is unwilling, you may do a STR vs STR contested check against them. On a success, they take all of the damage in your stead.
 *Officers and higher-ups can punish you for this behavior; it is great cowardice and poor conduct!`,

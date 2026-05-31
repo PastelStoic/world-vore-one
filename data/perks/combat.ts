@@ -219,7 +219,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
 *You can dual wield pistols OR one-handed melees. You can attack with both weapons in one turn.
-*When dual wielding, you cannot utilize alternative firing techniques, unless the weapon is one-handed.
+*When dual wielding, you cannot utilize alternative firing techniques, unless both weapons are one-handed and both share the alternative firing technique gimmick.
 *Hefties, when using two-handed weapons as if they were one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
 *In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
 *Alternative firing stances ( 'Mad minute technique', 'Walking fire', etc ... ) no longer have negative effects.

@@ -68,7 +68,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 0,
-    traitIds: ["one-handed", "agile","walking-fire","kolibri"],
+    traitIds: ["one-handed", "agile", "walking-fire", "kolibri"],
     compatibleAttachmentIds: [],
   },
   {
@@ -190,7 +190,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed","walking-fire","tubular-magazine-bullets"],
+    traitIds: ["two-handed", "walking-fire", "tubular-magazine-bullets"],
     compatibleAttachmentIds: ["strong-sling"],
     reloadAmountOverride: 1,
   },
@@ -327,7 +327,11 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
     discountFactionPerkIds: ["french-foreign-legion", "chasseurs-alpins"],
-    compatibleAttachmentIds: ["bayonet","strong-sling","armor-piercing-rounds"],
+    compatibleAttachmentIds: [
+      "bayonet",
+      "strong-sling",
+      "armor-piercing-rounds",
+    ],
   },
   {
     id: "ruby-pistol",
@@ -340,7 +344,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed","walking-fire"],
+    traitIds: ["one-handed", "walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -388,7 +392,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 0,
     traitIds: ["two-handed", "reliable"],
-    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS,],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
     id: "flieger-selbstlader-karabiner-1916",
@@ -419,7 +423,12 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 1,
     pointCost: 1,
     traitIds: ["one-handed", "wasteful-reload", "walking-fire"],
-    compatibleAttachmentIds: ["c96-extended-stock","c96-extended-magazine","c96-extended-barrel","c96-9x25mm",],
+    compatibleAttachmentIds: [
+      "c96-extended-stock",
+      "c96-extended-magazine",
+      "c96-extended-barrel",
+      "c96-9x25mm",
+    ],
   },
   {
     id: "luger-p08",
@@ -432,7 +441,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed","walking-fire"],
+    traitIds: ["one-handed", "walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -462,7 +471,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: ["bayonet","strong-sling",],
+    compatibleAttachmentIds: ["bayonet", "strong-sling"],
     discountFactionPerkIds: ["sturmtruppen"],
   },
 
@@ -498,7 +507,11 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: ["thompson-drum-magazines","bayonet","strong-sling",],
+    compatibleAttachmentIds: [
+      "thompson-drum-magazines",
+      "bayonet",
+      "strong-sling",
+    ],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
   },
   {
@@ -519,7 +532,11 @@ export const WEAPONS: WeaponDefinition[] = [
       "trench-sweeper",
       "slam-fire",
     ],
-    compatibleAttachmentIds: ["bayonet","strong-sling", ...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: [
+      "bayonet",
+      "strong-sling",
+      ...SHOTGUN_ATTACHMENTS,
+    ],
     reloadAmountOverride: 1,
   },
   {
@@ -533,7 +550,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed","walking-fire"],
+    traitIds: ["one-handed", "walking-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -548,7 +565,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 1,
     pointCost: 0,
     traitIds: ["one-handed", "agile", "cylinder"],
-    compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS,"m1917-moon-clips",],
+    compatibleAttachmentIds: [...REVOLVER_ATTACHMENTS, "m1917-moon-clips"],
     reloadAmountOverride: 1,
   },
   {
@@ -583,7 +600,11 @@ export const WEAPONS: WeaponDefinition[] = [
       "tubular-magazine-shells",
       "trench-sweeper",
     ],
-    compatibleAttachmentIds: ["bayonet","strong-sling", ...SHOTGUN_ATTACHMENTS],
+    compatibleAttachmentIds: [
+      "bayonet",
+      "strong-sling",
+      ...SHOTGUN_ATTACHMENTS,
+    ],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadAmountOverride: 1,
   },
@@ -681,7 +702,11 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted", "6mm-arisaka"],
-    compatibleAttachmentIds: ["bayonet","strong-sling","armor-piercing-rounds",],
+    compatibleAttachmentIds: [
+      "bayonet",
+      "strong-sling",
+      "armor-piercing-rounds",
+    ],
   },
   {
     id: "winchester-m1895",
@@ -694,7 +719,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 2,
     pointCost: 1,
-    traitIds: ["two-handed","walking-fire",],
+    traitIds: ["two-handed", "walking-fire"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
 
@@ -725,7 +750,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 1,
-    traitIds: ["one-handed","walking-fire"],
+    traitIds: ["one-handed", "walking-fire"],
     compatibleAttachmentIds: [
       "steyr-automatic-fire",
       "steyr-extended-magazine",
@@ -760,7 +785,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 1,
     traitIds: ["two-handed", "overhead-magazine"],
-    discountFactionPerkIds: ["italian-veteran",],
+    discountFactionPerkIds: ["italian-veteran"],
     compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
   },
   {
@@ -775,8 +800,8 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted", "overhead-magazine"],
-    discountFactionPerkIds: ["italian-veteran",],
-    compatibleAttachmentIds: ["bayonet","strong-sling",],
+    discountFactionPerkIds: ["italian-veteran"],
+    compatibleAttachmentIds: ["bayonet", "strong-sling"],
   },
   {
     id: "villar-perosa-m1915",
@@ -888,7 +913,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: ["bayonet","strong-sling",],
+    compatibleAttachmentIds: ["bayonet", "strong-sling"],
   },
 ];
 

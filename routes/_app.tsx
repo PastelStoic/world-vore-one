@@ -24,6 +24,7 @@ export default define.page(function App({ Component, state }) {
         <nav class="flex items-center justify-end px-4 py-2 bg-base-300/80 border-b border-base-300 gap-3">
           <DarkModeToggle />
           <NavLink href="/wiki" class="mr-auto">Wiki</NavLink>
+          <NavLink href="/battler">Battler</NavLink>
           {user
             ? (
               <div class="flex items-center gap-3">

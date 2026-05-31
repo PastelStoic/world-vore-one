@@ -1807,7 +1807,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                               type="text"
                                               class="w-full border rounded px-2 py-1 text-xs"
                                               placeholder={perk.customInput}
-                                              value={(perkUpgradeNotes[perk.id] ??
+                                              value={(perkUpgradeNotes[
+                                                perk.id
+                                              ] ??
                                                 [])[ri] ?? ""}
                                               onInput={(e) => {
                                                 const value =
@@ -1969,9 +1971,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                                 (e.target as HTMLSelectElement)
                                                   .value;
                                               const oldId =
-                                                perkSelections[perk.id]?.[si] ?? "";
+                                                perkSelections[perk.id]?.[si] ??
+                                                  "";
                                               const currentArr = [
-                                                ...(perkSelections[perk.id] ?? []),
+                                                ...(perkSelections[perk.id] ??
+                                                  []),
                                               ];
                                               while (currentArr.length <= si) {
                                                 currentArr.push("");

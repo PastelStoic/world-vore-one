@@ -17,7 +17,13 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",
     adminOnly: true,
-    includesPerks: ["brawler", "runner", "heavy", "unreal-capacity", "hauling-meat"],
+    includesPerks: [
+      "brawler",
+      "runner",
+      "heavy",
+      "unreal-capacity",
+      "hauling-meat",
+    ],
     maxCharactersPerAccount: 1,
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },

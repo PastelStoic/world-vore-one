@@ -94,12 +94,14 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "tubular-magazine-bullets",
     name: "Tubular magazine",
-    description: "Reloads each bullet individually, taking 1 turn per bullet. Optionally, roll dexterity, with a -3d6 penalty, to load two bullets at once. Failure means no reloading is done, as you fumble it.",
+    description:
+      "Reloads each bullet individually, taking 1 turn per bullet. Optionally, roll dexterity, with a -3d6 penalty, to load two bullets at once. Failure means no reloading is done, as you fumble it.",
   },
   {
     id: "tubular-magazine-shells",
     name: "Tubular magazine",
-    description: "Reloads each shell individually, taking 1 turn per shell. Optionally, roll dexterity, with a -3d6 penalty, to load two shells at once. Failure means no reloading is done, as you fumble it.",
+    description:
+      "Reloads each shell individually, taking 1 turn per shell. Optionally, roll dexterity, with a -3d6 penalty, to load two shells at once. Failure means no reloading is done, as you fumble it.",
   },
   {
     id: "en-block-clip",
@@ -230,8 +232,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "musket-breech-loader",
     name: "Breech Loader",
-    description:
-      "Takes 1 turn to reload, instead of the typical 20/30.",
+    description: "Takes 1 turn to reload, instead of the typical 20/30.",
   },
   {
     id: "recoverable-ammo-arrows",
@@ -355,7 +356,8 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   {
     id: "rifled-musket",
     name: "Rifled musket",
-    description: "Reloading takes 30 turns. Accuracy penalty returns to normal instead of being doubled.",
+    description:
+      "Reloading takes 30 turns. Accuracy penalty returns to normal instead of being doubled.",
   },
 ];
 

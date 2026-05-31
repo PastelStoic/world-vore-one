@@ -297,7 +297,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     addsTraitIds: ["extended-barrel"],
     requiresAttachmentIds: ["c96-extended-stock"],
     weight: 1,
-    description: `*An extended barrel for the C96 mauser, required in order to properly utilize its special ammunition.
+    description:
+      `*An extended barrel for the C96 mauser, required in order to properly utilize its special ammunition.
 *The barrel allows for more effective powder burning and accuracy for a pistol round: Accuracy penalties apply every 15 ranges instead of the typical 10.
 *Requires the extended stock in order to be used.`,
   },
@@ -426,7 +427,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 1,
-    removesTraitIds: ["agile", "one-handed", "uncontrollable","walking-fire",],
+    removesTraitIds: ["agile", "one-handed", "uncontrollable", "walking-fire"],
     addsTraitIds: ["two-handed", "inconvenient"],
     description: `*It takes 1 turn to put the stock on/off.
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.

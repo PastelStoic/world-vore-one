@@ -6,7 +6,7 @@
 // character sheet rules.
 // ---------------------------------------------------------------------------
 
-import { PERKS_BY_ID, type PerkDefinition } from "@/data/perks.ts";
+import { type PerkDefinition, PERKS_BY_ID } from "@/data/perks.ts";
 import { getStatCap } from "./stat_calculations.ts";
 import {
   BASE_STAT_FIELDS,

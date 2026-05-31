@@ -48,7 +48,6 @@ const FACTION_BONUS_DEFINITIONS: Partial<
   "ROLEPLAYER - Scarlet Pyre": {
     grantsPerkIds: ["milky"],
   },
-
   // Example (remove the leading // to activate):
   // "SWITZERLAND - King's Royal Army": {
   //   grantsPerkIds: ["runner"],

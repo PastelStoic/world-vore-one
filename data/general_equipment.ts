@@ -101,7 +101,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     id: "ballistic-armor",
     name: "Ballistic armor",
     weight: 6,
-    description: `A thick set of metal plates meant to deflect bullets! Especially tailored to you.
+    description:
+      `A thick set of metal plates meant to deflect bullets! Especially tailored to you.
   *Every 10 distances, gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
   *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.
   *It takes 3 turns to put on/remove the armor. Allies can help with it.
@@ -236,7 +237,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Arditi armor",
     weight: 8,
     isGhost: true,
-    description: `Especially thick suit of armor. Extremely heavy and inconvenient to use, Italian-made! Avanti savoia! It is especially tailored to you.
+    description:
+      `Especially thick suit of armor. Extremely heavy and inconvenient to use, Italian-made! Avanti savoia! It is especially tailored to you.
   *Gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
   *Every 5 distances, gunshots deal another -1 damage to you. Damage cannot be brought below 1 through this.
   *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.

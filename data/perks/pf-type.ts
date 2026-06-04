@@ -416,7 +416,6 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     maxCharactersPerAccount: 1,
     pointsGranted: -3,
     includesPerks: ["tiny","baiter"],
-    baseStatBonuses: { dexterity: 1, constitution: 2 },
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },
       { oldName: "Pilzherr", newName: "Munsterherr" },
@@ -445,5 +444,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Alternatively, give part of, or the entirety of your gold away to someone else, awarding them the +1/+2 points.
 *Careful! If they capture you, every scene *they* finish will award them a point, as they're farming your gold!
 *You cannot be captured by another character you own - no giving yourself extra points for no reason!`,
+    modifiers: {
+      baseStatBonuses: { dexterity: 1, constitution: 2 },
+      },
     },
 ];

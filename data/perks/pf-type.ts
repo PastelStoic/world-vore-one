@@ -415,7 +415,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     maxCharactersPerAccount: 1,
     pointsGranted: -3,
-    includesPerks: ["tiny","baiter"],
+    includesPerks: ["tiny","baiter","secretes-gold"],
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },
       { oldName: "Pilzherr", newName: "Munsterherr" },
@@ -427,6 +427,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+1 dexterity, +2 constitution, -3 stat points.
 *Have the 'Tiny' and the 'Baiter' perks.
+*Have the unique "Secretes gold" perk.
 *Must have been born after May 1st, 1923.
 *You cannot be a template. Only one per player.
 *You must be between 1-4 inches in height.
@@ -438,25 +439,33 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You must do something ballsy every scene, such as pranking someone, getting into fights, or just overall being a nuisance. Baiter helps with this greatly!
 *You are an overall asshole, go make someone's life miserable for a day.
 *You can go [CONSTITUTION] scenes without getting your dose of adrenaline and dopamine.
-*You die if you do not manage to fulfill that condition.
+*You die if you do not manage to fulfill that condition.`,
+    modifiers: {
+      baseStatBonuses: { dexterity: 1, constitution: 2 },
+      },
+    },
+  {
+    id: "secretes-gold",
+    name: "Secretes gold",
+    category: "pf-type",
+    requiredPerkIds: ["munsterfraun-pixie"],
+    selectionOnly: true,
+    description: `You produce gold naturally! But this also makes you have a golden glow to you ... You are very valuable.
 
-*You have a natural golden glown to yourself. When trying to hide or sneak around, you must roll twice, taking the worst roll.
+*When trying to hide or sneak around, you must roll twice, taking the worst roll.
 *If you're trying to hide in the dark, or while it is dark, instead roll thrice and take the worst roll. You're shiny!
 *Your body naturally secretes tiny particles of gold dust. At the end of every scene, you gain +2 points from trading this gold away.
 *Alternatively, give part of, or the entirety of your gold away to someone else, awarding them the +1/+2 points.
 *Careful! If they capture you, every scene *they* finish will award them a point, as they're farming your gold!
 *You cannot be captured by another character you own - no giving yourself extra points for no reason!`,
-    modifiers: {
-      baseStatBonuses: { dexterity: 1, constitution: 2 },
-      },
-    },
+  },
   {
     id: "munsterfraun-vampyr",
     name: "Munsterfraun (VAMPYR)",
     category: "pf-type",
     maxCharactersPerAccount: 1,
     pointsGranted: -3,
-    includesPerks: ["j-eger",],
+    includesPerks: ["j-eger","partial-invisibility","vampyric-transformation"],
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },
       { oldName: "Pilzherr", newName: "Munsterherr" },
@@ -468,6 +477,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 -3 stat points.
 *Have the 'Jäeger' perk.
+*Have the unique "Partial invisibility" and "vampyric transformation" perks.
 *Cannot get the 'beastmaster' perk.
 *Must have been born after May 1st, 1923.
 *You cannot be a template. Only one per player.
@@ -486,19 +496,40 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 ->"You may not harm a fellow Vampyr."
 
 *You may cut your body and that of another's, sharing blood. This is a 'blood pact'. You can feel the emotions of those you have shared blood with, and know their location and when they are in danger.
-*Your body, at will, produces a natural pheromone that tricks the brains of standard humans.
-*In darkness, you are invisible to them. They can only track you through smell or hearing. Anyone trying to find you through smell always succeeds, for the pheromone is very strong.
+*You have fangs, which work as makeshift weapons, and can drain enemies of their blood.`,
+    },
+  {
+    id: "partial-invisibility",
+    name: "Partial invisibility",
+    category: "pf-type",
+    requiredPerkIds: ["munsterfraun-vampyr"],
+    selectionOnly: true,
+    description: `Your body makes a special pheromone that tricks the human brain into thinking you're not even there.
+
+*The pheromone is produced at will. You can secrete it whenever, but it takes a 1 minute, or three turns, whichever is faster, to take effect.
+*In darkness, you are invisible to non-vampyrs. They can only track you through smell or hearing. Anyone trying to find you through smell always succeeds.
 *In light, you stil create a shadow. Targets must roll their intelligence twice, taking the worst roll, when trying to spot you.
 *Your pheromones can get caught on thick pieces of cloth, allowing them to be 'invisible' for a maximum of 10 minutes, or 20 turns, whichever is faster.
 *Those hiding under your cloth must be entirely covered by it, otherwise, there'd be bits of them sticking out in mid air.
 *Your cloth is *not* see through, and neither are you. The brain is simply tricked into thinking there is nothing there. Targets will see complete darkness if they can see nothing else but you and/or your cloth.
-*Animals are afraid of you due to this pheromone.
+*Animals are afraid of you due to this pheromone, and immediately go into fight or flight! You cannot get the beastmaster perk because of this.`,
+  },
+  {
+    id: "vampyric-transformation",
+    name: "Vampyric transformation",
+    category: "pf-type",
+    requiredPerkIds: ["munsterfraun-vampyr"],
+    selectionOnly: true,
+    customInput: "Number of ghouls currently",
+    description: `You can turn non-vampyrs into creatures for your personal use.
 
-*You have fangs, which work as makeshift weapons, and can drain enemies of their blood.
-*Your fangs may also suck blood, modify it, then pump it back upon your target, slowly transforming them into:
--> Turn them into a 'ghoul', an unthinking, emotionless and tough creature. Must keep your fangs attached to them for 1 day. 
+*Rather than leading it to your stomach, your fangs may suck blood, modify it, then pump it back upon your target, slowly transforming them into:
+
+-> A 'ghoul', an unthinking, emotionless and tough creature, which obeys all of your commands. They attack with their claws, which are makeshift weapons. Must keep your fangs attached to them for 1 day. 
 *They lose all of their perks, which are converted into points, as well as their charisma and intelligence, which are locked to 1 and always fail. The points are then reinvested solely into strength and constitution.
+*You may add one free Ghoul to your sheet per in real life month since character creation. They have 3 strength and 4 constitution.
+
 -> Turn them into a fellow Vampyr. Must keep your fangs attached to them for 1 week. You are exhausted and weak after this; all of your stats are locked to 1 for a full real life week. You can only make another vampyr after a month.
 *They gain the Vampyr perk and become your offspring.`,
-    },
+  },
 ];

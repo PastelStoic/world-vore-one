@@ -426,6 +426,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
       `You are a pixie, a kind of tiny fairy that's very mischevious - you're very valuable!
 
 *+1 dexterity, +2 constitution, -3 stat points.
+*Have the 'Tiny' and the 'Baiter' perks.
 *You cannot be a template. Only one per player.
 *You must be between 1-4 inches in height.
 *You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.

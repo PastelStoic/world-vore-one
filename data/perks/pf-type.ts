@@ -427,6 +427,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+1 dexterity, +2 constitution, -3 stat points.
 *Have the 'Tiny' and the 'Baiter' perks.
+*Must have been born after May 1st, 1923.
 *You cannot be a template. Only one per player.
 *You must be between 1-4 inches in height.
 *You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.

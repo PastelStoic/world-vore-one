@@ -416,6 +416,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     maxCharactersPerAccount: 1,
     pointsGranted: -3,
     includesPerks: ["tiny,baiter"],
+    baseStatBonuses: { dexterity: 1, constitution: 2 },
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },
       { oldName: "Pilzherr", newName: "Munsterherr" },
@@ -425,7 +426,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     description:
       `You are a pixie, a kind of tiny fairy that's very mischevious - you're very valuable!
 
-*-3 stat points.
+*+1 dexterity, +2 constitution, -3 stat points.
 *You cannot be a template. Only one per player.
 *You must be between 1-4 inches in height.
 *You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.

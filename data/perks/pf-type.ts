@@ -227,7 +227,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *+2 strength, +1 constitution, -3 stat points.
 *Your weight capacity is 3x that of a normal person.
 *You have the 'Hauling-meat' perk from Vore Perks.
-*In combat, you may move up to 3 distances in a single turn.
+*You have an upgraded version of the Runner perk, allowing you to move 3 distances per turn. You cannot get the regular runner perk.
 *Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.`,
     modifiers: {
       baseStatBonuses: { strength: 2, constitution: 1 },
@@ -278,7 +278,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
 *Failing to vore them, or falling from the sky due to any other reason, deals a flat 4 damage to you.
 *You have 4d6 cover when in the air, due to being hard to hit.
-*While flying, you may move up to two distances per turn.
+*While flying, you may move up to two distances per turn. Does not stack with Runner.
 *You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, charisma: 1 },

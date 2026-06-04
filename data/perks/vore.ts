@@ -140,12 +140,17 @@ export const VORE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You have a person inside you! That's basically cover, right? 
 
-*Damage reduction from other items/perks apply before this perk's calculations are done.
----->If you have someone inside you and whenever attacked from the front specifically:
-*You take only 1 damage and your prey takes the remainder. 
-*If the attack only dealt 1 damage, you take the damage and your prey takes none. 
-*You always take 1 damage, it cannot be lowered further with this perk.
-*Once the prey is dead, they no longer soak up any damage. Your prey must be alive for this perk to apply.`,
+*Damage reduction from other items/perks apply before this perk's own.
+*This only applies based on where the attack is coming from and the position of the organ.
+*For example, the stomach, breasts, and womb protect against attacks from the front. But a tail protects from attacks from behind.
+
+If you have prey inside you, dead or alive:
+*When attacked, you take only 1 damage and your prey takes the remainder.
+*If you have multiple prey inside you, the one who takes the damage is picked randomly.
+*If the attack only dealt 1 damage, the prey takes the damage, not you.
+*If the attack originated from 6 distances away or further, the entirety of the damage is given to the prey.
+*You have +2d6 to cover rolls for as long as someone is inside you.
+*Prey that has spent 2/3rds or more of their entire processing time inside you no longer provides damage reduction/transference.`,
   },
   {
     id: "assimilator",

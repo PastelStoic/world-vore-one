@@ -148,7 +148,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *When fighting as a group, enemies must target you even if other allies of yours are closer/easier/better targets.
 *Does not apply if your enemy is incapable of targetting you at all.
-*You may set up non-lethal lures OR distract your opponents yourself, bringing them to wherever the distraction occured in.
+*You always have the materials to set up distractions and lures, which always bring enemies to the place where that distraction was set up.
 *Use this perk not to fight, but to draw enemies away from you or into you.`,
   },
   {

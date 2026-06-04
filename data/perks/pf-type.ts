@@ -409,4 +409,43 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Can come up with a gimmick for your respective animal, which will be reviewned and balanced by staff.
 *If none of the options above fit what you're going for, choose this one!`,
   },
+    {
+    id: "munsterfraun-pixie",
+    name: "Munsterfraun (PIXIE)",
+    category: "pf-type",
+    maxCharactersPerAccount: 1,
+    pointsGranted: -3,
+    includesPerks: ["tiny,baiter"],
+    overridesRaceName: [
+      { oldName: "Pilzfraun", newName: "Munsterfraun" },
+      { oldName: "Pilzherr", newName: "Munsterherr" },
+      { oldName: "Tierfraun", newName: "Munsterfraun" },
+      { oldName: "Tierherr", newName: "Munsterherr" },
+    ],
+    description:
+      `You are a pixie, a kind of tiny fairy that's very mischevious - you're very valuable!
+
+*-3 stat points.
+*You cannot be a template. Only one per player.
+*You must be between 1-4 inches in height.
+*You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.
+*Falling from the sky due to any reason deals a flat 4 damage to you.
+*While flying, you may move up to two distances per turn.
+
+*You are a mischevious creature, and your body works off of adrenaline and dopamine. Not getting your hit will result in your body slowly shutting down, until you die.
+*You must do something ballsy every scene, such as pranking someone, getting into fights, or just overall being a nuisance. Baiter helps with this greatly!
+*You are an overall asshole, go make someone's life miserable for a day.
+*You can go [CONSTITUTION] scenes without getting your dose of adrenaline and dopamine.
+*You die if you do not manage to fulfill that condition.
+
+*You have a natural golden glown to yourself. When trying to hide or sneak around, you must roll twice, taking the worst roll.
+*If you're trying to hide in the dark, or while it is dark, instead roll thrice and take the worst roll. You're shiny!
+*Your body naturally secretes tiny particles of gold dust. At the end of every scene, you gain +2 points from trading this gold away.
+*Alternatively, give part of, or the entirety of your gold away to someone else, awarding them the +1/+2 points.
+*Careful! If they capture you, every scene *they* finish will award them a point, as they're farming your gold!
+*You cannot be captured by another character you own - no giving yourself extra points for no reason!`,
+    },
+  },
+
+  
 ];

@@ -33,7 +33,9 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     ],
     description:
       `You are a monster, not meant to be roaming this earth yet. Filthy creature!
-      
+
+UNAVAILABLE. DON'T GIVE THIS TO ANYONE. ECHIDNA DID NOT ESCAPE.
+
 *You must be at least 7 feet tall, up to 15, and have several clear Drake characteristics: Scaly body, claws, tail, etc.
 *Anyone can tell you are a monster based on your characteristics, and are terrified! You always draw attention wherever you go.
 *You cannot be a template. Only one drake per player. You're a freak that escaped containment - you're rare!

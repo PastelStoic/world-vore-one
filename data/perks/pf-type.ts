@@ -450,4 +450,55 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
       baseStatBonuses: { dexterity: 1, constitution: 2 },
       },
     },
+  {
+    id: "munsterfraun-vampyr",
+    name: "Munsterfraun (VAMPYR)",
+    category: "pf-type",
+    maxCharactersPerAccount: 1,
+    pointsGranted: -3,
+    includesPerks: ["j-eger",],
+    overridesRaceName: [
+      { oldName: "Pilzfraun", newName: "Munsterfraun" },
+      { oldName: "Pilzherr", newName: "Munsterherr" },
+      { oldName: "Tierfraun", newName: "Munsterfraun" },
+      { oldName: "Tierherr", newName: "Munsterherr" },
+    ],
+    description:
+      `You are a vampyr, the creature from legends! You hate the sun, and it hates you.
+
+-3 stat points.
+*Have the 'Jäeger' perk.
+*Cannot get the 'beastmaster' perk.
+*Must have been born after May 1st, 1923.
+*You cannot be a template. Only one per player.
+*You must have red eyes and be deathly pale.
+*You are infertile, and cannot reproduce the normal way.
+
+*The sun hurts your sensitive skin. All of your stats are halved, rounded down, the moment you are exposed to sunlight. 
+*You take 1 damage for every hour spent in the sun. This damage cannot be mitigated and it will kill you.
+*Your perks do not work whilst exposed to the sun - this includes vore perks. Your metabolism is not at all adapted to sunlight!
+*You have a strict hierarchy tree, with implicit authority. You must obey any Vampyr older than yourself, so long as the request isn't suicidal.
+*Due to *how* Vampyrs came to be, you have a set of codes you must follow. You cannot break them under any circunstances:
+->"Pacts made in blood cannot be broken."
+->"You cannot harm innocents."
+->"You may not forcefully turn others into Vampyrs."
+->"You must obey your elder Vampyrs."
+->"You may not harm a fellow Vampyr."
+
+*You may cut your body and that of another's, sharing blood. This is a 'blood pact'. You can feel the emotions of those you have shared blood with, and know their location and when they are in danger.
+*Your body, at will, produces a natural pheromone that tricks the brains of standard humans.
+*In darkness, you are invisible to them. They can only track you through smell or hearing. Anyone trying to find you through smell always succeeds, for the pheromone is very strong.
+*In light, you stil create a shadow. Targets must roll their intelligence twice, taking the worst roll, when trying to spot you.
+*Your pheromones can get caught on thick pieces of cloth, allowing them to be 'invisible' for a maximum of 10 minutes, or 20 turns, whichever is faster.
+*Those hiding under your cloth must be entirely covered by it, otherwise, there'd be bits of them sticking out in mid air.
+*Your cloth is *not* see through, and neither are you. The brain is simply tricked into thinking there is nothing there. Targets will see complete darkness if they can see nothing else but you and/or your cloth.
+*Animals are afraid of you due to this pheromone.
+
+*You have fangs, which work as makeshift weapons, and can drain enemies of their blood.
+*Your fangs may also suck blood, modify it, then pump it back upon your target, slowly transforming them into:
+-> Turn them into a 'ghoul', an unthinking, emotionless and tough creature. Must keep your fangs attached to them for 1 day. 
+*They lose all of their perks, which are converted into points, as well as their charisma and intelligence, which are locked to 1 and always fail. The points are then reinvested solely into strength and constitution.
+-> Turn them into a fellow Vampyr. Must keep your fangs attached to them for 1 week. You are exhausted and weak after this; all of your stats are locked to 1 for a full real life week. You can only make another vampyr after a month.
+*They gain the Vampyr perk and become your offspring.`,
+    },
 ];

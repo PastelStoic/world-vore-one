@@ -415,7 +415,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     maxCharactersPerAccount: 1,
     pointsGranted: -3,
-    includesPerks: ["tiny,baiter"],
+    includesPerks: ["tiny","baiter"],
     baseStatBonuses: { dexterity: 1, constitution: 2 },
     overridesRaceName: [
       { oldName: "Pilzfraun", newName: "Munsterfraun" },

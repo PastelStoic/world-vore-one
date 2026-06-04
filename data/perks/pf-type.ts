@@ -409,7 +409,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Can come up with a gimmick for your respective animal, which will be reviewned and balanced by staff.
 *If none of the options above fit what you're going for, choose this one!`,
   },
-    {
+  {
     id: "munsterfraun-pixie",
     name: "Munsterfraun (PIXIE)",
     category: "pf-type",
@@ -446,7 +446,4 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Careful! If they capture you, every scene *they* finish will award them a point, as they're farming your gold!
 *You cannot be captured by another character you own - no giving yourself extra points for no reason!`,
     },
-  },
-
-  
 ];

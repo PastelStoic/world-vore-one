@@ -143,6 +143,7 @@ export const VORE_PERKS: PerkDefinition[] = [
 *Damage reduction from other items/perks apply before this perk's own.
 *This only applies based on where the attack is coming from and the position of the organ.
 *For example, the stomach, breasts, and womb protect against attacks from the front. But a tail protects from attacks from behind.
+*Optionally, forego a grapple roll when trying to eat prey - you may eat them without grappling - but you must roll twice and take the worst result.
 
 If you have prey inside you, dead or alive:
 *When attacked, you take only 1 damage and your prey takes the remainder.

@@ -7,7 +7,6 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     category: "gimmick",
     adminOnly: true,
     isFree: true,
-    selectionOnly: true,
     description: `You find yourself under the protection of someone special ...
 
 *"When you need me most, I will be there."
@@ -19,7 +18,6 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     category: "gimmick",
     adminOnly: true,
     isFree: true,
-    selectionOnly: true,
     description: `A swiss kill squad, specifically ordered by the Artificer, has you under their watch.
 
 *A squad of four elite Swiss PFs are keeping watch over you, and they'd rather kill you than ever let you be captured.
@@ -33,7 +31,6 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",
     adminOnly: true,
-    selectionOnly: true,
     includesPerks: [
       "brawler",
       "runner",

@@ -14,6 +14,21 @@ export const ADMIN_PERKS: PerkDefinition[] = [
 *Only applies on scenes after the one it was given in.`,
   },
   {
+    id: "swiss-killsquad",
+    name: "Under the watch of a Swiss kill squad",
+    category: "gimmick",
+    adminOnly: true,
+    isFree: true,
+    selectionOnly: true,
+    description: `A swiss kill squad, specifically ordered by the Artificer, has you under their watch.
+
+*A squad of four elite Swiss PFs are keeping watch over you, and they'd rather kill you than ever let you be captured.
+*Each member has 6 strength, 6 dexterity, 4 constitution, 3 intelligence and 1 charisma. All vore stats are at 1.
+*One member has the swiss LMG, one has an American Auto-5, and two have Swiss rifles.
+*They each carry a bayonet ( except the LMG ), two grenades and one smoke grenade.
+*The swiss rifles carry 3 magazines.`,
+  },
+  {
     id: "munsterfraun-drake",
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",

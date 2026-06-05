@@ -495,7 +495,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 ->"You must obey your elder Vampyrs."
 ->"You may not harm a fellow Vampyr."
 
-*You may cut your body and that of another's, sharing blood. This is a 'blood pact'. You can feel the emotions of those you have shared blood with, and know their location and when they are in danger.
+*You may cut your body and that of another's, sharing blood. This is a 'blood pact'. You can feel the emotions of those you have shared blood with, and know their location and when they are in danger. You may cut this connection at will.
 *You have fangs, which work as makeshift weapons, and can drain enemies of their blood.`,
     },
   {

@@ -7,7 +7,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     category: "gimmick",
     adminOnly: true,
     isFree: true,
-    isGhost: true,
+    selectionOnly: true,
     description: `You find yourself under the protection of someone special ...
 
 *"When you need me most, I will be there."
@@ -18,7 +18,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",
     adminOnly: true,
-    isGhost: true,
+    selectionOnly: true,
     includesPerks: [
       "brawler",
       "runner",

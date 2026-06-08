@@ -394,7 +394,7 @@ Disadvantages:
 *No 'free range' perk.
 *You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type. They must purchase the tierfraun perk.
 *At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
-*When starting/joining a scene, roll 1d100 for every *other* person involved. If the roll is less than or equal to your number of daughters, your partner(s) may choose to ambush one of your daughters in this scene or any future scene.
+*When starting/joining a scene, roll 1d100 for every *other* person involved. If the rolls are less than or equal to your number of daughters, your partner(s) may choose to ambush one of your daughters in this scene or any future scene.
 *If you are digested, your consciousness remains in the body of your predator until your predator dies from non-digestion.
 *If one of your daughters is digested, roll 1d[number of daughters]. This determines which daughter she is in line of inheritance; note down that daughter number X has been digested.
 *If you die and the next daughter in line of inheritance has been digested, you will inhabit the fat in the body of the predator who ate her.

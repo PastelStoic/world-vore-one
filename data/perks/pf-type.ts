@@ -507,7 +507,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     description: `Your body makes a special pheromone that tricks the human brain into thinking you're not even there.
 
 *The pheromone is produced at will. You can secrete it whenever, but it takes a 1 minute, or three turns, whichever is faster, to take effect.
-*In darkness, you are invisible to non-vampyrs. They can only track you through smell or hearing. Anyone trying to find you through smell always succeeds.
+*The pheromone applies to your clothing and equipment alike as well.
+*In darkness, you are invisible to non-vampyrs. An individual with an acute sense of smelling can track and find you easily. Canine tierfrauns always know where you are for as long as you are invisible.
 *In light, you stil create a shadow. Targets must roll their intelligence twice, taking the worst roll, when trying to spot you.
 *Your pheromones can get caught on thick pieces of cloth, allowing them to be 'invisible' for a maximum of 10 minutes, or 20 turns, whichever is faster.
 *Those hiding under your cloth must be entirely covered by it, otherwise, there'd be bits of them sticking out in mid air.

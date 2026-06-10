@@ -120,7 +120,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Dexterity: You have no fine motor functions - you cannot write or do anything that requires any degree of precision or accuracy.
 *Constitution: You are weak and frail, any common sickness knocks you right out. You are unable to excert yourself, you take thrice as long to heal.
 *Intelligence: You have some sort of mental condition that does not let you see the world normally, your mind is broken beyond repair. You are effectivelly blind and in a constant delusion.
-*Charisma: You are completely incapable of speech, either due to physical reasons ( no vocal cords ) or mental. In any circunstance, you cannot write to circunvent it.
+*Charisma: You are completely incapable of speech, either due to physical reasons ( no vocal cords ) or mental. In any circunstance, you cannot write nor use sign language to circunvent it.
 
 *You may have some other condition so long as it is crippling and cannot be easily circunvented.`,
   },

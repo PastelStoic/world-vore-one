@@ -9,6 +9,7 @@ export {
   getUserPerkCharacterCounts,
   listCharacters,
   listCharacterSnapshots,
+  replacePerkAcrossCharacters,
   setCharacterHidden,
   setCharacterImageId,
   setCharacterStatus,

@@ -21,6 +21,17 @@ interface BannedRecord {
   bannedAt: string;
 }
 
+interface ReplacePerkResult {
+  fromPerkId: string;
+  toPerkId: string;
+  dryRun: boolean;
+  scanned: number;
+  changed: number;
+  addedReplacement: number;
+  refunded: number;
+  inventoryUpdated: number;
+}
+
 interface AdminPanelProps {
   isAdmin: boolean;
   hasAdmins: boolean;
@@ -52,6 +63,13 @@ export default function AdminPanel(props: AdminPanelProps) {
   const newBanUserId = useSignal("");
   const newBanUsername = useSignal("");
   const banError = useSignal("");
+
+  // Perk migration
+  const replaceFromPerkId = useSignal("bushwacka");
+  const replaceToPerkId = useSignal("wayfinder");
+  const replacePerkLoading = useSignal(false);
+  const replacePerkError = useSignal("");
+  const replacePerkResult = useSignal<ReplacePerkResult | null>(null);
 
   // All characters list
   const allCharacters = useSignal<CharacterResult[]>([]);
@@ -246,6 +264,42 @@ export default function AdminPanel(props: AdminPanelProps) {
       }
     } catch {
       adminError.value = "Network error.";
+    }
+  }
+
+  async function replacePerk(dryRun: boolean) {
+    replacePerkError.value = "";
+    replacePerkResult.value = null;
+    const fromPerkId = replaceFromPerkId.value.trim();
+    const toPerkId = replaceToPerkId.value.trim();
+    if (!fromPerkId || !toPerkId) {
+      replacePerkError.value = "Both perk IDs are required.";
+      return;
+    }
+    if (!dryRun) {
+      const ok = globalThis.confirm(
+        `Replace "${fromPerkId}" with "${toPerkId}" across all characters? Characters that already have "${toPerkId}" will receive 3 unallocated stat points instead.`,
+      );
+      if (!ok) return;
+    }
+
+    replacePerkLoading.value = true;
+    try {
+      const res = await fetch("/api/admin/replace-perk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ fromPerkId, toPerkId, dryRun }),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) {
+        replacePerkResult.value = data as ReplacePerkResult;
+      } else {
+        replacePerkError.value = data?.error ?? "Failed to replace perk.";
+      }
+    } catch {
+      replacePerkError.value = "Network error.";
+    } finally {
+      replacePerkLoading.value = false;
     }
   }
 
@@ -567,6 +621,68 @@ export default function AdminPanel(props: AdminPanelProps) {
               </div>
             )}
           </>
+        )}
+      </section>
+
+      {/* ── Perk Migration ──────────────────────────────── */}
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Perk Migration</h2>
+        <div class="flex gap-2 items-end">
+          <div class="flex-1 space-y-1">
+            <label class="text-xs text-base-content/60">Replace perk ID</label>
+            <input
+              type="text"
+              value={replaceFromPerkId.value}
+              onInput={(
+                e,
+              ) => (replaceFromPerkId.value =
+                (e.target as HTMLInputElement).value)}
+              class="w-full px-3 py-2 border rounded font-mono text-sm"
+            />
+          </div>
+          <div class="flex-1 space-y-1">
+            <label class="text-xs text-base-content/60">With perk ID</label>
+            <input
+              type="text"
+              value={replaceToPerkId.value}
+              onInput={(
+                e,
+              ) => (replaceToPerkId.value =
+                (e.target as HTMLInputElement).value)}
+              class="w-full px-3 py-2 border rounded font-mono text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => replacePerk(true)}
+            disabled={replacePerkLoading.value}
+            class="px-4 py-2 border rounded hover:bg-base-200 disabled:opacity-50 transition-colors"
+          >
+            Dry Run
+          </button>
+          <button
+            type="button"
+            onClick={() => replacePerk(false)}
+            disabled={replacePerkLoading.value}
+            class="px-4 py-2 bg-warning text-warning-content rounded hover:bg-warning/90 disabled:opacity-50 transition-colors"
+          >
+            Apply
+          </button>
+        </div>
+
+        {replacePerkError.value && (
+          <p class="text-error text-sm">{replacePerkError.value}</p>
+        )}
+        {replacePerkResult.value && (
+          <p class="text-sm text-base-content/70">
+            {replacePerkResult.value.dryRun ? "Dry run" : "Applied"}: scanned
+            {" "}
+            {replacePerkResult.value.scanned}, changed{" "}
+            {replacePerkResult.value.changed}, added replacement{" "}
+            {replacePerkResult.value.addedReplacement}, refunded{" "}
+            {replacePerkResult.value.refunded}, updated inventory{" "}
+            {replacePerkResult.value.inventoryUpdated}.
+          </p>
         )}
       </section>
 

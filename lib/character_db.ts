@@ -8,9 +8,13 @@ import type {
   CharacterSnapshot,
   CharacterStatus,
 } from "./character_types.ts";
+import { PERK_COST_STAT_POINTS } from "./character_types.ts";
 import type { CharacterInventory } from "./inventory_types.ts";
 import { getPerkAccountLimitError } from "@/data/perks.ts";
-import { normalizeCharacterPerkIds } from "./perk_state_helpers.ts";
+import {
+  cleanupPerkData,
+  normalizeCharacterPerkIds,
+} from "./perk_state_helpers.ts";
 
 const CHARACTER_PREFIX = ["characters"] as const;
 const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
@@ -63,6 +67,175 @@ async function updateCharacter(
 
   await saveCharacter(kv, character);
   return character;
+}
+
+function replacePerkGrantedInventory(
+  inventory: CharacterInventory | undefined,
+  fromPerkId: string,
+  toPerkId: string,
+): boolean {
+  if (!inventory) return false;
+
+  let changed = false;
+  for (const location of ["carried", "stowed"] as const) {
+    for (const item of inventory[location].equipment) {
+      if (item.perkGranted === fromPerkId) {
+        item.perkGranted = toPerkId;
+        changed = true;
+      }
+    }
+    for (const item of inventory[location].meleeWeapons) {
+      if (item.perkGranted === fromPerkId) {
+        item.perkGranted = toPerkId;
+        changed = true;
+      }
+    }
+    for (const item of inventory[location].attachments) {
+      if (item.perkGranted === fromPerkId) {
+        item.perkGranted = toPerkId;
+        changed = true;
+      }
+    }
+  }
+
+  return changed;
+}
+
+function replacePerkReferences(
+  ids: string[] | undefined,
+  fromPerkId: string,
+  toPerkId: string,
+) {
+  let changed = false;
+  const next: string[] = [];
+  for (const id of ids ?? []) {
+    const replacement = id === fromPerkId ? toPerkId : id;
+    if (replacement !== id) changed = true;
+    if (!next.includes(replacement)) next.push(replacement);
+  }
+  return { ids: next, changed };
+}
+
+export interface ReplacePerkMigrationResult {
+  fromPerkId: string;
+  toPerkId: string;
+  dryRun: boolean;
+  scanned: number;
+  changed: number;
+  addedReplacement: number;
+  refunded: number;
+  inventoryUpdated: number;
+}
+
+export async function replacePerkAcrossCharacters(
+  fromPerkId: string,
+  toPerkId: string,
+  options?: { dryRun?: boolean },
+): Promise<ReplacePerkMigrationResult> {
+  const kv = await getKv();
+  const dryRun = options?.dryRun ?? true;
+  const result: ReplacePerkMigrationResult = {
+    fromPerkId,
+    toPerkId,
+    dryRun,
+    scanned: 0,
+    changed: 0,
+    addedReplacement: 0,
+    refunded: 0,
+    inventoryUpdated: 0,
+  };
+
+  for await (
+    const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
+  ) {
+    if (!entry.value) continue;
+
+    result.scanned += 1;
+    const character = normalizeCharacterPerkIds(entry.value);
+    const hadFrom = character.perkIds.includes(fromPerkId);
+    if (!hadFrom) continue;
+
+    const hadTo = character.perkIds.includes(toPerkId);
+    const nextPerkIds = character.perkIds.filter((id) => id !== fromPerkId);
+    if (!hadTo) {
+      nextPerkIds.push(toPerkId);
+      result.addedReplacement += 1;
+    } else {
+      character.unallocatedStatPoints += PERK_COST_STAT_POINTS;
+      result.refunded += 1;
+    }
+    character.perkIds = [...new Set(nextPerkIds)];
+
+    const cleaned = cleanupPerkData(
+      {
+        perkNotes: character.perkNotes ?? {},
+        perkUpgradeNotes: character.perkUpgradeNotes ?? {},
+        perkStatChoices: character.perkStatChoices ?? {},
+        perkRanks: character.perkRanks ?? {},
+        perkDisguises: character.perkDisguises ?? {},
+        perkSelections: character.perkSelections ?? {},
+        perkPointChoices: character.perkPointChoices ?? {},
+      },
+      [fromPerkId],
+    );
+    character.perkNotes = cleaned.perkNotes;
+    character.perkUpgradeNotes = cleaned.perkUpgradeNotes;
+    character.perkStatChoices = cleaned.perkStatChoices;
+    character.perkRanks = cleaned.perkRanks;
+    character.perkPointChoices = cleaned.perkPointChoices;
+
+    const replacedDisguises = Object.fromEntries(
+      Object.entries(cleaned.perkDisguises).map(([id, disguiseId]) => [
+        id,
+        disguiseId === fromPerkId ? toPerkId : disguiseId,
+      ]),
+    );
+    character.perkDisguises = replacedDisguises;
+
+    const replacedSelections: Record<string, string[]> = {};
+    for (const [id, selectedIds] of Object.entries(cleaned.perkSelections)) {
+      replacedSelections[id] = replacePerkReferences(
+        selectedIds,
+        fromPerkId,
+        toPerkId,
+      ).ids;
+    }
+    character.perkSelections = replacedSelections;
+
+    if (character.perkOrigins) {
+      const nextOrigins = { ...character.perkOrigins };
+      delete nextOrigins[fromPerkId];
+      if (!hadTo && nextOrigins[toPerkId] === undefined) {
+        nextOrigins[toPerkId] = "purchased";
+      }
+      character.perkOrigins = nextOrigins;
+    } else if (!hadTo) {
+      character.perkOrigins = { [toPerkId]: "purchased" };
+    }
+
+    if (character.factionCompensatedPerkIds) {
+      character.factionCompensatedPerkIds = replacePerkReferences(
+        character.factionCompensatedPerkIds,
+        fromPerkId,
+        toPerkId,
+      ).ids;
+    }
+
+    if (
+      replacePerkGrantedInventory(character.inventory, fromPerkId, toPerkId)
+    ) {
+      result.inventoryUpdated += 1;
+    }
+
+    character.updatedAt = new Date().toISOString();
+    result.changed += 1;
+
+    if (!dryRun) {
+      await saveCharacter(kv, character);
+    }
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------

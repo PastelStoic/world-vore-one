@@ -30,11 +30,24 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     name: "Wayfinder",
     category: "gimmick",
     description:
-      `You have a perfect sense of where exactly you are in the world.
+      `You have a perfect sense of where exactly you are in the world, and how to live off the land around you.
 
 *Always know the state of the region you are in, as well as local dangers and safe passages, if any.
 *Whenever you need to find your way, you always manage to do so.
-*Never get lost, even underground or behind enemy lines.`,
+*Never get lost, even underground or behind enemy lines.
+*You have a "survivalist's kit" from the equipment list. It has no weight and does not have the 'bulky kit' gimmick.
+*It always returns to you through one means or another, but you can be separated from it temporarily.
+*Should you ever find yourself in the wilderness, you always find just enough sustenance to keep yourself fed.
+*Your kit has the tools to hunt said sustenance and prepare it into something that is edible/drinkable.
+*You never run out the resources to hunt and prepare your sustenance as long as you have your kit.
+*This does not mean you know your way around the place - just that nature won't kill you.`,
+    grantsEquipment: [
+      {
+        equipmentId: "survivalists-kit",
+        weightOverride: 0,
+        isBulkyOverride: false,
+      },
+    ],
   },
   {
     id: "lucky",
@@ -122,26 +135,6 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Cross frontlines, cross the globe. Go anywhere, be anywhere, whenever.
 *You may not visit innaccessible places, such as crossing the Alps during the winter, or going to antartica!
 *You cannot get into restricted places. You can travel freely, you can't enter *any* place freely.`,
-  },
-  {
-    id: "bushwacka",
-    name: "Bushwacka'",
-    category: "gimmick",
-    description: `You live in the Bush, and live off of the land!
-
-*You have a "survivalist's kit" from the equipment list. It has no weight and does not have the 'bulky kit' gimmick.
-*It always returns to you through one means or another, but you can be separated from it temporarily.
-*Should you ever find yourself in the wilderness, you always find just enough sustenance to keep yourself fed.
-*Your kit has the tools to hunt said sustenance and prepare it into something that is edible/drinkable.
-*You never run out the resources to hunt and prepare your sustenance as long as you have your kit.
-*This does not mean you know your way around the place - just that nature won't kill you.`,
-    grantsEquipment: [
-      {
-        equipmentId: "survivalists-kit",
-        weightOverride: 0,
-        isBulkyOverride: false,
-      },
-    ],
   },
   {
     id: "authoritarian",

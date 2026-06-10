@@ -1,6 +1,5 @@
 import { useMemo, useState } from "preact/hooks";
 import {
-  DefaultPerkDefinition,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
   type PerkCategory,
@@ -317,16 +316,18 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     description.faction,
     perkOrigins,
   );
-  const ownedPerks = perkIds.map((id) =>
-    PERKS_BY_ID.get(id) ?? DefaultPerkDefinition
-  );
+  const ownedPerkEntries = perkIds.map((id) => ({
+    id,
+    perk: PERKS_BY_ID.get(id),
+  }));
+  const ownedPerks = ownedPerkEntries.flatMap(({ perk }) => perk ? [perk] : []);
   const ownedPerkGroups = PERK_CATEGORY_ORDER
     .map((category) => ({
       category,
       items: ownedPerks.filter((item) => item.category === category),
     }))
     .filter((group) => group.items.length > 0);
-  const uncategorizedOwnedPerks = ownedPerks.filter((item) => !item);
+  const uncategorizedOwnedPerks = ownedPerkEntries.filter(({ perk }) => !perk);
 
   const eligiblePerks = props.perks.filter((perk) =>
     isPerkEligible(perk, {
@@ -614,7 +615,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function unbuyPerk(perkId: string) {
-    if (!canRemoveOldPerks && initialPerkIds.includes(perkId)) {
+    const isUnknownPerk = !PERKS_BY_ID.has(perkId);
+    if (
+      !isUnknownPerk && !canRemoveOldPerks && initialPerkIds.includes(perkId)
+    ) {
       return;
     }
     if (!perkIds.includes(perkId)) {
@@ -2050,20 +2054,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <h5 class="font-medium">Other</h5>
                     <ul class="space-y-1">
                       {uncategorizedOwnedPerks.map(({ id }) => {
-                        const canRemove = canRemoveOldPerks ||
-                          !initialPerkIds.includes(id);
                         return (
                           <li class="flex items-center gap-2" key={id}>
                             <span>{id}</span>
-                            {canRemove && (
-                              <button
-                                type="button"
-                                class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-                                onClick={() => unbuyPerk(id)}
-                              >
-                                Remove
-                              </button>
-                            )}
+                            <button
+                              type="button"
+                              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+                              onClick={() => unbuyPerk(id)}
+                            >
+                              Remove
+                            </button>
                           </li>
                         );
                       })}

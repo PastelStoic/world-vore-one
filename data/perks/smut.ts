@@ -76,7 +76,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
 *You are impregnated for certainty whenever someone with a penis cums inside you. 
 *Your womb has 27x the capacity of your stomach and scales accordingly. You still obey encumbrance rules.
 *You can choose which templates you give birth to, and you can choose if someone with the 'ever-lasting' perk is birthed or not. You also pick how many you're impregnated with, provided you have the womb capacity for it.
-*Being impregnated by a PH does not force you to only birth males from there on out.
+*Being impregnated by a PH does not force you to only birth males from there on out, even if impregnated before getting this perk.
 *Your pregnancies last 1 week. You still need the required nutrition to birth someone that fast.
 *If interacting with 'THE IMPREGNATOR', pick Even or Odd, then roll a 1d6.  You get to pick who you're impregnated with AND how many if it lands favourably.
 *Using the 'in-charge' perk to digest people inside your womb will digest your children.`,

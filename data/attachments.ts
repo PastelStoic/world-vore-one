@@ -202,6 +202,20 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *The attachment has no weight.`,
   },
   {
+    id: "longbow",
+    name: "Bow & Arrow: Longbow",
+    appliesTo: "bow",
+    nation: "Any",
+    damageOverride: 4,
+    weight: 1,
+    description:
+      `A longbow, instead of a typical bow and arrow. Much larger, much harder-hitting, but less wieldy!
+*Deals 1 additional point of damage.
+*The bow is now 1 weight heavier.
+*-3d6 to shoot targets at distance 3 or closer.
+*The ranging penalties now apply every at every 15 distances, instead of the typical 10.`,
+  },
+  {
     id: "musket-rifled",
     name: "Musket: Rifled",
     appliesTo: "Flintlock Musket",

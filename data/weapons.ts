@@ -157,7 +157,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "draw-and-let-loose",
       "utterly-silent-bow",
     ],
-    compatibleAttachmentIds: ["poison-tipped-arrows"],
+    compatibleAttachmentIds: ["poison-tipped-arrows","longbow"],
     reloadAmountOverride: 1,
   },
   {

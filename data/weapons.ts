@@ -146,7 +146,7 @@ export const WEAPONS: WeaponDefinition[] = [
     type: "Bow & Arrow",
     kind: "bow",
     nation: "Civilian",
-    damage: "2",
+    damage: "3",
     ammo: 1,
     rateOfFire: 1,
     weight: 1,
@@ -157,7 +157,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "draw-and-let-loose",
       "utterly-silent-bow",
     ],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["poison-tipped-arrows"],
     reloadAmountOverride: 1,
   },
   {
@@ -176,7 +176,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "recoverable-ammo-bolts",
       "utterly-silent-crossbow",
     ],
-    compatibleAttachmentIds: [],
+    compatibleAttachmentIds: ["chi-ko-nu","poison-tipped-bolts"],
     reloadAmountOverride: 1,
   },
   {

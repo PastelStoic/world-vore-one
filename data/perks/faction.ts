@@ -398,7 +398,7 @@ Disadvantages:
 *If you are digested, your consciousness remains in the body of your predator until your predator dies from non-digestion.
 *If one of your daughters is digested, roll 1d[number of daughters]. This determines which daughter she is in line of inheritance; note down that daughter number X has been digested.
 *If you die and the next daughter in line of inheritance has been digested, you will inhabit the fat in the body of the predator who ate her.
-*You must have at least 3 points in Strength, Dexterity, Constitution, Intelligence and Charisma.`,
+*Of your total points, 2 will be assigned to each main stat automatically ( Strength, Dexterity, Constitution, Intelligence and Charisma. )`,
   },
   {
     id: "japanese-kami-champion-war-strength",

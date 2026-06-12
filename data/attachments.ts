@@ -162,6 +162,46 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
   *Extends the ammo capacity of the Double-barrel shotgun, from 1 to 5.`,
   },
   {
+    id: "chi-ko-nu",
+    name: "Crossbow: Chi-ko-nu",
+    appliesTo: "crossbow",
+    nation: "Any",
+    ammoOverride: 10,
+    weight: 2,
+    description:
+      `A chi-ko-nu Chinese invention for your crossbow!
+*The Crossbow now has a magazine of 10 bolts.
+*This attachment has 2 weight, instead of the typical 1.`,
+  },
+  {
+    id: "poison-tipped-bolts",
+    name: "Crossbow: Poison tipped bolts",
+    appliesTo: "crossbow",
+    addsTraitIds: ["alt-ammotype"],
+    nation: "Any",
+    weight: 0,
+    description:
+      `Poison tipped bolts for your Crossbow.
+*Poisons your target with a quick acting poison: They must roll constitution every turn for the next 5 turns. They need as many successes as they've been hit by you in this timeframe.
+*Failing the check has the target take 1 damage, a success means they take no damage.
+*The poison only incapacitates, it does not kill; targets are brought to 0HP at most.
+*The attachment has no weight.`,
+  },
+  {
+    id: "poison-tipped-arrows",
+    name: "Bow & Arrow: Poison tipped arrows",
+    appliesTo: "bow",
+    addsTraitIds: ["alt-ammotype"],
+    nation: "Any",
+    weight: 0,
+    description:
+      `Poison tipped arrows for your Bow.
+*Poisons your target with a quick acting poison: They must roll constitution every turn of theirs for their next 5 turns. They need as many successes as they've been hit by you in this timeframe.
+*Failing the check has the target take 1 damage, a success means they take no damage.
+*The poison only incapacitates, it does not kill; targets are brought to 0HP at most.
+*The attachment has no weight.`,
+  },
+  {
     id: "musket-rifled",
     name: "Musket: Rifled",
     appliesTo: "Flintlock Musket",

@@ -15,7 +15,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     name: "Gunner",
     category: "combat",
     description: `Your character is remarkably accurate with their shots! 
-*When roling to attack someone by shooting them with a firearm, roll +4d6. 
+*When rolling to make an attack with a ranged weapon (firearms, bows, crossbows, flamethrowers), roll +4d6. 
 *You now count a success on a 4 and above, instead of a 5 and above.
 *Does not apply to grenades or throwable weapons.`,
   },

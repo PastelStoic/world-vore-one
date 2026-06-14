@@ -77,7 +77,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You have a special "survivalist's kit", it has no weight and no "bulky kit" gimmick.
 *It always returns to you through one means or another, but you can be separated from it temporarily.
 *Your survivalist kit always allows you to find enough sustenance to keep yourself fed in the wild, and always has the supplies for such matters.
-*Pick one type of terrain ( Forests, mountains, plains, no-man's-land, urban, etc ). While in such a terrain, double any cover bonuses you would get.`,
+*Pick one type of terrain ( Forests, mountains, plains, no-man's-land, urban, etc ) to specialize in. While in such a terrain, double any cover bonuses you would get.`,
     customInput: "Choosen terrain",
     grantsEquipment: [
       {

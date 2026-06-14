@@ -256,7 +256,7 @@ If you have prey inside you, dead or alive:
 ->If you escape, you are hit with an "escapist's rush": 
 *The rush lasts 10 turns, or 10 minutes, whichever is faster.
 *You have the 'runner' perk and you cannot be incapacitated for the duration of your rush.
-*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] successes in order to keep standing.
+*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] successes in order to keep the rush.
 *Once your rush is over, you 'crash' out.
 
 ->Crash out:

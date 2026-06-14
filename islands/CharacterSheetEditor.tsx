@@ -1444,21 +1444,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         </div>
       </fieldset>
 
-      {props.action === "update" && !props.isPending && (
-        <label class="block">
-          <span class="block font-medium mb-1">Changelog</span>
-          <input
-            class="input w-full border rounded px-3 py-2"
-            name="changelog"
-            type="text"
-            value={changelog}
-            onInput={(event) => setChangelog(event.currentTarget.value)}
-            placeholder="Describe what changed in this save"
-            required
-          />
-        </label>
-      )}
-
       <div class="rounded border p-3 space-y-2">
         <h3 class="font-semibold">Base Stats</h3>
         {(() => {
@@ -2193,6 +2178,21 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         onLoseWeaponPermanently={(cost) =>
           setUnallocatedStatPoints((current) => current - cost)}
       />
+
+      {props.action === "update" && !props.isPending && (
+        <label class="block">
+          <span class="block font-medium mb-1">Changelog</span>
+          <input
+            class="input w-full border rounded px-3 py-2"
+            name="changelog"
+            type="text"
+            value={changelog}
+            onInput={(event) => setChangelog(event.currentTarget.value)}
+            placeholder="Describe what changed in this save"
+            required
+          />
+        </label>
+      )}
 
       <Button type="submit">{props.submitLabel}</Button>
     </form>

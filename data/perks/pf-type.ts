@@ -426,20 +426,18 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
       `You are a pixie, a kind of tiny fairy that's very mischevious - you're very valuable!
 
 *+1 dexterity, +2 constitution, -3 stat points.
-*Have the 'Tiny' and the 'Baiter' perks.
-*Have the unique "Secretes gold" perk.
-*Must have been born after May 1st, 1923.
+*Have the 'Tiny' and the 'Baiter' perks, and the unique "Secretes gold" perk.
+*Must have been born after May 1st, 1923, and be between 1-4 inches in height.
 *You cannot be a template. Only one per player.
-*You must be between 1-4 inches in height.
 *You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.
 *Falling from the sky due to any reason deals a flat 4 damage to you.
 *While flying, you may move up to two distances per turn.
 
 *You are a mischevious creature, and your body works off of adrenaline and dopamine. Not getting your hit will result in your body slowly shutting down, until you die.
-*You must do something ballsy every scene, such as pranking someone, getting into fights, or just overall being a nuisance. Baiter helps with this greatly!
-*You are an overall asshole, go make someone's life miserable for a day.
-*You can go [CONSTITUTION] scenes without getting your dose of adrenaline and dopamine.
-*You die if you do not manage to fulfill that condition.`,
+*You must do something ballsy every scene, be an overall asshole, go make someone's life miserable for a day. Baiter helps with this greatly!
+*You can go [CONSTITUTION] scenes without getting your dose of adrenaline and dopamine. You die if you don't get that hit.
+*You cannot get the 'Crippling addiction' perk. You already *are* cripplingly addicted.
+*Inhaling any addictive substances immediately makes you addicted to them! They make you feel extra good and quickly get you hooked.`,
     modifiers: {
       baseStatBonuses: { dexterity: 1, constitution: 2 },
       },
@@ -452,11 +450,10 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     selectionOnly: true,
     description: `You produce gold naturally! But this also makes you have a golden glow to you ... You are very valuable.
 
-*When trying to hide or sneak around, you must roll twice, taking the worst roll.
-*If you're trying to hide in the dark, or while it is dark, instead roll thrice and take the worst roll. You're shiny!
+*When trying to hide or sneak around, you must roll twice, taking the worst roll. If it's dark, roll thrice instead and take the worst roll. You're shiny, after all!
 *Your body naturally secretes tiny particles of gold dust. At the end of every scene, you gain +2 points from trading this gold away.
 *Alternatively, give part of, or the entirety of your gold away to someone else, awarding them the +1/+2 points.
-*Careful! If they capture you, every scene *they* finish will award them a point, as they're farming your gold!
+*Careful! If someone captures you, every scene *they* finish will award them the points, as they're farming your gold!
 *You cannot be captured by another character you own - no giving yourself extra points for no reason!`,
   },
   {
@@ -476,17 +473,15 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
       `You are a vampyr, the creature from legends! You hate the sun, and it hates you.
 
 -3 stat points.
-*Have the 'Jäeger' perk.
-*Have the unique "Partial invisibility" and "vampyric transformation" perks.
+*Have the 'Jäeger' perk, as well as th unique "Partial invisibility" and "vampyric transformation" perks.
 *Cannot get the 'beastmaster' perk.
-*Must have been born after May 1st, 1923.
+*Must have been born after May 1st, 1923, you must have red eyes and be deathly pale.
 *You cannot be a template. Only one per player.
-*You must have red eyes and be deathly pale.
 *You are infertile, and cannot reproduce the normal way.
+*You do not form bonds like normal PFs; you do not attach to anything after birth.
 
-*The sun hurts your sensitive skin. All of your stats are halved, rounded down, the moment you are exposed to sunlight. 
-*You take 1 damage for every hour spent in the sun. This damage cannot be mitigated and it will kill you.
-*Your perks do not work whilst exposed to the sun - this includes vore perks. Your metabolism is not at all adapted to sunlight!
+*The sun hurts your sensitive skin. All of your stats are halved, rounded down, the moment you are exposed to sunlight, and take 1 damage for every hour of exposition.
+*None of your perks work whilst exposed to sunlight, including physical ones, such as Tough.
 *You have a strict hierarchy tree, with implicit authority. You must obey any Vampyr older than yourself, so long as the request isn't suicidal.
 *Due to *how* Vampyrs came to be, you have a set of codes you must follow. You cannot break them under any circunstances:
 ->"Pacts made in blood cannot be broken."
@@ -504,16 +499,14 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredPerkIds: ["munsterfraun-vampyr"],
     selectionOnly: true,
-    description: `Your body makes a special pheromone that tricks the human brain into thinking you're not even there.
+    description: `Your body makes a special pheromone that tricks the human brain into thinking you're not even there. You're not actually invisible!
 
-*The pheromone is produced at will. You can secrete it whenever, but it takes a 1 minute, or three turns, whichever is faster, to take effect.
-*The pheromone applies to your clothing and equipment alike as well.
+*The pheromone is produced at will. You can secrete it whenever, but it takes a 1 minute, or three turns, whichever is faster, to take effect. It applies to your clothing and equipment too.
+*Your pheromones can be spread onto cloths to make them invisible for up to 10 minutes, or 10 turns, whichever is faster. Others can take these cloths to hide under, like cloaks.
+*Those hiding under your cloth must be entirely covered by it, otherwise, there'd be bits of them sticking out in mid air. They cannot see out of it.
 *In darkness, you are invisible to non-vampyrs. An individual with an acute sense of smelling can track and find you easily. Canine tierfrauns always know where you are for as long as you are invisible.
 *In light, you stil create a shadow. Targets must roll their intelligence twice, taking the worst roll, when trying to spot you.
-*Your pheromones can get caught on thick pieces of cloth, allowing them to be 'invisible' for a maximum of 10 minutes, or 20 turns, whichever is faster.
-*Those hiding under your cloth must be entirely covered by it, otherwise, there'd be bits of them sticking out in mid air.
-*Your cloth is *not* see through, and neither are you. The brain is simply tricked into thinking there is nothing there. Targets will see complete darkness if they can see nothing else but you and/or your cloth.
-*Animals are afraid of you due to this pheromone, and immediately go into fight or flight! You cannot get the beastmaster perk because of this.`,
+*Animals are afraid of you due to this pheromone and its scent, they immediately go into fight or flight! You cannot get the beastmaster perk because of this.`,
   },
   {
     id: "vampyric-transformation",
@@ -526,11 +519,14 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *Rather than leading it to your stomach, your fangs may suck blood, modify it, then pump it back upon your target, slowly transforming them into:
 
--> A 'ghoul', an unthinking, emotionless and tough creature, which obeys all of your commands. They attack with their claws, which are makeshift weapons. Must keep your fangs attached to them for 1 day. 
+-> A 'ghoul', an unthinking, emotionless and tough creature, which obeys all of your commands. They attack with their claws, which are makeshift weapons. 
+*To turn someone into a goul, you must keep your fangs attached to them for 1 day. 
 *They lose all of their perks, which are converted into points, as well as their charisma and intelligence, which are locked to 1 and always fail. The points are then reinvested solely into strength and constitution.
-*You may add one free Ghoul to your sheet per in real life month since character creation. They have 3 strength and 4 constitution.
+*At character creation, you may add 1 ghoul to your sheet, and another ghoul for every month past character creation. They have 3 strength and 4 constitution.
 
--> Turn them into a fellow Vampyr. Must keep your fangs attached to them for 1 week. You are exhausted and weak after this; all of your stats are locked to 1 for a full real life week. You can only make another vampyr after a month.
+-> Turn them into a fellow Vampyr, subject to the same rules as you.
+*To turn someone into a vampyr, you must keep your fangs attached to them for 1 week. 
+*You are exhausted and weak after this; all of your stats are locked to 1 for a full real life week. You can only make another vampyr after a month.
 *They gain the Vampyr perk and become your offspring.`,
   },
 ];

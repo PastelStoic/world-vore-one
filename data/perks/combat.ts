@@ -67,6 +67,25 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Explosives deal -2 damage to you. Damage CAN be brought to 0 through this.`,
   },
   {
+    id: "wayfinder",
+    name: "Wayfinder",
+    category: "combat",
+    description:
+      `You have a perfect sense of where exactly you are in the world, and how to live off the land around you.
+
+*You never get lost, you always find paths to where you need to go, and always know the state of the region you are in.
+*You have a special "survivalist's kit", it has no weight and no "bulky kit" gimmick.
+*It always returns to you through one means or another, but you can be separated from it temporarily.
+*Your survivalist kit always allows you to find enough sustenance to keep yourself fed in the wild, and always has the supplies for such matters.`,
+    grantsEquipment: [
+      {
+        equipmentId: "survivalists-kit",
+        weightOverride: 0,
+        isBulkyOverride: false,
+      },
+    ],
+  },
+  {
     id: "danger-sense",
     name: "Danger sense",
     category: "combat",

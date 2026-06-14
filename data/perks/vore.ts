@@ -8,7 +8,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You have survived many stomachs before, or otherwise you're naturally good at escaping them!
 
-*You roll an extra 4d6 to avoid being eaten and gain +4 to your escape training stat.
+*You roll an extra 4d6 to avoid being grappled or eaten and gain +4 to your escape training stat.
 *Gain +3 escape attempts OR set your escape attempts to an exact 3; whichever would benefit you more when ingested.
 *Ignores any perks that'd prevent you from doing escape attempts, regardless of conditions.
 *You still digest at the exact same speed.`,

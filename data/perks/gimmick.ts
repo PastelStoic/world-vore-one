@@ -26,30 +26,6 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *There are some things you won't find at all, such as a five-course steak dinner in the middle of a battlefield!`,
   },
   {
-    id: "wayfinder",
-    name: "Wayfinder",
-    category: "gimmick",
-    description:
-      `You have a perfect sense of where exactly you are in the world, and how to live off the land around you.
-
-*Always know the state of the region you are in, as well as local dangers and safe passages, if any.
-*Whenever you need to find your way, you always manage to do so.
-*Never get lost, even underground or behind enemy lines.
-*You have a "survivalist's kit" from the equipment list. It has no weight and does not have the 'bulky kit' gimmick.
-*It always returns to you through one means or another, but you can be separated from it temporarily.
-*Should you ever find yourself in the wilderness, you always find just enough sustenance to keep yourself fed.
-*Your kit has the tools to hunt said sustenance and prepare it into something that is edible/drinkable.
-*You never run out the resources to hunt and prepare your sustenance as long as you have your kit.
-*This does not mean you know your way around the place - just that nature won't kill you.`,
-    grantsEquipment: [
-      {
-        equipmentId: "survivalists-kit",
-        weightOverride: 0,
-        isBulkyOverride: false,
-      },
-    ],
-  },
-  {
     id: "lucky",
     name: "Lucky",
     category: "gimmick",

@@ -171,3 +171,32 @@ export interface FreeAccessoryDefinition {
   ammo: number;
   description: string;
 }
+
+// -- Vehicle types -----------------------------------------------------------
+
+export type VehicleArmorRating = "light" | "medium" | "heavy";
+
+export interface VehicleWeaponTypeDefinition {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface VehicleWeaponMount {
+  weaponTypeId: string;
+  count: number;
+}
+
+export interface VehicleDefinition {
+  id: string;
+  name: string;
+  nation: Nation;
+  armor: {
+    front: VehicleArmorRating;
+    side: VehicleArmorRating;
+    rear: VehicleArmorRating;
+  };
+  seats: number;
+  weaponry: VehicleWeaponMount[];
+  description?: string;
+}

@@ -7,9 +7,21 @@ import {
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
+  VEHICLE_WEAPON_TYPES_BY_ID,
+  VEHICLES,
 } from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
+
+function formatVehicleWeaponry(
+  weaponry: { weaponTypeId: string; count: number }[],
+) {
+  return weaponry.map((weapon) => {
+    const type = VEHICLE_WEAPON_TYPES_BY_ID.get(weapon.weaponTypeId);
+    const name = type?.name ?? weapon.weaponTypeId;
+    return `${weapon.count} ${name}${weapon.count === 1 ? "" : "s"}`;
+  }).join(", ");
+}
 
 export default define.page(function WikiEquipment() {
   return (
@@ -65,6 +77,63 @@ export default define.page(function WikiEquipment() {
           })}
         </div>
       </section>
+
+      {/* -- Vehicles -- */}
+      {VEHICLES.length > 0 && (
+        <section class="space-y-2">
+          <h2 class="text-xl font-semibold border-b pb-1">Vehicles</h2>
+          <div class="space-y-2">
+            {VEHICLES.map((vehicle) => (
+              <details
+                key={vehicle.id}
+                class="border rounded-lg bg-base-100/80 px-4 py-2"
+              >
+                <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
+                  <span class="font-semibold">{vehicle.name}</span>
+                  <span class="text-xs text-base-content/60">
+                    {vehicle.nation}
+                  </span>
+                  <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
+                    <span>Seats: {vehicle.seats}</span>
+                    <span class="text-base-content/50">▶ details</span>
+                  </span>
+                </summary>
+                <div class="mt-2 text-sm text-base-content border-t pt-2 space-y-2">
+                  <div class="flex flex-wrap gap-3 text-xs text-base-content/70">
+                    <span>
+                      <span class="font-medium">Nation:</span> {vehicle.nation}
+                    </span>
+                    <span>
+                      <span class="font-medium">Front armor:</span>{" "}
+                      {vehicle.armor.front}
+                    </span>
+                    <span>
+                      <span class="font-medium">Side armor:</span>{" "}
+                      {vehicle.armor.side}
+                    </span>
+                    <span>
+                      <span class="font-medium">Rear armor:</span>{" "}
+                      {vehicle.armor.rear}
+                    </span>
+                    <span>
+                      <span class="font-medium">Seats:</span> {vehicle.seats}
+                    </span>
+                  </div>
+                  <p class="text-sm text-base-content/70">
+                    <span class="font-medium">Weaponry:</span>{" "}
+                    {formatVehicleWeaponry(vehicle.weaponry)}
+                  </p>
+                  {vehicle.description && (
+                    <p class="text-sm text-base-content/70 whitespace-pre-line">
+                      {vehicle.description}
+                    </p>
+                  )}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── Weapon Attachments ── */}
       <section class="space-y-2">

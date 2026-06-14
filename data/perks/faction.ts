@@ -351,7 +351,7 @@ Disadvantages:
     id: "japanese-kami-champion",
     name: "Japanese Kami-Champion",
     category: "faction",
-    requiredRaces: ["Tierfraun","tierherr"],
+    requiredRaces: ["Tierfraun","Tierherr"],
     overridesRaceName: [
       { oldName: "Tierfraun", newName: "Kronprinz Tierfraun" },
       { oldName: "Tierherr", newName: "Kronprinz Tierherr" },

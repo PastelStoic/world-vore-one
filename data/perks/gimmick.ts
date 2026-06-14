@@ -11,7 +11,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 
 *Not applicable for baseliners; PFs only. PFs aren't bright and are generally uncreative - this perk is to circunvent that.
 *You get to make up ONE technology and make use of it IRP, so long as it is reasonably believable.
-*The technology should be described in your sheet; NOT on the spreadsheet, that one's just for stats.`,
+*The technology should be described in your sheet.`,
   },
   {
     id: "scrounger",
@@ -93,10 +93,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 
 *The animal may be common or exotic, whichever you please. 
 *Your animal has special training - you can give it basic commands, such as attack, follow, sit, 'get that', etc.
-*Your animal should have a sheet of their own, and start off with 7 points and a fitting perk. 
-*Your animal gains points at the same rate you do, including freebies. It cannot have the "digestion strength" stat.
-*Your animal can be killed and if killed, the individual cannot be brought back. 
-*You may get a new pet, but whatever stats it gained will be lost. 
+*It must have a sheet of their own, and start off with 9 points and two perks, and gains points at the same rate you do, including freebies.
+*Your pet may also use whatever animalistic abilities they have: Flight, smell, sight, etc.
+*Mark the sheet as 'Baseliner', not Pilzfraun or anything of the sort, dummy!
+*Your animal can be killed and if killed, the individual cannot be brought back. You may get a new pet - this perk cannot be refunded due to the animal's death! 
 *The Animal obeys typical HP rules for incapacitation, critical condition and death.`,
   },
   {
@@ -110,7 +110,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *If permission is needed, you always have it to go wherever, regardless of your alignments.
 *Cross frontlines, cross the globe. Go anywhere, be anywhere, whenever.
 *You may not visit innaccessible places, such as crossing the Alps during the winter, or going to antartica!
-*You cannot get into restricted places. You can travel freely, you can't enter *any* place freely.`,
+*You cannot get into restricted places. You can travel freely, you can't enter *any* place freely.
+*Basically the "Fuck you Doc, I do what I want" perk. You don't ever need to justify why/how you're getting anywhere. You just do.`,
   },
   {
     id: "authoritarian",

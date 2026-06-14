@@ -54,11 +54,10 @@ export const SMUT_PERKS: PerkDefinition[] = [
     description: `Your sex drive is incessant. 
 
 *Very dark perk, use with care, and with partners who consent and enjoy non-con.
-*In a non-con scene ( rape ), you gain +4d6 to your strength to keep them pinned. 
+*In a non-con scene ( rape ), you gain +3d6 to your strength to keep them pinned. 
 *You now count successes on a 4 and above when doing that.
 *For every orgasm, your target loses 1 HP and 1 strength temporarily. At 0 strength, they can no longer resist you.
-*You an your partner may arbitrarily decide when an orgasm is had.
-*Otherwise, the target orgasms every time they attempt to resist you.
+*You an your partner may arbitrarily decide when an orgasm is had. Otherwise, the target orgasms every time they attempt to resist you.
 *A victim may be killed through these means. Gain 2 points if you fuck them dead.
 *The perk can be used in consensual scenes, but awards no points then.`,
   },

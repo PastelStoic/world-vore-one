@@ -7,7 +7,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description:
       `Your character is remarkably strong, or particularly precise with their strikes! 
-*When rolling to attack or defend against someone through melee means, roll +4d6 
+      
+*When rolling to attack or defend against someone through melee means, roll +3d6 
 *You now count a success on a 4 and above, instead of a 5 and above.`,
   },
   {
@@ -15,7 +16,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     name: "Gunner",
     category: "combat",
     description: `Your character is remarkably accurate with their shots! 
-*When rolling to make an attack with a ranged weapon (firearms, bows, crossbows, flamethrowers), roll +4d6. 
+    
+*When rolling to make an attack with a ranged weapon (firearms, bows, crossbows, flamethrowers), roll +3d6. 
 *You now count a success on a 4 and above, instead of a 5 and above.
 *Does not apply to grenades or throwable weapons.`,
   },
@@ -25,7 +27,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description:
       `Your character is remarkably fast, and most struggle to keep up! 
----->So long as you are not encumbered:
+      
+->If you are not encumbered:
 *Move up to two distances, instead of the usual one, in combat. 
 *You are always at the top of initative regardless of your dexterity.
 *Regular rules apply to all that share this perk.`,
@@ -35,21 +38,9 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     name: "Effective cover use",
     category: "combat",
     description: `You're careful and very much prefer to preserve your life! 
-
-*Every tier of cover is rated one tier higher than it actually is - except for the highest tier (8d6), which has no effect.
+    
 *If you are not in cover at all - such as being wide in the open - you will always have at least 2d6 cover.
-*When rolling your cover, you obtain successes on 4 and above, rather than 5 and above.`,
-  },
-  {
-    id: "terrain-specialist",
-    name: "Terrain specialist",
-    category: "combat",
-    description: `You're very well accostoumed to specific kinds of terrains! 
-
-*Pick one type of terrain ( Forests, mountains, plains, no-man's-land, urban, etc ). 
-*While in such a terrain, double any cover bonuses you would get!
-*Never get lost in such terrain, always know your way around.`,
-    customInput: "Chosen terrain (e.g. forests, mountains, urban…)",
+*You have +2d6 to your cover rolls. When rolling your cover, you obtain successes on 4 and above, rather than 5 and above.`,
   },
   {
     id: "tough",
@@ -72,7 +63,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
       `Explosions in general only ever seem to avoid you somehow, it's like you repel them! 
 
 *During events and combat related scenes, never die or get hurt from explosives-related random chance
-( Random mines, artillery shells and stray explosives ^ )
+( Random mines, artillery shells and stray explosives )
 *Explosives deal -2 damage to you. Damage CAN be brought to 0 through this.`,
   },
   {
@@ -82,9 +73,10 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `You have a natural feeling for 'danger', as if it were a sixth sense! 
 
-*Any stealth action or ambush done against you immediately fails. You are never caught by surprise. 
-*Always notice traps before they can pose a danger to you. You can still trip them though.
-*Does not apply against the 'Jäeger perk'. Regular rules apply instead.`,
+*Gain +3d6 to spot any stealth action or ambush done against you or your party, as well as to detect any traps.
+*You now count a success on a 4 and above, instead of a 5 and above.
+*You can still trip traps if you're not careful, as you do not neccessarily know what triggers them, you just know where they are.
+*You feel a sense of danger whenever something dangerous can happen to you during events.`,
   },
   {
     id: "j-eger",
@@ -92,10 +84,9 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description: `You are a natural at trap-making and being sneaky in general!
 
-*Any stealth action or ambush done by you always succeeds. 
-*Traps are always hidden, no need to roll for their concealment.
-*+3d6 when rolling for the trap's damage.
-*Does not apply against the 'Danger sense' perk. Regular rules apply instead.`,
+*Gain +3d6 to perform any stealth action, ambush, to set up traps and determine their damage.
+*You now count a success on a 4 and above, instead of a 5 and above.
+*Your traps deal a flat +3 damage.`,
   },
   {
     id: "signature-weapon",
@@ -103,12 +94,11 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description: `You have a special weapon that belongs to you, and only you! 
 
-*It must be grabbed from the weapon's list, or reflavoured from there.
-*It is considered the highest tier of weapon and deals +1 damage. 
+*The weapon must be picked from the weapon's list, or reflavoured from there. It will then be considered the highest tier of weapon and deals +1 damage. 
 *No matter what happens, it always returns to you through one way or another. You may be temporarily separated from it.
-*Any attachments unique to this weapon (not compatible with other guns) are free.
+*Any attachments unique to this weapon are free. Certain weapons may also gain attachments that are shared by multiple weapons.
 *If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point. Every other weapon is free.
-*If it's a melee weapon, you may grab one melee weapon trait that wouldn't otherwise fit the weapon, alongside all other fitting traits.`,
+*If you wish to pick a melee weapon, you may grab one melee weapon trait that wouldn't otherwise fit the weapon.`,
   },
   {
     id: "brawler",
@@ -119,7 +109,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *Tier 0 and tier 1 weapons ( unarmed and makeshift weapons respectively ) deal +2 damage.
 *Ignore damage penalties whilst using those weapons such as armor or a lizardgirl's scales.
-*When attacking or defending with tier 0 and tier 1 weapons, gain +4d6 to attack with them and count successes on a 4 or above, instead of a 5 and above.
+*When attacking or defending with tier 0 and tier 1 weapons, gain +3d6 to attack with them and count successes on a 4 or above, instead of a 5 and above.
 *Does nothing for tier 2 ( military ) weapons.
 *Does not apply to thrown makeshift weapons.`,
   },
@@ -159,12 +149,12 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description: `You have an iron-will to protect those around you!
 
-*You may get this perk even if it pushes you past your encumbrance level.
 *You have a shield, or equivalent, which has 2 weight and is considered a makeshift weapon.
 *You may use a one-handed melee weapon OR one-handed firearm whilst holding the shield, but you have -3d6 to attack with them.
+*You cannot reload your weapon whilst holding the shield, you must put it away as an action.
 *If at distance 0 with any number of teammates, as an action you may protect any number of them, forcing the enemy to target you instead. 
 *If you're holding your shield, damage from all sources is lowered to 1. Unarmed and makeshift weapons deal no damage. You must be facing the target, or there is no reduction.
-*Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
+*It will always return to you somehow, but you can be separated from it for some time.`,
     grantsEquipment: [
       { equipmentId: "defenders-shield" },
     ],
@@ -189,8 +179,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     description:
       `You have a knack for keeping yourself alive, at the cost of your teammates. You don't live long by being a dummy.
 
-*When being attacked, you may pull an ally/enemy in the same distance as you into the way. Does not apply if you were ambushed.
-*The target you pull must not be incapacitated/critical, only targets you can quickly reach out for and pull into your way are valid.
+*When being attacked, you may pull a non-incapacitated ally/enemy in the same distance as you into the way. Does not apply if you were ambushed.
 *You may protect yourself from up to three attacks per turn, and they are all free actions.
 *Your target may be pulled before or after you perform your cover/defense roll.
 *If your target is willing, they take all of the damage in your stead.
@@ -206,11 +195,15 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *Even if your HP goes into the negatives, you are never put into critical condition, you're only ever considered incapacitated.
 *When reduced to 0HP, you are not incapacitated, and can continue fighting as normal, as you are hit with an 'adrenaline rush'.
-*You must roll your constitution when you are reduced to 0HP, and every turn thereafter.
-*You need 1 + [how negative your HP is] / 2, rounding down, successes in order to keep standing.
-*You are forcefully incapacitated - NOT put into critical condition - if you fail your constitution check or if 20 turns pass, whichever comes earlier.
-*Once this ability is over, you 'crash' out. While crashed out, you are incapacitated and you cannot do any escape rolls if you are eaten.
-*\`Crashed out\` lasts until your HP regenerates to full.`,
+
+->Adrenaline rush:
+*For as long as you have this rush, you cannot be incapacitated, and you must roll your constitution every turn. You need 1 + [your negative HP] / 2 ) successes.
+*If you do not get that many successes, your rush is over and you are incapacitated. The rush ends forcefully after 20 turns, regardless if you've succeeded all of your checks.
+*Once your rush is over, you 'crash' out.
+
+->Crash out:
+*You are incapacitated until your HP heals back to full. You cannot do any escape rolls if you are eaten.
+*Being healed by allies does not speed this up; you've overexerted yourself, you need rest.`,
   },
   {
     id: "ambidextrous",
@@ -222,8 +215,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
 *You can dual wield pistols OR one-handed melees. You can attack with both weapons in one turn.
 *Your fists count as weapons for this purpose. You can punch someone twice, or hit them with a sword and punch them, etc.
-*When dual wielding, you cannot utilize alternative firing techniques, unless both weapons are one-handed and both share the alternative firing technique gimmick.
-*Hefties, when using two-handed weapons as if they were one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
+*When dual wielding, you cannot utilize alternative firing techniques.
+*Hefties, when using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
 *In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
 *Alternative firing stances ( 'Mad minute technique', 'Walking fire', etc ... ) no longer have negative effects.
 *Semiautomatic weapons ( 3 rof or lower ) no longer need to waste a shot when multi-targetting.

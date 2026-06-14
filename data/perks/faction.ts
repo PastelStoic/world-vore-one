@@ -351,7 +351,7 @@ Disadvantages:
     id: "japanese-kami-champion",
     name: "Japanese Kami-Champion",
     category: "faction",
-    requiredRaces: ["Tierfraun"],
+    requiredRaces: ["Tierfraun","tierherr"],
     overridesRaceName: [
       { oldName: "Tierfraun", newName: "Kronprinz Tierfraun" },
       { oldName: "Tierherr", newName: "Kronprinz Tierherr" },
@@ -387,7 +387,7 @@ Advantages:
 *You may be up to 15 feet tall. You don't have to be; you can be normal-sized if preferred.
 *When digesting a Pilzfraun, you acquire all of her points and perks so long as the perk is a type of skill. Allies, Patron, Signature Weapon and similar perks are not absorbed.
 *When you die from non-digestion causes, your memories and consciousness overwrite your oldest daughter and you live on.
-*Choose one Lady aspect below.
+*Choose one Kami aspect below.
 
 Disadvantages:
 *Only one per player. You may make another if yours dies.
@@ -403,7 +403,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-war-strength",
-    name: "Lady of War (Strength)",
+    name: "Kami of War (Strength)",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",
@@ -424,7 +424,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-war-dexterity",
-    name: "Lady of War (Dexterity)",
+    name: "Kami of War (Dexterity)",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",
@@ -446,7 +446,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-war-constitution",
-    name: "Lady of War (Constitution)",
+    name: "Kami of War (Constitution)",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",
@@ -468,7 +468,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-arts-dexterity",
-    name: "Lady of the Arts (Dexterity)",
+    name: "Kami of the Arts (Dexterity)",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",
@@ -487,7 +487,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-arts-intelligence",
-    name: "Lady of the Arts (Intelligence)",
+    name: "Kami of the Arts (Intelligence)",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",
@@ -506,7 +506,7 @@ Disadvantages:
   },
   {
     id: "japanese-kami-champion-carousing",
-    name: "Lady of Carousing",
+    name: "Kami of Carousing",
     category: "faction",
     requiredPerkIds: ["japanese-kami-champion"],
     lockCategory: "japanese-kami-champion-aspect",

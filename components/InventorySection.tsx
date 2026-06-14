@@ -7,6 +7,8 @@ import {
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
   type Nation,
+  VEHICLES,
+  VEHICLES_BY_ID,
   WEAPON_TRAITS_BY_ID,
   WEAPONS,
   WEAPONS_BY_ID,
@@ -16,6 +18,7 @@ import type {
   InventoryAttachment,
   InventoryEquipment,
   InventoryMeleeWeapon,
+  InventoryVehicle,
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
 import {
@@ -28,6 +31,7 @@ import WeaponCard from "./inventory/WeaponCard.tsx";
 import EquipmentCard from "./inventory/EquipmentCard.tsx";
 import MeleeWeaponCard from "./inventory/MeleeWeaponCard.tsx";
 import AttachmentCard from "./inventory/AttachmentCard.tsx";
+import VehicleCard from "./inventory/VehicleCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import TraitBadge from "./inventory/TraitBadge.tsx";
 import {
@@ -70,7 +74,13 @@ interface InventorySectionProps {
   onLoseWeaponPermanently?: (pointsLost: number) => void;
 }
 
-type ActivePicker = "weapon" | "equipment" | "melee" | "attachment" | null;
+type ActivePicker =
+  | "weapon"
+  | "equipment"
+  | "vehicle"
+  | "melee"
+  | "attachment"
+  | null;
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -99,6 +109,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const [weaponFilter, setWeaponFilter] = useState("");
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
+  const [vehicleFilter, setVehicleFilter] = useState("");
   const [attachmentFilter, setAttachmentFilter] = useState("");
   const [attachmentNationFilter, setAttachmentNationFilter] = useState<
     Nation | ""
@@ -135,6 +146,12 @@ export default function InventorySection(props: InventorySectionProps) {
   function costLabel(cost: number): string {
     if (cost === 0) return "Free";
     return `${cost}pt`;
+  }
+
+  function armorLabel(vehicleId: string): string {
+    const vehicle = VEHICLES_BY_ID.get(vehicleId);
+    if (!vehicle) return "";
+    return `${vehicle.armor.front}/${vehicle.armor.side}/${vehicle.armor.rear}`;
   }
 
   // ── Auto-save combat state (ammo, charges, magazines) ──
@@ -357,6 +374,44 @@ export default function InventorySection(props: InventorySectionProps) {
       return inv;
     });
     setActivePicker(null);
+  }
+
+  // -- Add vehicle --
+  function addVehicle(vehicleId: string, location: InventoryLocation) {
+    const def = VEHICLES_BY_ID.get(vehicleId);
+    if (!def) return;
+    const item: InventoryVehicle = { vehicleId };
+    update((inv) => {
+      inv[location].vehicles ??= [];
+      inv[location].vehicles.push(item);
+      return inv;
+    });
+    setActivePicker(null);
+  }
+
+  // -- Remove vehicle --
+  function removeVehicle(location: InventoryLocation, index: number) {
+    update((inv) => {
+      inv[location].vehicles ??= [];
+      inv[location].vehicles.splice(index, 1);
+      return inv;
+    });
+  }
+
+  // -- Move vehicle between locations --
+  function moveVehicle(
+    from: InventoryLocation,
+    index: number,
+    to: InventoryLocation,
+  ) {
+    update((inv) => {
+      inv[from].vehicles ??= [];
+      inv[to].vehicles ??= [];
+      const [vehicle] = inv[from].vehicles.splice(index, 1);
+      if (!vehicle) return inv;
+      inv[to].vehicles.push(vehicle);
+      return inv;
+    });
   }
 
   // -- Remove equipment --
@@ -770,6 +825,7 @@ export default function InventorySection(props: InventorySectionProps) {
     const isEmpty = inv.weapons.length === 0 &&
       inv.meleeWeapons.length === 0 &&
       inv.equipment.length === 0 &&
+      (inv.vehicles ?? []).length === 0 &&
       (inv.attachments ?? []).length === 0;
 
     return (
@@ -875,6 +931,26 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
+        {(inv.vehicles ?? []).length > 0 && (
+          <div class="space-y-1">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
+              Vehicles
+            </h5>
+            {(inv.vehicles ?? []).map((vehicle, i) => (
+              <div key={`${location}-vehicle-${i}`}>
+                <VehicleCard
+                  vehicle={vehicle}
+                  location={location}
+                  index={i}
+                  readOnly={readOnly}
+                  onMove={moveVehicle}
+                  onRemove={removeVehicle}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
         {(inv.attachments ?? []).length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -935,6 +1011,13 @@ export default function InventorySection(props: InventorySectionProps) {
   const filteredMeleeWeapons = MELEE_WEAPONS.filter((mw) => {
     if (!meleeFilter) return true;
     return mw.name.toLowerCase().includes(meleeFilter.toLowerCase());
+  });
+
+  const filteredVehicles = VEHICLES.filter((vehicle) => {
+    if (!vehicleFilter) return true;
+    const q = vehicleFilter.toLowerCase();
+    return vehicle.name.toLowerCase().includes(q) ||
+      vehicle.nation.toLowerCase().includes(q);
   });
 
   const filteredAttachments = ATTACHMENTS.filter((a) => {
@@ -1007,6 +1090,13 @@ export default function InventorySection(props: InventorySectionProps) {
               onClick={() => togglePicker("equipment")}
             >
               {activePicker === "equipment" ? "Cancel" : "+ Equipment"}
+            </button>
+            <button
+              type="button"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
+              onClick={() => togglePicker("vehicle")}
+            >
+              {activePicker === "vehicle" ? "Cancel" : "+ Vehicle"}
             </button>
             <button
               type="button"
@@ -1137,6 +1227,51 @@ export default function InventorySection(props: InventorySectionProps) {
                         hideByDefault
                       />
                     </div>
+                  </li>
+                );
+              }}
+            />
+          )}
+
+          {activePicker === "vehicle" && (
+            <ItemPicker
+              items={filteredVehicles}
+              filterValue={vehicleFilter}
+              onFilterChange={setVehicleFilter}
+              filterPlaceholder="Filter vehicles by name or nation…"
+              emptyMessage="No matching vehicles."
+              renderItem={(vehicle) => {
+                const addCost = slotCost();
+                return (
+                  <li
+                    key={vehicle.id}
+                    class="text-sm border-b border-gray-100 pb-1"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {vehicle.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          ({vehicle.nation} · Seats:{vehicle.seats}{" "}
+                          · Armor F/S/R:{armorLabel(vehicle.id)})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                        onClick={() => addVehicle(vehicle.id, addTarget)}
+                      >
+                        Add ({costLabel(addCost)})
+                      </button>
+                    </div>
+                    {vehicle.description && (
+                      <div class="text-xs text-base-content/70 ml-2">
+                        <PerkDescription
+                          name=""
+                          description={vehicle.description}
+                          hideByDefault
+                        />
+                      </div>
+                    )}
                   </li>
                 );
               }}

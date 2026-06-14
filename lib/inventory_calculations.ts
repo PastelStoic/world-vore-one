@@ -12,6 +12,7 @@ import {
  * Count how many "item slots" the carried inventory uses.
  * Each weapon = 1 slot. Each attachment on a weapon = 1 slot.
  * Each non-charge equipment = 1 slot; each charge of a charge-type equipment = 1 slot.
+ * Each vehicle = 1 slot.
  * Each loose (unattached) attachment = 1 slot (charge-based: each charge = 1 slot).
  * Perk-granted melee weapons are free; all other melee weapons = 1 slot each.
  */
@@ -50,6 +51,8 @@ export function countCarriedItemSlots(
     if (mw.perkGranted) continue; // Perk-granted melee weapons don't use slots
     slots += 1;
   }
+
+  slots += (inv.carried.vehicles ?? []).length;
 
   for (const a of inv.carried.attachments ?? []) {
     const def = lookups?.getAttachment?.(a.attachmentId);
@@ -121,6 +124,8 @@ export function countAllItemSlots(
     if (mw.perkGranted) continue; // Perk-granted melee weapons don't use slots
     slots += 1;
   }
+
+  slots += (inv.stowed.vehicles ?? []).length;
 
   for (const a of inv.stowed.attachments ?? []) {
     const def = lookups?.getAttachment?.(a.attachmentId);

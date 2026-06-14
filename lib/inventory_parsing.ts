@@ -7,6 +7,7 @@ import type {
   InventoryAttachment,
   InventoryEquipment,
   InventoryMeleeWeapon,
+  InventoryVehicle,
   InventoryWeapon,
 } from "./inventory_types.ts";
 import { createEmptyInventory } from "./inventory_types.ts";
@@ -103,6 +104,17 @@ export function parseInventory(raw: string): CharacterInventory | null {
           ...(typeof e.isBulkyOverride === "boolean"
             ? { isBulkyOverride: e.isBulkyOverride }
             : {}),
+        }));
+      }
+
+      if (Array.isArray(src.vehicles)) {
+        inv[location].vehicles = src.vehicles.filter(
+          (v: unknown) =>
+            v &&
+            typeof v === "object" &&
+            typeof (v as Record<string, unknown>).vehicleId === "string",
+        ).map((v: Record<string, unknown>): InventoryVehicle => ({
+          vehicleId: String(v.vehicleId),
         }));
       }
 

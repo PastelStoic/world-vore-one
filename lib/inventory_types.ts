@@ -75,6 +75,14 @@ export interface InventoryEquipment {
 }
 
 /**
+ * An instance of a vehicle in the inventory.
+ */
+export interface InventoryVehicle {
+  /** Reference to a VehicleDefinition.id */
+  vehicleId: string;
+}
+
+/**
  * An attachment owned by the character but not currently attached to a weapon.
  * For charge-based attachments, tracks total and used charges.
  */
@@ -109,12 +117,14 @@ export interface CharacterInventory {
     weapons: InventoryWeapon[];
     meleeWeapons: InventoryMeleeWeapon[];
     equipment: InventoryEquipment[];
+    vehicles: InventoryVehicle[];
     attachments: InventoryAttachment[];
   };
   stowed: {
     weapons: InventoryWeapon[];
     meleeWeapons: InventoryMeleeWeapon[];
     equipment: InventoryEquipment[];
+    vehicles: InventoryVehicle[];
     attachments: InventoryAttachment[];
   };
 }
@@ -136,12 +146,14 @@ export function createEmptyInventory(): CharacterInventory {
       weapons: [],
       meleeWeapons: [],
       equipment: [],
+      vehicles: [],
       attachments: [],
     },
     stowed: {
       weapons: [],
       meleeWeapons: [],
       equipment: [],
+      vehicles: [],
       attachments: [],
     },
   };

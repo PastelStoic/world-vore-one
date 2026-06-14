@@ -24,7 +24,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You are a man-eater and devour others without much difficulty at all. 
 
-*You roll an extra 4d6 to grapple, swallow and to keep prey down. 
+*You roll an extra 3d6 to grapple, swallow and to keep prey down. 
 *You now count successes on a 4 and above, rather than a 5 and above, to do that.`,
   },
   {
@@ -103,7 +103,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You've very strong legs! Carrying prey around is no biggie.
 
-*People weight only 1 weight when eaten by you. Does not apply to their equipment: Strip 'em! 
+*People weight only 1 weight when eaten by you.
 *If the prey has the "heavy" perk, typical rules apply.`,
   },
   {
@@ -189,7 +189,8 @@ If you have prey inside you, dead or alive:
 *When your predator gives birth OR impregnates someone, your consciousness is transfered to that body and you live on! 
 *You'll be alive, but with a different body and appearance. You may need to make a new sheet to reflect that, unless you are a template and the birthling is your template too.
 *If you do have to make a new sheet, you keep the same point totals and amount of perks. Your intelligence and charisma stats remain the same, but all of your other stats may be re-arranged.
-*Perks related to your physicality can be changed ( hard to churn, unreal capacity, living furnace, etc ), however, any other perks related to skills ( gunner and others ), belongings ( Sig. Weapon and others ) and whatnot may not be changed.`,
+*Perks related to your physicality can be changed ( hard to churn, unreal capacity, living furnace, etc ).
+*perks related to skills ( gunner, melee fighter, materful linguist, etc ), belongings ( Sig. Weapon, beastmaster, allies, etc ) may not be changed.`,
   },
   {
     id: "living-fat-advisors",
@@ -230,30 +231,16 @@ If you have prey inside you, dead or alive:
     description:
       `You actively want to shove yourself into the tummies of your predators and keep yourself in!
 
-*You gain 4d6 to stuff yourself into a predator and keep yourself in there! 
+*You gain +3d6 to force-feed yourself or others to someone, and to keep your target from regurgitiating them. You must be grappling a target first in order to force-feed them to someone else.
 *You now count successes on a 4 and above, rather than 5 and above, to do that.
 *This perk makes it so you do not need to grapple a predator in order to self-feed; you can simply feed yourself straight away!
-*You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regurtitation disgust.`,
-  },
-  {
-    id: "forceful-feeder",
-    name: "Forceful feeder",
-    category: "vore",
-    description:
-      `You like to see others get stuffed to the very brim - and then push them past it!
+*You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regurtitation disgust.
+*You can stuff someone up to 5 times their organ-capacity. For every point past their limit, they take 1 damage every turn. This can kill.
+*Your target can try to regurgitate the contents of their stomach. So long as you are both in the same distance, you can prevent this as a free action. It is a contested STR vs STR check.
 
-*Does not apply to feed baseliners, those cannot eat anyone!
-*You gain +4d6 to grapple prey and to force-feed them to someone.
-*You now count successes on 4 and above, rather than 5 and above, to do that.
-*Alternatively, stuff someone with food: 
-*You can carry as much food as your carry capacity allows you to.
-*You can stuff 3 weight units of food to your target per turn. 
-*3 units of food are equivalent to eating a person for organ-capacity calculations. 
-*Stuffing someone is a strength check, as if predding/preying.
-*You can stuff someone up to 5 times their organ-capacity. 
-*For every point past their limit, they take 1 damage every turn. This can kill.
-*Your target can try to regurgitate the contents of their stomach. 
-*If they're grappled by you, you can stop regurgitation as a free action, it is a contested STR vs STR check plus the modifiers in this perk up above.`,
+->Alternatively, stuff a target with food instead:
+*You may carry foodstuffs on your person and force-feed others with food, rather than people. You do not need to be grappling them for this.
+*Each foodstuffs has 1 weight. You can stuff 3 foodstuffs to a target per turn. 3 units of food are equivalent to eating a person for organ capacity calculations.`,
   },
   {
     id: "last-ditch-escapee",
@@ -262,16 +249,19 @@ If you have prey inside you, dead or alive:
     description:
       `When things are tough, you always seem to get hit by a strong second wind!
 
----->If you're inside someone and you're at 0 HP or below ( not self-inflicted ), 
+->If you're inside someone and you're at 0 HP or below ( not self-inflicted ), 
 *You gain +6d6 to escape their stomach.
 *You now count successess on a 4 and above, rather than a 5 and above, to do that.
-*If you escape, you are hit with an 'adrenaline rush': 
-*You have 'runner' for ten minutes, or for 10 turns if in combat. You cannot be incapacitated for as long as you have your adrenaline rush.
-*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] / 2 successes in order to keep standing.
-*Failing your roll makes your adrenaline boost run out.
-*Once the adrenaline boost is over, you crash out, and are incapacitated/critical condition'd based on your HP. 
-*While crashed out, if you are eaten again, you cannot do any escape rolls. 
-*\`Crashed out\` lasts until your HP regenerates to full.`,
+
+->If you escape, you are hit with an "escapist's rush": 
+*The rush lasts 10 turns, or 10 minutes, whichever is faster.
+*You have the 'runner' perk and you cannot be incapacitated for the duration of your rush.
+*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] successes in order to keep standing.
+*Once your rush is over, you 'crash' out.
+
+->Crash out:
+*You are incapacitated/critical conditione'd until your HP heals back to full. You cannot do any escape rolls if you are eaten.
+*Being healed by allies does not speed this up; you've overexerted yourself, you need rest.`,
   },
   {
     id: "open-ended-tail",
@@ -287,12 +277,11 @@ If you have prey inside you, dead or alive:
 
 *This perk gives you a special tail that may be used to carry things, but it cannot manipulate them.
 *It can be used to eat prey without grappling first AND from 1 distance away; it can fit 2 prey by default and digests by default.
-*The tail leads straight into the stomach.
-*After 2 escape attempts, prey may be pushed into the stomach.
+*The tail leads straight into the stomach. After 2 escape attempts, prey may be pushed into the stomach.
 *It is constantly dripping acid from the tip, making you easy to track.
 
----->MOUTHLESS VARIANT: If you pick the mouthless variant:
-*You have no mouth; you cannot vocalize any sounds and cannot eat normally.
+->Mouthless variant:
+*You may optionally choose to have no mouth at all. If so, you cannot vocalize any sounds and cannot eat normally, havint to do so through your tail.
 *Once prey is brought to your stomach, they must escape into the tail, as escaping through your mouth is impossible.`,
   },
   {

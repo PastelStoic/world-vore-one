@@ -218,8 +218,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *When reduced to 0HP, you are not incapacitated, and can continue fighting as normal, as you are hit with an 'adrenaline rush'.
 
 ->Adrenaline rush:
-*For as long as you have this rush, you cannot be incapacitated, and you must roll your constitution every turn. You need 1 + [your negative HP] / 2 ) successes.
-*If you do not get that many successes, your rush is over and you are incapacitated. The rush ends forcefully after 20 turns, regardless if you've succeeded all of your checks.
+*Your rush lasts 20 turns, or 20 minutes, whichever is faster.
+*For the duration, you cannot be incapacitated, and you must roll your constitution every turn. You need 1 + [your negative HP] / 2 ) successes to keep your rush going.
 *Once your rush is over, you 'crash' out.
 
 ->Crash out:

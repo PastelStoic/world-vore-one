@@ -40,10 +40,6 @@ export default function VehicleCard(props: VehicleCardProps) {
     return <div class="text-error">Unknown vehicle: {vehicle.vehicleId}</div>;
   }
 
-  const otherLocation: InventoryLocation = location === "carried"
-    ? "stowed"
-    : "carried";
-
   return (
     <div class="border rounded p-2 space-y-1 bg-base-100">
       <div class="flex items-center justify-between flex-wrap gap-1">
@@ -55,13 +51,15 @@ export default function VehicleCard(props: VehicleCardProps) {
         </div>
         {!readOnly && (
           <div class="flex gap-1">
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-              onClick={() => onMove(location, index, otherLocation)}
-            >
-              → {otherLocation === "carried" ? "Carry" : "Stow"}
-            </button>
+            {location === "carried" && (
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                onClick={() => onMove(location, index, "stowed")}
+              >
+                → Stow
+              </button>
+            )}
             <button
               type="button"
               class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"

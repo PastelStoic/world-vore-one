@@ -151,7 +151,7 @@ export default function InventorySection(props: InventorySectionProps) {
   function armorLabel(vehicleId: string): string {
     const vehicle = VEHICLES_BY_ID.get(vehicleId);
     if (!vehicle) return "";
-    return `${vehicle.armor.front}/${vehicle.armor.side}/${vehicle.armor.rear}`;
+    return `${vehicle.armor.front} ${vehicle.armor.side} ${vehicle.armor.rear}`;
   }
 
   // ── Auto-save combat state (ammo, charges, magazines) ──
@@ -377,13 +377,13 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // -- Add vehicle --
-  function addVehicle(vehicleId: string, location: InventoryLocation) {
+  function addVehicle(vehicleId: string) {
     const def = VEHICLES_BY_ID.get(vehicleId);
     if (!def) return;
     const item: InventoryVehicle = { vehicleId };
     update((inv) => {
-      inv[location].vehicles ??= [];
-      inv[location].vehicles.push(item);
+      inv.stowed.vehicles ??= [];
+      inv.stowed.vehicles.push(item);
       return inv;
     });
     setActivePicker(null);
@@ -404,6 +404,7 @@ export default function InventorySection(props: InventorySectionProps) {
     index: number,
     to: InventoryLocation,
   ) {
+    if (to === "carried") return;
     update((inv) => {
       inv[from].vehicles ??= [];
       inv[to].vehicles ??= [];
@@ -1251,16 +1252,16 @@ export default function InventorySection(props: InventorySectionProps) {
                       <span>
                         {vehicle.name}{" "}
                         <span class="text-xs text-base-content/60">
-                          ({vehicle.nation} · Seats:{vehicle.seats}{" "}
-                          · Armor F/S/R:{armorLabel(vehicle.id)})
+                          ({vehicle.nation} · Seats: {vehicle.seats}{" "}
+                          · Armor:{armorLabel(vehicle.id)})
                         </span>
                       </span>
                       <button
                         type="button"
                         class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                        onClick={() => addVehicle(vehicle.id, addTarget)}
+                        onClick={() => addVehicle(vehicle.id)}
                       >
-                        Add ({costLabel(addCost)})
+                        Stow ({costLabel(addCost)})
                       </button>
                     </div>
                     {vehicle.description && (

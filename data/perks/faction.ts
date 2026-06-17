@@ -417,6 +417,7 @@ Disadvantages:
     description: `You are a warlike Kami-Champion who leads by personal might.
 
 *+3 Strength.
+*You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
 *You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
 *It is tailored for you specifically. Nobody else can wear it.
 *You are a tank, in person.
@@ -439,6 +440,7 @@ Disadvantages:
       `You are a warlike Kami-Champion who leads through martial precision.
 
 *+3 Dexterity.
+*You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
 *You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
 *It is tailored for you specifically. Nobody else can wear it.
 *You are a tank, in person.

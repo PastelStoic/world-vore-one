@@ -27,6 +27,18 @@ export const ADMIN_PERKS: PerkDefinition[] = [
 *The swiss rifles carry 3 magazines.`,
   },
   {
+    id: "hunted",
+    name: "Hunted",
+    category: "gimmick",
+    adminOnly: true,
+    isFree: true,
+    description: `You are being hunted for your transgressions caused upon the Artificer.
+
+*When starting a scene, roll a 1d6. On a 1, a killsquad appears to kill you off.
+*The killsquad will be composed of up to 6 soldiers, and they are especially tailored to kill you.
+*Each member has 6 strength, 6 dexterity, 4 constitution, 3 intelligence and 1 charisma. All vore stats are at 1.`,
+  },
+  {
     id: "munsterfraun-drake",
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",

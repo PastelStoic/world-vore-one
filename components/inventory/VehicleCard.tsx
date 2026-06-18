@@ -3,11 +3,16 @@
 // ---------------------------------------------------------------------------
 
 import {
-  VEHICLE_WEAPON_TYPES_BY_ID,
+  VEHICLE_MODULE_TYPES_BY_ID,
   VEHICLES_BY_ID,
 } from "@/data/equipment.ts";
 import type { InventoryVehicle } from "@/lib/inventory_types.ts";
+import {
+  formatVehicleModuleDetails,
+  formatVehicleModuleLabel,
+} from "@/lib/vehicle_module_helpers.ts";
 import type { InventoryLocation } from "./helpers.ts";
+import TraitBadge from "./TraitBadge.tsx";
 
 interface VehicleCardProps {
   vehicle: InventoryVehicle;
@@ -20,16 +25,6 @@ interface VehicleCardProps {
     to: InventoryLocation,
   ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
-}
-
-function formatWeaponry(
-  weaponry: { weaponTypeId: string; count: number }[],
-) {
-  return weaponry.map((weapon) => {
-    const type = VEHICLE_WEAPON_TYPES_BY_ID.get(weapon.weaponTypeId);
-    const name = type?.name ?? weapon.weaponTypeId;
-    return `${weapon.count} ${name}${weapon.count === 1 ? "" : "s"}`;
-  }).join(", ");
 }
 
 export default function VehicleCard(props: VehicleCardProps) {
@@ -75,10 +70,34 @@ export default function VehicleCard(props: VehicleCardProps) {
         <span>Side: {def.armor.side}</span>
         <span>Rear: {def.armor.rear}</span>
       </div>
-      <p class="text-xs text-base-content/70 ml-2">
-        <span class="font-medium">Weaponry:</span>{" "}
-        {formatWeaponry(def.weaponry)}
-      </p>
+      {def.modules.length > 0 && (
+        <div class="ml-2 space-y-1">
+          <span class="text-xs font-medium text-base-content/70">Modules:</span>
+          <div class="flex flex-wrap gap-1">
+            {def.modules.map((mount) => {
+              const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
+                mount.moduleTypeId,
+              );
+              if (!moduleType) {
+                return (
+                  <TraitBadge
+                    key={mount.moduleTypeId}
+                    name={mount.moduleTypeId}
+                    description=""
+                  />
+                );
+              }
+              return (
+                <TraitBadge
+                  key={mount.moduleTypeId}
+                  name={formatVehicleModuleLabel(moduleType, mount.count)}
+                  description={formatVehicleModuleDetails(moduleType)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
       {def.description && (
         <p class="text-xs text-base-content/70 whitespace-pre-line ml-2">
           {def.description}

@@ -7,21 +7,15 @@ import {
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
-  VEHICLE_WEAPON_TYPES_BY_ID,
+  VEHICLE_MODULE_TYPES_BY_ID,
   VEHICLES,
 } from "@/data/equipment.ts";
+import {
+  formatVehicleModuleDetails,
+  formatVehicleModuleLabel,
+} from "@/lib/vehicle_module_helpers.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
-
-function formatVehicleWeaponry(
-  weaponry: { weaponTypeId: string; count: number }[],
-) {
-  return weaponry.map((weapon) => {
-    const type = VEHICLE_WEAPON_TYPES_BY_ID.get(weapon.weaponTypeId);
-    const name = type?.name ?? weapon.weaponTypeId;
-    return `${weapon.count} ${name}${weapon.count === 1 ? "" : "s"}`;
-  }).join(", ");
-}
 
 export default define.page(function WikiEquipment() {
   return (
@@ -119,10 +113,44 @@ export default define.page(function WikiEquipment() {
                       <span class="font-medium">Seats:</span> {vehicle.seats}
                     </span>
                   </div>
-                  <p class="text-sm text-base-content/70">
-                    <span class="font-medium">Weaponry:</span>{" "}
-                    {formatVehicleWeaponry(vehicle.weaponry)}
-                  </p>
+                  {vehicle.modules.length > 0 && (
+                    <div class="space-y-2">
+                      <p class="text-sm font-medium text-base-content/70">
+                        Modules
+                      </p>
+                      <div class="space-y-2">
+                        {vehicle.modules.map((mount) => {
+                          const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
+                            mount.moduleTypeId,
+                          );
+                          const label = moduleType
+                            ? formatVehicleModuleLabel(moduleType, mount.count)
+                            : mount.moduleTypeId;
+                          const details = moduleType
+                            ? formatVehicleModuleDetails(moduleType)
+                            : "";
+                          return (
+                            <details
+                              key={mount.moduleTypeId}
+                              class="border rounded-lg bg-base-100/80 px-4 py-2"
+                            >
+                              <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between">
+                                <span>{label}</span>
+                                <span class="text-xs text-base-content/50">
+                                  ▶ details
+                                </span>
+                              </summary>
+                              {details && (
+                                <p class="mt-2 text-sm text-base-content border-t pt-2 whitespace-pre-line">
+                                  {details}
+                                </p>
+                              )}
+                            </details>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   {vehicle.description && (
                     <p class="text-sm text-base-content/70 whitespace-pre-line">
                       {vehicle.description}

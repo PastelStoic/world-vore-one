@@ -15,10 +15,12 @@ export const VEHICLES: VehicleDefinition[] = [
       rear: "light",
     },
     seats: 9,
-    weaponry: [
-      { weaponTypeId: "light-cannon", count: 1 },
-      { weaponTypeId: "machine-gun", count: 1 },
-      { weaponTypeId: "anti-armor-missile-launcher", count: 2 },
+    modules: [
+      { moduleTypeId: "light-cannon", count: 1 },
+      { moduleTypeId: "machine-gun", count: 1 },
+      { moduleTypeId: "anti-armor-missile-launcher", count: 2 },
+      { moduleTypeId: "engine", count: 1 },
+      { moduleTypeId: "transmission", count: 1 },
     ],
     description:
       "Infantry fighting vehicle with a crew and carried infantry squad. The stats emphasize its heavier frontal profile, lighter flank and rear protection, and mixed cannon, machine gun, and missile armament.",

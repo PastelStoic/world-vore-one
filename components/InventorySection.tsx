@@ -7,6 +7,7 @@ import {
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
   type Nation,
+  VEHICLE_MODULE_TYPES_BY_ID,
   VEHICLES,
   VEHICLES_BY_ID,
   WEAPON_TRAITS_BY_ID,
@@ -34,6 +35,10 @@ import AttachmentCard from "./inventory/AttachmentCard.tsx";
 import VehicleCard from "./inventory/VehicleCard.tsx";
 import ItemPicker from "./inventory/ItemPicker.tsx";
 import TraitBadge from "./inventory/TraitBadge.tsx";
+import {
+  formatVehicleModuleDetails,
+  formatVehicleModuleLabel,
+} from "@/lib/vehicle_module_helpers.ts";
 import {
   calculateInventoryPointCostWithPerks,
   canAttachToWeapon,
@@ -1264,6 +1269,36 @@ export default function InventorySection(props: InventorySectionProps) {
                         Stow ({costLabel(addCost)})
                       </button>
                     </div>
+                    {vehicle.modules.length > 0 && (
+                      <div class="flex flex-wrap gap-1 mt-1 ml-2">
+                        {vehicle.modules.map((mount) => {
+                          const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
+                            mount.moduleTypeId,
+                          );
+                          if (!moduleType) {
+                            return (
+                              <TraitBadge
+                                key={mount.moduleTypeId}
+                                name={mount.moduleTypeId}
+                                description=""
+                              />
+                            );
+                          }
+                          return (
+                            <TraitBadge
+                              key={mount.moduleTypeId}
+                              name={formatVehicleModuleLabel(
+                                moduleType,
+                                mount.count,
+                              )}
+                              description={formatVehicleModuleDetails(
+                                moduleType,
+                              )}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                     {vehicle.description && (
                       <div class="text-xs text-base-content/70 ml-2">
                         <PerkDescription

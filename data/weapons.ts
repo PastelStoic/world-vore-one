@@ -528,6 +528,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: ["two-handed", "light-machinegun","heavy-magazines"],
     freeAccessoryIds: ["mg08/15-magazine"],
     compatibleAttachmentIds: [],
+    requiresMagazines: true,
   },
 
   // ── American ──

@@ -14,6 +14,54 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
       "A drum magazine for the Lewis gun. Choose how many to bring at scene start.",
   },
   {
+    id: "mg08-magazine",
+    name: "MG08 box magazine",
+    weight: 3,
+    ammo: 250,
+    description:
+      "A box magazine for the MG08. Choose how many to bring at scene start.",
+  },
+  {
+    id: "mg08/15-magazine",
+    name: "MG08/15 drum magazine",
+    weight: 1,
+    ammo: 100,
+    description:
+      "A drum magazine for the MG08/15. Choose how many to bring at scene start.",
+  },
+  {
+    id: "browning-m1917-magazine",
+    name: "Browning M1917 box magazine",
+    weight: 1,
+    ammo: 250,
+    description:
+      "A box magazine for the Browning M1917. Choose how many to bring at scene start.",
+  },
+  {
+    id: "maxim-m1910-magazine",
+    name: "Maxim M1910 magazine",
+    weight: 1,
+    ammo: 250,
+    description:
+      "A box magazine for the Maxim M1910. Choose how many to bring at scene start.",
+  },
+  {
+    id: "schwarzlose-m07/12-magazine",
+    name: "Schwarzlose M.07/12 magazine",
+    weight: 1,
+    ammo: 250,
+    description:
+      "A box magazine for the Schwarzlose. Choose how many to bring at scene start.",
+  },
+  {
+    id: "fiat-revelli-modello-1914",
+    name: "Fiat revelli modello 1914",
+    weight: 1,
+    ammo: 250,
+    description:
+      "A box magazine for the Fiat Revelli. Choose how many to bring at scene start.",
+  },
+  {
     id: "mg11-magazine",
     name: "MG11 box magazine",
     weight: 3,

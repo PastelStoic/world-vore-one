@@ -448,7 +448,14 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.`,
   },
-
+  {
+    id: "maxim-gun-shield",
+    name: "Maxim M1910: Shield",
+    appliesTo: "PM M1910 Maxim",
+    nation: "Russia",
+    weight: 2,
+    description: `*Has 2 weight. When in cover, +2d6 to cover rolls.`,
+  },
   // ── Austro-Hungarian ──
   {
     id: "steyr-automatic-fire",

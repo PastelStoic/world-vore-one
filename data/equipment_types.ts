@@ -178,29 +178,20 @@ export type VehicleArmorRating = "light" | "medium" | "heavy";
 
 export type VehicleModulePosition = "internal" | "external";
 
-export interface VehicleWeaponStats {
-  damage: string;
-  rateOfFire: number;
-  ammoCapacity: number;
-  /** Turns to reload to full capacity */
-  reloadSpeed: number;
-}
-
-export interface VehicleModuleTypeDefinition {
-  id: string;
+export interface VehicleModuleDefinition {
   name: string;
   description: string;
   hp: number;
   position: VehicleModulePosition;
   /** Effect on the vehicle when this module is destroyed */
   destructionEffect: string;
-  /** Present only for weapon modules */
-  weaponStats?: VehicleWeaponStats;
-}
-
-export interface VehicleModuleMount {
-  moduleTypeId: string;
   count: number;
+  /** Weapon modules include combat stats */
+  damage?: string;
+  rateOfFire?: number;
+  ammoCapacity?: number;
+  /** Turns to reload to full capacity */
+  reloadSpeed?: number;
 }
 
 export interface VehicleDefinition {
@@ -213,6 +204,6 @@ export interface VehicleDefinition {
     rear: VehicleArmorRating;
   };
   seats: number;
-  modules: VehicleModuleMount[];
+  modules: VehicleModuleDefinition[];
   description?: string;
 }

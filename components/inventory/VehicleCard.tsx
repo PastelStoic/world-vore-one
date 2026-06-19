@@ -2,10 +2,7 @@
 // VehicleCard - renders a single vehicle item in the inventory
 // ---------------------------------------------------------------------------
 
-import {
-  VEHICLE_MODULE_TYPES_BY_ID,
-  VEHICLES_BY_ID,
-} from "@/data/equipment.ts";
+import { VEHICLES_BY_ID } from "@/data/equipment.ts";
 import type { InventoryVehicle } from "@/lib/inventory_types.ts";
 import {
   formatVehicleModuleDetails,
@@ -74,27 +71,13 @@ export default function VehicleCard(props: VehicleCardProps) {
         <div class="ml-2 space-y-1">
           <span class="text-xs font-medium text-base-content/70">Modules:</span>
           <div class="flex flex-wrap gap-1">
-            {def.modules.map((mount) => {
-              const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
-                mount.moduleTypeId,
-              );
-              if (!moduleType) {
-                return (
-                  <TraitBadge
-                    key={mount.moduleTypeId}
-                    name={mount.moduleTypeId}
-                    description=""
-                  />
-                );
-              }
-              return (
-                <TraitBadge
-                  key={mount.moduleTypeId}
-                  name={formatVehicleModuleLabel(moduleType, mount.count)}
-                  description={formatVehicleModuleDetails(moduleType)}
-                />
-              );
-            })}
+            {def.modules.map((module, i) => (
+              <TraitBadge
+                key={`${module.name}-${i}`}
+                name={formatVehicleModuleLabel(module)}
+                description={formatVehicleModuleDetails(module)}
+              />
+            ))}
           </div>
         </div>
       )}

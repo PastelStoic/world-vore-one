@@ -7,7 +7,6 @@ import {
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
   type Nation,
-  VEHICLE_MODULE_TYPES_BY_ID,
   VEHICLES,
   VEHICLES_BY_ID,
   WEAPON_TRAITS_BY_ID,
@@ -937,26 +936,6 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {(inv.vehicles ?? []).length > 0 && (
-          <div class="space-y-1">
-            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
-              Vehicles
-            </h5>
-            {(inv.vehicles ?? []).map((vehicle, i) => (
-              <div key={`${location}-vehicle-${i}`}>
-                <VehicleCard
-                  vehicle={vehicle}
-                  location={location}
-                  index={i}
-                  readOnly={readOnly}
-                  onMove={moveVehicle}
-                  onRemove={removeVehicle}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
         {(inv.attachments ?? []).length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
@@ -973,6 +952,26 @@ export default function InventorySection(props: InventorySectionProps) {
                   onRemove={removeAttachment}
                   onSetTotalCharges={setAttachmentTotalCharges}
                   onToggleCharge={toggleAttachmentCharge}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {(inv.vehicles ?? []).length > 0 && (
+          <div class="space-y-1">
+            <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
+              Vehicles
+            </h5>
+            {(inv.vehicles ?? []).map((vehicle, i) => (
+              <div key={`${location}-vehicle-${i}`}>
+                <VehicleCard
+                  vehicle={vehicle}
+                  location={location}
+                  index={i}
+                  readOnly={readOnly}
+                  onMove={moveVehicle}
+                  onRemove={removeVehicle}
                 />
               </div>
             ))}
@@ -1100,13 +1099,6 @@ export default function InventorySection(props: InventorySectionProps) {
             <button
               type="button"
               class="px-2 py-1 text-sm border rounded hover:bg-base-200"
-              onClick={() => togglePicker("vehicle")}
-            >
-              {activePicker === "vehicle" ? "Cancel" : "+ Vehicle"}
-            </button>
-            <button
-              type="button"
-              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
               onClick={() => togglePicker("attachment")}
             >
               {activePicker === "attachment" ? "Cancel" : "+ Attachment"}
@@ -1117,6 +1109,13 @@ export default function InventorySection(props: InventorySectionProps) {
               onClick={() => togglePicker("melee")}
             >
               {activePicker === "melee" ? "Cancel" : "+ Melee Weapon"}
+            </button>
+            <button
+              type="button"
+              class="px-2 py-1 text-sm border rounded hover:bg-base-200"
+              onClick={() => togglePicker("vehicle")}
+            >
+              {activePicker === "vehicle" ? "Cancel" : "+ Vehicle"}
             </button>
           </div>
 
@@ -1239,81 +1238,6 @@ export default function InventorySection(props: InventorySectionProps) {
             />
           )}
 
-          {activePicker === "vehicle" && (
-            <ItemPicker
-              items={filteredVehicles}
-              filterValue={vehicleFilter}
-              onFilterChange={setVehicleFilter}
-              filterPlaceholder="Filter vehicles by name or nation…"
-              emptyMessage="No matching vehicles."
-              renderItem={(vehicle) => {
-                const addCost = slotCost();
-                return (
-                  <li
-                    key={vehicle.id}
-                    class="text-sm border-b border-gray-100 pb-1"
-                  >
-                    <div class="flex items-center justify-between">
-                      <span>
-                        {vehicle.name}{" "}
-                        <span class="text-xs text-base-content/60">
-                          ({vehicle.nation} · Seats: {vehicle.seats}{" "}
-                          · Armor:{armorLabel(vehicle.id)})
-                        </span>
-                      </span>
-                      <button
-                        type="button"
-                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                        onClick={() => addVehicle(vehicle.id)}
-                      >
-                        Stow ({costLabel(addCost)})
-                      </button>
-                    </div>
-                    {vehicle.modules.length > 0 && (
-                      <div class="flex flex-wrap gap-1 mt-1 ml-2">
-                        {vehicle.modules.map((mount) => {
-                          const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
-                            mount.moduleTypeId,
-                          );
-                          if (!moduleType) {
-                            return (
-                              <TraitBadge
-                                key={mount.moduleTypeId}
-                                name={mount.moduleTypeId}
-                                description=""
-                              />
-                            );
-                          }
-                          return (
-                            <TraitBadge
-                              key={mount.moduleTypeId}
-                              name={formatVehicleModuleLabel(
-                                moduleType,
-                                mount.count,
-                              )}
-                              description={formatVehicleModuleDetails(
-                                moduleType,
-                              )}
-                            />
-                          );
-                        })}
-                      </div>
-                    )}
-                    {vehicle.description && (
-                      <div class="text-xs text-base-content/70 ml-2">
-                        <PerkDescription
-                          name=""
-                          description={vehicle.description}
-                          hideByDefault
-                        />
-                      </div>
-                    )}
-                  </li>
-                );
-              }}
-            />
-          )}
-
           {activePicker === "melee" && (
             <ItemPicker
               items={filteredMeleeWeapons}
@@ -1415,6 +1339,62 @@ export default function InventorySection(props: InventorySectionProps) {
                         hideByDefault
                       />
                     </div>
+                  </li>
+                );
+              }}
+            />
+          )}
+
+          {activePicker === "vehicle" && (
+            <ItemPicker
+              items={filteredVehicles}
+              filterValue={vehicleFilter}
+              onFilterChange={setVehicleFilter}
+              filterPlaceholder="Filter vehicles by name or nation…"
+              emptyMessage="No matching vehicles."
+              renderItem={(vehicle) => {
+                const addCost = slotCost();
+                return (
+                  <li
+                    key={vehicle.id}
+                    class="text-sm border-b border-gray-100 pb-1"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span>
+                        {vehicle.name}{" "}
+                        <span class="text-xs text-base-content/60">
+                          ({vehicle.nation} · Seats: {vehicle.seats}{" "}
+                          · Armor:{armorLabel(vehicle.id)})
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                        onClick={() => addVehicle(vehicle.id)}
+                      >
+                        Stow ({costLabel(addCost)})
+                      </button>
+                    </div>
+                    {vehicle.modules.length > 0 && (
+                      <div class="flex flex-wrap gap-1 mt-1 ml-2">
+                        {vehicle.modules.map((module, i) => (
+                          <TraitBadge
+                            key={`${module.name}-${i}`}
+                            name={formatVehicleModuleLabel(module)}
+                            description={formatVehicleModuleDetails(module)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    {vehicle.description && (
+                      <div class="text-xs text-base-content/70 ml-2">
+                        <PerkDescription
+                          name=""
+                          description={vehicle.description}
+                          hideByDefault
+                        />
+                      </div>
+                    )}
                   </li>
                 );
               }}

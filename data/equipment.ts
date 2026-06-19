@@ -10,10 +10,8 @@ export type {
   MeleeWeaponTemplate,
   VehicleArmorRating,
   VehicleDefinition,
-  VehicleModuleMount,
+  VehicleModuleDefinition,
   VehicleModulePosition,
-  VehicleModuleTypeDefinition,
-  VehicleWeaponStats,
   WeaponDefinition,
   WeaponKind,
   WeaponTraitDefinition,
@@ -30,8 +28,4 @@ export {
   FREE_ACCESSORIES,
   FREE_ACCESSORIES_BY_ID,
 } from "./free_accessories.ts";
-export {
-  VEHICLE_MODULE_TYPES,
-  VEHICLE_MODULE_TYPES_BY_ID,
-} from "./vehicle_module_types.ts";
 export { VEHICLES, VEHICLES_BY_ID } from "./vehicles.ts";

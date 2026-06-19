@@ -1,26 +1,25 @@
-import type { VehicleModuleTypeDefinition } from "@/data/equipment_types.ts";
+import type { VehicleModuleDefinition } from "@/data/equipment_types.ts";
 
 export function formatVehicleModuleLabel(
-  module: VehicleModuleTypeDefinition,
-  count: number,
+  module: VehicleModuleDefinition,
 ): string {
-  const suffix = count === 1 ? "" : "s";
-  const quantity = count === 1 ? "" : `${count}× `;
+  const suffix = module.count === 1 ? "" : "s";
+  const quantity = module.count === 1 ? "" : `${module.count}× `;
   return `${quantity}${module.name}${suffix}`;
 }
 
 export function formatVehicleModuleDetails(
-  module: VehicleModuleTypeDefinition,
+  module: VehicleModuleDefinition,
 ): string {
   const lines: string[] = [];
 
-  if (module.weaponStats) {
-    lines.push(`Damage: ${module.weaponStats.damage}`);
-    lines.push(`Rate of fire: ${module.weaponStats.rateOfFire}`);
-    lines.push(`Ammo capacity: ${module.weaponStats.ammoCapacity}`);
+  if (module.damage !== undefined) {
+    lines.push(`Damage: ${module.damage}`);
+    lines.push(`Rate of fire: ${module.rateOfFire}`);
+    lines.push(`Ammo capacity: ${module.ammoCapacity}`);
     lines.push(
-      `Reload speed: ${module.weaponStats.reloadSpeed} turn${
-        module.weaponStats.reloadSpeed === 1 ? "" : "s"
+      `Reload speed: ${module.reloadSpeed} turn${
+        module.reloadSpeed === 1 ? "" : "s"
       }`,
     );
   }

@@ -7,7 +7,6 @@ import {
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
-  VEHICLE_MODULE_TYPES_BY_ID,
   VEHICLES,
 } from "@/data/equipment.ts";
 import {
@@ -119,35 +118,22 @@ export default define.page(function WikiEquipment() {
                         Modules
                       </p>
                       <div class="space-y-2">
-                        {vehicle.modules.map((mount) => {
-                          const moduleType = VEHICLE_MODULE_TYPES_BY_ID.get(
-                            mount.moduleTypeId,
-                          );
-                          const label = moduleType
-                            ? formatVehicleModuleLabel(moduleType, mount.count)
-                            : mount.moduleTypeId;
-                          const details = moduleType
-                            ? formatVehicleModuleDetails(moduleType)
-                            : "";
-                          return (
-                            <details
-                              key={mount.moduleTypeId}
-                              class="border rounded-lg bg-base-100/80 px-4 py-2"
-                            >
-                              <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between">
-                                <span>{label}</span>
-                                <span class="text-xs text-base-content/50">
-                                  ▶ details
-                                </span>
-                              </summary>
-                              {details && (
-                                <p class="mt-2 text-sm text-base-content border-t pt-2 whitespace-pre-line">
-                                  {details}
-                                </p>
-                              )}
-                            </details>
-                          );
-                        })}
+                        {vehicle.modules.map((module, i) => (
+                          <details
+                            key={`${module.name}-${i}`}
+                            class="border rounded-lg bg-base-100/80 px-4 py-2"
+                          >
+                            <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between">
+                              <span>{formatVehicleModuleLabel(module)}</span>
+                              <span class="text-xs text-base-content/50">
+                                ▶ details
+                              </span>
+                            </summary>
+                            <p class="mt-2 text-sm text-base-content border-t pt-2 whitespace-pre-line">
+                              {formatVehicleModuleDetails(module)}
+                            </p>
+                          </details>
+                        ))}
                       </div>
                     </div>
                   )}

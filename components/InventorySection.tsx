@@ -1363,8 +1363,9 @@ export default function InventorySection(props: InventorySectionProps) {
                       <span>
                         {vehicle.name}{" "}
                         <span class="text-xs text-base-content/60">
-                          ({vehicle.nation} · Seats: {vehicle.seats}{" "}
-                          · Armor:{armorLabel(vehicle.id)})
+                          ({vehicle.nation} · Crew: {vehicle.crew} · Seats:
+                          {vehicle.seats} · Doors: {vehicle.doors} · Armor:
+                          {armorLabel(vehicle.id)})
                         </span>
                       </span>
                       <button

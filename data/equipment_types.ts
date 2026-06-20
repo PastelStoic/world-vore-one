@@ -204,6 +204,8 @@ export interface VehicleDefinition {
     rear: VehicleArmorRating;
   };
   seats: number;
+  doors: number;
+  crew: number;
   modules: VehicleModuleDefinition[];
   description?: string;
 }

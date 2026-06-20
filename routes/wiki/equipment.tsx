@@ -87,7 +87,9 @@ export default define.page(function WikiEquipment() {
                     {vehicle.nation}
                   </span>
                   <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
+                    <span>Crew: {vehicle.crew}</span>
                     <span>Seats: {vehicle.seats}</span>
+                    <span>Doors: {vehicle.doors}</span>
                     <span class="text-base-content/50">▶ details</span>
                   </span>
                 </summary>
@@ -109,7 +111,13 @@ export default define.page(function WikiEquipment() {
                       {vehicle.armor.rear}
                     </span>
                     <span>
+                      <span class="font-medium">Crew:</span> {vehicle.crew}
+                    </span>
+                    <span>
                       <span class="font-medium">Seats:</span> {vehicle.seats}
+                    </span>
+                    <span>
+                      <span class="font-medium">Doors:</span> {vehicle.doors}
                     </span>
                   </div>
                   {vehicle.modules.length > 0 && (

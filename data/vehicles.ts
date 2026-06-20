@@ -15,6 +15,8 @@ export const VEHICLES: VehicleDefinition[] = [
       rear: "light",
     },
     seats: 9,
+    doors: 2,
+    crew: 3,
     modules: [
       {
         name: "Light cannon",

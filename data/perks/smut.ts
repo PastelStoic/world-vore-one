@@ -13,7 +13,8 @@ export const SMUT_PERKS: PerkDefinition[] = [
 *Pick whether you are always overproducing milk, or overproducing cum. 
 *You may pick both if you're a futa, but that will not increase your charges.
 *Milk/cum works as 'charges'. You have 1 + [CONSTITUTION] charges. Each person can drink one charge of milk or more. 
-*By drinking a charge, a person is fed for a full day, and after 4 hours, heals 3 HP!
+*By drinking a charge, a person is fed for a full day, and after 4 hours of digestion, heals 3 HP!
+*3 charges of milky are equivalent to 1 person's nutrients and weight, until it is digested.
 *Healing effect does not apply to baseliners.
 *Your milk only recharges at the scene's end or after 24 hours, whichever is faster. 
 *If you've just finished churning prey, you regenerate all of your milk immediately.

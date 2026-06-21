@@ -229,7 +229,7 @@ If you have prey inside you, dead or alive:
     name: "Stuffer",
     category: "vore",
     description:
-      `You actively want to shove yourself into the tummies of your predators and keep yourself in!
+      `You actively want to shove yourself or others into the tummies of your predators, or to just stuff them 'till they can't eat anything else!
 
 *You gain +3d6 to force-feed yourself or others to someone, and to keep your target from regurgitiating them. You must be grappling a target first in order to force-feed them to someone else.
 *You now count successes on a 4 and above, rather than 5 and above, to do that.

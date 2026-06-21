@@ -16,7 +16,7 @@ export const SMUT_PERKS: PerkDefinition[] = [
 *By drinking a charge, a person is fed for a full day, and after 4 hours of digestion, heals 3 HP!
 *3 charges of milky are equivalent to 1 person's nutrients and weight, until it is digested.
 *Healing effect does not apply to baseliners.
-*Your milk only recharges at the scene's end or after 24 hours, whichever is faster. 
+*Your milk only recharges at the scene's end or after 24 hours, whichever is faster. Drinking your own milk does not affect this.
 *If you've just finished churning prey, you regenerate all of your milk immediately.
 *You can drink your own milk to keep yourself fed and healed.`,
   },

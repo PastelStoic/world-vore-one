@@ -26,6 +26,9 @@ export function formatVehicleModuleDetails(
 
   lines.push(`HP: ${module.hp}`);
   lines.push(
+    `Difficulty: ${module.difficulty.front} / ${module.difficulty.side} / ${module.difficulty.rear}`,
+  );
+  lines.push(
     `Position: ${module.position === "internal" ? "Internal" : "External"}`,
   );
   lines.push(`On destruction: ${module.destructionEffect}`);

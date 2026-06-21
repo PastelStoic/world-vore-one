@@ -11,6 +11,7 @@ export type {
   VehicleArmorRating,
   VehicleDefinition,
   VehicleModuleDefinition,
+  VehicleModuleDifficulty,
   VehicleModulePosition,
   WeaponDefinition,
   WeaponKind,

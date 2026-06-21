@@ -17,6 +17,7 @@ export const VEHICLES: VehicleDefinition[] = [
     seats: 9,
     doors: 2,
     crew: 3,
+    size: 100,
     modules: [
       {
         name: "Light cannon",
@@ -24,6 +25,7 @@ export const VEHICLES: VehicleDefinition[] = [
           "Rapid-firing cannon suited to light armor, emplacements, and exposed infantry.",
         hp: 8,
         position: "external",
+        difficulty: { front: "10", side: "7", rear: "6" },
         destructionEffect: "This cannon cannot be fired.",
         count: 1,
         damage: "5",
@@ -37,6 +39,7 @@ export const VEHICLES: VehicleDefinition[] = [
           "Vehicle-mounted automatic weapon for suppressing infantry and light targets.",
         hp: 4,
         position: "external",
+        difficulty: { front: "9", side: "7", rear: "6" },
         destructionEffect: "This machine gun cannot be fired.",
         count: 1,
         damage: "3",
@@ -50,6 +53,7 @@ export const VEHICLES: VehicleDefinition[] = [
           "Guided missile launcher meant for threatening armored vehicles at range.",
         hp: 5,
         position: "external",
+        difficulty: { front: "12", side: "6", rear: "7" },
         destructionEffect: "This launcher cannot be fired.",
         count: 2,
         damage: "12",
@@ -63,6 +67,7 @@ export const VEHICLES: VehicleDefinition[] = [
           "Powers the vehicle's movement. Internal and well protected, but disabling it cripples mobility.",
         hp: 10,
         position: "internal",
+        difficulty: { front: "14", side: "11", rear: "9" },
         destructionEffect:
           "Vehicle speed is halved and it cannot accelerate for the rest of the scene.",
         count: 1,
@@ -73,6 +78,7 @@ export const VEHICLES: VehicleDefinition[] = [
           "Transfers engine power to the tracks or wheels. Critical for keeping the vehicle mobile.",
         hp: 6,
         position: "internal",
+        difficulty: { front: "13", side: "10", rear: "8" },
         destructionEffect: "Vehicle is immobilized for the rest of the scene.",
         count: 1,
       },

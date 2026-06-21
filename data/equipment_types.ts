@@ -178,11 +178,19 @@ export type VehicleArmorRating = "light" | "medium" | "heavy";
 
 export type VehicleModulePosition = "internal" | "external";
 
+export interface VehicleModuleDifficulty {
+  front: string;
+  side: string;
+  rear: string;
+}
+
 export interface VehicleModuleDefinition {
   name: string;
   description: string;
   hp: number;
   position: VehicleModulePosition;
+  /** How hard this module is to hit from each facing */
+  difficulty: VehicleModuleDifficulty;
   /** Effect on the vehicle when this module is destroyed */
   destructionEffect: string;
   count: number;
@@ -206,6 +214,7 @@ export interface VehicleDefinition {
   seats: number;
   doors: number;
   crew: number;
+  size: number;
   modules: VehicleModuleDefinition[];
   description?: string;
 }

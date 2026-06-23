@@ -240,7 +240,8 @@ If you have prey inside you, dead or alive:
 
 ->Alternatively, stuff a target with food instead:
 *You may carry foodstuffs on your person and force-feed others with food, rather than people. You do not need to be grappling them for this.
-*Each foodstuffs has 1 weight. You can stuff 3 foodstuffs to a target per turn. 3 units of food are equivalent to eating a person for organ capacity calculations.`,
+*Each foodstuffs has 1 weight. You can stuff 3 foodstuffs to a target per turn. 3 units of food are equivalent to eating a person for organ capacity calculations.
+*If you have the 'milky' perk, you can force-feed your target with your milk/cum/whatever you produce as well!`,
   },
   {
     id: "last-ditch-escapee",

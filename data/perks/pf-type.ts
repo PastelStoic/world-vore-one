@@ -139,7 +139,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["runner"],
+    includesPerks: ["runner","j-eger"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -148,9 +148,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 dexterity, +1 intelligence, -3 stat points.
-*Have the 'runner' perk from Combat perks.
-*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.
-*Enemies always fall prey to your ambushes, and you always succeed in stealth, unless a perk would prevent this.`,
+*Have the 'runner' and 'jäeger' perks from Combat perks.
+*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, intelligence: 1 },
     },

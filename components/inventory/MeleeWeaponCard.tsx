@@ -47,6 +47,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
 
   const def = MELEE_WEAPONS_BY_ID.get(mw.meleeWeaponId);
   const isPerkGranted = !!mw.perkGranted;
+  const isConcealable = def ? def.traitIds.includes("concealable") : false;
 
   // early return if weapon not found
   if (!def) {
@@ -113,6 +114,14 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
           {isPerkGranted && (
             <span class="ml-1 text-xs font-semibold text-primary">
               [{grantingPerkName}]
+            </span>
+          )}
+          {isConcealable && (
+            <span
+              class="ml-1 text-xs font-semibold text-info"
+              title="Only visible to the character owner and admins"
+            >
+              [Concealed]
             </span>
           )}
         </div>

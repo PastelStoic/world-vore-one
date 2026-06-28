@@ -20,6 +20,8 @@ import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
+import type { CharacterInventory, InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
+import { MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetViewerProps {
@@ -34,6 +36,8 @@ interface CharacterSheetViewerProps {
   displayOnlyPerkIds?: string[];
   /** Whether the current user can edit ammo/charges (owner or admin). */
   canEditCombatState?: boolean;
+  /** Whether the current user can see concealed melee weapons (owner or admin). */
+  canSeeConcealedMelee?: boolean;
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
@@ -44,6 +48,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     canSeeDisguisedPerks = false,
     displayOnlyPerkIds = [],
     canEditCombatState = false,
+    canSeeConcealedMelee = false,
   } = props;
   const desc = character.description;
 
@@ -98,6 +103,28 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     ...character,
     inventory,
   };
+
+  // Filter concealed melee for display only; calculations (weight, points, etc.)
+  // always use the full inventory so numbers don't leak info about hidden items.
+  const displayInventory: CharacterInventory = (() => {
+    if (canSeeConcealedMelee || !inventory) return inventory;
+    const filterConcealed = (mws: InventoryMeleeWeapon[] = []) =>
+      mws.filter((mw) => {
+        const def = MELEE_WEAPONS_BY_ID.get(mw.meleeWeaponId);
+        return !def?.traitIds.includes("concealable");
+      });
+    return {
+      ...inventory,
+      carried: {
+        ...inventory.carried,
+        meleeWeapons: filterConcealed(inventory.carried.meleeWeapons),
+      },
+      stowed: {
+        ...inventory.stowed,
+        meleeWeapons: filterConcealed(inventory.stowed.meleeWeapons),
+      },
+    };
+  })();
 
   const {
     carriedWeight,
@@ -315,7 +342,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
       />
 
       <InventorySection
-        inventory={inventory}
+        inventory={displayInventory}
         onChange={setInventory}
         readOnly
         characterId={characterId}

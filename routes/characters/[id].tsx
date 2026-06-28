@@ -70,6 +70,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
   const isOwner = user !== null && character.userId === user.id;
   const canEdit = isOwner || ctx.state.isAdmin;
   const canSeeDisguisedPerks = isOwner || !!ctx.state.isAdmin;
+  const canSeeConcealedMelee = isOwner || !!ctx.state.isAdmin;
 
   // For non-owners/non-admins, swap disguised perks with their fake versions.
   // The fake perk IDs go into displayOnlyPerkIds (shown but not used for stats).
@@ -235,6 +236,7 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         canSeeDisguisedPerks={canSeeDisguisedPerks}
         displayOnlyPerkIds={displayOnlyPerkIds}
         canEditCombatState={canEdit}
+        canSeeConcealedMelee={canSeeConcealedMelee}
       />
     </CharacterPageLayout>
   );

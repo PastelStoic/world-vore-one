@@ -186,7 +186,7 @@ export interface VehicleModuleDifficulty {
 
 export interface VehicleModuleDefinition {
   name: string;
-  description: string;
+  description?: string;
   hp: number;
   position: VehicleModulePosition;
   /** How hard this module is to hit from each facing */
@@ -200,6 +200,18 @@ export interface VehicleModuleDefinition {
   ammoCapacity?: number;
   /** Turns to reload to full capacity */
   reloadSpeed?: number;
+  /** Reference to a generic/reusable vehicle weapon definition */
+  vehicleWeaponId?: string;
+}
+
+export interface VehicleWeaponDefinition {
+  id: string;
+  name: string;
+  description: string;
+  damage: string;
+  rateOfFire: number;
+  ammoCapacity: number;
+  reloadSpeed: number;
 }
 
 export interface VehicleDefinition {

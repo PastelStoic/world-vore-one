@@ -13,6 +13,7 @@ export type {
   VehicleModuleDefinition,
   VehicleModuleDifficulty,
   VehicleModulePosition,
+  VehicleWeaponDefinition,
   WeaponDefinition,
   WeaponKind,
   WeaponTraitDefinition,
@@ -30,3 +31,4 @@ export {
   FREE_ACCESSORIES_BY_ID,
 } from "./free_accessories.ts";
 export { VEHICLES, VEHICLES_BY_ID } from "./vehicles.ts";
+export { VEHICLE_WEAPONS, VEHICLE_WEAPONS_BY_ID } from "./vehicle_weapons.ts";

@@ -1,5 +1,8 @@
 import type { VehicleDefinition } from "./equipment_types.ts";
 
+// Note: Vehicle weapon stats now come from reusable VEHICLE_WEAPONS via vehicleWeaponId.
+// Mounting-specific data (hp, difficulty, position, destructionEffect, count) stay per-vehicle.
+
 // ---------------------------------------------------------------------------
 // DATA - Vehicles
 // ---------------------------------------------------------------------------
@@ -21,45 +24,30 @@ export const VEHICLES: VehicleDefinition[] = [
     modules: [
       {
         name: "Light cannon",
-        description:
-          "Rapid-firing cannon suited to light armor, emplacements, and exposed infantry.",
+        vehicleWeaponId: "light-cannon",
         hp: 8,
         position: "external",
         difficulty: { front: "10", side: "7", rear: "6" },
         destructionEffect: "This cannon cannot be fired.",
         count: 1,
-        damage: "5",
-        rateOfFire: 3,
-        ammoCapacity: 150,
-        reloadSpeed: 3,
       },
       {
         name: "Machine gun",
-        description:
-          "Vehicle-mounted automatic weapon for suppressing infantry and light targets.",
+        vehicleWeaponId: "vehicle-machine-gun",
         hp: 4,
         position: "external",
         difficulty: { front: "9", side: "7", rear: "6" },
         destructionEffect: "This machine gun cannot be fired.",
         count: 1,
-        damage: "3",
-        rateOfFire: 4,
-        ammoCapacity: 200,
-        reloadSpeed: 2,
       },
       {
         name: "Anti-armor missile launcher",
-        description:
-          "Guided missile launcher meant for threatening armored vehicles at range.",
+        vehicleWeaponId: "anti-armor-missile-launcher",
         hp: 5,
         position: "external",
         difficulty: { front: "12", side: "6", rear: "7" },
         destructionEffect: "This launcher cannot be fired.",
         count: 2,
-        damage: "12",
-        rateOfFire: 1,
-        ammoCapacity: 2,
-        reloadSpeed: 4,
       },
       {
         name: "Engine",

@@ -132,7 +132,7 @@ export default define.page(function WikiEquipment() {
                       <div class="space-y-2">
                         {vehicle.modules.map((module, i) => (
                           <details
-                            key={`${module.name}-${i}`}
+                            key={`module-${i}`}
                             class="border rounded-lg bg-base-100/80 px-4 py-2"
                           >
                             <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between">

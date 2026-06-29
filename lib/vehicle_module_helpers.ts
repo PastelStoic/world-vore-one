@@ -1,32 +1,46 @@
 import type { VehicleModuleDefinition } from "@/data/equipment_types.ts";
 import { VEHICLE_WEAPONS_BY_ID } from "@/data/equipment.ts";
 
-function resolveVehicleModule(module: VehicleModuleDefinition) {
-  if (!module.vehicleWeaponId) return module;
+function resolveVehicleModule(
+  module: string | VehicleModuleDefinition,
+): VehicleModuleDefinition {
+  if (typeof module === "string") {
+    const weapon = VEHICLE_WEAPONS_BY_ID.get(module);
+    if (weapon) {
+      return weapon;
+    }
+    return { name: module } as VehicleModuleDefinition;
+  }
 
-  const weapon = VEHICLE_WEAPONS_BY_ID.get(module.vehicleWeaponId);
-  if (!weapon) return module;
+  const m = module;
+  if (!m.vehicleWeaponId) return m;
+
+  const weapon = VEHICLE_WEAPONS_BY_ID.get(m.vehicleWeaponId);
+  if (!weapon) return m;
 
   return {
-    ...module,
-    damage: module.damage ?? weapon.damage,
-    rateOfFire: module.rateOfFire ?? weapon.rateOfFire,
-    ammoCapacity: module.ammoCapacity ?? weapon.ammoCapacity,
-    reloadSpeed: module.reloadSpeed ?? weapon.reloadSpeed,
-    description: module.description ?? weapon.description,
+    ...m,
+    name: m.name ?? weapon.name,
+    damage: m.damage ?? weapon.damage,
+    rateOfFire: m.rateOfFire ?? weapon.rateOfFire,
+    ammoCapacity: m.ammoCapacity ?? weapon.ammoCapacity,
+    reloadSpeed: m.reloadSpeed ?? weapon.reloadSpeed,
+    description: m.description ?? weapon.description,
   };
 }
 
 export function formatVehicleModuleLabel(
-  module: VehicleModuleDefinition,
+  module: string | VehicleModuleDefinition,
 ): string {
-  const suffix = module.count === 1 ? "" : "s";
-  const quantity = module.count === 1 ? "" : `${module.count}× `;
-  return `${quantity}${module.name}${suffix}`;
+  const resolved = resolveVehicleModule(module);
+  const count = resolved.count ?? 1;
+  const suffix = count === 1 ? "" : "s";
+  const quantity = count === 1 ? "" : `${count}× `;
+  return `${quantity}${resolved.name ?? "Module"}${suffix}`;
 }
 
 export function formatVehicleModuleDetails(
-  module: VehicleModuleDefinition,
+  module: string | VehicleModuleDefinition,
 ): string {
   const resolved = resolveVehicleModule(module);
   const lines: string[] = [];
@@ -35,21 +49,28 @@ export function formatVehicleModuleDetails(
     lines.push(`Damage: ${resolved.damage}`);
     lines.push(`Rate of fire: ${resolved.rateOfFire}`);
     lines.push(`Ammo capacity: ${resolved.ammoCapacity}`);
+    const rs = resolved.reloadSpeed ?? 1;
     lines.push(
-      `Reload speed: ${resolved.reloadSpeed} turn${
-        resolved.reloadSpeed === 1 ? "" : "s"
-      }`,
+      `Reload speed: ${resolved.reloadSpeed ?? "?"} turn${rs === 1 ? "" : "s"}`,
     );
   }
 
-  lines.push(`HP: ${resolved.hp}`);
-  lines.push(
-    `Difficulty: ${resolved.difficulty.front} / ${resolved.difficulty.side} / ${resolved.difficulty.rear}`,
-  );
-  lines.push(
-    `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
-  );
-  lines.push(`On destruction: ${resolved.destructionEffect}`);
+  if (resolved.hp !== undefined) {
+    lines.push(`HP: ${resolved.hp}`);
+  }
+  if (resolved.difficulty) {
+    lines.push(
+      `Difficulty: ${resolved.difficulty.front} / ${resolved.difficulty.side} / ${resolved.difficulty.rear}`,
+    );
+  }
+  if (resolved.position) {
+    lines.push(
+      `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
+    );
+  }
+  if (resolved.destructionEffect) {
+    lines.push(`On destruction: ${resolved.destructionEffect}`);
+  }
 
   if (resolved.description) {
     lines.push("");

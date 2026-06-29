@@ -185,15 +185,15 @@ export interface VehicleModuleDifficulty {
 }
 
 export interface VehicleModuleDefinition {
-  name: string;
+  name?: string;
   description?: string;
-  hp: number;
-  position: VehicleModulePosition;
+  hp?: number;
+  position?: VehicleModulePosition;
   /** How hard this module is to hit from each facing */
-  difficulty: VehicleModuleDifficulty;
+  difficulty?: VehicleModuleDifficulty;
   /** Effect on the vehicle when this module is destroyed */
-  destructionEffect: string;
-  count: number;
+  destructionEffect?: string;
+  count?: number;
   /** Weapon modules include combat stats */
   damage?: string;
   rateOfFire?: number;
@@ -204,7 +204,7 @@ export interface VehicleModuleDefinition {
   vehicleWeaponId?: string;
 }
 
-export interface VehicleWeaponDefinition {
+export interface VehicleWeaponDefinition extends VehicleModuleDefinition {
   id: string;
   name: string;
   description: string;
@@ -227,6 +227,6 @@ export interface VehicleDefinition {
   doors: number;
   crew: number;
   size: number;
-  modules: VehicleModuleDefinition[];
+  modules: (string | VehicleModuleDefinition)[];
   description?: string;
 }

@@ -74,7 +74,7 @@ export default function VehicleCard(props: VehicleCardProps) {
           <div class="flex flex-wrap gap-1">
             {def.modules.map((module, i) => (
               <TraitBadge
-                key={`${module.name}-${i}`}
+                key={`module-${i}`}
                 name={formatVehicleModuleLabel(module)}
                 description={formatVehicleModuleDetails(module)}
               />

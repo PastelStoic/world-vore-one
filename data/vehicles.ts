@@ -1,7 +1,7 @@
 import type { VehicleDefinition } from "./equipment_types.ts";
 
-// Note: Vehicle weapon stats now come from reusable VEHICLE_WEAPONS via vehicleWeaponId.
-// Mounting-specific data (hp, difficulty, position, destructionEffect, count) stay per-vehicle.
+// Vehicle weapons are modules. Reusable weapon/module definitions (including hp and mounting stats)
+// are referenced directly by ID string from VehicleDefinition.modules.
 
 // ---------------------------------------------------------------------------
 // DATA - Vehicles

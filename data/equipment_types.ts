@@ -185,29 +185,25 @@ export interface VehicleModuleDifficulty {
 }
 
 export interface VehicleModuleDefinition {
-  name?: string;
-  description?: string;
-  hp?: number;
-  position?: VehicleModulePosition;
+  name: string;
+  description: string;
+  hp: number;
+  position: VehicleModulePosition;
   /** How hard this module is to hit from each facing */
-  difficulty?: VehicleModuleDifficulty;
+  difficulty: VehicleModuleDifficulty;
   /** Effect on the vehicle when this module is destroyed */
-  destructionEffect?: string;
-  count?: number;
+  destructionEffect: string;
+  count: number;
   /** Weapon modules include combat stats */
   damage?: string;
   rateOfFire?: number;
   ammoCapacity?: number;
   /** Turns to reload to full capacity */
   reloadSpeed?: number;
-  /** Reference to a generic/reusable vehicle weapon definition */
-  vehicleWeaponId?: string;
 }
 
 export interface VehicleWeaponDefinition extends VehicleModuleDefinition {
   id: string;
-  name: string;
-  description: string;
   damage: string;
   rateOfFire: number;
   ammoCapacity: number;

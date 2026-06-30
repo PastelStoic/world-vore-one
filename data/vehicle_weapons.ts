@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
-// DATA – Reusable Vehicle-Mounted Weapons
-// These can be referenced by id from VehicleDefinition.modules via vehicleWeaponId
-// so the same weapon can be mounted on multiple vehicles without duplicating stats.
+// DATA – Reusable Vehicle-Mounted Weapons (which are modules)
+// Vehicle weapons are a type of vehicle module. These reusable definitions
+// include both weapon combat stats and module durability/mounting stats.
+// Vehicles reference them by ID string in their modules list.
 // ---------------------------------------------------------------------------
 
 import type { VehicleWeaponDefinition } from "./equipment_types.ts";
@@ -12,6 +13,11 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     name: "Light cannon",
     description:
       "Rapid-firing cannon suited to light armor, emplacements, and exposed infantry.",
+    hp: 20,
+    position: "external",
+    difficulty: { front: "medium", side: "medium", rear: "light" },
+    destructionEffect: "Main armament destroyed.",
+    count: 1,
     damage: "5",
     rateOfFire: 3,
     ammoCapacity: 150,
@@ -22,6 +28,11 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     name: "Machine gun",
     description:
       "Vehicle-mounted automatic weapon for suppressing infantry and light targets.",
+    hp: 10,
+    position: "external",
+    difficulty: { front: "easy", side: "easy", rear: "easy" },
+    destructionEffect: "Machine gun destroyed.",
+    count: 1,
     damage: "3",
     rateOfFire: 4,
     ammoCapacity: 200,
@@ -32,6 +43,11 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     name: "Anti-armor missile launcher",
     description:
       "Guided missile launcher meant for threatening armored vehicles at range.",
+    hp: 12,
+    position: "external",
+    difficulty: { front: "medium", side: "light", rear: "light" },
+    destructionEffect: "Missile launcher destroyed.",
+    count: 1,
     damage: "12",
     rateOfFire: 1,
     ammoCapacity: 2,

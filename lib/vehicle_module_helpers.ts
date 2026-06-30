@@ -9,34 +9,27 @@ function resolveVehicleModule(
     if (weapon) {
       return weapon;
     }
-    return { name: module } as VehicleModuleDefinition;
+    return {
+      name: module,
+      description: "Unknown module",
+      hp: 1,
+      position: "external",
+      difficulty: { front: "easy", side: "easy", rear: "easy" },
+      destructionEffect: "Module destroyed.",
+      count: 1,
+    };
   }
 
-  const m = module;
-  if (!m.vehicleWeaponId) return m;
-
-  const weapon = VEHICLE_WEAPONS_BY_ID.get(m.vehicleWeaponId);
-  if (!weapon) return m;
-
-  return {
-    ...m,
-    name: m.name ?? weapon.name,
-    damage: m.damage ?? weapon.damage,
-    rateOfFire: m.rateOfFire ?? weapon.rateOfFire,
-    ammoCapacity: m.ammoCapacity ?? weapon.ammoCapacity,
-    reloadSpeed: m.reloadSpeed ?? weapon.reloadSpeed,
-    description: m.description ?? weapon.description,
-  };
+  return module;
 }
 
 export function formatVehicleModuleLabel(
   module: string | VehicleModuleDefinition,
 ): string {
   const resolved = resolveVehicleModule(module);
-  const count = resolved.count ?? 1;
-  const suffix = count === 1 ? "" : "s";
-  const quantity = count === 1 ? "" : `${count}× `;
-  return `${quantity}${resolved.name ?? "Module"}${suffix}`;
+  const suffix = resolved.count === 1 ? "" : "s";
+  const quantity = resolved.count === 1 ? "" : `${resolved.count}× `;
+  return `${quantity}${resolved.name}${suffix}`;
 }
 
 export function formatVehicleModuleDetails(
@@ -55,22 +48,14 @@ export function formatVehicleModuleDetails(
     );
   }
 
-  if (resolved.hp !== undefined) {
-    lines.push(`HP: ${resolved.hp}`);
-  }
-  if (resolved.difficulty) {
-    lines.push(
-      `Difficulty: ${resolved.difficulty.front} / ${resolved.difficulty.side} / ${resolved.difficulty.rear}`,
-    );
-  }
-  if (resolved.position) {
-    lines.push(
-      `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
-    );
-  }
-  if (resolved.destructionEffect) {
-    lines.push(`On destruction: ${resolved.destructionEffect}`);
-  }
+  lines.push(`HP: ${resolved.hp}`);
+  lines.push(
+    `Difficulty: ${resolved.difficulty.front} / ${resolved.difficulty.side} / ${resolved.difficulty.rear}`,
+  );
+  lines.push(
+    `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
+  );
+  lines.push(`On destruction: ${resolved.destructionEffect}`);
 
   if (resolved.description) {
     lines.push("");

@@ -38,8 +38,8 @@ export default function VehicleCard(props: VehicleCardProps) {
         <div>
           <strong>{def.name}</strong>{" "}
           <span class="text-xs text-base-content/60">
-            ({def.nation} · Size:{def.size} · Crew:{def.crew} · Seats:
-            {def.seats} · Doors:{def.doors})
+            ({def.nation} · Size:{def.size} · Agility:{def.agility} · Crew:
+            {def.crew} · Seats:{def.seats} · Doors:{def.doors})
           </span>
         </div>
         {!readOnly && (

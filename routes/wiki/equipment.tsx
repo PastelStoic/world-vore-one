@@ -88,6 +88,7 @@ export default define.page(function WikiEquipment() {
                   </span>
                   <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
                     <span>Size: {vehicle.size}</span>
+                    <span>Agility: {vehicle.agility}</span>
                     <span>Crew: {vehicle.crew}</span>
                     <span>Seats: {vehicle.seats}</span>
                     <span>Doors: {vehicle.doors}</span>
@@ -113,6 +114,9 @@ export default define.page(function WikiEquipment() {
                     </span>
                     <span>
                       <span class="font-medium">Size:</span> {vehicle.size}
+                    </span>
+                    <span>
+                      <span class="font-medium">Agility:</span> {vehicle.agility}
                     </span>
                     <span>
                       <span class="font-medium">Crew:</span> {vehicle.crew}

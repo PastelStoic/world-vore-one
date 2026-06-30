@@ -227,6 +227,7 @@ export interface VehicleDefinition {
   doors: number;
   crew: number;
   size: number;
+  agility: number;
   modules: (string | VehicleModuleDefinition)[];
   description?: string;
 }

@@ -11,12 +11,13 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 1,
     isCharge: true,
     description: `Throwable explosive.
+*Has Light armor piercing.
 *You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
-*Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed. Has Light armor piercing.
+*Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed.
 *May be pushed inside of vehicles at distance 0 with a dex check, dealing damage to all of its components and crew, ignoring the condition below. Failure drops the grenade by your feet, exploding on the next turn.
-*Only up to 5 targets may be damaged by a grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
+*Only up to 5 targets may be damaged by this grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
   },
   {
@@ -31,6 +32,38 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Anyone shooting into or past the smoke is firing entirely blind; their accuracy is a fixed 1d6, with successes only on 6's. You cannot see past it.
 *May be pushed inside of vehicles at distance 0 with a dex check, blinding every target inside the vehicle.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an extra smoke grenade. Each charge has 1 weight.`,
+  },
+  {
+    id: "at-grenades",
+    name: "Anti-tank grenades",
+    weight: 3,
+    isCharge: true,
+    description: `Throwable explosive meant to take out tanks & other armored vehicles!
+*Has medium armor piercing.
+*You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
+*Throw up to 2 + STR distances away, explodes on impact.
+*Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
+*If you are not targetting a vehicle, you need 2 additional successess in order to make it land in its intended target. You may target a module/crew with this.
+*Deals 9 damage, decreasing by 5 for every next distance until it reaches 0. Ignores cover entirely, medium cover is destroyed.
+*May be pushed inside of vehicles at distance 0 with a dex check, dealing damage to all of its components and crew, ignoring the condition below. Failure drops the grenade by your feet, exploding on the next turn.
+*Only up to 10 targets may be damaged by this grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
+*When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
+  },
+  {
+    id: "sticky-at-grenades",
+    name: "Sticky anti-tank grenades",
+    weight: 1,
+    isCharge: true,
+    description: `Throwable explosive. Sticks to vehicles before exploding!
+*Has medium armor piercing.
+*You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
+*Throw up to 5 + STR distances away, exploding on the start of your next turn.
+*Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
+*If you are not targetting a vehicle, you need 2 additional successess in order to make it land in its intended target. You may target a module/crew with this.
+*Deals 5 damage, decreasing by 3 for every next distance until it reaches 0. Ignores cover entirely, weak cover is destroyed.
+*May be pushed inside of vehicles at distance 0 with a dex check, dealing damage to all of its components and crew, ignoring the condition below. Failure drops the grenade by your feet, exploding on the next turn.
+*Only up to 5 targets may be damaged by this grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
+*When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
   },
   {
     id: "entrenching-gear",

@@ -179,9 +179,9 @@ export type VehicleArmorRating = "light" | "medium" | "heavy";
 export type VehicleModulePosition = "internal" | "external";
 
 export interface VehicleModuleDifficulty {
-  front: string;
-  side: string;
-  rear: string;
+  front: number;
+  side: number;
+  rear: number;
 }
 
 export interface VehicleModuleDefinition {
@@ -224,6 +224,7 @@ export interface VehicleDefinition {
   crew: number;
   size: number;
   agility: number;
+  speed: number;
   modules: (string | VehicleModuleDefinition)[];
   description?: string;
 }

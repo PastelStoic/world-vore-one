@@ -22,6 +22,7 @@ export const VEHICLES: VehicleDefinition[] = [
     crew: 3,
     size: 100,
     agility: 10,
+    speed: 10,
     modules: ["light-cannon","vehicle-machine-gun"],
     description:
       "Infantry fighting vehicle with a crew and carried infantry squad. Heavier frontal armor with lighter flank and rear protection.",

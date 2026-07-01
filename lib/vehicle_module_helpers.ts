@@ -14,7 +14,7 @@ function resolveVehicleModule(
       description: "Unknown module",
       hp: 1,
       position: "external",
-      difficulty: { front: "easy", side: "easy", rear: "easy" },
+      difficulty: { front: 1, side: 1, rear: 1 },
       destructionEffect: "Module destroyed.",
       count: 1,
     };

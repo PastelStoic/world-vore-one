@@ -1364,7 +1364,8 @@ export default function InventorySection(props: InventorySectionProps) {
                         {vehicle.name}{" "}
                         <span class="text-xs text-base-content/60">
                           ({vehicle.nation} · Size: {vehicle.size} · Agility:
-                          {vehicle.agility} · Crew: {vehicle.crew} · Seats:
+                          {vehicle.agility} · Speed: {vehicle.speed} · Crew:
+                          {vehicle.crew} · Seats:
                           {vehicle.seats} · Doors: {vehicle.doors} · Armor:
                           {armorLabel(vehicle.id)})
                         </span>

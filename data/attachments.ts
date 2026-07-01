@@ -70,8 +70,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     addsTraitIds: ["alt-ammotype"],
     description:
       `*Armor piercing ammo, meant to handle the cowards hiding behind steel.
+  *Has light armor piercing, allowing you to pierce lightly armored vehicles. Deals the weapon's full damage to it.
   *Shooting at a target without a damage reduction effect causes overpenetration, decreasing damage by 1.
-  *Ignores damage reduction effects, such as a lizardgirl's scales or bodily armor.
+  *Ignores damage reduction effects, such as a lizardgirl's scales or personal armor.
   *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.
   *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.
   *Only the main target can roll their cover, the transferee is hit if the target fails.`,
@@ -88,7 +89,9 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
   *Deals 2 damage to targets between 1-3 distances away.
   *Deals 1 damage to targets between 4-9 distances away.
   *Deals no damage to targets at distance 10 or beyond.
-  *Flying targets, when shot at and hit, immediately fall to the ground. They are stunned for their next turn in such a case.
+  *There is no damage reduction due to distancing against flying targets, they always take 6 damage.
+  *Flying targets, when shot at and hit, start falling. Must stabilize themselves as a dex check mid-air to stop falling.
+  *None of that applies to flying vehicles. Your winky dinky birdshot is not doing shit against that - this only applies to harpies or actual birds, etc.
   *If the target has a cuirass, shield, lizardgirl's scales - or *any* kind of damage reduction effect - birdshot deals no damage at all.`,
   },
   {
@@ -99,10 +102,13 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 0,
     addsTraitIds: ["alt-ammotype"],
     description: `Alternative ammo type for Shotguns.
+  *Has light armor piercing.
   *Deals 4 damage to targets at distance 8 or beyond.
   *Deals 2 damage to targets at distance 7 or closer.
-  *Ignores damage penalties, such as a lizardgirl's scales.
-  *Damage transference effects ( prey-as-armour, veteran, etc ) have you deal full damage to both the original target and the transferee.
+  *Ignores damage reduction effects, such as a lizardgirl's scales or personal armor.
+  *Ignores damage transference effects, such as veteran or prey-as-armour, by dealing damage to the original target and the transferee.
+  *You may only damage the original target and one single transferee. If there'd be multiple transferees, the one with the highest initiative is hit.
+  *Only the main target can roll their cover, the transferee is hit if the target fails.
   *Weak cover (2d6) is destroyed upon being hit.`,
   },
   {

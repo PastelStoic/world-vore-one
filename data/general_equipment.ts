@@ -55,7 +55,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 1,
     isCharge: true,
     description: `Throwable explosive. Sticks to vehicles before exploding!
-*Has medium armor piercing.
+*Has medium armor piercing. Sticks to whatever it was thrown at, accompanying it until it explodes!
 *You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.

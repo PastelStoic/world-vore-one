@@ -14,7 +14,8 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 5 + STR distances away, exploding on the start of your next turn.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
-*Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed.
+*Anyone on the distance it landed on takes 3 damage. Anyone on an adjacent distance takes 1 damage. Ignores cover entirely, weak cover is destroyed. Has Light armor piercing.
+*May be pushed inside of vehicles at distance 0 with a dex check, dealing damage to all of its components and crew, ignoring the condition below. Failure drops the grenade by your feet, exploding on the next turn.
 *Only up to 5 targets may be damaged by a grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
   },
@@ -28,6 +29,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Throw up to 5 + STR distances away, exploding on the start of your next turn. The smoke lasts for 10 turns.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.
 *Anyone shooting into or past the smoke is firing entirely blind; their accuracy is a fixed 1d6, with successes only on 6's. You cannot see past it.
+*May be pushed inside of vehicles at distance 0 with a dex check, blinding every target inside the vehicle.
 *When buying this piece of gear, you're paying for charges of it. Each charge is an extra smoke grenade. Each charge has 1 weight.`,
   },
   {
@@ -82,7 +84,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 3,
     description:
       `Body armour, mostly cerimonial, but some still used it during WW1 – mostly the French.
-*Melee attacks deal halved damage to you, rounded down. Unarmed attacks and makeshift melee weapons deal no damage.
+*Personal armor, melee attacks deal halved damage to you, rounded down. Unarmed attacks and makeshift melee weapons deal no damage.
 *You may only bring one full reload of ammo and reloading a weapon takes +1 turn.
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },
@@ -92,7 +94,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 6,
     description:
       `An entirely outdated suit of armoured plates, ultimate protection against melee.
-*Melee attacks deal 1 damage to you. Unarmed attacks and makeshift melee weapons deal no damage.
+*Personal armor, melee attacks deal 1 damage to you. Unarmed attacks and makeshift melee weapons deal no damage.
 *Beware of the 'Crushing' trait!
 *You cannot bring any additional ammo, you have no pockets whatsoever!
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
@@ -103,7 +105,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 6,
     description:
       `A thick set of metal plates meant to deflect bullets! Especially tailored to you.
-  *Every 10 distances, gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
+  *Personal armor, every 10 distances, gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
   *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.
   *It takes 3 turns to put on/remove the armor. Allies can help with it.
   *If you are pinned by an enemy, they and their allies can deal damage to you by exploiting gaps in your armor. They must be at distance 0 to do this.
@@ -226,7 +228,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 6,
     isGhost: true,
     description: `The Dreadnaught's Armor! Especially tailored to you.
-  *You are immune to small arms fire and melee weapons, unless they have a trait to circunvent it. Explosions, anti-tank weapons and similar threats still present a very real danger.
+  *This suit is considered to be Light armor, as if you were a vehicle yourself!
   *It takes 3 turns to put on/remove the armor. Allies can help with it.
   *If you are pinned by an enemy, they and their allies can deal damage to you by exploiting gaps in your armor. They must be at distance 0 to do this.
   *If you are set on fire, you cannot put the fire out until you remove the armor in its entirety.
@@ -239,7 +241,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     isGhost: true,
     description:
       `Especially thick suit of armor. Extremely heavy and inconvenient to use, Italian-made! Avanti savoia! It is especially tailored to you.
-  *Gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
+  *Personal armor, gunshots deal -1 damage to you. Damage cannot be brought below 1 through this.
   *Every 5 distances, gunshots deal another -1 damage to you. Damage cannot be brought below 1 through this.
   *Does nothing against melee: The bulky and inconvenient nature of this armor leaves your legs, arms and head exposed.
   *It takes 3 turns to put on/remove the armor. Allies can help with it.

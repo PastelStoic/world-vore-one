@@ -51,8 +51,9 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     ghostVersionId: "explosives-kit-sapper",
     description:
       `Detonator and a whole lot of dynamite. Will destroy anything short of the thickest walls there are.
-*The explosives are potent enough that any cover is immediately pulverized, vehicles are destroyed immediately.
-*Cannot be thrown, explosives must be carefully planted and blown with a proper detonator.
+*Instantly pulverizes cover, vehicles and players on the distance and immediate adjacent distances, killing/destroying them immediately.
+*Afterwards, deals 8 damage, decreasing by 4 for every next distance until it reaches 0.
+*Cannot be thrown, explosives must be carefully planted and manually blown with a proper detonator.
 *Bulky kit: If you have a bulky kit, you cannot carry another piece of equipment with this gimmick.`,
   },
   {

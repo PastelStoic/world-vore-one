@@ -342,7 +342,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
   },
   {
     id: "heavy-at-rifle",
-    name: "Anti-tank rifle",
+    name: "Heavy anti-tank rifle",
     description:
       "Heavy armor piercing.\nComes with a bipod but gains no benefit from it. Takes 3 turns to set up, allies can help with this.\nFiring while not set up has you roll a STR check afterwards, requiring 3 successes. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
   },

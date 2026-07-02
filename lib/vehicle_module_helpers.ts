@@ -14,9 +14,8 @@ function resolveVehicleModule(
       description: "Unknown module",
       hp: 1,
       position: "external",
-      difficulty: { front: "easy", side: "easy", rear: "easy" },
+      difficulty: { front: 1, side: 1, rear: 1 },
       destructionEffect: "Module destroyed.",
-      count: 1,
     };
   }
 
@@ -27,9 +26,7 @@ export function formatVehicleModuleLabel(
   module: string | VehicleModuleDefinition,
 ): string {
   const resolved = resolveVehicleModule(module);
-  const suffix = resolved.count === 1 ? "" : "s";
-  const quantity = resolved.count === 1 ? "" : `${resolved.count}× `;
-  return `${quantity}${resolved.name}${suffix}`;
+  return resolved.name;
 }
 
 export function formatVehicleModuleDetails(

@@ -179,9 +179,9 @@ export type VehicleArmorRating = "light" | "medium" | "heavy";
 export type VehicleModulePosition = "internal" | "external";
 
 export interface VehicleModuleDifficulty {
-  front: string;
-  side: string;
-  rear: string;
+  front: number;
+  side: number;
+  rear: number;
 }
 
 export interface VehicleModuleDefinition {
@@ -193,7 +193,6 @@ export interface VehicleModuleDefinition {
   difficulty: VehicleModuleDifficulty;
   /** Effect on the vehicle when this module is destroyed */
   destructionEffect: string;
-  count: number;
   /** Weapon modules include combat stats */
   damage?: string;
   rateOfFire?: number;

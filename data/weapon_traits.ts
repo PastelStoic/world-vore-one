@@ -338,13 +338,13 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "at-rifle",
     name: "Anti-tank rifle",
     description:
-      "Medium armor piercing. -6d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 1 turn to set up.\nFiring while not set up has you roll a STR check afterwards, requiring 1 success. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
+      "Medium armor piercing. Have -6d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 1 turn to set up.\nFiring while not set up has you roll a STR check afterwards, requiring 1 success. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
   },
   {
     id: "heavy-at-rifle",
     name: "Heavy anti-tank rifle",
     description:
-      "Heavy armor piercing. -9d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 3 turns to set up, allies can help with this.\nFiring while not set up has you roll a STR check afterwards, requiring 3 successes. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
+      "Heavy armor piercing. Have -9d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 3 turns to set up, allies can help with this.\nFiring while not set up has you roll a STR check afterwards, requiring 3 successes. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
   },
 
   // ── Traits added by attachments ──

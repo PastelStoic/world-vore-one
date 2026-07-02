@@ -1,48 +1,39 @@
 import type { VehicleModuleDefinition } from "@/data/equipment_types.ts";
-import { VEHICLE_WEAPONS_BY_ID } from "@/data/equipment.ts";
+import { VEHICLE_MODULES_BY_ID } from "@/data/equipment.ts";
 
-function resolveVehicleModule(
-  module: string | VehicleModuleDefinition,
-): VehicleModuleDefinition {
-  if (typeof module === "string") {
-    const weapon = VEHICLE_WEAPONS_BY_ID.get(module);
-    if (weapon) {
-      return weapon;
-    }
-    return {
-      name: module,
-      description: "Unknown module",
-      hp: 1,
-      position: "external",
-      difficulty: { front: 1, side: 1, rear: 1 },
-      destructionEffect: "Module destroyed.",
-    };
+export function resolveVehicleModule(moduleId: string): VehicleModuleDefinition {
+  const module = VEHICLE_MODULES_BY_ID.get(moduleId);
+  if (module) {
+    return module;
   }
-
-  return module;
+  return {
+    id: moduleId,
+    name: moduleId,
+    description: "Unknown module",
+    hp: 1,
+    position: "external",
+    difficulty: { front: 1, side: 1, rear: 1 },
+    destructionEffect: "Module destroyed.",
+  };
 }
 
-export function formatVehicleModuleLabel(
-  module: string | VehicleModuleDefinition,
-): string {
-  const resolved = resolveVehicleModule(module);
-  return resolved.name;
+export function formatVehicleModuleLabel(moduleId: string): string {
+  return resolveVehicleModule(moduleId).name;
 }
 
-export function formatVehicleModuleDetails(
-  module: string | VehicleModuleDefinition,
-): string {
-  const resolved = resolveVehicleModule(module);
+export function formatVehicleModuleDetails(moduleId: string): string {
+  const resolved = resolveVehicleModule(moduleId);
   const lines: string[] = [];
 
   if (resolved.damage !== undefined) {
     lines.push(`Damage: ${resolved.damage}`);
     lines.push(`Rate of fire: ${resolved.rateOfFire}`);
-    lines.push(`Ammo capacity: ${resolved.ammoCapacity}`);
-    const rs = resolved.reloadSpeed ?? 1;
-    lines.push(
-      `Reload speed: ${resolved.reloadSpeed ?? "?"} turn${rs === 1 ? "" : "s"}`,
-    );
+    lines.push(`Ammo: ${resolved.ammo}`);
+    if (resolved.reloadTurns && resolved.reloadTurns > 1) {
+      lines.push(
+        `Reload turns: ${resolved.reloadTurns}`,
+      );
+    }
   }
 
   lines.push(`HP: ${resolved.hp}`);

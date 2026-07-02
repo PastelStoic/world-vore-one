@@ -44,6 +44,7 @@ import {
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
   getDependentAttachmentIds,
+  getVehiclePointCost,
   getWeaponPointCost,
   type InventoryLocation,
   isSignatureUniqueAttachment,
@@ -1353,7 +1354,7 @@ export default function InventorySection(props: InventorySectionProps) {
               filterPlaceholder="Filter vehicles by name or nation…"
               emptyMessage="No matching vehicles."
               renderItem={(vehicle) => {
-                const addCost = slotCost();
+                const addCost = getVehiclePointCost(vehicle.id) + slotCost();
                 return (
                   <li
                     key={vehicle.id}
@@ -1368,6 +1369,11 @@ export default function InventorySection(props: InventorySectionProps) {
                           {vehicle.seats} · Doors: {vehicle.doors} · Armor:
                           {armorLabel(vehicle.id)})
                         </span>
+                        {vehicle.pointCost > 0 && (
+                          <span class="text-xs text-warning ml-1">
+                            [Cost: {getVehiclePointCost(vehicle.id)}pt]
+                          </span>
+                        )}
                       </span>
                       <button
                         type="button"

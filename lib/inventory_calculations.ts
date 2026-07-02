@@ -270,6 +270,7 @@ export function calculateInventoryWeight(
 export function calculateInventoryPointCost(
   inv: CharacterInventory,
   getWeaponPointCost: (id: string) => number,
+  getVehiclePointCost?: (id: string) => number,
   slotLookups?: {
     getEquipment?: (id: string) => { isCharge?: boolean } | undefined;
     getAttachment?: (id: string) => { isCharge?: boolean } | undefined;
@@ -288,6 +289,15 @@ export function calculateInventoryPointCost(
   }
   for (const w of inv.stowed.weapons) {
     cost += getWeaponPointCost(w.weaponId);
+  }
+
+  if (getVehiclePointCost) {
+    for (const v of inv.carried.vehicles ?? []) {
+      cost += getVehiclePointCost(v.vehicleId);
+    }
+    for (const v of inv.stowed.vehicles ?? []) {
+      cost += getVehiclePointCost(v.vehicleId);
+    }
   }
 
   return cost;

@@ -16,6 +16,11 @@ import {
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
 
+function pointCostLabel(cost: number): string {
+  if (cost === 0) return "Free";
+  return `${cost}pt`;
+}
+
 export default define.page(function WikiEquipment() {
   return (
     <PageShell maxWidth="4xl" innerClass="space-y-10">
@@ -92,6 +97,15 @@ export default define.page(function WikiEquipment() {
                     <span>Crew: {vehicle.crew}</span>
                     <span>Seats: {vehicle.seats}</span>
                     <span>Doors: {vehicle.doors}</span>
+                    {vehicle.pointCost !== 0 && (
+                      <span
+                        class={vehicle.pointCost >= 3
+                          ? "text-error font-medium"
+                          : "text-warning"}
+                      >
+                        {pointCostLabel(vehicle.pointCost)}
+                      </span>
+                    )}
                     <span class="text-base-content/50">▶ details</span>
                   </span>
                 </summary>

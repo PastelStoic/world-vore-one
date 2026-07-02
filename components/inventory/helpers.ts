@@ -6,6 +6,7 @@ import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT_BY_ID,
   MELEE_WEAPONS_BY_ID,
+  VEHICLES_BY_ID,
   WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
@@ -62,6 +63,10 @@ export function getWeaponPointCost(
     }
   }
   return def.pointCost;
+}
+
+export function getVehiclePointCost(id: string): number {
+  return VEHICLES_BY_ID.get(id)?.pointCost ?? 0;
 }
 
 /**
@@ -226,6 +231,9 @@ export function calculateInventoryPointCostWithPerks(
       } else {
         cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds);
       }
+    }
+    for (const v of inventory[location].vehicles ?? []) {
+      cost += getVehiclePointCost(v.vehicleId);
     }
   }
 

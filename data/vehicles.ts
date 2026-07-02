@@ -1,7 +1,6 @@
 import type { VehicleDefinition } from "./equipment_types.ts";
 
-// Vehicle weapons are modules. Reusable weapon/module definitions (including hp and mounting stats)
-// are referenced directly by ID string from VehicleDefinition.modules.
+// Reusable module definitions are referenced by ID from VehicleDefinition.modules.
 
 // ---------------------------------------------------------------------------
 // DATA - Vehicles
@@ -12,6 +11,7 @@ export const VEHICLES: VehicleDefinition[] = [
     id: "m2-bradley-ifv",
     name: "M2 Bradley IFV",
     nation: "United States",
+    pointCost: 2,
     armor: {
       front: "medium",
       side: "light",
@@ -23,7 +23,12 @@ export const VEHICLES: VehicleDefinition[] = [
     size: 100,
     agility: 10,
     speed: 10,
-    modules: ["light-cannon","vehicle-machine-gun"],
+    modules: [
+      "light-cannon",
+      "frontal-machine-gun",
+      "engine",
+      "fuel-tanks",
+    ],
     description:
       "Infantry fighting vehicle with a crew and carried infantry squad. Heavier frontal armor with lighter flank and rear protection.",
   },

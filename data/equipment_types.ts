@@ -39,6 +39,7 @@ export type WeaponKind =
   | "black-powder-revolver"
   | "flamethrower"
   | "flintlock-musket"
+  | "anti-tank-rifle"
   | "bow"
   | "crossbow"
   | "melee";
@@ -185,6 +186,7 @@ export interface VehicleModuleDifficulty {
 }
 
 export interface VehicleModuleDefinition {
+  id: string;
   name: string;
   description: string;
   hp: number;
@@ -193,27 +195,20 @@ export interface VehicleModuleDefinition {
   difficulty: VehicleModuleDifficulty;
   /** Effect on the vehicle when this module is destroyed */
   destructionEffect: string;
-  count: number;
   /** Weapon modules include combat stats */
   damage?: string;
   rateOfFire?: number;
-  ammoCapacity?: number;
-  /** Turns to reload to full capacity */
-  reloadSpeed?: number;
-}
-
-export interface VehicleWeaponDefinition extends VehicleModuleDefinition {
-  id: string;
-  damage: string;
-  rateOfFire: number;
-  ammoCapacity: number;
-  reloadSpeed: number;
+  ammo?: number;
+  /** How many turns it takes to reload to full capacity (default: 1) */
+  reloadTurns?: number;
 }
 
 export interface VehicleDefinition {
   id: string;
   name: string;
   nation: Nation;
+  /** Extra point cost to add this vehicle to a character sheet */
+  pointCost: number;
   armor: {
     front: VehicleArmorRating;
     side: VehicleArmorRating;
@@ -225,6 +220,7 @@ export interface VehicleDefinition {
   size: number;
   agility: number;
   speed: number;
-  modules: (string | VehicleModuleDefinition)[];
+  /** Module IDs from vehicle_modules.ts; repeat an ID for multiple copies */
+  modules: string[];
   description?: string;
 }

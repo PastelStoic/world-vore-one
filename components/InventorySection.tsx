@@ -44,6 +44,7 @@ import {
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
   getDependentAttachmentIds,
+  getVehiclePointCost,
   getWeaponPointCost,
   type InventoryLocation,
   isSignatureUniqueAttachment,
@@ -155,7 +156,7 @@ export default function InventorySection(props: InventorySectionProps) {
   function armorLabel(vehicleId: string): string {
     const vehicle = VEHICLES_BY_ID.get(vehicleId);
     if (!vehicle) return "";
-    return `${vehicle.armor.front} ${vehicle.armor.side} ${vehicle.armor.rear}`;
+    return `${vehicle.armor.front} / ${vehicle.armor.side} / ${vehicle.armor.rear}`;
   }
 
   // ── Auto-save combat state (ammo, charges, magazines) ──
@@ -1353,7 +1354,7 @@ export default function InventorySection(props: InventorySectionProps) {
               filterPlaceholder="Filter vehicles by name or nation…"
               emptyMessage="No matching vehicles."
               renderItem={(vehicle) => {
-                const addCost = slotCost();
+                const addCost = getVehiclePointCost(vehicle.id) + slotCost();
                 return (
                   <li
                     key={vehicle.id}
@@ -1371,6 +1372,11 @@ export default function InventorySection(props: InventorySectionProps) {
                           {vehicle.seats} · Doors: {vehicle.doors} · Armor:{" "}
                           {armorLabel(vehicle.id)})
                         </span>
+                        {vehicle.pointCost > 0 && (
+                          <span class="text-xs text-warning ml-1">
+                            [Cost: {getVehiclePointCost(vehicle.id)}pt]
+                          </span>
+                        )}
                       </span>
                       <button
                         type="button"

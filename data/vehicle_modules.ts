@@ -1,13 +1,12 @@
 // ---------------------------------------------------------------------------
-// DATA – Reusable Vehicle-Mounted Weapons (which are modules)
-// Vehicle weapons are a type of vehicle module. These reusable definitions
-// include both weapon combat stats and module durability/mounting stats.
-// Vehicles reference them by ID string in their modules list.
+// DATA – Vehicle Modules
+// Reusable module definitions referenced by ID from VehicleDefinition.modules.
+// Weapon modules include combat stats; other modules omit them.
 // ---------------------------------------------------------------------------
 
-import type { VehicleWeaponDefinition } from "./equipment_types.ts";
+import type { VehicleModuleDefinition } from "./equipment_types.ts";
 
-export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
+export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-cannon",
     name: "Light cannon",
@@ -17,11 +16,10 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     position: "internal",
     difficulty: { front: 3, side: 3, rear: 5 },
     destructionEffect: "Cannon destroyed.",
-    count: 1,
     damage: "6",
     rateOfFire: 1,
-    ammoCapacity: 1,
-    reloadSpeed: 3,
+    ammo: 1,
+    reloadTurns: 3,
   },
   {
     id: "frontal-machine-gun",
@@ -32,11 +30,10 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     position: "internal",
     difficulty: { front: 3, side: 5, rear: 5 },
     destructionEffect: "Machine gun destroyed.",
-    count: 1,
     damage: "3",
     rateOfFire: 11,
-    ammoCapacity: 100,
-    reloadSpeed: 3,
+    ammo: 100,
+    reloadTurns: 3,
   },
   {
     id: "side-machine-gun",
@@ -47,11 +44,10 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     position: "internal",
     difficulty: { front: 5, side: 3, rear: 5 },
     destructionEffect: "Machine gun destroyed.",
-    count: 1,
     damage: "3",
     rateOfFire: 11,
-    ammoCapacity: 100,
-    reloadSpeed: 3,
+    ammo: 100,
+    reloadTurns: 3,
   },
   {
     id: "rear-machine-gun",
@@ -62,14 +58,31 @@ export const VEHICLE_WEAPONS: VehicleWeaponDefinition[] = [
     position: "internal",
     difficulty: { front: 5, side: 5, rear: 3 },
     destructionEffect: "Machine gun destroyed.",
-    count: 1,
     damage: "3",
     rateOfFire: 11,
-    ammoCapacity: 100,
-    reloadSpeed: 3,
+    ammo: 100,
+    reloadTurns: 3,
+  },
+  {
+    id: "engine",
+    name: "Engine",
+    description: "It be an engine",
+    hp: 4,
+    position: "internal",
+    difficulty: { front: 1, side: 1, rear: 1 },
+    destructionEffect: "Engine destroyed.",
+  },
+  {
+    id: "fuel-tanks",
+    name: "Fuel tanks",
+    description: "They be fuel tanks",
+    hp: 2,
+    position: "internal",
+    difficulty: { front: 1, side: 1, rear: 1 },
+    destructionEffect: "Fuel tanks destroyed.",
   },
 ];
 
-export const VEHICLE_WEAPONS_BY_ID = new Map(
-  VEHICLE_WEAPONS.map((w) => [w.id, w]),
+export const VEHICLE_MODULES_BY_ID = new Map(
+  VEHICLE_MODULES.map((module) => [module.id, module]),
 );

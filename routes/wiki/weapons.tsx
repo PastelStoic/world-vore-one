@@ -28,6 +28,7 @@ const KIND_LABELS: Record<WeaponKind, string> = {
   "bow": "Bows",
   "crossbow": "Crossbows",
   "melee": "Melee",
+  "anti-tank-rifle": "Anti-Tank Rifle"
 };
 
 const KIND_ORDER: WeaponKind[] = [

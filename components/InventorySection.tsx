@@ -155,7 +155,7 @@ export default function InventorySection(props: InventorySectionProps) {
   function armorLabel(vehicleId: string): string {
     const vehicle = VEHICLES_BY_ID.get(vehicleId);
     if (!vehicle) return "";
-    return `${vehicle.armor.front} ${vehicle.armor.side} ${vehicle.armor.rear}`;
+    return `${vehicle.armor.front} / ${vehicle.armor.side} / ${vehicle.armor.rear}`;
   }
 
   // ── Auto-save combat state (ammo, charges, magazines) ──

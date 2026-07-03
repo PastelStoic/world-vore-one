@@ -36,9 +36,9 @@ export const VEHICLES: VehicleDefinition[] = [
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.
 
       Crew:
-      1 commander ( 5/6/6 ).
-      1 driver ( 5/6/6 ).
-      1 engineer ( 6/6/5 ).
+      1 commander ( 5/5/5 ).
+      1 driver ( 5/5/5 ).
+      1 engineer ( 5/5/5 ).
       6 gunner & assistant gunners ( 3/3/4 ).
       
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.

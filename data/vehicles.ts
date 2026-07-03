@@ -31,6 +31,8 @@ export const VEHICLES: VehicleDefinition[] = [
       "side-machine-gun",
       "engine",
       "fuel-tanks",
+      "treads",
+      "light-ammo-stowage",
     ],
     description:
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.

@@ -10,7 +10,7 @@ export const VEHICLES: VehicleDefinition[] = [
   {
     id: "mark_v",
     name: "Tank, mark IV ( MALE )",
-    nation: "United Kingdom",
+    nation: "Britain",
     pointCost: 6,
     armor: {
       front: "medium",

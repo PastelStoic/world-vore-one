@@ -85,11 +85,11 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     position: "internal",
     difficulty: { front: 5, side: 5, rear: 5 },
     destructionEffect: `The fuel tanks catch fire, which begins to spread throughout the vehicle.
-    The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
-    The fire deals a continuous 3 damage to the vehicle until it is put out.
-    The fire will spread to another non-burning module, at random, on the next turn - that fire, too, will keep spreading!
-    Crew is unharmed from the fire; you manage to keep your distance from it.
-    The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
+    
+    *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
+    *The fire deals a continuous 3 damage to the vehicle until it is put out and it will spread to another non-burning module, at random, on the next turn.
+    *Crew is unharmed from the fire; you manage to keep your distance from it. To put it out, one must roll a 6 on a 1d6. Any crewmember can attempt to put the fire(s) out.
+    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
   },
   {
     id: "light-ammo-stowage",

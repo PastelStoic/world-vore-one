@@ -45,7 +45,7 @@ export const VEHICLES: VehicleDefinition[] = [
       
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
       *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
-      *One machinegun points left, one right, and one to the rear.`,
+      *One machinegun points left, one right, and one to the front.`,
   },
 ];
 

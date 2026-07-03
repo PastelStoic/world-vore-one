@@ -21,7 +21,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     position: "internal",
     difficulty: { front: 3, side: 3, rear: 5 },
     destructionEffect: "Cannon destroyed.",
-    damage: "6",
     rateOfFire: 1,
     ammo: 1,
     reloadTurns: 3,

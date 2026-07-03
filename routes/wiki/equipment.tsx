@@ -12,6 +12,7 @@ import {
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getVehicleHp,
 } from "@/lib/vehicle_module_helpers.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
@@ -95,6 +96,7 @@ export default define.page(function WikiEquipment() {
                     <span>Size: {vehicle.size}</span>
                     <span>Agility: {vehicle.agility}</span>
                     <span>Speed: {vehicle.speed}</span>
+                    <span>HP: {getVehicleHp(vehicle)}</span>
                     <span>Crew: {vehicle.crew}</span>
                     <span>Seats: {vehicle.seats}</span>
                     <span>Doors: {vehicle.doors}</span>
@@ -135,6 +137,9 @@ export default define.page(function WikiEquipment() {
                     </span>
                     <span>
                       <span class="font-medium">Speed:</span> {vehicle.speed}
+                    </span>
+                    <span>
+                      <span class="font-medium">HP:</span> {getVehicleHp(vehicle)}
                     </span>
                     <span>
                       <span class="font-medium">Crew:</span> {vehicle.crew}

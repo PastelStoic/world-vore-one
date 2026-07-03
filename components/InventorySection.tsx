@@ -37,6 +37,7 @@ import TraitBadge from "./inventory/TraitBadge.tsx";
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getVehicleHp,
 } from "@/lib/vehicle_module_helpers.ts";
 import {
   calculateInventoryPointCostWithPerks,
@@ -1366,7 +1367,8 @@ export default function InventorySection(props: InventorySectionProps) {
                         <span class="text-xs text-base-content/60">
                           ({vehicle.nation} · Size: {vehicle.size} · Agility:
                           {" "}
-                          {vehicle.agility} · Speed: {vehicle.speed} · Crew:
+                          {vehicle.agility} · Speed: {vehicle.speed} · HP:
+                          {getVehicleHp(vehicle)} · Crew:
                           {" "}
                           {vehicle.crew} · Seats:
                           {vehicle.seats} · Doors: {vehicle.doors} · Armor:{" "}

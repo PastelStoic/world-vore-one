@@ -1,5 +1,16 @@
-import type { VehicleModuleDefinition } from "@/data/equipment_types.ts";
+import type {
+  VehicleDefinition,
+  VehicleModuleDefinition,
+} from "@/data/equipment_types.ts";
 import { VEHICLE_MODULES_BY_ID } from "@/data/equipment.ts";
+
+export function getVehicleHp(vehicle: VehicleDefinition): number {
+  const moduleHp = vehicle.modules.reduce(
+    (sum, moduleId) => sum + resolveVehicleModule(moduleId).hp,
+    0,
+  );
+  return moduleHp + (vehicle.hpModifier ?? 0);
+}
 
 export function resolveVehicleModule(moduleId: string): VehicleModuleDefinition {
   const module = VEHICLE_MODULES_BY_ID.get(moduleId);

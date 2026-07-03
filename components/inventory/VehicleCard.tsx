@@ -7,6 +7,7 @@ import type { InventoryVehicle } from "@/lib/inventory_types.ts";
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getVehicleHp,
 } from "@/lib/vehicle_module_helpers.ts";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
@@ -40,7 +41,9 @@ export default function VehicleCard(props: VehicleCardProps) {
           <span class="text-xs text-base-content/60">
             ({def.nation} · Size: {def.size} · Agility: {def.agility} · Speed:
             {" "}
-            {def.speed} · Crew: {def.crew} · Seats: {def.seats} · Doors:{" "}
+            {def.speed} · HP: {getVehicleHp(def)} · Crew: {def.crew} · Seats:
+            {def.seats} ·
+            Doors:{" "}
             {def.doors})
           </span>
         </div>

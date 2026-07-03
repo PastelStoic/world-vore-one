@@ -220,6 +220,8 @@ export interface VehicleDefinition {
   size: number;
   agility: number;
   speed: number;
+  /** Added to the sum of module HP; omitted or zero means no adjustment */
+  hpModifier?: number;
   /** Module IDs from vehicle_modules.ts; repeat an ID for multiple copies */
   modules: string[];
   description?: string;

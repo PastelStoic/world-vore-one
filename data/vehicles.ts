@@ -31,7 +31,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "side-machine-gun",
       "engine",
       "fuel-tanks",
-      "treads",
+      "tracks",
       "light-ammo-stowage",
     ],
     description:

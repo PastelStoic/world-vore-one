@@ -34,9 +34,16 @@ export const VEHICLES: VehicleDefinition[] = [
     ],
     description:
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.
+
+      Crew:
+      1 commander ( 5/6/6 ).
+      1 driver ( 5/6/6 ).
+      1 engineer ( 6/6/5 ).
+      6 gunner & assistant gunners ( 3/3/4 ).
       
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
-      *The lateral machineguns can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.`,
+      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
+      *One machinegun points left, one right, and one to the rear.`,
   },
 ];
 

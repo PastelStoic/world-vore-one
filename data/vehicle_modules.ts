@@ -104,6 +104,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     id: "tracks",
     name: "Tracks",
     description: `The vehicle's tracks, which allow it to move smoothly along the terrain ahead!
+    
     *Considered to have light armor when targetted. Does not take area damage - it must be targetted directly.`,
     hp: 6,
     position: "external",

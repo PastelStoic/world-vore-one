@@ -8,29 +8,35 @@ import type { VehicleDefinition } from "./equipment_types.ts";
 
 export const VEHICLES: VehicleDefinition[] = [
   {
-    id: "m2-bradley-ifv",
-    name: "M2 Bradley IFV",
-    nation: "United States",
-    pointCost: 2,
+    id: "mark_v",
+    name: "Tank, mark IV ( MALE )",
+    nation: "United Kingdom",
+    pointCost: 6,
     armor: {
       front: "medium",
-      side: "light",
+      side: "medium",
       rear: "light",
     },
     seats: 9,
-    doors: 2,
-    crew: 3,
-    size: 100,
-    agility: 10,
-    speed: 10,
+    doors: 3,
+    crew: 9,
+    size: 54,
+    agility: 1,
+    speed: 2,
     modules: [
       "light-cannon",
+      "light-cannon",
       "frontal-machine-gun",
+      "side-machine-gun",
+      "side-machine-gun",
       "engine",
       "fuel-tanks",
     ],
     description:
-      "Infantry fighting vehicle with a crew and carried infantry squad. Heavier frontal armor with lighter flank and rear protection.",
+      `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.
+      
+      *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
+      *The lateral machineguns can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.`,
   },
 ];
 

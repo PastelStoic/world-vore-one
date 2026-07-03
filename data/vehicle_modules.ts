@@ -12,7 +12,11 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Light cannon",
     description:
       `Small, light cannon. Quick to fire and reload, but with equally low damage.
-      Deals area damage, dealing its full damage on the distance it is fired at, decreasing by 3 for every subsequent distance.`,
+
+      When reloading, choose which round to load:
+      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances.
+      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances.
+      *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
     difficulty: { front: 3, side: 3, rear: 5 },
@@ -83,9 +87,27 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: `The fuel tanks catch fire, which begins to spread throughout the vehicle.
     The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
     The fire deals a continuous 3 damage to the vehicle until it is put out.
-    The fire will spread to another module on the next turn - that fire, too, will keep spreading!
+    The fire will spread to another non-burning module, at random, on the next turn - that fire, too, will keep spreading!
     Crew is unharmed from the fire; you manage to keep your distance from it.
     The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
+  },
+  {
+    id: "light-ammo-stowage",
+    name: "Light ammo stowage",
+    description: `The vehicle's ammo stowage, where all of its ammunition is held. Careful that it does not blow up!`,
+    hp: 2,
+    position: "internal",
+    difficulty: { front: 8, side: 8, rear: 8 },
+    destructionEffect: "The vehicle immediately explodes, destroying it and killing off everyone within it.",
+  },
+  {
+    id: "tracks",
+    name: "Tracks",
+    description: "The vehicle's tracks, which allow it to move smoothly along the terrain ahead!",
+    hp: 6,
+    position: "external",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
   },
 ];
 

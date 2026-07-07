@@ -13,6 +13,19 @@ export const ADMIN_PERKS: PerkDefinition[] = [
 *Only applies on scenes after the one it was given in.`,
   },
   {
+    id: "sponsored-by-the-artificer",
+    name: "Sponsored by the Artificer",
+    category: "gimmick",
+    adminOnly: true,
+    isFree: true,
+    description: `The Artificer watches your career with great interest.
+
+*You are sponsored by the Artificer herself, making sure you always have exactly what you need to continue your research.
+*For every 3 intelligence points your character has, you may create one invention as if using the 'innovator' perk.
+*You may only create one invention per real life month.
+*You have virtually unlimited funds to spend on whatever you need to fulfill your duty.`,
+  },
+  {
     id: "swiss-killsquad",
     name: "Under the watch of a Swiss kill squad",
     category: "gimmick",

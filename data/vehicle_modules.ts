@@ -26,6 +26,24 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     reloadTurns: 3,
   },
   {
+    id: "rear-light-cannon",
+    name: "Rear light cannon",
+    description:
+      `Small, light cannon. Quick to fire and reload, but with equally low damage.
+
+      When reloading, choose which round to load:
+      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances.
+      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances.
+      *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
+    hp: 6,
+    position: "internal",
+    difficulty: { front: 5, side: 3, rear: 3 },
+    destructionEffect: "Cannon destroyed.",
+    rateOfFire: 1,
+    ammo: 1,
+    reloadTurns: 3,
+  },
+  {
     id: "frontal-machine-gun",
     name: "Frontal machinegun",
     description:

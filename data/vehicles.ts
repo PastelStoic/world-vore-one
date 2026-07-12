@@ -153,7 +153,7 @@ export const VEHICLES: VehicleDefinition[] = [
     speed: 3,
     modules: [
       "light-cannon",
-      "light-turret"
+      "light-turret",
       "engine",
       "fuel-tanks",
       "tracks",
@@ -186,7 +186,7 @@ export const VEHICLES: VehicleDefinition[] = [
     speed: 3,
     modules: [
       "frontal-machine-gun",
-      "light-turret"
+      "light-turret",
       "engine",
       "fuel-tanks",
       "tracks",

@@ -104,6 +104,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description: `You've very strong legs! Carrying prey around is no biggie.
 
 *People weight only 1 weight when eaten by you.
+*Does not apply to vehicles.
 *If the prey has the "heavy" perk, typical rules apply.`,
   },
   {

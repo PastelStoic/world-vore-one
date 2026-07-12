@@ -12,7 +12,7 @@ export const VEHICLES: VehicleDefinition[] = [
   
   {
     id: "mark_v",
-    name: "Tank, mark IV ( MALE )",
+    name: "Tank, Mark IV ( MALE )",
     nation: "Britain",
     pointCost: 6,
     armor: {
@@ -54,7 +54,7 @@ export const VEHICLES: VehicleDefinition[] = [
 
   {
     id: "mark_v_female",
-    name: "Tank, mark IV ( FEMALE )",
+    name: "Tank, Mark IV ( FEMALE )",
     nation: "Britain",
     pointCost: 6,
     armor: {
@@ -92,6 +92,47 @@ export const VEHICLES: VehicleDefinition[] = [
       *Two frontal machineguns can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
       *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
       *One machinegun points left, one right, and one to the front.`,
+  },
+
+  {
+    id: "hornet",
+    name: "Tank, Hornet",
+    nation: "Britain",
+    pointCost: 6,
+    armor: {
+      front: "medium",
+      side: "light",
+      rear: "light",
+    },
+    seats: 5,
+    doors: 2,
+    crew: 5,
+    size: 54,
+    agility: 1,
+    speed: 3,
+    modules: [
+      "frontal-machine-gun",
+      "frontal-machine-gun",
+      "side-machine-gun",
+      "side-machine-gun",
+      "engine",
+      "fuel-tanks",
+      "tracks",
+      "light-ammo-stowage",
+    ],
+    description:
+      `Light and fast "cavalry" tank, meant to fit Britain's armor doctrine. Faster than most other tanks, but only armed with machineguns!
+
+      Crew:
+      1 commander ( 5/5/5 ).
+      1 driver ( 5/5/5 ).
+      1 engineer ( 5/5/5 ).
+      2 gunner ( 3/3/3 ).
+      
+      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
+      *The vehicle has a rear gun port, allowing one of the machineguns to be slotted into it. It takes 3 turns to do so.
+      *Slotting the machinegun into the rear port also flips its front/rearr targetting difficulties.
+      *One of the side machinegun points left, one points right.`,
   },
 
 // GERMAN VEHICLES

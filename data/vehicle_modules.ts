@@ -46,6 +46,19 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     reloadTurns: 3,
   },
   {
+    id: "light-turret",
+    name: "Light turret",
+    description:
+      `A light turret mounting, for small cannons!
+
+      *It can turn one direction per turn, assuming its user hasn' spent its action with something else.
+      *The turret turns alongside the tank: If the turret is aiming forward, and the tank turns to the right, naturally, the turret will aim right too!`,
+    hp: 6,
+    position: "internal",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "Turret destroyed, and can no longer turn.",
+  },
+  {
     id: "frontal-machine-gun",
     name: "Frontal machinegun",
     description:
@@ -108,7 +121,8 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
     *The fire deals a continuous 3 damage to the vehicle until it is put out and it will spread to another non-burning module, at random, on the next turn.
     *Crew is unharmed from the fire; you manage to keep your distance from it. To put it out, one must roll a 6 on a 1d6. Any crewmember can attempt to put the fire(s) out.
-    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
+    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.
+    *A fire may only be started once per combat - it cannot be set alight again.`,
   },
   {
     id: "light-ammo-stowage",

@@ -133,6 +133,75 @@ export const VEHICLES: VehicleDefinition[] = [
       *One of the side machinegun points left, one points right.`,
   },
 
+// FRENCH VEHICLES
+
+  {
+    id: "renault_f17",
+    name: "Renault FT-17 ( MALE )",
+    nation: "France",
+    pointCost: 4,
+    armor: {
+      front: "medium",
+      side: "light",
+      rear: "light",
+    },
+    seats: 2,
+    doors: 1,
+    crew: 2,
+    size: 32,
+    agility: 1,
+    speed: 3,
+    modules: [
+      "light-cannon",
+      "light-turret"
+      "engine",
+      "fuel-tanks",
+      "tracks",
+    ],
+    description:
+      `The first turreted tank in the world! Very small and compact, as well as easy to destroy, making it cheaper than most tanks.
+
+      Crew:
+      1 commander, gunner AND engineer. ( 3/3/4 ).
+      1 driver ( 3/3/4 ).
+      
+      *The commander is also the gunner and the engineer. Good luck doing all the work alone!`,
+  },
+  
+  {
+    id: "renault_f17_female",
+    name: "Renault FT-17 ( FEMALE )",
+    nation: "France",
+    pointCost: 4,
+    armor: {
+      front: "medium",
+      side: "light",
+      rear: "light",
+    },
+    seats: 2,
+    doors: 1,
+    crew: 2,
+    size: 32,
+    agility: 1,
+    speed: 3,
+    modules: [
+      "frontal-machine-gun",
+      "light-turret"
+      "engine",
+      "fuel-tanks",
+      "tracks",
+    ],
+    description:
+      `The first turreted tank in the world! Very small and compact, as well as easy to destroy, making it cheaper than most tanks.
+
+      Crew:
+      1 commander, gunner AND engineer. ( 3/3/4 ).
+      1 driver ( 3/3/4 ).
+      
+      *The commander is also the gunner and the engineer. Good luck doing all the work alone!
+      *The machinegun is inside the turret, and turns alongside it.`,
+  },
+  
 // GERMAN VEHICLES
 
   {

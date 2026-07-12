@@ -52,15 +52,21 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   // early return if weapon not found
   if (!def) {
     return (
-      <div class="border rounded p-2 bg-base-100 text-sm text-error">
-        Unknown melee weapon: {mw.meleeWeaponId}
-        {!readOnly && !isPerkGranted && (
+      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
+        <span>
+          Unknown melee weapon: {mw.meleeWeaponId}
+          <span class="block text-xs text-base-content/60 font-normal">
+            Removed from game data — remove to free inventory slots/points.
+          </span>
+        </span>
+        {!readOnly && (
           <button
             type="button"
-            class="ml-2 px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
             onClick={() => onRemove(location, index)}
+            title="Remove invalid item and refund its inventory cost"
           >
-            Remove
+            Remove & refund
           </button>
         )}
       </div>

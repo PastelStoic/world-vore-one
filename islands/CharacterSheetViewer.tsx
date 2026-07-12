@@ -1,6 +1,5 @@
 import { useState } from "preact/hooks";
 import {
-  DefaultPerkDefinition,
   PERK_CATEGORY_LABELS,
   PERK_CATEGORY_ORDER,
   PERKS_BY_ID,
@@ -55,13 +54,13 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   // TODO figure out if the displayOnly variable is still needed
   const ownedPerks = character.perkIds.map((id) => ({
     id,
-    perk: PERKS_BY_ID.get(id) ?? DefaultPerkDefinition,
+    perk: PERKS_BY_ID.get(id),
     displayOnly: false,
   }));
 
   const displayedRaceName = getDisplayedRaceName(
     character.race,
-    ownedPerks.map((p) => p.perk),
+    ownedPerks.flatMap((p) => p.perk ? [p.perk] : []),
   );
 
   const derivedPerkIds = getDerivedPerkIds(
@@ -512,8 +511,10 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
               ))}
               {uncategorizedOwnedPerks.length > 0 && (
                 <div class="space-y-1">
-                  <h4 class="font-medium">Other</h4>
-                  <ul class="list-disc list-inside">
+                  <h4 class="font-medium text-error">
+                    Invalid / removed perks
+                  </h4>
+                  <ul class="list-disc list-inside text-error">
                     {uncategorizedOwnedPerks.map(({ id }) => (
                       <li key={id}>{id}</li>
                     ))}

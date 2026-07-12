@@ -30,7 +30,26 @@ export default function VehicleCard(props: VehicleCardProps) {
   const def = VEHICLES_BY_ID.get(vehicle.vehicleId);
 
   if (!def) {
-    return <div class="text-error">Unknown vehicle: {vehicle.vehicleId}</div>;
+    return (
+      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
+        <span>
+          Unknown vehicle: {vehicle.vehicleId}
+          <span class="block text-xs text-base-content/60 font-normal">
+            Removed from game data — remove to free inventory slots/points.
+          </span>
+        </span>
+        {!readOnly && (
+          <button
+            type="button"
+            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+            onClick={() => onRemove(location, index)}
+            title="Remove invalid item and refund its inventory cost"
+          >
+            Remove & refund
+          </button>
+        )}
+      </div>
+    );
   }
 
   return (

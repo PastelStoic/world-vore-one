@@ -94,7 +94,26 @@ export default function WeaponCard(props: WeaponCardProps) {
 
   const def = WEAPONS_BY_ID.get(w.weaponId);
   if (!def) {
-    return <div class="text-error">Unknown weapon: {w.weaponId}</div>;
+    return (
+      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
+        <span>
+          Unknown weapon: {w.weaponId}
+          <span class="block text-xs text-base-content/60 font-normal">
+            Removed from game data — remove to free inventory slots/points.
+          </span>
+        </span>
+        {!readOnly && (
+          <button
+            type="button"
+            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+            onClick={() => props.onRemove(location, index)}
+            title="Remove invalid item and refund its inventory cost"
+          >
+            Remove & refund
+          </button>
+        )}
+      </div>
+    );
   }
 
   const otherLocation: InventoryLocation = location === "carried"
@@ -662,8 +681,8 @@ export default function WeaponCard(props: WeaponCardProps) {
             return (
               <div key={aId} class="flex flex-col gap-0.5 text-xs">
                 <div class="flex items-center gap-1">
-                  <span>
-                    {aDef?.name ?? aId}
+                  <span class={!aDef ? "text-error" : undefined}>
+                    {aDef?.name ?? `Unknown attachment: ${aId}`}
                     {aDef && aDef.weight > 0 && (
                       <span class="text-base-content/50">
                         (adds {aDef.weight}W)
@@ -680,7 +699,9 @@ export default function WeaponCard(props: WeaponCardProps) {
                       type="button"
                       class="px-1 border rounded text-error hover:bg-error/10"
                       disabled={!canDetach}
-                      title={canDetach
+                      title={!aDef
+                        ? "Detach invalid attachment so you can remove it from inventory"
+                        : canDetach
                         ? ""
                         : `Cannot detach while required by: ${
                           dependentAttachmentNames.join(", ")

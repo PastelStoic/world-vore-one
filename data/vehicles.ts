@@ -77,7 +77,6 @@ export const VEHICLES: VehicleDefinition[] = [
       "engine",
       "fuel-tanks",
       "tracks",
-      "light-ammo-stowage",
     ],
     description:
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike. Female variant, sporting only MGs.
@@ -118,7 +117,6 @@ export const VEHICLES: VehicleDefinition[] = [
       "engine",
       "fuel-tanks",
       "tracks",
-      "light-ammo-stowage",
     ],
     description:
       `Light and fast "cavalry" tank, meant to fit Britain's armor doctrine. Faster than most other tanks, but only armed with machineguns!
@@ -209,7 +207,6 @@ export const VEHICLES: VehicleDefinition[] = [
       "engine",
       "fuel-tanks",
       "tracks",
-      "light-ammo-stowage",
     ],
     description:
       `German tank, more closely resembling a pilbox on threads! Outdated, but still used - crew has been optimized! Female variant, with only MGs!

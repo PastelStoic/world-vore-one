@@ -116,6 +116,9 @@ export default function InventorySection(props: InventorySectionProps) {
   const [nationFilter, setNationFilter] = useState<Nation | "">("");
   const [equipmentFilter, setEquipmentFilter] = useState("");
   const [vehicleFilter, setVehicleFilter] = useState("");
+  const [vehicleNationFilter, setVehicleNationFilter] = useState<Nation | "">(
+    "",
+  );
   const [attachmentFilter, setAttachmentFilter] = useState("");
   const [attachmentNationFilter, setAttachmentNationFilter] = useState<
     Nation | ""
@@ -1021,6 +1024,13 @@ export default function InventorySection(props: InventorySectionProps) {
   });
 
   const filteredVehicles = VEHICLES.filter((vehicle) => {
+    if (vehicleNationFilter) {
+      if (vehicle.nation === "Any") {
+        if (vehicleNationFilter === "Civilian") return false;
+      } else if (vehicle.nation !== vehicleNationFilter) {
+        return false;
+      }
+    }
     if (!vehicleFilter) return true;
     const q = vehicleFilter.toLowerCase();
     return vehicle.name.toLowerCase().includes(q) ||
@@ -1354,6 +1364,10 @@ export default function InventorySection(props: InventorySectionProps) {
               onFilterChange={setVehicleFilter}
               filterPlaceholder="Filter vehicles by name or nation…"
               emptyMessage="No matching vehicles."
+              nationFilter={{
+                value: vehicleNationFilter,
+                onChange: setVehicleNationFilter,
+              }}
               renderItem={(vehicle) => {
                 const addCost = getVehiclePointCost(vehicle.id) + slotCost();
                 return (

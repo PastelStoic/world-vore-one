@@ -17,6 +17,7 @@ import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import type { CharacterInventory, InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
@@ -397,6 +398,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                               />
                             )
                             : id}
+                          {perk?.deprecated && <DeprecatedBadge />}
                           {isDerived && sourcePerk && (
                             <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
                               included by {sourcePerk.name}

@@ -9,6 +9,7 @@ import {
   formatVehicleModuleLabel,
   getVehicleHp,
 } from "@/lib/vehicle_module_helpers.ts";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
 
@@ -56,7 +57,8 @@ export default function VehicleCard(props: VehicleCardProps) {
     <div class="border rounded p-2 space-y-1 bg-base-100">
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
-          <strong>{def.name}</strong>{" "}
+          <strong>{def.name}</strong>
+          {def.deprecated && <DeprecatedBadge />}{" "}
           <span class="text-xs text-base-content/60">
             ({def.nation} · Size: {def.size} · Agility: {def.agility} · Speed:
             {" "}
@@ -81,8 +83,11 @@ export default function VehicleCard(props: VehicleCardProps) {
               type="button"
               class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => onRemove(location, index)}
+              title={def.deprecated
+                ? "Remove deprecated item and free inventory slots/points"
+                : undefined}
             >
-              Remove
+              {def.deprecated ? "Remove & refund" : "Remove"}
             </button>
           </div>
         )}

@@ -7,6 +7,7 @@ import {
 } from "@/data/perks.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 
 export default define.page(function WikiPerks() {
   return (
@@ -19,6 +20,8 @@ export default define.page(function WikiPerks() {
         <h1 class="text-3xl font-bold mt-2">Perks</h1>
         <p class="text-base-content">
           All perks available when building a character, organised by category.
+          Deprecated entries remain listed for reference but cannot be newly
+          selected.
         </p>
       </header>
 
@@ -38,11 +41,16 @@ export default define.page(function WikiPerks() {
                 return (
                   <details
                     key={perk.id}
-                    class="border rounded-lg bg-base-100/80 px-4 py-2"
+                    class={`border rounded-lg px-4 py-2 ${
+                      perk.deprecated
+                        ? "bg-warning/5 border-warning/40 opacity-90"
+                        : "bg-base-100/80"
+                    }`}
                   >
                     <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between gap-2">
                       <span>
                         {perk.name}
+                        {perk.deprecated ? <DeprecatedBadge /> : null}
                         {perk.pointsGranted
                           ? (
                             <span

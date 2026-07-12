@@ -16,6 +16,7 @@ import {
 } from "@/lib/vehicle_module_helpers.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 
 function pointCostLabel(cost: number): string {
   if (cost === 0) return "Free";
@@ -51,7 +52,10 @@ export default define.page(function WikiEquipment() {
                 class="border rounded-lg bg-base-100/80 px-4 py-2"
               >
                 <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                  <span class="font-semibold">{item.name}</span>
+                  <span class="font-semibold">
+                    {item.name}
+                    {item.deprecated ? <DeprecatedBadge /> : null}
+                  </span>
                   {item.isCharge && (
                     <span class="text-xs text-primary">charge</span>
                   )}
@@ -88,7 +92,10 @@ export default define.page(function WikiEquipment() {
                 class="border rounded-lg bg-base-100/80 px-4 py-2"
               >
                 <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                  <span class="font-semibold">{vehicle.name}</span>
+                  <span class="font-semibold">
+                    {vehicle.name}
+                    {vehicle.deprecated ? <DeprecatedBadge /> : null}
+                  </span>
                   <span class="text-xs text-base-content/60">
                     {vehicle.nation}
                   </span>
@@ -204,7 +211,10 @@ export default define.page(function WikiEquipment() {
                 class="border rounded-lg bg-base-100/80 px-4 py-2"
               >
                 <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                  <span class="font-semibold">{att.name}</span>
+                  <span class="font-semibold">
+                    {att.name}
+                    {att.deprecated ? <DeprecatedBadge /> : null}
+                  </span>
                   <span class="text-xs text-base-content/60">
                     {att.appliesTo}
                   </span>
@@ -318,7 +328,10 @@ export default define.page(function WikiEquipment() {
                 class="border rounded-lg bg-base-100/80 px-4 py-2"
               >
                 <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                  <span class="font-semibold">{weapon.name}</span>
+                  <span class="font-semibold">
+                    {weapon.name}
+                    {weapon.deprecated ? <DeprecatedBadge /> : null}
+                  </span>
                   <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
                     <span>DMG: {weapon.damage}</span>
                     <span>Wt: {weapon.weight}</span>

@@ -70,6 +70,11 @@ export interface WeaponDefinition {
   reloadTurns?: number;
   /** If set, reloads this many rounds per reload action instead of filling to full */
   reloadAmountOverride?: number;
+  /**
+   * When true, stays in the catalog for existing sheets but cannot be newly
+   * purchased. Soft-delete for migrations.
+   */
+  deprecated?: boolean;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────
@@ -109,6 +114,11 @@ export interface AttachmentDefinition {
   excludesAttachmentIds?: string[];
   /** If true, this attachment does not cost an item slot (always free) */
   isFree?: boolean;
+  /**
+   * When true, stays in the catalog for existing sheets but cannot be newly
+   * purchased. Soft-delete for migrations.
+   */
+  deprecated?: boolean;
 }
 
 // ── General equipment ───────────────────────────────────────────────────────
@@ -127,6 +137,11 @@ export interface EquipmentDefinition {
    * It can only be obtained by perk grants.
    */
   isGhost?: boolean;
+  /**
+   * When true, stays in the catalog for existing sheets but cannot be newly
+   * purchased. Soft-delete for migrations.
+   */
+  deprecated?: boolean;
   /**
    * ID of a ghost version of this item (set on the regular purchasable item).
    * If the player already has the ghost version in their inventory, the regular
@@ -161,6 +176,11 @@ export interface MeleeWeaponTemplate {
   /** Trait IDs applied to this melee weapon */
   traitIds: string[];
   description: string;
+  /**
+   * When true, stays in the catalog for existing sheets but cannot be newly
+   * purchased. Soft-delete for migrations.
+   */
+  deprecated?: boolean;
 }
 
 // ── Free accessories ────────────────────────────────────────────────────────
@@ -209,6 +229,11 @@ export interface VehicleDefinition {
   nation: Nation;
   /** Extra point cost to add this vehicle to a character sheet */
   pointCost: number;
+  /**
+   * When true, stays in the catalog for existing sheets but cannot be newly
+   * purchased. Soft-delete for migrations.
+   */
+  deprecated?: boolean;
   armor: {
     front: VehicleArmorRating;
     side: VehicleArmorRating;

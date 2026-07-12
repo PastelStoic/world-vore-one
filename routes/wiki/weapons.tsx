@@ -7,6 +7,7 @@ import {
 } from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 
 const KIND_LABELS: Record<WeaponKind, string> = {
   "bolt-action-rifle": "Bolt-action Rifles",
@@ -87,7 +88,10 @@ export default define.page(function WikiWeapons() {
                   class="border rounded-lg bg-base-100/80 px-4 py-2"
                 >
                   <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                    <span class="font-semibold">{weapon.name}</span>
+                    <span class="font-semibold">
+                      {weapon.name}
+                      {weapon.deprecated ? <DeprecatedBadge /> : null}
+                    </span>
                     <span class="text-xs text-base-content/60">
                       {weapon.nation}
                     </span>

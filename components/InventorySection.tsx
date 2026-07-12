@@ -6,6 +6,7 @@ import {
   EQUIPMENT_BY_ID,
   MELEE_TRAITS_BY_ID,
   MELEE_WEAPONS,
+  MELEE_WEAPONS_BY_ID,
   type Nation,
   VEHICLES,
   VEHICLES_BY_ID,
@@ -255,7 +256,7 @@ export default function InventorySection(props: InventorySectionProps) {
   // -- Add weapon --
   function addWeapon(weaponId: string, location: InventoryLocation) {
     const def = WEAPONS_BY_ID.get(weaponId);
-    if (!def) return;
+    if (!def || def.deprecated) return;
     const item: InventoryWeapon = {
       weaponId,
       currentAmmo: def.ammo,
@@ -369,7 +370,7 @@ export default function InventorySection(props: InventorySectionProps) {
   // -- Add equipment --
   function addEquipment(equipmentId: string, location: InventoryLocation) {
     const def = EQUIPMENT_BY_ID.get(equipmentId);
-    if (!def) return;
+    if (!def || def.deprecated) return;
     if (location === "carried" && def.isBulky && carriedBulkyCount > 0) {
       return;
     }
@@ -388,7 +389,7 @@ export default function InventorySection(props: InventorySectionProps) {
   // -- Add vehicle --
   function addVehicle(vehicleId: string) {
     const def = VEHICLES_BY_ID.get(vehicleId);
-    if (!def) return;
+    if (!def || def.deprecated) return;
     const item: InventoryVehicle = { vehicleId };
     update((inv) => {
       inv.stowed.vehicles ??= [];
@@ -714,7 +715,7 @@ export default function InventorySection(props: InventorySectionProps) {
     location: InventoryLocation,
   ) {
     const def = ATTACHMENTS_BY_ID.get(attachmentId);
-    if (!def) return;
+    if (!def || def.deprecated) return;
     const item: InventoryAttachment = {
       attachmentId,
       totalCharges: def.isCharge ? 1 : 0,
@@ -780,6 +781,8 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // -- Add melee weapon --
   function addMeleeWeapon(meleeWeaponId: string, location: InventoryLocation) {
+    const def = MELEE_WEAPONS_BY_ID.get(meleeWeaponId);
+    if (!def || def.deprecated) return;
     const item: InventoryMeleeWeapon = {
       instanceId: crypto.randomUUID(),
       meleeWeaponId,
@@ -988,6 +991,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // ── Filter available weapons/equipment ──
   const filteredWeapons = WEAPONS.filter((w) => {
+    if (w.deprecated) return false;
     if (nationFilter) {
       if (w.nation === "Any") {
         if (nationFilter === "Civilian") return false;
@@ -1010,6 +1014,7 @@ export default function InventorySection(props: InventorySectionProps) {
   ]);
 
   const filteredEquipment = EQUIPMENT.filter((e) => {
+    if (e.deprecated) return false;
     if (e.isGhost) return false;
     if (e.ghostVersionId && inventoryEquipmentIds.has(e.ghostVersionId)) {
       return false;
@@ -1019,11 +1024,13 @@ export default function InventorySection(props: InventorySectionProps) {
   });
 
   const filteredMeleeWeapons = MELEE_WEAPONS.filter((mw) => {
+    if (mw.deprecated) return false;
     if (!meleeFilter) return true;
     return mw.name.toLowerCase().includes(meleeFilter.toLowerCase());
   });
 
   const filteredVehicles = VEHICLES.filter((vehicle) => {
+    if (vehicle.deprecated) return false;
     if (vehicleNationFilter) {
       if (vehicle.nation === "Any") {
         if (vehicleNationFilter === "Civilian") return false;
@@ -1038,6 +1045,7 @@ export default function InventorySection(props: InventorySectionProps) {
   });
 
   const filteredAttachments = ATTACHMENTS.filter((a) => {
+    if (a.deprecated) return false;
     if (attachmentNationFilter) {
       if (attachmentNationFilter === "Any") {
         if (a.nation !== "Any") return false;

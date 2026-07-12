@@ -6,6 +6,7 @@ import type { InventoryAttachment } from "@/lib/inventory_types.ts";
 import { ATTACHMENTS_BY_ID } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 
 interface AttachmentCardProps {
@@ -83,7 +84,8 @@ export default function AttachmentCard(props: AttachmentCardProps) {
     <div class="border rounded p-2 space-y-1 bg-base-100">
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
-          <strong>{def.name}</strong>{" "}
+          <strong>{def.name}</strong>
+          {def.deprecated && <DeprecatedBadge />}{" "}
           <span class="text-xs text-base-content/60">
             (W:{currentWeight} · For: {def.appliesTo})
           </span>
@@ -93,25 +95,30 @@ export default function AttachmentCard(props: AttachmentCardProps) {
             </span>
           )}
         </div>
-        {!readOnly && !isPerkGranted && (
+        {!readOnly && (!isPerkGranted || def.deprecated) && (
           <div class="flex gap-1">
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-              onClick={() => onMove(location, index, otherLocation)}
-            >
-              → {otherLocation === "carried" ? "Carry" : "Stow"}
-            </button>
+            {!isPerkGranted && (
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                onClick={() => onMove(location, index, otherLocation)}
+              >
+                → {otherLocation === "carried" ? "Carry" : "Stow"}
+              </button>
+            )}
             <button
               type="button"
               class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => onRemove(location, index)}
+              title={def.deprecated
+                ? "Remove deprecated item and free inventory slots/points"
+                : undefined}
             >
-              Remove
+              {def.deprecated ? "Remove & refund" : "Remove"}
             </button>
           </div>
         )}
-        {!readOnly && isPerkGranted && (
+        {!readOnly && isPerkGranted && !def.deprecated && (
           <div class="flex gap-1">
             <button
               type="button"

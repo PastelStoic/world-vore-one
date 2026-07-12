@@ -90,6 +90,7 @@ export interface PerkEligibilityContext {
  * the server enforces via {@link validatePerkRequirements} in data/perks.ts.
  *
  * Rules checked:
+ * - Not deprecated (soft-deleted; still resolve on existing sheets)
  * - Not already owned or derived
  * - Race / sex / faction requirements
  * - Lock category (at most one per category)
@@ -99,6 +100,7 @@ export function isPerkEligible(
   perk: PerkDefinition,
   ctx: PerkEligibilityContext,
 ): boolean {
+  if (perk.deprecated) return false;
   if (perk.selectionOnly) return false;
   if (perk.adminOnly && !ctx.isModerator) return false;
 

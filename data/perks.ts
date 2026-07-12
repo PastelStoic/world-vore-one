@@ -148,6 +148,12 @@ export interface PerkDefinition {
   maxCharactersPerAccount?: number;
   /** When true, hide this perk from the normal add-perk picker. */
   selectionOnly?: boolean;
+  /**
+   * When true, this perk stays in the catalog (names/costs still resolve) but
+   * is treated as removed for new selection. Existing owners can keep it or
+   * remove it for a refund — useful for soft migrations before hard-deleting.
+   */
+  deprecated?: boolean;
   overridesRaceName?: { oldName: string; newName: string }[];
 }
 

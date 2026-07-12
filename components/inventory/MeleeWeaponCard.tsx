@@ -9,6 +9,7 @@ import {
   MELEE_WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
 
@@ -109,6 +110,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
             </span>
           )}
           <strong>{def.name}</strong>
+          {def.deprecated && <DeprecatedBadge />}
           <span class="text-xs text-base-content/60 ml-1">
             (DMG:{damageDisplay} · W:{weight})
           </span>
@@ -131,9 +133,9 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
             </span>
           )}
         </div>
-        {!readOnly && !isPerkGranted && (
+        {!readOnly && (!isPerkGranted || def.deprecated) && (
           <div class="flex gap-1">
-            {hasSignatureWeaponPerk && (
+            {!isPerkGranted && hasSignatureWeaponPerk && (
               <button
                 type="button"
                 class={`px-2 py-0.5 text-xs border rounded ${
@@ -149,19 +151,24 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                 {isSignature ? "★ Signature" : "☆ Set Signature"}
               </button>
             )}
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-              onClick={() => onMove(location, index, otherLocation)}
-            >
-              → {otherLocation === "carried" ? "Carry" : "Stow"}
-            </button>
+            {!isPerkGranted && (
+              <button
+                type="button"
+                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                onClick={() => onMove(location, index, otherLocation)}
+              >
+                → {otherLocation === "carried" ? "Carry" : "Stow"}
+              </button>
+            )}
             <button
               type="button"
               class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
               onClick={() => onRemove(location, index)}
+              title={def.deprecated
+                ? "Remove deprecated item and free inventory slots/points"
+                : undefined}
             >
-              Remove
+              {def.deprecated ? "Remove & refund" : "Remove"}
             </button>
           </div>
         )}

@@ -9,6 +9,7 @@ import {
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import TraitBadge from "@/components/inventory/TraitBadge.tsx";
 import {
   canAttachToWeapon,
@@ -274,7 +275,8 @@ export default function WeaponCard(props: WeaponCardProps) {
               ★
             </span>
           )}
-          <strong>{def.name}</strong>{" "}
+          <strong>{def.name}</strong>
+          {def.deprecated && <DeprecatedBadge />}{" "}
           <span class="text-xs text-base-content/60">
             ({def.type} · {def.nation} · W:{displayedWeight}{" "}
             · DMG:{damageDisplay} · ROF:{effectiveRateOfFire})
@@ -352,8 +354,11 @@ export default function WeaponCard(props: WeaponCardProps) {
                   type="button"
                   class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
                   onClick={() => props.onRemove(location, index)}
+                  title={def.deprecated
+                    ? "Remove deprecated item and free inventory slots/points"
+                    : undefined}
                 >
-                  Remove
+                  {def.deprecated ? "Remove & refund" : "Remove"}
                 </button>
               )}
           </div>

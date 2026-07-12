@@ -43,6 +43,7 @@ import { useImageUpload } from "@/lib/useImageUpload.ts";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
+import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { Button } from "@/components/Button.tsx";
@@ -511,6 +512,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (perkIds.includes(perkId)) return;
 
     const perk = PERKS_BY_ID.get(perkId);
+    if (!perk || perk.deprecated) return;
     const includedIds = (perk?.includesPerks ?? []).filter((id) =>
       !perkIds.includes(id)
     );
@@ -615,9 +617,11 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function unbuyPerk(perkId: string) {
-    const isUnknownPerk = !PERKS_BY_ID.has(perkId);
+    const perkDef = PERKS_BY_ID.get(perkId);
+    // Unknown or deprecated perks can always be removed (migration path)
+    const isForceRemovable = !perkDef || !!perkDef.deprecated;
     if (
-      !isUnknownPerk && !canRemoveOldPerks && initialPerkIds.includes(perkId)
+      !isForceRemovable && !canRemoveOldPerks && initialPerkIds.includes(perkId)
     ) {
       return;
     }
@@ -730,7 +734,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
   function upgradePerk(perkId: string) {
     const perk = PERKS_BY_ID.get(perkId);
-    if (!perk?.upgradable) return;
+    if (!perk?.upgradable || perk.deprecated) return;
     const currentRank = perkRanks[perkId] ?? 1;
     if (perk.maxRanks !== undefined && currentRank >= perk.maxRanks) return;
 
@@ -1591,13 +1595,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           : perkOrigin === "race"
                           ? "Added by race"
                           : undefined;
-                        const canRemove = !isDerived && (canRemoveOldPerks ||
-                          !initialPerkIds.includes(perk.id));
+                        const canRemove = !isDerived && (
+                          canRemoveOldPerks ||
+                          !initialPerkIds.includes(perk.id) ||
+                          !!perk.deprecated
+                        );
                         const currentRank = perkRanks[perk.id] ?? 1;
                         const isUpgradable = perk?.upgradable ?? false;
                         const initialRank = initialPerkRanks[perk.id] ??
                           (initialPerkIds.includes(perk.id) ? 1 : 0);
                         const canDowngrade = isUpgradable &&
+                          !perk.deprecated &&
                           (canRemoveOldPerks || currentRank > initialRank) &&
                           // Derived perks cannot be downgraded below rank 1
                           (!isDerived || currentRank > 1);
@@ -1615,6 +1623,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             (s) => !chosenStats.includes(s as BaseStatKey),
                           );
                         const canUpgrade = isUpgradable &&
+                          !perk.deprecated &&
                           (perk?.maxRanks === undefined ||
                             currentRank < perk.maxRanks) &&
                           !hasUnsatisfiedStatChoices &&
@@ -1659,6 +1668,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   name={perk.name}
                                   description={perk.description}
                                 />
+                                {perk.deprecated && <DeprecatedBadge />}
                                 {isDerived && sourcePerk && (
                                   <span class="ml-1 text-xs bg-base-300 text-base-content/60 px-1 rounded">
                                     included by {sourcePerk.name}
@@ -1703,8 +1713,13 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                   type="button"
                                   class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
                                   onClick={() => unbuyPerk(perk.id)}
+                                  title={perk.deprecated
+                                    ? "Remove deprecated perk and refund spent stat points"
+                                    : undefined}
                                 >
-                                  Remove
+                                  {perk.deprecated
+                                    ? "Remove & refund"
+                                    : "Remove"}
                                 </button>
                               )}
                             </div>
@@ -1904,7 +1919,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                     .filter((p) =>
                                       p.id !== perk.id &&
                                       !p.canDisguise &&
-                                      !p.isFree
+                                      !p.isFree &&
+                                      !p.deprecated
                                     )
                                     .map((p) => (
                                       <option key={p.id} value={p.id}>
@@ -1929,6 +1945,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                           );
                                       const candidatePerks = props.perks.filter(
                                         (p) => {
+                                          if (p.deprecated) return false;
                                           if (
                                             perk.selectablePerkIds!.length >
                                               0 &&

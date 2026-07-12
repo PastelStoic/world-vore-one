@@ -946,6 +946,24 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
           {showDescription && (
             <>
               <label class="block">
+                <span class="block font-medium mb-1">Sex</span>
+                <select
+                  class="select w-full border rounded px-3 py-2"
+                  value={description.sex}
+                  onInput={(event) => {
+                    const newSex = event.currentTarget.value as Sex;
+                    updateDescription("sex", newSex);
+                    // Swap gendered race name to match new sex
+                    setRace((prev) => mapRaceForSex(prev, newSex));
+                  }}
+                >
+                  {SEX_OPTIONS.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label class="block">
                 <span class="block font-medium mb-1">Race</span>
                 <select
                   class="select w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -1035,24 +1053,6 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     Displayed as: {displayedRaceName}
                   </span>
                 )}
-              </label>
-
-              <label class="block">
-                <span class="block font-medium mb-1">Sex</span>
-                <select
-                  class="select w-full border rounded px-3 py-2"
-                  value={description.sex}
-                  onInput={(event) => {
-                    const newSex = event.currentTarget.value as Sex;
-                    updateDescription("sex", newSex);
-                    // Swap gendered race name to match new sex
-                    setRace((prev) => mapRaceForSex(prev, newSex));
-                  }}
-                >
-                  {SEX_OPTIONS.map((option) => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
               </label>
 
               {(isPilzRace(race) || isTierRace(race)) && (

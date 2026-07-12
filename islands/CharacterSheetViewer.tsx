@@ -169,6 +169,15 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         {showDescription && (
           <div class="space-y-1 mt-2 whitespace-pre-wrap">
             <p>
+              <strong>Sex:</strong> {desc.sex}
+              {canSeeDisguisedPerks &&
+                character.perkDisguises?.["pilzherr-femboy"] && (
+                <span class="block ml-5 text-purple-600 italic text-xs">
+                  Displayed as: Futa
+                </span>
+              )}
+            </p>
+            <p>
               <strong>Race:</strong> {displayedRaceName}
               {canSeeDisguisedPerks &&
                 character.perkDisguises?.["pilzherr-femboy"] && (
@@ -178,15 +187,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                     : displayedRaceName === "Tierherr"
                     ? "Tierfraun"
                     : displayedRaceName}
-                </span>
-              )}
-            </p>
-            <p>
-              <strong>Sex:</strong> {desc.sex}
-              {canSeeDisguisedPerks &&
-                character.perkDisguises?.["pilzherr-femboy"] && (
-                <span class="block ml-5 text-purple-600 italic text-xs">
-                  Displayed as: Futa
                 </span>
               )}
             </p>

@@ -269,7 +269,7 @@ export function createDefaultDescription(): CharacterDescription {
     role: "",
     age: "",
     dateOfBirth: "",
-    sex: "Male",
+    sex: "Female",
     height: "",
     weight: "",
     skinColor: "",

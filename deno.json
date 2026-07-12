@@ -2,9 +2,12 @@
   "nodeModulesDir": "manual",
   "tasks": {
     "check": "deno fmt --check . && deno lint . && deno check",
-    "dev": "deno run --unstable-kv --env-file -A vite",
+    "dev": "deno run --env-file -A vite",
     "build": "vite build",
-    "start": "deno serve -A _fresh/server.js",
+    "start": "deno serve -A --env-file _fresh/server.js",
+    "migrate:kv": "deno run --unstable-kv --env-file -A scripts/migrate_kv_to_postgres.ts",
+    "migrate:kv:deploy": "deno run --unstable-kv --env-file -A scripts/migrate_kv_to_postgres.ts",
+    "test:db": "deno test --env-file -A --unstable-kv lib/db/",
     "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
@@ -27,7 +30,10 @@
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",
     "vite": "npm:vite@^7.1.3",
     "tailwindcss": "npm:tailwindcss@^4.1.10",
-    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.12"
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.12",
+    "drizzle-orm": "npm:drizzle-orm@^0.44.2",
+    "drizzle-orm/": "npm:/drizzle-orm@^0.44.2/",
+    "postgres": "npm:postgres@^3.4.7"
   },
   "compilerOptions": {
     "lib": [

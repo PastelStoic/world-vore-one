@@ -1,10 +1,16 @@
-const ADMIN_PREFIX = ["admins"] as const;
+import { eq } from "drizzle-orm";
+import { getDb } from "./db/client.ts";
+import { admins, bans } from "./db/schema.ts";
 
 /** Check whether a user (by Discord ID) is an admin. */
 export async function isAdmin(userId: string): Promise<boolean> {
-  const kv = await Deno.openKv();
-  const entry = await kv.get<boolean>([...ADMIN_PREFIX, userId]);
-  return entry.value === true;
+  const db = getDb();
+  const rows = await db
+    .select({ userId: admins.userId })
+    .from(admins)
+    .where(eq(admins.userId, userId))
+    .limit(1);
+  return rows.length > 0;
 }
 
 /** Grant admin status to a user. */
@@ -12,29 +18,27 @@ export async function setAdmin(
   userId: string,
   username: string,
 ): Promise<void> {
-  const kv = await Deno.openKv();
-  await kv.set([...ADMIN_PREFIX, userId], true);
-  // Also store the username for display purposes
-  await kv.set([...ADMIN_PREFIX, userId, "username"], username);
+  const db = getDb();
+  await db
+    .insert(admins)
+    .values({ userId, username })
+    .onConflictDoUpdate({
+      target: admins.userId,
+      set: { username },
+    });
 }
 
 /** Revoke admin status from a user. */
 export async function removeAdmin(userId: string): Promise<void> {
-  const kv = await Deno.openKv();
-  await kv.delete([...ADMIN_PREFIX, userId]);
-  await kv.delete([...ADMIN_PREFIX, userId, "username"]);
+  const db = getDb();
+  await db.delete(admins).where(eq(admins.userId, userId));
 }
 
 /** Check whether any admin accounts exist at all. */
 export async function anyAdminsExist(): Promise<boolean> {
-  const kv = await Deno.openKv();
-  for await (const entry of kv.list<boolean>({ prefix: [...ADMIN_PREFIX] })) {
-    // Only count direct admin entries (not sub-keys like "username")
-    if (entry.key.length === 2 && entry.value === true) {
-      return true;
-    }
-  }
-  return false;
+  const db = getDb();
+  const rows = await db.select({ userId: admins.userId }).from(admins).limit(1);
+  return rows.length > 0;
 }
 
 export interface AdminRecord {
@@ -44,30 +48,15 @@ export interface AdminRecord {
 
 /** List all admin users. */
 export async function listAdmins(): Promise<AdminRecord[]> {
-  const kv = await Deno.openKv();
-  const admins: AdminRecord[] = [];
-
-  for await (const entry of kv.list<boolean>({ prefix: [...ADMIN_PREFIX] })) {
-    if (entry.key.length === 2 && entry.value === true) {
-      const userId = entry.key[1] as string;
-      const usernameEntry = await kv.get<string>([
-        ...ADMIN_PREFIX,
-        userId,
-        "username",
-      ]);
-      admins.push({
-        userId,
-        username: usernameEntry.value ?? userId,
-      });
-    }
-  }
-
-  return admins;
+  const db = getDb();
+  const rows = await db.select().from(admins);
+  return rows.map((row) => ({
+    userId: row.userId,
+    username: row.username,
+  }));
 }
 
 // ── Ban management ─────────────────────────────────────────────────
-
-const BAN_PREFIX = ["bans"] as const;
 
 export interface BannedRecord {
   userId: string;
@@ -77,9 +66,13 @@ export interface BannedRecord {
 
 /** Check whether a user is banned. */
 export async function isUserBanned(userId: string): Promise<boolean> {
-  const kv = await Deno.openKv();
-  const entry = await kv.get<boolean>([...BAN_PREFIX, userId]);
-  return entry.value === true;
+  const db = getDb();
+  const rows = await db
+    .select({ userId: bans.userId })
+    .from(bans)
+    .where(eq(bans.userId, userId))
+    .limit(1);
+  return rows.length > 0;
 }
 
 /** Ban a user. */
@@ -87,39 +80,30 @@ export async function banUser(
   userId: string,
   username: string,
 ): Promise<void> {
-  const kv = await Deno.openKv();
-  await kv.set([...BAN_PREFIX, userId], true);
-  await kv.set([...BAN_PREFIX, userId, "username"], username);
-  await kv.set([...BAN_PREFIX, userId, "bannedAt"], new Date().toISOString());
+  const db = getDb();
+  const bannedAt = new Date().toISOString();
+  await db
+    .insert(bans)
+    .values({ userId, username, bannedAt })
+    .onConflictDoUpdate({
+      target: bans.userId,
+      set: { username, bannedAt },
+    });
 }
 
 /** Unban a user. */
 export async function unbanUser(userId: string): Promise<void> {
-  const kv = await Deno.openKv();
-  await kv.delete([...BAN_PREFIX, userId]);
-  await kv.delete([...BAN_PREFIX, userId, "username"]);
-  await kv.delete([...BAN_PREFIX, userId, "bannedAt"]);
+  const db = getDb();
+  await db.delete(bans).where(eq(bans.userId, userId));
 }
 
 /** List all banned users. */
 export async function listBannedUsers(): Promise<BannedRecord[]> {
-  const kv = await Deno.openKv();
-  const banned: BannedRecord[] = [];
-
-  for await (const entry of kv.list<boolean>({ prefix: [...BAN_PREFIX] })) {
-    if (entry.key.length === 2 && entry.value === true) {
-      const userId = entry.key[1] as string;
-      const [usernameEntry, bannedAtEntry] = await Promise.all([
-        kv.get<string>([...BAN_PREFIX, userId, "username"]),
-        kv.get<string>([...BAN_PREFIX, userId, "bannedAt"]),
-      ]);
-      banned.push({
-        userId,
-        username: usernameEntry.value ?? userId,
-        bannedAt: bannedAtEntry.value ?? "",
-      });
-    }
-  }
-
-  return banned;
+  const db = getDb();
+  const rows = await db.select().from(bans);
+  return rows.map((row) => ({
+    userId: row.userId,
+    username: row.username,
+    bannedAt: row.bannedAt,
+  }));
 }

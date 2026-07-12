@@ -8,6 +8,7 @@
     "jsr:@fresh/core@2": "2.2.0",
     "jsr:@fresh/core@^2.2.0": "2.2.0",
     "jsr:@fresh/plugin-vite@^1.0.8": "1.0.8",
+    "jsr:@std/assert@1": "1.0.19",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/dotenv@~0.225.5": "0.225.5",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
@@ -35,9 +36,11 @@
     "npm:@prefresh/vite@^2.4.8": "2.4.12_preact@10.27.2_vite@7.2.4__picomatch@4.0.3",
     "npm:@tailwindcss/vite@^4.1.12": "4.1.17_vite@7.2.4__picomatch@4.0.3",
     "npm:daisyui@^5.5.19": "5.5.19",
+    "npm:drizzle-orm@~0.44.2": "0.44.7_@opentelemetry+api@1.9.0_postgres@3.4.9",
     "npm:esbuild-wasm@~0.25.11": "0.25.12",
     "npm:esbuild@0.25.7": "0.25.7",
     "npm:esbuild@~0.25.5": "0.25.7",
+    "npm:postgres@^3.4.7": "3.4.9",
     "npm:preact-render-to-string@^6.6.3": "6.6.6_preact@10.27.2",
     "npm:preact@^10.27.0": "10.27.2",
     "npm:preact@^10.27.2": "10.27.2",
@@ -103,6 +106,12 @@
         "npm:@prefresh/vite",
         "npm:rollup",
         "npm:vite@^7.1.4"
+      ]
+    },
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal"
       ]
     },
     "@std/bytes@1.0.6": {
@@ -792,6 +801,17 @@
     "detect-libc@2.1.2": {
       "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="
     },
+    "drizzle-orm@0.44.7_@opentelemetry+api@1.9.0_postgres@3.4.9": {
+      "integrity": "sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==",
+      "dependencies": [
+        "@opentelemetry/api",
+        "postgres"
+      ],
+      "optionalPeers": [
+        "@opentelemetry/api",
+        "postgres"
+      ]
+    },
     "electron-to-chromium@1.5.302": {
       "integrity": "sha512-sM6HAN2LyK82IyPBpznDRqlTQAtuSaO+ShzFiWTvoMJLHyZ+Y39r8VMfHzwbU8MVBzQ4Wdn85+wlZl2TLGIlwg=="
     },
@@ -993,6 +1013,9 @@
         "source-map-js"
       ]
     },
+    "postgres@3.4.9": {
+      "integrity": "sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw=="
+    },
     "preact-render-to-string@6.6.6_preact@10.27.2": {
       "integrity": "sha512-EfqZJytnjJldV+YaaqhthU2oXsEf5e+6rDv957p+zxAvNfFLQOPfvBOTncscQ+akzu6Wrl7s3Pa0LjUQmWJsGQ==",
       "dependencies": [
@@ -1089,6 +1112,8 @@
       "npm:@preact/signals@^2.5.0",
       "npm:@tailwindcss/vite@^4.1.12",
       "npm:daisyui@^5.5.19",
+      "npm:drizzle-orm@~0.44.2",
+      "npm:postgres@^3.4.7",
       "npm:preact@^10.27.2",
       "npm:tailwindcss@^4.1.10",
       "npm:vite@^7.1.3"

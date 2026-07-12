@@ -4,13 +4,13 @@
 
 | Layer          | Technology                                    |
 | -------------- | --------------------------------------------- |
-| **Runtime**    | Deno (with `--unstable-kv`)                   |
+| **Runtime**    | Deno (Deno Deploy)                            |
 | **Framework**  | Fresh v2 (SSR + Islands architecture)         |
 | **UI Library** | Preact 10.x                                   |
 | **Signals**    | `@preact/signals`                             |
 | **Build Tool** | Vite 7 with `@fresh/plugin-vite`              |
 | **CSS**        | Tailwind CSS v4 via `@tailwindcss/vite`       |
-| **Database**   | Deno KV (built-in key-value store)            |
+| **Database**   | Neon Postgres via Drizzle ORM                 |
 | **Auth**       | Discord OAuth2 (authorization code flow)      |
 | **Images**     | Cloudflare Images (Direct Creator Upload API) |
 
@@ -19,7 +19,7 @@
 ## High-Level Data Flow
 
 ```
-Browser ──POST/GET──▶ Routes (server-rendered) ──▶ lib/ (business logic) ──▶ Deno KV
+Browser ──POST/GET──▶ Routes (server-rendered) ──▶ lib/ (business logic) ──▶ Neon Postgres
                             │
                             ▼
                       Islands (hydrate on client, interactive UI)
@@ -104,18 +104,48 @@ handlers.
 
 ## Data Layer
 
-### Deno KV
+### Neon Postgres (Drizzle)
 
-All persistence uses Deno's built-in KV store accessed via `Deno.openKv()` in
-`lib/character_db.ts`. Key prefixes:
+All runtime persistence uses Neon-managed Postgres via Drizzle ORM
+(`lib/db/client.ts`, `lib/db/schema.ts`). Connection string:
+`DATABASE_URL` or `NEON_CONNECTION_STRING`.
 
-| Prefix                       | Data                      |
-| ---------------------------- | ------------------------- |
-| `["characters", id]`         | Character sheets          |
-| `["characters_by_user", …]`  | User → character index    |
-| `["character_snapshots", …]` | Snapshot history          |
-| `["sessions", sessionId]`    | Auth sessions (7-day TTL) |
-| `["admins", userId]`         | Admin role flags          |
+| Table                 | Data                                      |
+| --------------------- | ----------------------------------------- |
+| `characters`          | Character sheets (JSONB + user_id index)  |
+| `character_snapshots` | Snapshot history (CASCADE on character)   |
+| `sessions`            | Auth sessions (app-enforced `expires_at`) |
+| `admins`              | Admin grants (user_id, username)          |
+| `bans`                | Banned users (user_id, username, banned_at) |
+
+### Production KV → Neon cutover
+
+The site runs on **Deno Deploy**. Legacy data lives in Deploy’s hosted KV;
+runtime now uses Neon. Migrate **from your machine** via KV Connect (not by
+opening a local empty KV):
+
+```bash
+# New Deno Deploy (console.deno.com): org token (ddo_…) + Databases → Database ID
+# In .env:
+#   DENO_KV_ACCESS_TOKEN=ddo_...
+#   DENO_KV_DATABASE_ID=...
+#   NEON_CONNECTION_STRING=...   # same secret you set on Deploy
+# Optional: DENO_KV_API_VERSION=classic  # only if data is still on Deploy Classic
+
+deno task migrate:kv:deploy -- --inventory   # confirm non-empty KV first
+deno task migrate:kv:deploy                  # pre-copy while old build still serves
+# optional maintenance window
+deno task migrate:kv:deploy                  # final delta (idempotent)
+# deploy this build + set DATABASE_URL / NEON_CONNECTION_STRING on Deploy
+```
+
+**Bearer token invalid:** you hit the Classic connect path with a new-platform
+token. This repo defaults to `/v2/databases/<id>/connect`.
+
+**Empty inventory:** wrong DB id, or Classic data never moved (new Deploy does
+not auto-import Classic KV — contact support@deno.com if needed).
+
+Details: header of `scripts/migrate_kv_to_postgres.ts`.
 
 ### Domain Types (`lib/character_types.ts`)
 
@@ -177,8 +207,8 @@ validates a `CharacterDraft`.
 ### Discord OAuth2 (`lib/auth.ts`)
 
 Full OAuth2 authorization code flow: build auth URL → exchange code for token →
-fetch Discord user profile. Sessions are stored in Deno KV with a 7-day TTL.
-Cookie helpers manage `session_id`.
+fetch Discord user profile. Sessions are stored in Postgres (`sessions` table)
+with a 7-day `expires_at` checked on read. Cookie helpers manage `session`.
 
 **Auth routes:**
 
@@ -189,9 +219,9 @@ Cookie helpers manage `session_id`.
 
 ### Admin System (`lib/admin.ts`)
 
-Admin roles stored in Deno KV. Supports a bootstrap flow: if no admins exist,
-the first logged-in user can self-promote via `POST /api/admin/bootstrap`. Admin
-APIs are gated by `ctx.state.isAdmin`.
+Admin roles stored in Postgres (`admins` table). Supports a bootstrap flow: if
+no admins exist, the first logged-in user can self-promote via
+`POST /api/admin/bootstrap`. Admin APIs are gated by `ctx.state.isAdmin`.
 
 ---
 

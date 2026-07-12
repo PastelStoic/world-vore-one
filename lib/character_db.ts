@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
-// Character database operations (server-only – uses Deno KV)
+// Character database operations (server-only – Neon Postgres via Drizzle)
 // ---------------------------------------------------------------------------
 
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import type {
   CharacterDraft,
   CharacterSheet,
@@ -15,59 +16,12 @@ import {
   cleanupPerkData,
   normalizeCharacterPerkIds,
 } from "./perk_state_helpers.ts";
-
-const CHARACTER_PREFIX = ["characters"] as const;
-const CHARACTER_BY_USER_PREFIX = ["characters_by_user"] as const;
-const CHARACTER_SNAPSHOT_PREFIX = ["character_snapshots"] as const;
-const CHARACTER_SNAPSHOT_BY_ID_PREFIX = ["character_snapshots_by_id"] as const;
-
-// ---------------------------------------------------------------------------
-// KV singleton
-// ---------------------------------------------------------------------------
-
-let _kv: Deno.Kv | null = null;
-
-async function getKv(): Promise<Deno.Kv> {
-  if (!_kv) _kv = await Deno.openKv();
-  return _kv;
-}
+import { getDb } from "./db/client.ts";
+import { characterSnapshots, characters } from "./db/schema.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-/**
- * Write a character to both KV key paths (by id and by userId) atomically.
- */
-async function saveCharacter(
-  kv: Deno.Kv,
-  character: CharacterSheet,
-): Promise<void> {
-  await kv.set([...CHARACTER_PREFIX, character.id], character);
-  await kv.set(
-    [...CHARACTER_BY_USER_PREFIX, character.userId, character.id],
-    character,
-  );
-}
-
-/**
- * Read-modify-write helper. Fetches a character, applies a mutation, and
- * saves to both key paths. Returns null if the character doesn't exist.
- */
-async function updateCharacter(
-  characterId: string,
-  mutate: (character: CharacterSheet) => void,
-): Promise<CharacterSheet | null> {
-  const kv = await getKv();
-  const character = await getCharacter(characterId);
-  if (!character) return null;
-
-  mutate(character);
-  character.updatedAt = new Date().toISOString();
-
-  await saveCharacter(kv, character);
-  return character;
-}
 
 function replacePerkGrantedInventory(
   inventory: CharacterInventory | undefined,
@@ -116,6 +70,46 @@ function replacePerkReferences(
   return { ids: next, changed };
 }
 
+/** Persist a character as a single-row upsert (no dual-key denormalization). */
+async function saveCharacter(character: CharacterSheet): Promise<void> {
+  const db = getDb();
+  await db
+    .insert(characters)
+    .values({
+      id: character.id,
+      userId: character.userId,
+      sheet: character,
+      createdAt: character.createdAt,
+      updatedAt: character.updatedAt,
+    })
+    .onConflictDoUpdate({
+      target: characters.id,
+      set: {
+        userId: character.userId,
+        sheet: character,
+        updatedAt: character.updatedAt,
+      },
+    });
+}
+
+/**
+ * Read-modify-write helper. Fetches a character, applies a mutation, and
+ * saves. Returns null if the character doesn't exist.
+ */
+async function updateCharacter(
+  characterId: string,
+  mutate: (character: CharacterSheet) => void,
+): Promise<CharacterSheet | null> {
+  const character = await getCharacter(characterId);
+  if (!character) return null;
+
+  mutate(character);
+  character.updatedAt = new Date().toISOString();
+
+  await saveCharacter(character);
+  return character;
+}
+
 export interface ReplacePerkMigrationResult {
   fromPerkId: string;
   toPerkId: string;
@@ -132,7 +126,7 @@ export async function replacePerkAcrossCharacters(
   toPerkId: string,
   options?: { dryRun?: boolean },
 ): Promise<ReplacePerkMigrationResult> {
-  const kv = await getKv();
+  const db = getDb();
   const dryRun = options?.dryRun ?? true;
   const result: ReplacePerkMigrationResult = {
     fromPerkId,
@@ -145,13 +139,14 @@ export async function replacePerkAcrossCharacters(
     inventoryUpdated: 0,
   };
 
-  for await (
-    const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
-  ) {
-    if (!entry.value) continue;
+  const rows = await db.select().from(characters);
+  const toWrite: CharacterSheet[] = [];
+
+  for (const row of rows) {
+    if (!row.sheet) continue;
 
     result.scanned += 1;
-    const character = normalizeCharacterPerkIds(entry.value);
+    const character = normalizeCharacterPerkIds(row.sheet);
     const hadFrom = character.perkIds.includes(fromPerkId);
     if (!hadFrom) continue;
 
@@ -229,9 +224,33 @@ export async function replacePerkAcrossCharacters(
 
     character.updatedAt = new Date().toISOString();
     result.changed += 1;
+    toWrite.push(character);
+  }
 
-    if (!dryRun) {
-      await saveCharacter(kv, character);
+  // Batch multi-row upserts in chunks (fewest practical write round trips)
+  if (!dryRun && toWrite.length > 0) {
+    const CHUNK = 50;
+    for (let i = 0; i < toWrite.length; i += CHUNK) {
+      const chunk = toWrite.slice(i, i + CHUNK);
+      await db
+        .insert(characters)
+        .values(
+          chunk.map((character) => ({
+            id: character.id,
+            userId: character.userId,
+            sheet: character,
+            createdAt: character.createdAt,
+            updatedAt: character.updatedAt,
+          })),
+        )
+        .onConflictDoUpdate({
+          target: characters.id,
+          set: {
+            userId: sql`excluded.user_id`,
+            sheet: sql`excluded.sheet`,
+            updatedAt: sql`excluded.updated_at`,
+          },
+        });
     }
   }
 
@@ -243,35 +262,19 @@ export async function replacePerkAcrossCharacters(
 // ---------------------------------------------------------------------------
 
 export async function listCharacters(userId?: string) {
-  const kv = await getKv();
-  const characters: CharacterSheet[] = [];
+  const db = getDb();
+  const rows = userId
+    ? await db
+      .select()
+      .from(characters)
+      .where(eq(characters.userId, userId))
+      .orderBy(desc(characters.updatedAt))
+    : await db
+      .select()
+      .from(characters)
+      .orderBy(desc(characters.updatedAt));
 
-  if (userId) {
-    for await (
-      const entry of kv.list<CharacterSheet>({
-        prefix: [...CHARACTER_BY_USER_PREFIX, userId],
-      })
-    ) {
-      if (entry.value) {
-        characters.push(normalizeCharacterPerkIds(entry.value));
-      }
-    }
-  } else {
-    for await (
-      const entry of kv.list<CharacterSheet>({ prefix: CHARACTER_PREFIX })
-    ) {
-      if (entry.value) {
-        characters.push(normalizeCharacterPerkIds(entry.value));
-      }
-    }
-  }
-
-  characters.sort((a, b) => {
-    const ta = a.updatedAt || a.createdAt || "";
-    const tb = b.updatedAt || b.createdAt || "";
-    return tb.localeCompare(ta);
-  });
-  return characters;
+  return rows.map((row) => normalizeCharacterPerkIds(row.sheet));
 }
 
 export async function getUserPerkCharacterCounts(
@@ -279,9 +282,9 @@ export async function getUserPerkCharacterCounts(
   options?: { excludeCharacterId?: string },
 ) {
   const counts: Record<string, number> = {};
-  const characters = await listCharacters(userId);
+  const list = await listCharacters(userId);
 
-  for (const character of characters) {
+  for (const character of list) {
     if (character.id === options?.excludeCharacterId) {
       continue;
     }
@@ -307,9 +310,14 @@ export async function validateAccountLimitedPerksForUser(
 }
 
 export async function getCharacter(id: string) {
-  const kv = await getKv();
-  const entry = await kv.get<CharacterSheet>([...CHARACTER_PREFIX, id]);
-  return entry.value ? normalizeCharacterPerkIds(entry.value) : entry.value;
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(characters)
+    .where(eq(characters.id, id))
+    .limit(1);
+  const row = rows[0];
+  return row ? normalizeCharacterPerkIds(row.sheet) : null;
 }
 
 export async function upsertCharacter(
@@ -317,7 +325,7 @@ export async function upsertCharacter(
   changelog: string,
   options?: { basedOnSnapshotId?: string },
 ) {
-  const kv = await getKv();
+  const db = getDb();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
   const normalizedInput = normalizeCharacterPerkIds(input);
@@ -362,18 +370,36 @@ export async function upsertCharacter(
     updatedAt: now,
   };
 
-  await kv.set([
-    ...CHARACTER_SNAPSHOT_PREFIX,
-    input.id,
-    snapshot.timestamp,
-    snapshotId,
-  ], snapshot);
-  await kv.set([
-    ...CHARACTER_SNAPSHOT_BY_ID_PREFIX,
-    normalizedInput.id,
-    snapshotId,
-  ], snapshot);
-  await saveCharacter(kv, character);
+  // Single transaction: character row + snapshot (2 statements, 1 round trip
+  // when using a connection that pipelines; atomic either way)
+  await db.transaction(async (tx) => {
+    // Character first so snapshot FK is satisfied on first insert
+    await tx
+      .insert(characters)
+      .values({
+        id: character.id,
+        userId: character.userId,
+        sheet: character,
+        createdAt: character.createdAt,
+        updatedAt: character.updatedAt,
+      })
+      .onConflictDoUpdate({
+        target: characters.id,
+        set: {
+          userId: character.userId,
+          sheet: character,
+          updatedAt: character.updatedAt,
+        },
+      });
+
+    await tx.insert(characterSnapshots).values({
+      snapshotId: snapshot.snapshotId,
+      characterId: snapshot.characterId,
+      timestamp: snapshot.timestamp,
+      snapshot,
+    });
+  });
+
   return character;
 }
 
@@ -399,7 +425,6 @@ export async function upsertCharacterDirect(
     status?: CharacterStatus;
   },
 ) {
-  const kv = await getKv();
   const now = new Date().toISOString();
   const existing = await getCharacter(input.id);
   const normalizedInput = normalizeCharacterPerkIds(input);
@@ -414,7 +439,7 @@ export async function upsertCharacterDirect(
     updatedAt: now,
   };
 
-  await saveCharacter(kv, character);
+  await saveCharacter(character);
   return character;
 }
 
@@ -454,97 +479,66 @@ export function setCharacterHidden(
 }
 
 export async function listCharacterSnapshots(characterId: string) {
-  const kv = await getKv();
-  const snapshots: CharacterSnapshot[] = [];
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(characterSnapshots)
+    .where(eq(characterSnapshots.characterId, characterId))
+    .orderBy(desc(characterSnapshots.timestamp));
 
-  for await (
-    const entry of kv.list<CharacterSnapshot>({
-      prefix: [...CHARACTER_SNAPSHOT_PREFIX, characterId],
-    })
-  ) {
-    if (entry.value) {
-      snapshots.push({
-        ...entry.value,
-        data: normalizeCharacterPerkIds(entry.value.data),
-      });
-    }
-  }
-
-  snapshots.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-  return snapshots;
+  return rows.map((row) => ({
+    ...row.snapshot,
+    data: normalizeCharacterPerkIds(row.snapshot.data),
+  }));
 }
 
 export async function getCharacterSnapshot(
   characterId: string,
   snapshotId: string,
 ) {
-  const kv = await getKv();
-  const entry = await kv.get<CharacterSnapshot>([
-    ...CHARACTER_SNAPSHOT_BY_ID_PREFIX,
-    characterId,
-    snapshotId,
-  ]);
-  return entry.value
-    ? { ...entry.value, data: normalizeCharacterPerkIds(entry.value.data) }
-    : entry.value;
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(characterSnapshots)
+    .where(
+      and(
+        eq(characterSnapshots.characterId, characterId),
+        eq(characterSnapshots.snapshotId, snapshotId),
+      ),
+    )
+    .limit(1);
+  const row = rows[0];
+  return row
+    ? {
+      ...row.snapshot,
+      data: normalizeCharacterPerkIds(row.snapshot.data),
+    }
+    : null;
 }
 
 /**
- * Delete a single character and all of its snapshots.
+ * Delete a single character and all of its snapshots (CASCADE on FK).
+ * One round trip.
  */
 export async function deleteCharacter(characterId: string): Promise<void> {
-  const kv = await getKv();
-  const character = await getCharacter(characterId);
-
-  // Delete main record and by-user index
-  await kv.delete([...CHARACTER_PREFIX, characterId]);
-  if (character) {
-    await kv.delete([
-      ...CHARACTER_BY_USER_PREFIX,
-      character.userId,
-      characterId,
-    ]);
-  }
-
-  // Delete all snapshots (by timestamp key)
-  for await (
-    const entry of kv.list({
-      prefix: [...CHARACTER_SNAPSHOT_PREFIX, characterId],
-    })
-  ) {
-    await kv.delete(entry.key);
-  }
-
-  // Delete all snapshots (by id key)
-  for await (
-    const entry of kv.list({
-      prefix: [...CHARACTER_SNAPSHOT_BY_ID_PREFIX, characterId],
-    })
-  ) {
-    await kv.delete(entry.key);
-  }
+  const db = getDb();
+  await db.delete(characters).where(eq(characters.id, characterId));
 }
 
 /**
  * Delete all characters (and their snapshots) belonging to a user.
+ * One DELETE + CASCADE – no N sequential deletes.
  */
 export async function deleteAllCharactersForUser(
   userId: string,
 ): Promise<void> {
-  const kv = await getKv();
-  const characterIds: string[] = [];
+  const db = getDb();
+  await db.delete(characters).where(eq(characters.userId, userId));
+}
 
-  for await (
-    const entry of kv.list<CharacterSheet>({
-      prefix: [...CHARACTER_BY_USER_PREFIX, userId],
-    })
-  ) {
-    if (entry.value) {
-      characterIds.push(entry.value.id);
-    }
-  }
-
-  for (const id of characterIds) {
-    await deleteCharacter(id);
-  }
+/** Batch-delete characters by id (used by tests / admin tooling). */
+export async function deleteCharactersByIds(ids: string[]): Promise<void> {
+  if (ids.length === 0) return;
+  const db = getDb();
+  await db.delete(characters).where(inArray(characters.id, ids));
 }

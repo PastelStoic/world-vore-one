@@ -1,5 +1,9 @@
 // ── Discord OAuth2 config ──────────────────────────────────────────
 
+import { eq } from "drizzle-orm";
+import { getDb } from "./db/client.ts";
+import { sessions } from "./db/schema.ts";
+
 const DISCORD_CLIENT_ID = Deno.env.get("DISCORD_CLIENT_ID") ?? "";
 const DISCORD_CLIENT_SECRET = Deno.env.get("DISCORD_CLIENT_SECRET") ?? "";
 const DISCORD_REDIRECT_URI = Deno.env.get("DISCORD_REDIRECT_URI") ??
@@ -17,49 +21,44 @@ export interface SessionUser {
   avatar: string | null;
 }
 
-interface SessionData {
-  user: SessionUser;
-  expiresAt: number;
-}
-
 // ── Session helpers ────────────────────────────────────────────────
 
-const SESSION_PREFIX = ["sessions"] as const;
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export async function createSession(
-  kv: Deno.Kv,
-  user: SessionUser,
-): Promise<string> {
+export async function createSession(user: SessionUser): Promise<string> {
   const sessionId = crypto.randomUUID();
-  const data: SessionData = {
+  const expiresAt = new Date(Date.now() + SESSION_TTL_MS).toISOString();
+  const db = getDb();
+  await db.insert(sessions).values({
+    id: sessionId,
     user,
-    expiresAt: Date.now() + SESSION_TTL_MS,
-  };
-  await kv.set([...SESSION_PREFIX, sessionId], data, {
-    expireIn: SESSION_TTL_MS,
+    expiresAt,
   });
   return sessionId;
 }
 
 export async function getSession(
-  kv: Deno.Kv,
   sessionId: string,
 ): Promise<SessionUser | null> {
-  const entry = await kv.get<SessionData>([...SESSION_PREFIX, sessionId]);
-  if (!entry.value) return null;
-  if (entry.value.expiresAt < Date.now()) {
-    await kv.delete([...SESSION_PREFIX, sessionId]);
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.id, sessionId))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
+
+  if (new Date(row.expiresAt).getTime() < Date.now()) {
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
     return null;
   }
-  return entry.value.user;
+  return row.user;
 }
 
-export async function deleteSession(
-  kv: Deno.Kv,
-  sessionId: string,
-): Promise<void> {
-  await kv.delete([...SESSION_PREFIX, sessionId]);
+export async function deleteSession(sessionId: string): Promise<void> {
+  const db = getDb();
+  await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 
 // ── Cookie helpers ─────────────────────────────────────────────────

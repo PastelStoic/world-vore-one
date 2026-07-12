@@ -31,8 +31,7 @@ app.use(async (ctx) => {
   ctx.state.shared = "hello";
 
   const sessionId = getSessionIdFromRequest(ctx.req);
-  const kv = await Deno.openKv();
-  ctx.state.user = sessionId ? await getSession(kv, sessionId) : null;
+  ctx.state.user = sessionId ? await getSession(sessionId) : null;
   ctx.state.isAdmin = ctx.state.user ? await isAdmin(ctx.state.user.id) : false;
 
   return await ctx.next();

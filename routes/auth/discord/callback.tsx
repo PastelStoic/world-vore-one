@@ -25,8 +25,7 @@ export const handler = define.handlers({
       return new Response("Failed to fetch Discord user.", { status: 400 });
     }
 
-    const kv = await Deno.openKv();
-    const sessionId = await createSession(kv, discordUser);
+    const sessionId = await createSession(discordUser);
     const headers = new Headers({ location: "/" });
     setSessionCookie(headers, sessionId);
     return new Response(null, { status: 302, headers });

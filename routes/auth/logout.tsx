@@ -9,8 +9,7 @@ export const handler = define.handlers({
   async GET(ctx) {
     const sessionId = getSessionIdFromRequest(ctx.req);
     if (sessionId) {
-      const kv = await Deno.openKv();
-      await deleteSession(kv, sessionId);
+      await deleteSession(sessionId);
     }
     const headers = new Headers({ location: "/" });
     clearSessionCookie(headers);

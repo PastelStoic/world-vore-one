@@ -1,6 +1,6 @@
 import { useSignal } from "@preact/signals";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
-import type { SessionUser } from "@/lib/auth.ts";
+import type { SessionUser } from "@/lib/session_types.ts";
 import {
   type BattlerState,
   type Combatant,

@@ -28,7 +28,10 @@ import {
   canSelectFaction,
   FACTION_DEFINITIONS_BY_ID,
 } from "@/data/factions.ts";
-import { calculatePerksCost, getDerivedPerkIds } from "@/lib/characters.ts";
+import {
+  calculatePerksCost,
+  getDerivedPerkIds,
+} from "@/lib/character_parsing.ts";
 import {
   getStatFloor as getSharedStatFloor,
   isPerkEligible,
@@ -382,6 +385,82 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       Object.entries(perkOrigins).filter(([id]) => !removedIds.includes(id)),
     );
   }
+
+  /** Change race, refunding race-gated perks and adjusting starting stat points. */
+  function changeRace(newRace: CharacterDraft["race"]) {
+    if (newRace === race) return;
+    const pointsDiff = getStartingStatPoints(newRace) -
+      getStartingStatPoints(race);
+    // Remove perks that require the old race but not the new one
+    const keptPerkIds = perkIds.filter((id) => {
+      const perk = PERKS_BY_ID.get(id);
+      if (
+        perk?.requiredRaces &&
+        !perk.requiredRaces.includes(newRace)
+      ) return false;
+      return true;
+    });
+    const keptRanks = Object.fromEntries(
+      Object.entries(perkRanks).filter(([id]) => keptPerkIds.includes(id)),
+    );
+    const perkRefund = calculatePerksCost(
+      perkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      perkOrigins,
+    ) -
+      calculatePerksCost(
+        keptPerkIds,
+        keptRanks,
+        perkSelections,
+        description.faction,
+        perkPointChoices,
+        withoutRemovedOrigins(
+          perkIds.filter((id) => !keptPerkIds.includes(id)),
+        ),
+      );
+    if (keptPerkIds.length !== perkIds.length) {
+      const removedIds = perkIds.filter((id) => !keptPerkIds.includes(id));
+      const cleaned = cleanupPerkData(
+        {
+          perkNotes,
+          perkUpgradeNotes,
+          perkStatChoices,
+          perkRanks,
+          perkDisguises,
+          perkSelections,
+          perkPointChoices,
+        },
+        removedIds,
+      );
+      setPerkNotes(cleaned.perkNotes);
+      setPerkUpgradeNotes(cleaned.perkUpgradeNotes);
+      setPerkStatChoices(cleaned.perkStatChoices);
+      setPerkRanks(keptRanks);
+      setPerkDisguises(cleaned.perkDisguises);
+      setPerkSelections(cleaned.perkSelections);
+      setPerkPointChoices(cleaned.perkPointChoices);
+      setPerkOrigins(withoutRemovedOrigins(removedIds));
+      setFactionCompensatedPerkIds(withoutRemovedCompensations(removedIds));
+      setPerkIds(keptPerkIds);
+    }
+    setRace(newRace);
+    setUnallocatedStatPoints((current) => current + pointsDiff + perkRefund);
+  }
+
+  function handleSexChange(newSex: Sex) {
+    if (newSex === description.sex) return;
+    updateDescription("sex", newSex);
+    // Remap gendered race (Pilzherr↔Pilzfraun, Tierherr↔Tierfraun) to match sex
+    const remapped = mapRaceForSex(race, newSex);
+    const allowed = getRacesForSex(newSex);
+    const nextRace = allowed.includes(remapped) ? remapped : allowed[0];
+    changeRace(nextRace);
+  }
+
+  const racesForCurrentSex = getRacesForSex(description.sex);
 
   // When pending approval, allow full re-allocation (no floor on decreases)
   const statFloor = props.isPending ? 0 : undefined;
@@ -950,11 +1029,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                 <select
                   class="select w-full border rounded px-3 py-2"
                   value={description.sex}
-                  onInput={(event) => {
-                    const newSex = event.currentTarget.value as Sex;
-                    updateDescription("sex", newSex);
-                    // Swap gendered race name to match new sex
-                    setRace((prev) => mapRaceForSex(prev, newSex));
+                  onChange={(event) => {
+                    handleSexChange(
+                      (event.target as HTMLSelectElement).value as Sex,
+                    );
                   }}
                 >
                   {SEX_OPTIONS.map((option) => (
@@ -965,86 +1043,24 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
               <label class="block">
                 <span class="block font-medium mb-1">Race</span>
+                {/* key forces a full remount when sex changes so option lists
+                    cannot stick to the previous gendered set in the DOM */}
                 <select
+                  key={`race-${description.sex}`}
                   class="select w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   name="race"
-                  value={race}
+                  value={racesForCurrentSex.includes(race)
+                    ? race
+                    : racesForCurrentSex[0]}
                   disabled={lockIdentityFields}
-                  onInput={(event) => {
-                    const newRace = event.currentTarget
-                      .value as CharacterDraft["race"];
-                    const pointsDiff = getStartingStatPoints(newRace) -
-                      getStartingStatPoints(race);
-                    // Remove perks that require the old race but not the new one
-                    const keptPerkIds = perkIds.filter((id) => {
-                      const perk = PERKS_BY_ID.get(id);
-                      if (
-                        perk?.requiredRaces &&
-                        !perk.requiredRaces.includes(newRace)
-                      ) return false;
-                      return true;
-                    });
-                    const keptRanks = Object.fromEntries(
-                      Object.entries(perkRanks).filter(([id]) =>
-                        keptPerkIds.includes(id)
-                      ),
-                    );
-                    const perkRefund = calculatePerksCost(
-                      perkIds,
-                      perkRanks,
-                      perkSelections,
-                      description.faction,
-                      perkPointChoices,
-                      perkOrigins,
-                    ) -
-                      calculatePerksCost(
-                        keptPerkIds,
-                        keptRanks,
-                        perkSelections,
-                        description.faction,
-                        perkPointChoices,
-                        withoutRemovedOrigins(
-                          perkIds.filter((id) =>
-                            !keptPerkIds.includes(id)
-                          ),
-                        ),
-                      );
-                    if (keptPerkIds.length !== perkIds.length) {
-                      const removedIds = perkIds.filter((id) =>
-                        !keptPerkIds.includes(id)
-                      );
-                      const cleaned = cleanupPerkData(
-                        {
-                          perkNotes,
-                          perkUpgradeNotes,
-                          perkStatChoices,
-                          perkRanks,
-                          perkDisguises,
-                          perkSelections,
-                          perkPointChoices,
-                        },
-                        removedIds,
-                      );
-                      setPerkNotes(cleaned.perkNotes);
-                      setPerkUpgradeNotes(cleaned.perkUpgradeNotes);
-                      setPerkStatChoices(cleaned.perkStatChoices);
-                      setPerkRanks(keptRanks);
-                      setPerkDisguises(cleaned.perkDisguises);
-                      setPerkSelections(cleaned.perkSelections);
-                      setPerkPointChoices(cleaned.perkPointChoices);
-                      setPerkOrigins(withoutRemovedOrigins(removedIds));
-                      setFactionCompensatedPerkIds(
-                        withoutRemovedCompensations(removedIds),
-                      );
-                      setPerkIds(keptPerkIds);
-                    }
-                    setRace(newRace);
-                    setUnallocatedStatPoints((current) =>
-                      current + pointsDiff + perkRefund
+                  onChange={(event) => {
+                    changeRace(
+                      (event.target as HTMLSelectElement)
+                        .value as CharacterDraft["race"],
                     );
                   }}
                 >
-                  {getRacesForSex(description.sex).map((option) => (
+                  {racesForCurrentSex.map((option) => (
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>

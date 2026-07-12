@@ -22,11 +22,8 @@ export function getDiscordRedirectUri(requestUrl: URL | string): string {
 
 // ── Types ──────────────────────────────────────────────────────────
 
-export interface SessionUser {
-  id: string; // Discord user id
-  username: string;
-  avatar: string | null;
-}
+export type { SessionUser } from "./session_types.ts";
+import type { SessionUser } from "./session_types.ts";
 
 // ── Session helpers ────────────────────────────────────────────────
 

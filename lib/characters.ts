@@ -1,5 +1,12 @@
 // ---------------------------------------------------------------------------
-// Characters  barrel file re-exporting database and parsing modules
+// Characters barrel – SERVER ROUTES ONLY
+// ---------------------------------------------------------------------------
+// This re-exports character_db (Postgres/drizzle). In Vite dev, barrel imports
+// are not tree-shaken, so importing this from an island pulls `postgres` and
+// `node:os` into the browser and breaks client JS (including form handlers).
+//
+// Islands / components must import client-safe modules directly, e.g.:
+//   character_parsing.ts, character_types.ts, draft_validation.ts
 // ---------------------------------------------------------------------------
 
 export {

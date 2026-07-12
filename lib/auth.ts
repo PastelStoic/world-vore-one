@@ -6,12 +6,19 @@ import { sessions } from "./db/schema.ts";
 
 const DISCORD_CLIENT_ID = Deno.env.get("DISCORD_CLIENT_ID") ?? "";
 const DISCORD_CLIENT_SECRET = Deno.env.get("DISCORD_CLIENT_SECRET") ?? "";
-const DISCORD_REDIRECT_URI = Deno.env.get("DISCORD_REDIRECT_URI") ??
-  "http://127.0.0.1:5173/auth/discord/callback";
 
 const DISCORD_AUTH_URL = "https://discord.com/api/oauth2/authorize";
 const DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token";
 const DISCORD_USER_URL = "https://discord.com/api/users/@me";
+const DISCORD_CALLBACK_PATH = "/auth/discord/callback";
+
+/** Discord OAuth redirect_uri derived from the current request origin. */
+export function getDiscordRedirectUri(requestUrl: URL | string): string {
+  const url = typeof requestUrl === "string"
+    ? new URL(requestUrl)
+    : requestUrl;
+  return `${url.origin}${DISCORD_CALLBACK_PATH}`;
+}
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -89,10 +96,13 @@ export function clearSessionCookie(headers: Headers) {
 
 // ── Discord OAuth flow ─────────────────────────────────────────────
 
-export function buildDiscordAuthUrl(state: string): string {
+export function buildDiscordAuthUrl(
+  state: string,
+  requestUrl: URL | string,
+): string {
   const params = new URLSearchParams({
     client_id: DISCORD_CLIENT_ID,
-    redirect_uri: DISCORD_REDIRECT_URI,
+    redirect_uri: getDiscordRedirectUri(requestUrl),
     response_type: "code",
     scope: "identify",
     state,
@@ -102,6 +112,7 @@ export function buildDiscordAuthUrl(state: string): string {
 
 export async function exchangeCodeForToken(
   code: string,
+  requestUrl: URL | string,
 ): Promise<string | null> {
   const res = await fetch(DISCORD_TOKEN_URL, {
     method: "POST",
@@ -111,7 +122,7 @@ export async function exchangeCodeForToken(
       client_secret: DISCORD_CLIENT_SECRET,
       grant_type: "authorization_code",
       code,
-      redirect_uri: DISCORD_REDIRECT_URI,
+      redirect_uri: getDiscordRedirectUri(requestUrl),
     }),
   });
 

@@ -13,7 +13,7 @@ export const handler = define.handlers({
       return new Response("Missing code parameter.", { status: 400 });
     }
 
-    const accessToken = await exchangeCodeForToken(code);
+    const accessToken = await exchangeCodeForToken(code, ctx.url);
     if (!accessToken) {
       return new Response("Failed to exchange code for token.", {
         status: 400,

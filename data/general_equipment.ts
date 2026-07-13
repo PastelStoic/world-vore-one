@@ -47,7 +47,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Deals 9 damage, decreasing by 5 for every next distance until it reaches 0. Ignores cover entirely, medium cover is destroyed.
 *May be pushed inside of vehicles at distance 0 with a dex check, dealing damage to all of its components and crew, ignoring the condition below. Failure drops the grenade by your feet, exploding on the next turn.
 *Only up to 10 targets may be damaged by this grenade's explosion, in order of initiative, even if they're further away from the grenade compared to others.
-*When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 1 weight.`,
+*When buying this piece of gear, you're paying for charges of it. Each charge is an extra grenade. Each charge has 3 weight.`,
   },
   {
     id: "sticky-at-grenades",

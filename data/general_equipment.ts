@@ -39,7 +39,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     weight: 3,
     isCharge: true,
     description: `Throwable explosive meant to take out tanks & other armored vehicles!
-*Has medium armor piercing.
+*Has heavy armor piercing.
 *You need both hands free to use this, one to prime it, the other to throw it immediately after. Grenades cannot be cooked.
 *Throw up to 2 + STR distances away, explodes on impact.
 *Roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where the grenade lands.

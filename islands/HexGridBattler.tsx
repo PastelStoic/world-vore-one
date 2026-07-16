@@ -195,6 +195,7 @@ export default function HexGridBattler({
             data.turnNumber === prev.turnNumber &&
             data.status === prev.status &&
             data.currentTurnIndex === prev.currentTurnIndex &&
+            data.name === prev.name &&
             JSON.stringify(data.players) === JSON.stringify(prev.players) &&
             JSON.stringify(data.state) === JSON.stringify(prev.state);
 
@@ -626,6 +627,39 @@ export default function HexGridBattler({
     await apiPost(`/api/battler/battles/${battleId}/end`);
   }
 
+  async function handleRenameBattle() {
+    if (!battleId || !room || !perms.isOwner) return;
+    const next = prompt("Battle name", room.name ?? "")?.trim();
+    if (next === undefined) return; // cancelled
+    // Empty string clears to untitled
+    setBusy(true);
+    setRoomError(null);
+    try {
+      const res = await fetch(`/api/battler/battles/${battleId}/name`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: next || null }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setRoomError(data.error ?? `Request failed (${res.status})`);
+        return;
+      }
+      applyRoom(data as BattleRoom);
+      // Keep document title in sync when possible
+      try {
+        const label = (data as BattleRoom).name || "Battle";
+        document.title = `${label} • Hex Battler • World Vore One`;
+      } catch {
+        // ignore
+      }
+    } catch (e) {
+      setRoomError(String((e as Error).message ?? e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function movePlayer(index: number, dir: -1 | 1) {
     if (!battleId || !room || !perms.isOwner || room.status !== "lobby") return;
     const next = index + dir;
@@ -767,6 +801,23 @@ export default function HexGridBattler({
       {/* Online chrome */}
       {isOnline && room && (
         <div class="border-b border-base-300 bg-base-100 px-3 py-2 flex flex-wrap items-center gap-2 text-xs">
+          {perms.isOwner
+            ? (
+              <button
+                type="button"
+                class="font-semibold text-sm hover:underline max-w-[12rem] sm:max-w-xs truncate text-left"
+                title="Click to rename battle"
+                disabled={busy}
+                onClick={handleRenameBattle}
+              >
+                {room.name || "Untitled battle"}
+              </button>
+            )
+            : (
+              <span class="font-semibold text-sm max-w-[12rem] sm:max-w-xs truncate">
+                {room.name || "Untitled battle"}
+              </span>
+            )}
           <span
             class={`px-2 py-0.5 rounded font-medium ${
               perms.isActive
@@ -781,6 +832,17 @@ export default function HexGridBattler({
           <span class="text-base-content/60">
             {room.status} · turn #{room.turnNumber} · rev {room.stateRevision}
           </span>
+          {perms.isOwner && (
+            <button
+              type="button"
+              class="btn btn-ghost btn-xs"
+              disabled={busy}
+              onClick={handleRenameBattle}
+              title="Rename battle"
+            >
+              Rename
+            </button>
+          )}
           <button
             type="button"
             class="btn btn-ghost btn-xs"

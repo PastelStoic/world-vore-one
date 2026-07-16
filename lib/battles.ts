@@ -221,6 +221,23 @@ export async function kickPlayer(
   return leaveBattle(id, targetUserId);
 }
 
+/** Owner may rename a battle at any status (lobby / active / ended). */
+export async function setBattleName(
+  id: string,
+  ownerId: string,
+  name: string | null,
+): Promise<BattleRoom> {
+  const room = await getBattle(id);
+  if (!room) throw new BattleError("Battle not found", 404);
+  if (room.ownerId !== ownerId) throw new BattleError("Forbidden", 403);
+
+  const trimmed = name?.trim() || null;
+  return await updateBattleRow(id, {
+    name: trimmed,
+    updatedAt: nowIso(),
+  });
+}
+
 export async function updateLobby(
   id: string,
   ownerId: string,

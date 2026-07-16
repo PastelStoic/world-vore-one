@@ -103,6 +103,36 @@ export async function ensureSchema(): Promise<void> {
       banned_at text NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS user_profiles (
+      user_id text PRIMARY KEY,
+      username text NOT NULL,
+      validated boolean NOT NULL DEFAULT false,
+      created_at text NOT NULL,
+      updated_at text NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS user_profiles_validated_idx
+      ON user_profiles (validated);
+
+    -- Grandfather existing accounts as validated so nobody is locked out.
+    -- ON CONFLICT DO NOTHING: never overwrite a profile created at login (default false).
+    INSERT INTO user_profiles (user_id, username, validated, created_at, updated_at)
+    SELECT DISTINCT c.user_id, c.user_id, true, now()::text, now()::text
+    FROM characters c
+    ON CONFLICT (user_id) DO NOTHING;
+
+    INSERT INTO user_profiles (user_id, username, validated, created_at, updated_at)
+    SELECT a.user_id, a.username, true, now()::text, now()::text
+    FROM admins a
+    ON CONFLICT (user_id) DO NOTHING;
+
+    INSERT INTO user_profiles (user_id, username, validated, created_at, updated_at)
+    SELECT b.user_id, b.username, true, now()::text, now()::text
+    FROM bans b
+    ON CONFLICT (user_id) DO NOTHING;
+
+    -- Note: do NOT seed from sessions — a brand-new login would create a session
+    -- before ensureUserProfile runs, and would incorrectly grandfather that user.
+
     CREATE TABLE IF NOT EXISTS battles (
       id text PRIMARY KEY,
       owner_id text NOT NULL,

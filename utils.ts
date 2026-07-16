@@ -7,6 +7,8 @@ export interface State {
   shared: string;
   user: SessionUser | null;
   isAdmin: boolean;
+  /** Anti-spam: user has had a character approved (or was grandfathered). */
+  isValidated: boolean;
 }
 
 export const define = createDefine<State>();

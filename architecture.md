@@ -120,6 +120,7 @@ All runtime persistence uses Neon-managed Postgres via Drizzle ORM
 | `admins`              | Admin grants (user_id, username)          |
 | `bans`                | Banned users (user_id, username, banned_at) |
 | `battles`             | Multiplayer hex battles (JSONB board + turn metadata) |
+| `user_profiles`       | Per-Discord-user flags (e.g. `validated` anti-spam)   |
 
 ### Production KV → Neon cutover
 
@@ -272,7 +273,10 @@ navigation bar (login/logout/admin links), and `<body>`.
 ## Hex Battler (multiplayer)
 
 - **Public capability URL:** `/battler/{uuid}` — anyone with the link can **spectate**
-  (full board; good-faith trust model, no fog of war). Create/join/play requires Discord login.
+  (full board; good-faith trust model, no fog of war). Create/join as a player requires
+  Discord login **and** a **validated** account (`user_profiles.validated`): set when a
+  character is moderator-approved (default false for new users; existing character owners
+  grandfathered true on schema ensure).
 - **Persistence:** `battles` table (`lib/battles.ts`, `lib/db/schema.ts`).
 - **Turns:** players array is turn order; only the active player may edit a **local draft**;
   **End Turn** commits state + advances; owner **Force End Turn** advances without applying draft.

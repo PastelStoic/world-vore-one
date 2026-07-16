@@ -79,6 +79,13 @@ async function cleanupTestData() {
   await db.execute(sql`
     DELETE FROM bans WHERE user_id LIKE ${PREFIX + "%"}
   `);
+  await db.execute(sql`
+    DELETE FROM user_profiles WHERE user_id LIKE ${PREFIX + "%"}
+  `);
+  await db.execute(sql`
+    DELETE FROM battles WHERE id LIKE ${PREFIX + "%"}
+      OR owner_id LIKE ${PREFIX + "%"}
+  `);
 }
 
 Deno.test({

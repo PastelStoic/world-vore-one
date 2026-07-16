@@ -56,6 +56,8 @@ const POLL_MS = 2500;
 
 interface HexGridBattlerProps {
   user: SessionUser | null;
+  /** Anti-spam: moderator-approved (or grandfathered) account. */
+  isValidated?: boolean;
   mode: "local" | "online";
   battleId?: string;
   initialRoom?: BattleRoom;
@@ -76,6 +78,7 @@ function loadLocalState(): BattlerState {
 
 export default function HexGridBattler({
   user,
+  isValidated = false,
   mode,
   battleId,
   initialRoom,
@@ -786,7 +789,7 @@ export default function HexGridBattler({
           >
             Copy link
           </button>
-          {canJoinAsPlayer(room, user?.id ?? null) && user && (
+          {canJoinAsPlayer(room, user?.id ?? null) && user && isValidated && (
             <button
               type="button"
               class="btn btn-primary btn-xs"
@@ -795,6 +798,14 @@ export default function HexGridBattler({
             >
               Join as player
             </button>
+          )}
+          {canJoinAsPlayer(room, user?.id ?? null) && user && !isValidated && (
+            <span
+              class="text-xs text-warning"
+              title="Submit a character sheet and wait for moderator approval"
+            >
+              Approved character required to join
+            </span>
           )}
           {!user && (
             <a href="/auth/discord" class="link link-primary text-xs">

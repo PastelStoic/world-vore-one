@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------
 
 import {
+  boolean,
   index,
   integer,
   jsonb,
@@ -76,6 +77,19 @@ export const bans = pgTable("bans", {
   bannedAt: text("banned_at").notNull(),
 });
 
+/**
+ * App user profile (Discord id).
+ * `validated` is anti-spam: true after a moderator-approved character (or grandfathered).
+ */
+export const userProfiles = pgTable("user_profiles", {
+  userId: text("user_id").primaryKey(),
+  username: text("username").notNull(),
+  /** False until first approved character (new accounts). */
+  validated: boolean("validated").notNull().default(false),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
 /** Multiplayer hex battles — UUID id is the public capability link. */
 export const battles = pgTable(
   "battles",
@@ -103,4 +117,5 @@ export type SnapshotRow = typeof characterSnapshots.$inferSelect;
 export type SessionRow = typeof sessions.$inferSelect;
 export type AdminRow = typeof admins.$inferSelect;
 export type BanRow = typeof bans.$inferSelect;
+export type UserProfileRow = typeof userProfiles.$inferSelect;
 export type BattleRow = typeof battles.$inferSelect;

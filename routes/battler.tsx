@@ -4,6 +4,7 @@ import BattlerHub from "@/islands/BattlerHub.tsx";
 
 export default define.page(function BattlerPage(ctx) {
   const user = ctx.state.user;
+  const isValidated = ctx.state.isValidated;
 
   return (
     <>
@@ -16,7 +17,7 @@ export default define.page(function BattlerPage(ctx) {
           <a href="/" class="text-primary hover:underline">← Home</a>
           <span class="font-semibold text-base">Hex Battler</span>
         </header>
-        <BattlerHub user={user} />
+        <BattlerHub user={user} isValidated={isValidated} />
       </div>
     </>
   );

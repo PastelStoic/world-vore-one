@@ -38,6 +38,13 @@ export async function createSession(user: SessionUser): Promise<string> {
     user,
     expiresAt,
   });
+  // Ensure profile exists (validated=false for new accounts)
+  try {
+    const { ensureUserProfile } = await import("./user_profiles.ts");
+    await ensureUserProfile(user);
+  } catch (e) {
+    console.error("ensureUserProfile failed:", e);
+  }
   return sessionId;
 }
 

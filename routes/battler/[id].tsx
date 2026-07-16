@@ -5,6 +5,7 @@ import { getBattle } from "@/lib/battles.ts";
 
 export default define.page(async function BattlerRoomPage(ctx) {
   const user = ctx.state.user;
+  const isValidated = ctx.state.isValidated;
   const id = ctx.params.id;
 
   // Avoid treating "local" as a UUID if routing ever overlaps (separate path).
@@ -57,6 +58,7 @@ export default define.page(async function BattlerRoomPage(ctx) {
         </header>
         <HexGridBattler
           user={user}
+          isValidated={isValidated}
           mode="online"
           battleId={room.id}
           initialRoom={room}

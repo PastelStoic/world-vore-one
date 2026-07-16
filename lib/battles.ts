@@ -15,6 +15,7 @@ import {
 import { getActivePlayer, nextTurnIndex } from "./battler_turn.ts";
 import { ensureSchema, getDb } from "./db/client.ts";
 import { battles } from "./db/schema.ts";
+import { isUserValidated } from "./user_profiles.ts";
 
 let schemaReady: Promise<void> | null = null;
 async function ready(): Promise<void> {
@@ -58,6 +59,12 @@ export async function createBattle(
   name?: string | null,
 ): Promise<BattleRoom> {
   await ready();
+  if (!(await isUserValidated(owner.id))) {
+    throw new BattleError(
+      "You need a moderator-approved character before creating battles.",
+      403,
+    );
+  }
   const id = crypto.randomUUID();
   const ts = nowIso();
   const players: BattlePlayer[] = [{
@@ -129,6 +136,12 @@ export async function joinBattle(
   }
   if (room.players.some((p) => p.userId === user.id)) {
     return room; // idempotent
+  }
+  if (!(await isUserValidated(user.id))) {
+    throw new BattleError(
+      "You need a moderator-approved character before joining battles.",
+      403,
+    );
   }
 
   const players: BattlePlayer[] = [

@@ -4,9 +4,10 @@ import type { BattleRoom } from "@/lib/battler_types.ts";
 
 interface BattlerHubProps {
   user: SessionUser | null;
+  isValidated: boolean;
 }
 
-export default function BattlerHub({ user }: BattlerHubProps) {
+export default function BattlerHub({ user, isValidated }: BattlerHubProps) {
   const [battles, setBattles] = useState<BattleRoom[]>([]);
   const [loadingList, setLoadingList] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -79,14 +80,25 @@ export default function BattlerHub({ user }: BattlerHubProps) {
         <h2 class="font-semibold">Online battle</h2>
         {user
           ? (
-            <button
-              type="button"
-              class="btn btn-primary btn-sm"
-              disabled={creating}
-              onClick={createBattle}
-            >
-              {creating ? "Creating…" : "Create battle"}
-            </button>
+            isValidated
+              ? (
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  disabled={creating}
+                  onClick={createBattle}
+                >
+                  {creating ? "Creating…" : "Create battle"}
+                </button>
+              )
+              : (
+                <p class="text-sm text-base-content/70">
+                  Create and join multiplayer battles require a{" "}
+                  <strong>moderator-approved character</strong>. Submit a sheet
+                  for review first — you can still spectate any public battle
+                  link and use the local sandbox.
+                </p>
+              )
           )
           : (
             <p class="text-sm text-base-content/70">

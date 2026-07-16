@@ -25,7 +25,11 @@ export default define.page(function BattlerLocalPage(ctx) {
             </span>
           </div>
         </header>
-        <HexGridBattler user={user} mode="local" />
+        <HexGridBattler
+          user={user}
+          isValidated={ctx.state.isValidated}
+          mode="local"
+        />
       </div>
     </>
   );

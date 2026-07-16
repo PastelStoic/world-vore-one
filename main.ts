@@ -2,6 +2,7 @@ import { App, staticFiles } from "fresh";
 import { define, type State } from "./utils.ts";
 import { getSession, getSessionIdFromRequest } from "./lib/auth.ts";
 import { isAdmin } from "./lib/admin.ts";
+import { isUserValidated } from "./lib/user_profiles.ts";
 import { cacheStaticFiles } from "./middleware/static_files.ts";
 import { PERKS_BY_ID } from "./data/perks.ts";
 
@@ -33,6 +34,9 @@ app.use(async (ctx) => {
   const sessionId = getSessionIdFromRequest(ctx.req);
   ctx.state.user = sessionId ? await getSession(sessionId) : null;
   ctx.state.isAdmin = ctx.state.user ? await isAdmin(ctx.state.user.id) : false;
+  ctx.state.isValidated = ctx.state.user
+    ? await isUserValidated(ctx.state.user.id)
+    : false;
 
   return await ctx.next();
 });

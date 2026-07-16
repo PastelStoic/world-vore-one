@@ -443,13 +443,20 @@ export async function upsertCharacterDirect(
   return character;
 }
 
-export function setCharacterStatus(
+export async function setCharacterStatus(
   characterId: string,
   status: CharacterStatus,
 ) {
-  return updateCharacter(characterId, (character) => {
-    character.status = status;
+  const character = await updateCharacter(characterId, (c) => {
+    c.status = status;
   });
+  // First moderator-approved sheet unlocks the account for anti-spam gates
+  // (battler join/create, future features).
+  if (character && status === "approved") {
+    const { markUserValidated } = await import("./user_profiles.ts");
+    await markUserValidated(character.userId);
+  }
+  return character;
 }
 
 /**

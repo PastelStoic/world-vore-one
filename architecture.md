@@ -75,7 +75,9 @@ the admin panel uses client-side `fetch()` calls to API endpoints.
 ├── islands/                 # Client-hydrated interactive components
 │   ├── CharacterSheetEditor.tsx
 │   ├── CharacterSheetViewer.tsx
-│   └── AdminPanel.tsx
+│   ├── AdminPanel.tsx
+│   ├── BattlerHub.tsx
+│   └── HexGridBattler.tsx
 │
 ├── components/              # Server-rendered shared components
 │   ├── CharacterPageLayout.tsx
@@ -117,6 +119,7 @@ All runtime persistence uses Neon-managed Postgres via Drizzle ORM
 | `sessions`            | Auth sessions (app-enforced `expires_at`) |
 | `admins`              | Admin grants (user_id, username)          |
 | `bans`                | Banned users (user_id, username, banned_at) |
+| `battles`             | Multiplayer hex battles (JSONB board + turn metadata) |
 
 ### Production KV → Neon cutover
 
@@ -261,7 +264,21 @@ navigation bar (login/logout/admin links), and `<body>`.
 | **CharacterSheetEditor** | Full create/edit form. Manages all state locally. Handles stat allocation, perk selection with filtering & validation, image upload via Cloudflare direct upload, and changelog. Submits via native `<form>` with JSON-serialized hidden fields. |
 | **CharacterSheetViewer** | Read-only character display. Shows description, base/effective stats, encumbrance (with interactive weight input), perks grouped by category.                                                                                                    |
 | **AdminPanel**           | Admin dashboard with character search, admin user CRUD. Uses `@preact/signals` and `fetch()` for all interactions.                                                                                                                               |
-| **Counter**              | Demo component using `@preact/signals`.                                                                                                                                                                                                          |
+| **BattlerHub**           | Create/open multiplayer battles, list yours, link to local sandbox.                                                                                                                                                                              |
+| **HexGridBattler**       | Hex map VTT: local sandbox or online room (poll + turn drafts). Public UUID links are viewable without login.                                                                                                                                    |
+
+---
+
+## Hex Battler (multiplayer)
+
+- **Public capability URL:** `/battler/{uuid}` — anyone with the link can **spectate**
+  (full board; good-faith trust model, no fog of war). Create/join/play requires Discord login.
+- **Persistence:** `battles` table (`lib/battles.ts`, `lib/db/schema.ts`).
+- **Turns:** players array is turn order; only the active player may edit a **local draft**;
+  **End Turn** commits state + advances; owner **Force End Turn** advances without applying draft.
+- **APIs:** `GET/POST /api/battler/battles`, `GET /api/battler/battles/:id` (public),
+  `.../join`, `.../lobby`, `.../start`, `.../end-turn`, `.../force-end-turn`, `.../end`.
+- **Local sandbox:** `/battler/local` (localStorage only).
 
 ---
 

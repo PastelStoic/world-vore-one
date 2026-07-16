@@ -102,5 +102,21 @@ export async function ensureSchema(): Promise<void> {
       username text NOT NULL,
       banned_at text NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS battles (
+      id text PRIMARY KEY,
+      owner_id text NOT NULL,
+      name text,
+      status text NOT NULL,
+      players jsonb NOT NULL,
+      current_turn_index integer NOT NULL,
+      turn_number integer NOT NULL,
+      state jsonb NOT NULL,
+      state_revision integer NOT NULL,
+      created_at text NOT NULL,
+      updated_at text NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS battles_owner_id_idx ON battles (owner_id);
+    CREATE INDEX IF NOT EXISTS battles_updated_at_idx ON battles (updated_at);
   `);
 }

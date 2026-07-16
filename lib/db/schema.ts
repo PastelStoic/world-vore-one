@@ -4,6 +4,7 @@
 
 import {
   index,
+  integer,
   jsonb,
   pgTable,
   text,
@@ -12,6 +13,7 @@ import type {
   CharacterSheet,
   CharacterSnapshot,
 } from "../character_types.ts";
+import type { BattlePlayer, BattlerState } from "../battler_types.ts";
 
 /** Minimal session user shape stored in sessions.user JSON. */
 export interface SessionUserRow {
@@ -74,8 +76,31 @@ export const bans = pgTable("bans", {
   bannedAt: text("banned_at").notNull(),
 });
 
+/** Multiplayer hex battles — UUID id is the public capability link. */
+export const battles = pgTable(
+  "battles",
+  {
+    id: text("id").primaryKey(),
+    ownerId: text("owner_id").notNull(),
+    name: text("name"),
+    status: text("status").notNull(), // lobby | active | ended
+    players: jsonb("players").$type<BattlePlayer[]>().notNull(),
+    currentTurnIndex: integer("current_turn_index").notNull(),
+    turnNumber: integer("turn_number").notNull(),
+    state: jsonb("state").$type<BattlerState>().notNull(),
+    stateRevision: integer("state_revision").notNull(),
+    createdAt: text("created_at").notNull(),
+    updatedAt: text("updated_at").notNull(),
+  },
+  (t) => [
+    index("battles_owner_id_idx").on(t.ownerId),
+    index("battles_updated_at_idx").on(t.updatedAt),
+  ],
+);
+
 export type CharacterRow = typeof characters.$inferSelect;
 export type SnapshotRow = typeof characterSnapshots.$inferSelect;
 export type SessionRow = typeof sessions.$inferSelect;
 export type AdminRow = typeof admins.$inferSelect;
 export type BanRow = typeof bans.$inferSelect;
+export type BattleRow = typeof battles.$inferSelect;

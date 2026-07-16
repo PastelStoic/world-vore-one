@@ -1,24 +1,45 @@
 import { useSignal } from "@preact/signals";
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import type { SessionUser } from "@/lib/session_types.ts";
 import {
+  type BattleRoom,
   type BattlerState,
   type Combatant,
   COVER_LABELS,
   type CoverType,
+  cloneBattlerState,
+  coordKey,
   createEmptyBattlerState,
   type ImportableCharacter,
+  parseCoordKey,
   TEAM_COLORS,
   type ToolMode,
 } from "@/lib/battler_types.ts";
 import {
-  type AxialCoord,
-  coordKey,
+  addCombatant,
+  adjustHealth,
+  cycleTeam,
+  getNextAvailableLabel,
+  placeCombatantOnHex,
+  placeCoverOnHex,
+  removeCombatant,
+  removeCover,
+  removeFromGrid,
+  setCombatantMaxHealth,
+  setCombatantName,
+  setCoverPassable,
+  statesEqual,
+} from "@/lib/battler_mutations.ts";
+import {
+  canJoinAsPlayer,
+  getBattlerPermissions,
+  type BattlerPermissions,
+} from "@/lib/battler_turn.ts";
+import {
   generateRectangularGrid,
   HEX_SIZE,
   hexCorners,
   hexToPixel,
-  parseCoordKey,
   pixelToHex,
   type Point,
 } from "@/lib/hex-grid.ts";
@@ -27,97 +48,259 @@ import {
 const MIN_SCALE = 0.35;
 const MAX_SCALE = 4.0;
 const ZOOM_FACTOR = 1.15;
-const INITIAL_GRID = generateRectangularGrid(-7, 7, -6, 6); // nice starting map
-
-// Local persistence (full battle state survives refresh)
+const INITIAL_GRID = generateRectangularGrid(-7, 7, -6, 6);
 const STORAGE_KEY = "wvo-hex-battler-v1";
 const AUTOSAVE_DEBOUNCE_MS = 350;
+const LOBBY_SAVE_DEBOUNCE_MS = 500;
+const POLL_MS = 2500;
 
 interface HexGridBattlerProps {
   user: SessionUser | null;
+  mode: "local" | "online";
+  battleId?: string;
+  initialRoom?: BattleRoom;
 }
 
-export default function HexGridBattler({ user }: HexGridBattlerProps) {
-  // Core battle state with localStorage load on first mount
-  const [state, setState] = useState<BattlerState>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as BattlerState;
-        if (parsed && parsed.version === 1) {
-          return parsed;
-        }
-      }
-    } catch {
-      // ignore corrupted storage
+function loadLocalState(): BattlerState {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as BattlerState;
+      if (parsed && parsed.version === 1) return parsed;
     }
+  } catch {
+    // ignore
+  }
+  return createEmptyBattlerState();
+}
+
+export default function HexGridBattler({
+  user,
+  mode,
+  battleId,
+  initialRoom,
+}: HexGridBattlerProps) {
+  const isOnline = mode === "online" && !!battleId;
+
+  // --- Online room ---
+  const [room, setRoom] = useState<BattleRoom | null>(
+    initialRoom ?? null,
+  );
+  const [roomError, setRoomError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  // Board state: local sandbox OR online draft/display
+  const [state, setState] = useState<BattlerState>(() => {
+    if (isOnline && initialRoom) return cloneBattlerState(initialRoom.state);
+    if (!isOnline) return loadLocalState();
     return createEmptyBattlerState();
   });
 
-  // View transform (fine-grained reactivity)
+  // Snapshot of state at start of our turn (for dirty detection / force-end discard)
+  const turnStartRef = useRef<BattlerState | null>(null);
+  const lastTurnKeyRef = useRef<string>("");
+
+  const perms: BattlerPermissions = useMemo(() => {
+    if (!isOnline || !room) {
+      return {
+        canEdit: true,
+        canEndTurn: false,
+        isOwner: false,
+        isPlayer: false,
+        isActive: false,
+        isSpectator: false,
+        activePlayer: null,
+      };
+    }
+    return getBattlerPermissions(room, user?.id ?? null);
+  }, [isOnline, room, user?.id]);
+
+  const canEdit = isOnline ? perms.canEdit : true;
+
+  // View transform
   const view = useSignal({ scale: 1.0, tx: 0, ty: 0 });
-
-  // Tool state
-  const [mode, setMode] = useState<ToolMode>("select");
+  const [modeTool, setModeTool] = useState<ToolMode>("select");
   const [showCoords, setShowCoords] = useState(true);
-
-  // For "click to place this combatant" flow (satisfies requirement 1 beautifully)
   const [placingCombatantId, setPlacingCombatantId] = useState<string | null>(
     null,
   );
-
-  // Cover placement state (for requirement 2)
   const [placingCoverType, setPlacingCoverType] = useState<CoverType | null>(
     null,
   );
-
-  // Selection for roster <-> grid sync + drag to move
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedHexKey, setSelectedHexKey] = useState<string | null>(null);
 
-  // Live drag preview position (world space) when moving a token
   const dragState = useSignal<
-    {
-      combatantId: string;
-      worldX: number;
-      worldY: number;
-    } | null
+    { combatantId: string; worldX: number; worldY: number } | null
   >(null);
 
-  // Import from sheets modal state (requirement 3)
   const [showImportModal, setShowImportModal] = useState(false);
   const [importQuery, setImportQuery] = useState("");
   const [importResults, setImportResults] = useState<
-    {
-      mine: ImportableCharacter[];
-      public: ImportableCharacter[];
-    } | null
+    { mine: ImportableCharacter[]; public: ImportableCharacter[] } | null
   >(null);
   const [importLoading, setImportLoading] = useState(false);
+  const importDebounceRef = useRef<number | null>(null);
 
-  // Drag / pointer state (for pan + future token drag)
   const isPanning = useRef(false);
   const lastPointer = useRef<Point>({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
-
-  // Token drag tracking (separate from panning)
   const draggingTokenRef = useRef<
-    {
-      id: string;
-      offsetX: number; // world space: pointer world pos - token center
-      offsetY: number;
-    } | null
+    { id: string; offsetX: number; offsetY: number } | null
   >(null);
 
-  // --- Coordinate conversion helpers (world pixels <-> screen) ---
-  // unused but possibly helpful, remove underscore when using
-  const _worldToScreen = useCallback((p: Point): Point => {
-    const v = view.value;
-    return {
-      x: p.x * v.scale + v.tx,
-      y: p.y * v.scale + v.ty,
-    };
-  }, []);
+  // Apply mutator only when allowed
+  const mutate = useCallback(
+    (fn: (s: BattlerState) => BattlerState) => {
+      if (!canEdit) return;
+      setState((s) => fn(s));
+    },
+    [canEdit],
+  );
 
+  /** Apply a server room after a mutation; forceReset reloads board from server. */
+  function applyRoom(next: BattleRoom, opts?: { forceDraftReset?: boolean }) {
+    if (opts?.forceDraftReset) {
+      lastTurnKeyRef.current = "";
+      turnStartRef.current = null;
+      setState(cloneBattlerState(next.state));
+    }
+    setRoom(next);
+  }
+
+  // Poll online battle
+  useEffect(() => {
+    if (!isOnline || !battleId) return;
+
+    let cancelled = false;
+
+    async function poll() {
+      try {
+        const res = await fetch(`/api/battler/battles/${battleId}`);
+        if (!res.ok) {
+          if (res.status === 404) setRoomError("Battle not found");
+          return;
+        }
+        const data = await res.json() as BattleRoom;
+        if (cancelled) return;
+
+        setRoom((prev) => {
+          if (!prev) return data;
+
+          const unchanged =
+            data.stateRevision === prev.stateRevision &&
+            data.turnNumber === prev.turnNumber &&
+            data.status === prev.status &&
+            data.currentTurnIndex === prev.currentTurnIndex &&
+            JSON.stringify(data.players) === JSON.stringify(prev.players) &&
+            JSON.stringify(data.state) === JSON.stringify(prev.state);
+
+          if (unchanged) return prev;
+          return data;
+        });
+      } catch {
+        // network blip — ignore
+      }
+    }
+
+    if (!initialRoom) poll();
+
+    const handle = setInterval(() => {
+      if (document.visibilityState === "visible") poll();
+    }, POLL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(handle);
+    };
+  }, [isOnline, battleId, initialRoom]);
+
+  // When room snapshot changes, update local board (respect active draft)
+  useEffect(() => {
+    if (!isOnline || !room) return;
+
+    const p = getBattlerPermissions(room, user?.id ?? null);
+    const turnKey =
+      `${room.turnNumber}:${room.currentTurnIndex}:${room.status}:${room.stateRevision}`;
+
+    if (room.status === "lobby" && p.isOwner) {
+      // Owner owns local board; only adopt server if we have no local divergence
+      // on first paint of a new revision from another tab of the same owner — skip.
+      // On join as owner after reload, state is already from SSR/initial.
+      if (lastTurnKeyRef.current === "") {
+        setState(cloneBattlerState(room.state));
+        lastTurnKeyRef.current = turnKey;
+      } else if (!lastTurnKeyRef.current.startsWith(`${room.turnNumber}:`)) {
+        // status changed (e.g. after start elsewhere) — handled below paths
+        lastTurnKeyRef.current = turnKey;
+      }
+      return;
+    }
+
+    if (room.status === "active" && p.isActive) {
+      if (lastTurnKeyRef.current !== turnKey) {
+        // New turn for us (or force-end advanced revision) — take server state
+        setState(cloneBattlerState(room.state));
+        turnStartRef.current = cloneBattlerState(room.state);
+        lastTurnKeyRef.current = turnKey;
+      }
+      return;
+    }
+
+    // Spectator / waiting / ended / lobby non-owner
+    setState(cloneBattlerState(room.state));
+    turnStartRef.current = null;
+    lastTurnKeyRef.current = turnKey;
+  }, [
+    isOnline,
+    room?.stateRevision,
+    room?.turnNumber,
+    room?.currentTurnIndex,
+    room?.status,
+    room?.players,
+    room?.state,
+    user?.id,
+  ]);
+
+  // Local sandbox autosave
+  useEffect(() => {
+    if (isOnline) return;
+    const handle = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        // ignore
+      }
+    }, AUTOSAVE_DEBOUNCE_MS);
+    return () => clearTimeout(handle);
+  }, [state, isOnline]);
+
+  // Lobby owner: debounced commit of board state
+  useEffect(() => {
+    if (!isOnline || !room || !battleId) return;
+    if (room.status !== "lobby") return;
+    if (!perms.isOwner) return;
+    if (statesEqual(state, room.state)) return;
+
+    const handle = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/battler/battles/${battleId}/lobby`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state }),
+        });
+        if (res.ok) {
+          const data = await res.json() as BattleRoom;
+          setRoom(data);
+        }
+      } catch {
+        // ignore
+      }
+    }, LOBBY_SAVE_DEBOUNCE_MS);
+    return () => clearTimeout(handle);
+  }, [state, isOnline, room?.status, room?.stateRevision, perms.isOwner, battleId]);
+
+  // --- Coordinate helpers ---
   const screenToWorld = useCallback((p: Point): Point => {
     const v = view.value;
     return {
@@ -126,27 +309,22 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     };
   }, []);
 
-  // --- Zoom & Pan ---
   const zoomBy = useCallback((factor: number, center?: Point) => {
     const v = view.value;
     const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, v.scale * factor));
-
     if (!center || !svgRef.current) {
-      // Zoom toward current center
       view.value = { ...v, scale: newScale };
       return;
     }
-
-    // Zoom toward a specific screen point (mouse)
     const worldBefore = screenToWorld(center);
-    const newTx = center.x - worldBefore.x * newScale;
-    const newTy = center.y - worldBefore.y * newScale;
-
-    view.value = { scale: newScale, tx: newTx, ty: newTy };
+    view.value = {
+      scale: newScale,
+      tx: center.x - worldBefore.x * newScale,
+      ty: center.y - worldBefore.y * newScale,
+    };
   }, [screenToWorld]);
 
   const resetView = useCallback(() => {
-    // Center the initial grid roughly
     const approxCenterWorld = { x: 0, y: 20 };
     const svg = svgRef.current;
     if (!svg) {
@@ -162,7 +340,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     };
   }, []);
 
-  // Wheel zoom (centered on mouse)
   const onWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
     const rect = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
@@ -171,29 +348,26 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     zoomBy(factor, mouse);
   }, [zoomBy]);
 
-  // Pointer pan (background)
   const onPointerDown = useCallback((e: PointerEvent) => {
-    if (mode !== "select") return;
+    if (modeTool !== "select") return;
     if (placingCombatantId) return;
-    if (draggingTokenRef.current) return; // already dragging a token
-
+    if (draggingTokenRef.current) return;
     const svg = svgRef.current;
     if (!svg) return;
     svg.setPointerCapture(e.pointerId);
     isPanning.current = true;
     lastPointer.current = { x: e.clientX, y: e.clientY };
-  }, [mode, placingCombatantId]);
+  }, [modeTool, placingCombatantId]);
 
   const onPointerMove = useCallback((e: PointerEvent) => {
     const svg = svgRef.current;
     if (!svg) return;
-
     const rect = svg.getBoundingClientRect();
-    const screenX = e.clientX - rect.left;
-    const screenY = e.clientY - rect.top;
-    const worldPos = screenToWorld({ x: screenX, y: screenY });
+    const worldPos = screenToWorld({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
 
-    // Token dragging takes priority
     if (draggingTokenRef.current) {
       const drag = draggingTokenRef.current;
       dragState.value = {
@@ -206,11 +380,9 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     }
 
     if (!isPanning.current) return;
-
     const dx = e.clientX - lastPointer.current.x;
     const dy = e.clientY - lastPointer.current.y;
     lastPointer.current = { x: e.clientX, y: e.clientY };
-
     const v = view.value;
     view.value = { ...v, tx: v.tx + dx, ty: v.ty + dy };
   }, [screenToWorld]);
@@ -219,92 +391,305 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     const svg = svgRef.current;
     if (svg) svg.releasePointerCapture(e.pointerId);
 
-    const wasDraggingToken = !!draggingTokenRef.current;
-
-    // Finish token drag
     if (draggingTokenRef.current && dragState.value) {
-      const { id: combatantId } = draggingTokenRef.current;
-      const finalWorld = {
-        x: dragState.value.worldX,
-        y: dragState.value.worldY,
-      };
-
-      const targetHex = pixelToHex(finalWorld.x, finalWorld.y);
-      const key = coordKey(targetHex);
-
-      setState((s) => {
-        const currentOccupant = s.placedCharacters[key];
-        const isOccupiedByOther = currentOccupant &&
-          currentOccupant !== combatantId;
-
-        // Always allow characters onto cover hexes.
-        // Whether it's realistic depends on the specific cover (rubble, car, etc.)
-        // and the group can self-regulate.
-        if (isOccupiedByOther) {
-          return s; // can't stack on another character
-        }
-
-        const newPlaced: Record<string, string> = {};
-        for (const [k, v] of Object.entries(s.placedCharacters)) {
-          if (v !== combatantId) newPlaced[k] = v;
-        }
-        newPlaced[key] = combatantId;
-
-        return { ...s, placedCharacters: newPlaced };
-      });
-
-      // Clear drag state
+      if (canEdit) {
+        const { id: combatantId } = draggingTokenRef.current;
+        const targetHex = pixelToHex(
+          dragState.value.worldX,
+          dragState.value.worldY,
+        );
+        mutate((s) => placeCombatantOnHex(s, combatantId, targetHex));
+      }
       draggingTokenRef.current = null;
       dragState.value = null;
     }
-
     isPanning.current = false;
+  }, [canEdit, mutate]);
 
-    // If we weren't dragging a token, and we clicked background, clear selection
-    if (!wasDraggingToken && !draggingTokenRef.current) {
-      // Let the onBackgroundClick handle deselection if needed
-    }
-  }, []);
-
-  // Click on background
   const onBackgroundClick = useCallback(() => {
     if (placingCombatantId) {
-      cancelPlacing();
-    } else if (mode === "place-cover") {
-      setMode("select");
+      setPlacingCombatantId(null);
+    } else if (modeTool === "place-cover") {
+      setModeTool("select");
       setPlacingCoverType(null);
-    } else if (mode === "select") {
-      setSelectedId(null); // deselect when clicking empty space
+    } else {
+      setSelectedId(null);
+      setSelectedHexKey(null);
     }
-  }, [placingCombatantId, mode]);
+  }, [placingCombatantId, modeTool]);
 
-  // --- Hex polygon rendering ---
+  useEffect(() => {
+    const t = setTimeout(() => resetView(), 60);
+    return () => clearTimeout(t);
+  }, [resetView]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (placingCombatantId) {
+          e.preventDefault();
+          setPlacingCombatantId(null);
+        } else if (modeTool === "place-cover") {
+          e.preventDefault();
+          setModeTool("select");
+          setPlacingCoverType(null);
+        } else if (showImportModal) {
+          e.preventDefault();
+          setShowImportModal(false);
+        }
+      }
+    };
+    globalThis.addEventListener("keydown", onKeyDown);
+    return () => globalThis.removeEventListener("keydown", onKeyDown);
+  }, [placingCombatantId, modeTool, showImportModal]);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const handler = (e: WheelEvent) => onWheel(e);
+    svg.addEventListener("wheel", handler, { passive: false });
+    return () => svg.removeEventListener("wheel", handler);
+  }, [onWheel]);
+
+  // --- Roster actions ---
+  const addDummy = () => {
+    if (!canEdit) return;
+    const nextLabel = getNextAvailableLabel(state.combatants);
+    const name = prompt("Dummy name?", "Rifleman")?.trim();
+    if (!name) return;
+    const maxHp = Number(prompt("Max HP?", "12")) || 12;
+    const dummy: Combatant = {
+      id: crypto.randomUUID(),
+      name,
+      currentHealth: maxHp,
+      maxHealth: maxHp,
+      team: "neutral",
+      label: nextLabel,
+    };
+    mutate((s) => addCombatant(s, dummy));
+  };
+
+  const resetBattle = () => {
+    if (isOnline) return;
+    if (
+      !confirm(
+        "Start a completely new battle? This clears the roster and grid (local copy is autosaved).",
+      )
+    ) return;
+    setState(createEmptyBattlerState());
+    setPlacingCombatantId(null);
+    setSelectedId(null);
+    setSelectedHexKey(null);
+    resetView();
+  };
+
+  function handleTokenPointerDown(
+    e: PointerEvent,
+    combatantId: string,
+    currentCenter: Point,
+  ) {
+    if (!canEdit || modeTool !== "select") return;
+    e.stopPropagation();
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const worldPos = screenToWorld({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    draggingTokenRef.current = {
+      id: combatantId,
+      offsetX: worldPos.x - currentCenter.x,
+      offsetY: worldPos.y - currentCenter.y,
+    };
+    setSelectedId(combatantId);
+    setSelectedHexKey(null);
+    dragState.value = {
+      combatantId,
+      worldX: currentCenter.x,
+      worldY: currentCenter.y,
+    };
+    svg.setPointerCapture(e.pointerId);
+  }
+
+  async function loadImportResults(q: string = "") {
+    if (!user) return;
+    setImportLoading(true);
+    try {
+      const res = await fetch(
+        `/api/battler/available-characters${
+          q ? `?q=${encodeURIComponent(q)}` : ""
+        }`,
+      );
+      if (res.ok) {
+        setImportResults(await res.json());
+      } else {
+        setImportResults({ mine: [], public: [] });
+      }
+    } catch {
+      setImportResults({ mine: [], public: [] });
+    } finally {
+      setImportLoading(false);
+    }
+  }
+
+  function importCharacter(char: ImportableCharacter) {
+    if (!canEdit) return;
+    const newCombatant: Combatant = {
+      id: crypto.randomUUID(),
+      name: char.name,
+      currentHealth: char.maxHealth,
+      maxHealth: char.maxHealth,
+      team: "neutral",
+      characterId: char.id,
+    };
+    mutate((s) => addCombatant(s, newCombatant));
+  }
+
+  // --- Online actions ---
+  async function apiPost(path: string, body?: unknown): Promise<BattleRoom | null> {
+    setBusy(true);
+    setRoomError(null);
+    try {
+      const res = await fetch(path, {
+        method: "POST",
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setRoomError(data.error ?? `Request failed (${res.status})`);
+        if (res.status === 409 && battleId) {
+          // resync
+          const r = await fetch(`/api/battler/battles/${battleId}`);
+          if (r.ok) {
+            const fresh = await r.json() as BattleRoom;
+            applyRoom(fresh, { forceDraftReset: true });
+          }
+        }
+        return null;
+      }
+      applyRoom(data as BattleRoom, { forceDraftReset: true });
+      return data as BattleRoom;
+    } catch (e) {
+      setRoomError(String((e as Error).message ?? e));
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleJoin() {
+    if (!battleId) return;
+    await apiPost(`/api/battler/battles/${battleId}/join`);
+  }
+
+  async function handleStart() {
+    if (!battleId) return;
+    // flush lobby state first
+    if (room?.status === "lobby" && perms.isOwner) {
+      await fetch(`/api/battler/battles/${battleId}/lobby`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state }),
+      });
+    }
+    await apiPost(`/api/battler/battles/${battleId}/start`);
+  }
+
+  async function handleEndTurn() {
+    if (!battleId || !room) return;
+    await apiPost(`/api/battler/battles/${battleId}/end-turn`, {
+      state,
+      expectedRevision: room.stateRevision,
+    });
+  }
+
+  async function handleForceEndTurn() {
+    if (!battleId || !room) return;
+    if (
+      !confirm(
+        "Force-end this turn? The active player's uncommitted changes will be discarded.",
+      )
+    ) return;
+    await apiPost(`/api/battler/battles/${battleId}/force-end-turn`, {
+      expectedRevision: room.stateRevision,
+    });
+  }
+
+  async function handleEndBattle() {
+    if (!battleId) return;
+    if (!confirm("End this battle? Everyone becomes read-only.")) return;
+    await apiPost(`/api/battler/battles/${battleId}/end`);
+  }
+
+  async function movePlayer(index: number, dir: -1 | 1) {
+    if (!battleId || !room || !perms.isOwner || room.status !== "lobby") return;
+    const next = index + dir;
+    if (next < 0 || next >= room.players.length) return;
+    const players = [...room.players];
+    const tmp = players[index];
+    players[index] = players[next];
+    players[next] = tmp;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/battler/battles/${battleId}/lobby`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ players }),
+      });
+      if (res.ok) {
+        applyRoom(await res.json(), { forceDraftReset: false });
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function copyLink() {
+    const url = globalThis.location.href;
+    navigator.clipboard?.writeText(url).catch(() => {
+      prompt("Copy this link:", url);
+    });
+  }
+
+  const dirty = isOnline && perms.isActive && turnStartRef.current
+    ? !statesEqual(state, turnStartRef.current)
+    : false;
+
+  // --- Render helpers ---
   const hexElements = INITIAL_GRID.map((hex) => {
     const center = hexToPixel(hex);
     const corners = hexCorners(center);
     const points = corners.map((p) => `${p.x},${p.y}`).join(" ");
     const key = coordKey(hex);
+    const isSelectedHex = selectedHexKey === key;
 
     return (
       <g key={key}>
         <polygon
           points={points}
           fill="currentColor"
-          fill-opacity="0.035"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-opacity="0.35"
+          fill-opacity={isSelectedHex ? "0.12" : "0.035"}
+          stroke={isSelectedHex ? "#3b82f6" : "currentColor"}
+          stroke-width={isSelectedHex ? 2.5 : 1.5}
+          stroke-opacity={isSelectedHex ? 0.9 : 0.35}
           class="pointer-events-auto"
           pointer-events="all"
           onClick={(e) => {
             e.stopPropagation();
-
-            if (placingCombatantId) {
-              placeCombatantOnHex(placingCombatantId, hex);
-            } else if (mode === "place-cover" && placingCoverType) {
-              placeCoverOnHex(placingCoverType, hex);
+            if (placingCombatantId && canEdit) {
+              mutate((s) =>
+                placeCombatantOnHex(s, placingCombatantId, hex)
+              );
+              setPlacingCombatantId(null);
+            } else if (
+              modeTool === "place-cover" && placingCoverType && canEdit
+            ) {
+              mutate((s) => placeCoverOnHex(s, placingCoverType, hex));
             } else {
-              console.log("hex clicked", hex);
+              setSelectedHexKey(key);
+              setSelectedId(null);
             }
           }}
         />
@@ -328,387 +713,237 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
     );
   });
 
-  // Cover shading fills — each hex gets the full pattern (tint + distinctive marks inside the pattern).
   const coverFillElements = Object.entries(state.covers).map(([key, cover]) => {
     const hex = parseCoordKey(key);
     const center = hexToPixel(hex);
     const corners = hexCorners(center);
     const points = corners.map((p) => `${p.x},${p.y}`).join(" ");
-
-    const patternId = `cover-${cover.type}`;
-
     return (
       <polygon
         key={`coverfill-${key}`}
         points={points}
-        fill={`url(#${patternId})`}
+        fill={`url(#cover-${cover.type})`}
         stroke="none"
         pointer-events="none"
       />
     );
   });
 
-  // --- Initial view centering (once on mount) ---
-  useEffect(() => {
-    // Small delay so the SVG has a real size
-    const t = setTimeout(() => resetView(), 60);
-    return () => clearTimeout(t);
-  }, [resetView]);
-
-  // Debounced autosave to localStorage whenever state changes
-  useEffect(() => {
-    const handle = setTimeout(() => {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch {
-        // quota or private mode — ignore
-      }
-    }, AUTOSAVE_DEBOUNCE_MS);
-    return () => clearTimeout(handle);
-  }, [state]);
-
-  // ESC cancels placement modes + closes import modal
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (placingCombatantId) {
-          e.preventDefault();
-          cancelPlacing();
-        } else if (mode === "place-cover") {
-          e.preventDefault();
-          setMode("select");
-          setPlacingCoverType(null);
-        } else if (showImportModal) {
-          e.preventDefault();
-          closeImportModal();
-        }
-      }
-    };
-    globalThis.addEventListener("keydown", onKeyDown);
-    return () => globalThis.removeEventListener("keydown", onKeyDown);
-  }, [placingCombatantId, mode, showImportModal]);
-
-  // Attach wheel listener (passive: false so we can preventDefault)
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const handler = (e: WheelEvent) => onWheel(e);
-    svg.addEventListener("wheel", handler, { passive: false });
-    return () => svg.removeEventListener("wheel", handler);
-  }, [onWheel]);
-
-  // --- Minimal roster UI (foundation only — fully wired in slice 03) ---
-  const addDummy = () => {
-    // Compute the letter first so we can attach it for disambiguation,
-    // but do *not* include it in the suggested name (user preference).
-    const nextLabel = getNextAvailableLabel(state.combatants);
-
-    const name = prompt("Dummy name?", "Rifleman")?.trim();
-    if (!name) return;
-    const maxHp = Number(prompt("Max HP?", "12")) || 12;
-
-    const dummy: Combatant = {
-      id: crypto.randomUUID(),
-      name,
-      currentHealth: maxHp,
-      maxHealth: maxHp,
-      team: "neutral",
-      label: nextLabel,
-    };
-    setState((s) => ({
-      ...s,
-      combatants: [...s.combatants, dummy],
-    }));
-  };
-
-  // --- Roster mutators (used by the interactive list) ---
-  const TEAM_ORDER: Combatant["team"][] = ["allies", "enemies", "neutral"];
-
-  function cycleTeam(id: string) {
-    setState((s) => ({
-      ...s,
-      combatants: s.combatants.map((c) =>
-        c.id === id
-          ? { ...c, team: TEAM_ORDER[(TEAM_ORDER.indexOf(c.team) + 1) % 3] }
-          : c
-      ),
-    }));
-  }
-
-  function adjustHealth(id: string, delta: number) {
-    setState((s) => ({
-      ...s,
-      combatants: s.combatants.map((c) => {
-        if (c.id !== id) return c;
-        const next = Math.max(
-          0,
-          Math.min(c.maxHealth, c.currentHealth + delta),
-        );
-        return { ...c, currentHealth: next };
-      }),
-    }));
-  }
-
-  function renameCombatant(id: string) {
-    const c = state.combatants.find((x) => x.id === id);
-    if (!c) return;
-    const newName = prompt("Rename combatant", c.name)?.trim();
-    if (!newName || newName === c.name) return;
-    setState((s) => ({
-      ...s,
-      combatants: s.combatants.map((
-        x,
-      ) => (x.id === id ? { ...x, name: newName } : x)),
-    }));
-  }
-
-  function removeCombatant(id: string) {
-    if (
-      !confirm(
-        `Remove "${
-          state.combatants.find((c) => c.id === id)?.name
-        }" from the battle?`,
-      )
-    ) return;
-    setState((s) => {
-      // Remove the character from the placed map (if present)
-      const newPlaced: Record<string, string> = {};
-      for (const [k, v] of Object.entries(s.placedCharacters)) {
-        if (v !== id) newPlaced[k] = v;
-      }
-      return {
-        ...s,
-        combatants: s.combatants.filter((c) => c.id !== id),
-        placedCharacters: newPlaced,
-      };
-    });
-  }
-
-  const resetBattle = () => {
-    if (
-      !confirm(
-        "Start a completely new battle? This clears the roster and grid (local copy is autosaved).",
-      )
-    ) return;
-    const fresh = createEmptyBattlerState();
-    setState(fresh);
-    setPlacingCombatantId(null);
-    // Also recenter view for a clean feel
-    resetView();
-  };
-
-  // --- Core grid placement logic (requirement #1) ---
-  function placeCombatantOnHex(combatantId: string, hex: AxialCoord) {
-    const key = coordKey(hex);
-    setState((s) => {
-      // If something else is already here, swap it off (simple rule for v1)
-      const newPlaced = { ...s.placedCharacters };
-      const occupant = newPlaced[key];
-      if (occupant && occupant !== combatantId) {
-        // occupant is bumped off-grid (position just overwritten)
-      }
-      newPlaced[key] = combatantId;
-      return { ...s, placedCharacters: newPlaced };
-    });
-    setPlacingCombatantId(null);
-  }
-
-  function removeFromGrid(combatantId: string) {
-    setState((s) => {
-      const newPlaced: Record<string, string> = {};
-      for (const [k, v] of Object.entries(s.placedCharacters)) {
-        if (v !== combatantId) newPlaced[k] = v;
-      }
-      return { ...s, placedCharacters: newPlaced };
-    });
-  }
-
-  // Called from roster row
-  function startPlacing(combatantId: string) {
-    setPlacingCombatantId(combatantId);
-    setMode("select");
-    setPlacingCoverType(null);
-    setSelectedId(null);
-  }
-
-  function cancelPlacing() {
-    setPlacingCombatantId(null);
-  }
-
-  // --- Cover placement (requirement #2) ---
-  function placeCoverOnHex(type: CoverType, hex: AxialCoord) {
-    const key = coordKey(hex);
-    const defaultPassable = type === "weak" || type === "middling"
-      ? true
-      : false;
-
-    setState((s) => ({
-      ...s,
-      covers: {
-        ...s.covers,
-        [key]: {
-          id: crypto.randomUUID(),
-          type,
-          passable: defaultPassable,
-        },
-      },
-    }));
-
-    // Stay in cover mode so user can quickly place multiple
-  }
-
-  // --- Token drag + selection helpers ---
-  function handleTokenPointerDown(
-    e: PointerEvent,
-    combatantId: string,
-    currentCenter: Point,
-  ) {
-    if (mode !== "select") return;
-    e.stopPropagation();
-
-    const svg = svgRef.current;
-    if (!svg) return;
-
-    const rect = svg.getBoundingClientRect();
-    const screenX = e.clientX - rect.left;
-    const screenY = e.clientY - rect.top;
-    const worldPos = screenToWorld({ x: screenX, y: screenY });
-
-    draggingTokenRef.current = {
-      id: combatantId,
-      offsetX: worldPos.x - currentCenter.x,
-      offsetY: worldPos.y - currentCenter.y,
-    };
-
-    setSelectedId(combatantId);
-
-    // Start live drag preview
-    dragState.value = {
-      combatantId,
-      worldX: currentCenter.x,
-      worldY: currentCenter.y,
-    };
-
-    svg.setPointerCapture(e.pointerId);
-    lastPointer.current = { x: e.clientX, y: e.clientY };
-  }
-
-  /** Returns the next unused single letter (A-Z) for dummy labeling. */
-  function getNextAvailableLabel(combatants: Combatant[]): string {
-    const used = new Set(
-      combatants
-        .map((c) => c.label)
-        .filter((l): l is string => Boolean(l)),
-    );
-
-    for (let i = 0; i < 26; i++) {
-      const letter = String.fromCharCode(65 + i); // 'A' = 65
-      if (!used.has(letter)) {
-        return letter;
-      }
-    }
-    // Fallback if somehow all 26 letters are used (very unlikely in a skirmish)
-    return "Z";
-  }
-
-  // --- Import from existing sheets (requirement 3) ---
-  async function loadImportResults(q: string = "") {
-    if (!user) return;
-    setImportLoading(true);
-    try {
-      const res = await fetch(
-        `/api/battler/available-characters${
-          q ? `?q=${encodeURIComponent(q)}` : ""
-        }`,
-      );
-      if (res.ok) {
-        const data: {
-          mine: ImportableCharacter[];
-          public: ImportableCharacter[];
-        } = await res.json();
-        setImportResults(data);
-      } else {
-        setImportResults({ mine: [], public: [] });
-      }
-    } catch {
-      setImportResults({ mine: [], public: [] });
-    } finally {
-      setImportLoading(false);
-    }
-  }
-
-  function openImportModal() {
-    setShowImportModal(true);
-    setImportQuery("");
-    loadImportResults("");
-  }
-
-  function closeImportModal() {
-    setShowImportModal(false);
-    setImportResults(null);
-    setImportQuery("");
-  }
-
-  function importCharacter(char: ImportableCharacter) {
-    // Add as a real imported combatant (no auto letter label)
-    const newCombatant: Combatant = {
-      id: crypto.randomUUID(),
-      name: char.name,
-      currentHealth: char.maxHealth,
-      maxHealth: char.maxHealth,
-      team: "neutral",
-      characterId: char.id,
-      // No label for imported characters - they have real identities
-    };
-
-    setState((s) => ({
-      ...s,
-      combatants: [...s.combatants, newCombatant],
-    }));
-
-    // Keep modal open so user can import several at once
-  }
-
   const v = view.value;
+  const selectedCombatant = selectedId
+    ? state.combatants.find((c) => c.id === selectedId) ?? null
+    : null;
+  const selectedCover = selectedHexKey
+    ? state.covers[selectedHexKey] ?? null
+    : null;
+  const selectedOccupantId = selectedHexKey
+    ? state.placedCharacters[selectedHexKey] ?? null
+    : null;
+
+  const statusBanner = (() => {
+    if (!isOnline || !room) return null;
+    if (room.status === "lobby") {
+      return perms.isOwner
+        ? "Lobby — set up the board, then Start Battle"
+        : "Lobby — waiting for host to start";
+    }
+    if (room.status === "ended") return "Battle ended — read only";
+    if (perms.isActive) {
+      return dirty
+        ? "Your turn — uncommitted changes (saved on End Turn)"
+        : "Your turn";
+    }
+    if (perms.activePlayer) {
+      return `Waiting for ${perms.activePlayer.username}…`;
+    }
+    return "Spectating";
+  })();
 
   return (
     <>
+      {/* Online chrome */}
+      {isOnline && room && (
+        <div class="border-b border-base-300 bg-base-100 px-3 py-2 flex flex-wrap items-center gap-2 text-xs">
+          <span
+            class={`px-2 py-0.5 rounded font-medium ${
+              perms.isActive
+                ? "bg-primary text-primary-content"
+                : room.status === "lobby"
+                ? "bg-warning/20 text-warning-content"
+                : "bg-base-200"
+            }`}
+          >
+            {statusBanner}
+          </span>
+          <span class="text-base-content/60">
+            {room.status} · turn #{room.turnNumber} · rev {room.stateRevision}
+          </span>
+          <button
+            type="button"
+            class="btn btn-ghost btn-xs"
+            onClick={copyLink}
+            title="Copy public spectator/player link"
+          >
+            Copy link
+          </button>
+          {canJoinAsPlayer(room, user?.id ?? null) && user && (
+            <button
+              type="button"
+              class="btn btn-primary btn-xs"
+              disabled={busy}
+              onClick={handleJoin}
+            >
+              Join as player
+            </button>
+          )}
+          {!user && (
+            <a href="/auth/discord" class="link link-primary text-xs">
+              Log in to join as player
+            </a>
+          )}
+          {perms.isOwner && room.status === "lobby" && (
+            <button
+              type="button"
+              class="btn btn-primary btn-xs"
+              disabled={busy || room.players.length === 0}
+              onClick={handleStart}
+            >
+              Start battle
+            </button>
+          )}
+          {perms.canEndTurn && (
+            <button
+              type="button"
+              class="btn btn-primary btn-xs"
+              disabled={busy}
+              onClick={handleEndTurn}
+            >
+              End turn
+            </button>
+          )}
+          {perms.isOwner && room.status === "active" && (
+            <button
+              type="button"
+              class="btn btn-warning btn-xs"
+              disabled={busy}
+              onClick={handleForceEndTurn}
+            >
+              Force end turn
+            </button>
+          )}
+          {perms.isOwner && room.status !== "ended" && (
+            <button
+              type="button"
+              class="btn btn-ghost btn-xs text-error"
+              disabled={busy}
+              onClick={handleEndBattle}
+            >
+              End battle
+            </button>
+          )}
+          {roomError && (
+            <span class="text-error ml-auto">{roomError}</span>
+          )}
+        </div>
+      )}
+
       <div class="flex flex-1 overflow-hidden">
-        {/* Left: Roster (stub) */}
+        {/* Left: Roster + players */}
         <aside class="w-72 min-w-64 max-w-80 border-r border-base-300 bg-base-100 flex flex-col overflow-hidden">
+          {isOnline && room && (
+            <div class="p-2 border-b border-base-300 bg-base-200/40">
+              <div class="font-semibold text-xs mb-1">Players (turn order)</div>
+              <ul class="space-y-0.5 text-xs">
+                {room.players.map((p, i) => {
+                  const isCurrent = room.status === "active" &&
+                    i === room.currentTurnIndex;
+                  return (
+                    <li
+                      key={p.userId}
+                      class={`flex items-center gap-1 px-1.5 py-0.5 rounded ${
+                        isCurrent ? "bg-primary/15 font-medium" : ""
+                      }`}
+                    >
+                      <span class="truncate flex-1">
+                        {p.username}
+                        {p.userId === room.ownerId ? " (host)" : ""}
+                        {isCurrent ? " ←" : ""}
+                      </span>
+                      {perms.isOwner && room.status === "lobby" && (
+                        <span class="flex gap-0.5">
+                          <button
+                            type="button"
+                            class="px-1 hover:bg-base-300 rounded"
+                            disabled={i === 0}
+                            onClick={() => movePlayer(i, -1)}
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            class="px-1 hover:bg-base-300 rounded"
+                            disabled={i === room.players.length - 1}
+                            onClick={() => movePlayer(i, 1)}
+                          >
+                            ↓
+                          </button>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              {perms.isSpectator && (
+                <div class="text-[10px] text-base-content/50 mt-1">
+                  Spectating — full board visible
+                </div>
+              )}
+            </div>
+          )}
+
           <div class="p-3 border-b border-base-300 flex items-center justify-between bg-base-200/60">
             <div>
               <div class="font-semibold">Roster</div>
               <div class="text-xs text-base-content/60">
                 {state.combatants.length} combatants
+                {!canEdit && " · read-only"}
               </div>
             </div>
-            <div class="flex gap-1">
-              <button
-                type="button"
-                onClick={addDummy}
-                class="px-2.5 py-1 text-xs border rounded bg-base-100 hover:bg-base-200 active:bg-base-300"
-              >
-                + Dummy
-              </button>
-              {user && (
+            {canEdit && (
+              <div class="flex gap-1">
                 <button
                   type="button"
-                  onClick={openImportModal}
-                  class="px-2.5 py-1 text-xs border rounded bg-base-100 hover:bg-base-200 active:bg-base-300"
-                  title="Import characters from existing sheets"
+                  onClick={addDummy}
+                  class="px-2.5 py-1 text-xs border rounded bg-base-100 hover:bg-base-200"
                 >
-                  Import
+                  + Dummy
                 </button>
-              )}
-            </div>
+                {user && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowImportModal(true);
+                      setImportQuery("");
+                      loadImportResults("");
+                    }}
+                    class="px-2.5 py-1 text-xs border rounded bg-base-100 hover:bg-base-200"
+                  >
+                    Import
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           <div class="flex-1 overflow-auto p-2 space-y-1 text-sm">
             {state.combatants.length === 0 && (
               <div class="px-2 py-6 text-center text-base-content/60 text-xs">
-                No characters yet.<br />
-                Add dummies or import real sheets.
+                No characters yet.
+                {canEdit && (
+                  <>
+                    <br />Add dummies or import real sheets.
+                  </>
+                )}
               </div>
             )}
             {state.combatants.map((c) => {
@@ -716,7 +951,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 c.id,
               );
               const isSelected = selectedId === c.id;
-
               return (
                 <div
                   key={c.id}
@@ -725,70 +959,97 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                       ? "ring-2 ring-primary bg-primary/5"
                       : "hover:bg-base-200"
                   }`}
-                  onClick={() => setSelectedId(c.id)}
+                  onClick={() => {
+                    setSelectedId(c.id);
+                    setSelectedHexKey(null);
+                  }}
                 >
-                  {/* Team color — click to cycle */}
                   <button
                     type="button"
-                    onClick={() => cycleTeam(c.id)}
-                    class="w-3 h-3 rounded-full shrink-0 border border-base-300"
+                    disabled={!canEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      mutate((s) => cycleTeam(s, c.id));
+                    }}
+                    class="w-3 h-3 rounded-full shrink-0 border border-base-300 disabled:opacity-60"
                     style={{ backgroundColor: TEAM_COLORS[c.team] }}
-                    title="Cycle team (allies / enemies / neutral)"
+                    title="Cycle team"
                   />
-
                   <div class="min-w-0 flex-1">
                     <button
                       type="button"
-                      onClick={() => renameCombatant(c.id)}
-                      class="font-medium truncate hover:underline text-left w-full flex items-center gap-1.5"
-                      title="Click to rename"
+                      disabled={!canEdit}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!canEdit) return;
+                        const newName = prompt("Rename combatant", c.name)
+                          ?.trim();
+                        if (!newName || newName === c.name) return;
+                        mutate((s) => setCombatantName(s, c.id, newName));
+                      }}
+                      class="font-medium truncate hover:underline text-left w-full flex items-center gap-1.5 disabled:no-underline"
                     >
                       {c.name}
                       {c.label && (
-                        <span
-                          class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold rounded bg-base-300 text-base-content/80 shrink-0"
-                          title={`Label ${c.label}`}
-                        >
+                        <span class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold rounded bg-base-300 shrink-0">
                           {c.label}
                         </span>
                       )}
                     </button>
-                    {/* Health controls */}
                     <div class="flex items-center gap-1 text-[10px] tabular-nums text-base-content/80 mt-0.5">
-                      <button
-                        type="button"
-                        onClick={() => adjustHealth(c.id, -5)}
-                        class="px-1 rounded hover:bg-base-200 active:bg-base-300"
-                      >
-                        −5
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => adjustHealth(c.id, -1)}
-                        class="px-1 rounded hover:bg-base-200 active:bg-base-300"
-                      >
-                        −1
-                      </button>
+                      {canEdit && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate((s) => adjustHealth(s, c.id, -5));
+                            }}
+                            class="px-1 rounded hover:bg-base-200"
+                          >
+                            −5
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate((s) => adjustHealth(s, c.id, -1));
+                            }}
+                            class="px-1 rounded hover:bg-base-200"
+                          >
+                            −1
+                          </button>
+                        </>
+                      )}
                       <span class="font-medium px-0.5">
                         {c.currentHealth} / {c.maxHealth}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => adjustHealth(c.id, 1)}
-                        class="px-1 rounded hover:bg-base-200 active:bg-base-300"
-                      >
-                        +1
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => adjustHealth(c.id, 5)}
-                        class="px-1 rounded hover:bg-base-200 active:bg-base-300"
-                      >
-                        +5
-                      </button>
+                      {canEdit && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate((s) => adjustHealth(s, c.id, 1));
+                            }}
+                            class="px-1 rounded hover:bg-base-200"
+                          >
+                            +1
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate((s) => adjustHealth(s, c.id, 5));
+                            }}
+                            class="px-1 rounded hover:bg-base-200"
+                          >
+                            +5
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
-
                   <div class="flex flex-col items-end gap-0.5 text-[10px]">
                     <span
                       class={`px-1 rounded ${
@@ -799,35 +1060,53 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                     >
                       {onGrid ? "on grid" : "off grid"}
                     </span>
-
-                    {onGrid
-                      ? (
-                        <button
-                          type="button"
-                          onClick={() => removeFromGrid(c.id)}
-                          class="text-primary hover:underline"
-                        >
-                          Remove from grid
-                        </button>
-                      )
-                      : (
-                        <button
-                          type="button"
-                          onClick={() => startPlacing(c.id)}
-                          class="text-primary hover:underline font-medium"
-                        >
-                          Deploy to grid
-                        </button>
-                      )}
-
-                    <button
-                      type="button"
-                      onClick={() => removeCombatant(c.id)}
-                      class="text-error/70 hover:text-error opacity-70 group-hover:opacity-100"
-                      title="Remove from battle entirely"
-                    >
-                      ✕
-                    </button>
+                    {canEdit && (
+                      onGrid
+                        ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate((s) => removeFromGrid(s, c.id));
+                            }}
+                            class="text-primary hover:underline"
+                          >
+                            Remove from grid
+                          </button>
+                        )
+                        : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPlacingCombatantId(c.id);
+                              setModeTool("select");
+                              setPlacingCoverType(null);
+                            }}
+                            class="text-primary hover:underline font-medium"
+                          >
+                            Deploy to grid
+                          </button>
+                        )
+                    )}
+                    {canEdit && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (
+                            !confirm(
+                              `Remove "${c.name}" from the battle?`,
+                            )
+                          ) return;
+                          mutate((s) => removeCombatant(s, c.id));
+                          if (selectedId === c.id) setSelectedId(null);
+                        }}
+                        class="text-error/70 hover:text-error"
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -835,19 +1114,29 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
           </div>
 
           <div class="p-2 text-[10px] text-base-content/50 border-t border-base-300 flex gap-2">
-            <button
-              type="button"
-              onClick={resetBattle}
-              class="text-error/80 hover:text-error underline"
-            >
-              New Battle
-            </button>
+            {!isOnline && (
+              <button
+                type="button"
+                onClick={resetBattle}
+                class="text-error/80 hover:text-error underline"
+              >
+                New Battle
+              </button>
+            )}
             <span class="flex-1" />
-            <span>HP editing live • autosaves</span>
+            <span>
+              {isOnline
+                ? (canEdit
+                  ? (room?.status === "lobby"
+                    ? "lobby autosaves"
+                    : "draft until End Turn")
+                  : "view only")
+                : "autosaves locally"}
+            </span>
           </div>
         </aside>
 
-        {/* Center: The Grid */}
+        {/* Center grid */}
         <main class="flex-1 relative overflow-hidden bg-base-100 select-none">
           <svg
             ref={svgRef}
@@ -855,11 +1144,9 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             style={{
               cursor: isPanning.current
                 ? "grabbing"
-                : placingCombatantId || mode === "place-cover"
+                : placingCombatantId || modeTool === "place-cover"
                 ? "crosshair"
-                : mode === "select"
-                ? "grab"
-                : "crosshair",
+                : "grab",
             }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
@@ -867,17 +1154,7 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             onPointerLeave={onPointerUp}
             onClick={onBackgroundClick}
           >
-            {
-              /* SVG patterns for cover shading.
-               Clear progression:
-               - Weak:     Dots
-               - Middling: Dashed lines (straight line with gaps)
-               - Strong:   Solid lines
-               - Fortified: Crossed lines (crosshatch)
-               Works in both light and dark mode. */
-            }
             <defs>
-              {/* Weak: Dots (lowest tier) */}
               <pattern
                 id="cover-weak"
                 patternUnits="userSpaceOnUse"
@@ -900,8 +1177,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                   fill-opacity="0.6"
                 />
               </pattern>
-
-              {/* Middling: Dashed lines (straight line with clear gaps) */}
               <pattern
                 id="cover-middling"
                 patternUnits="userSpaceOnUse"
@@ -913,8 +1188,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 <circle cx="6" cy="6" r="1.2" fill="currentColor" />
                 <circle cx="12" cy="0" r="1.2" fill="currentColor" />
               </pattern>
-
-              {/* Strong: Solid lines (thicker, clear continuous line) */}
               <pattern
                 id="cover-strong"
                 patternUnits="userSpaceOnUse"
@@ -928,8 +1201,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                   stroke-width="0.5"
                 />
               </pattern>
-
-              {/* Fortified: Crossed lines (dense crosshatch) */}
               <pattern
                 id="cover-fortified"
                 patternUnits="userSpaceOnUse"
@@ -945,9 +1216,7 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
               </pattern>
             </defs>
 
-            {/* World group with pan/zoom transform */}
             <g transform={`translate(${v.tx} ${v.ty}) scale(${v.scale})`}>
-              {/* Subtle ground fill for the whole map area — must not steal clicks from hexes */}
               <rect
                 x={-HEX_SIZE * 10}
                 y={-HEX_SIZE * 9}
@@ -958,27 +1227,18 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 stroke="none"
                 pointer-events="none"
               />
-
-              {/* All hexes */}
               {hexElements}
-
-              {/* Cover shading fills — patterns on the hex itself for connected look */}
               {coverFillElements}
 
-              {/* Character tokens (drawn on top) — requirement #1 */}
               {Object.entries(state.placedCharacters).map(
                 ([key, combatantId]) => {
-                  // Don't render the normal token if we're currently dragging it
                   if (dragState.value?.combatantId === combatantId) return null;
-
                   const c = state.combatants.find((x) => x.id === combatantId);
                   if (!c) return null;
                   const coord = parseCoordKey(key);
                   const center = hexToPixel(coord);
                   const color = TEAM_COLORS[c.team];
                   const isSelected = selectedId === combatantId;
-
-                  // Prefer explicit label (A, B, C...) for dummies
                   const displayLabel = c.label ??
                     c.name.slice(0, 2).toUpperCase();
                   const isSingleLetterLabel = Boolean(c.label);
@@ -986,15 +1246,15 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                   return (
                     <g
                       key={`token-${combatantId}`}
-                      class="cursor-move"
+                      class={canEdit ? "cursor-move" : "cursor-pointer"}
                       onPointerDown={(e) =>
                         handleTokenPointerDown(e, combatantId, center)}
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedId(combatantId);
+                        setSelectedHexKey(key);
                       }}
                     >
-                      {/* Token circle - thicker + brighter stroke when selected */}
                       <circle
                         cx={center.x}
                         cy={center.y}
@@ -1004,10 +1264,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                         stroke={isSelected ? "#fde047" : "#111827"}
                         stroke-width={isSelected ? 4 : 2.5}
                       />
-                      {
-                        /* Label or initials on token.
-                      Single-letter labels (for dummies) are larger and more prominent. */
-                      }
                       <text
                         x={center.x}
                         y={center.y + (isSingleLetterLabel ? 4 : 3)}
@@ -1022,7 +1278,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                       >
                         {displayLabel}
                       </text>
-                      {/* Tiny HP badge */}
                       <text
                         x={center.x}
                         y={center.y + HEX_SIZE * 0.58}
@@ -1039,19 +1294,16 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 },
               )}
 
-              {/* Live dragged token (rendered on top during drag) */}
               {dragState.value && (() => {
                 const c = state.combatants.find(
                   (x) => x.id === dragState.value!.combatantId,
                 );
                 if (!c) return null;
-
                 const { worldX, worldY } = dragState.value;
                 const color = TEAM_COLORS[c.team];
                 const displayLabel = c.label ??
                   c.name.slice(0, 2).toUpperCase();
                 const isSingleLetterLabel = Boolean(c.label);
-
                 return (
                   <g class="cursor-move pointer-events-none">
                     <circle
@@ -1083,13 +1335,12 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             </g>
           </svg>
 
-          {/* Placing instruction banner (when active) */}
-          {placingCombatantId && (
+          {placingCombatantId && canEdit && (
             <div class="absolute top-3 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-content text-xs px-3 py-1 rounded-full shadow flex items-center gap-3">
               Click a hex to deploy •
               <button
                 type="button"
-                onClick={cancelPlacing}
+                onClick={() => setPlacingCombatantId(null)}
                 class="underline hover:no-underline font-medium"
               >
                 Cancel (ESC)
@@ -1097,44 +1348,39 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             </div>
           )}
 
-          {/* Floating toolbar */}
-          <div class="absolute top-3 left-3 bg-base-100/95 border border-base-300 rounded-lg shadow-sm px-2 py-1.5 flex items-center gap-2 text-sm">
+          <div class="absolute top-3 left-3 bg-base-100/95 border border-base-300 rounded-lg shadow-sm px-2 py-1.5 flex items-center gap-2 text-sm z-10">
             <button
               type="button"
               onClick={() => {
-                setMode("select");
+                setModeTool("select");
                 setPlacingCoverType(null);
               }}
               class={`px-2 py-0.5 rounded ${
-                mode === "select"
+                modeTool === "select"
                   ? "bg-primary text-primary-content"
                   : "hover:bg-base-200"
               }`}
             >
               Select / Pan
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode("place-cover");
-                setSelectedId(null);
-                if (!placingCoverType) {
-                  setPlacingCoverType("weak");
-                }
-              }}
-              class={`px-2 py-0.5 rounded ${
-                mode === "place-cover"
-                  ? "bg-primary text-primary-content"
-                  : "hover:bg-base-200"
-              }`}
-            >
-              Place Cover
-            </button>
-
-            <div class="w-px h-4 bg-base-300 mx-1" />
-
-            {/* Mini cover type palette - only visible in cover mode */}
-            {mode === "place-cover" && (
+            {canEdit && (
+              <button
+                type="button"
+                onClick={() => {
+                  setModeTool("place-cover");
+                  setSelectedId(null);
+                  if (!placingCoverType) setPlacingCoverType("weak");
+                }}
+                class={`px-2 py-0.5 rounded ${
+                  modeTool === "place-cover"
+                    ? "bg-primary text-primary-content"
+                    : "hover:bg-base-200"
+                }`}
+              >
+                Place Cover
+              </button>
+            )}
+            {canEdit && modeTool === "place-cover" && (
               <div class="flex items-center gap-1 pl-1 border-l border-base-300">
                 {(["weak", "middling", "strong", "fortified"] as const).map(
                   (t) => (
@@ -1155,12 +1401,11 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 )}
               </div>
             )}
-
+            <div class="w-px h-4 bg-base-300 mx-1" />
             <button
               type="button"
               onClick={() => zoomBy(1 / ZOOM_FACTOR)}
               class="px-1.5 hover:bg-base-200 rounded"
-              title="Zoom out"
             >
               −
             </button>
@@ -1168,7 +1413,6 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
               type="button"
               onClick={() => zoomBy(ZOOM_FACTOR)}
               class="px-1.5 hover:bg-base-200 rounded"
-              title="Zoom in"
             >
               +
             </button>
@@ -1179,9 +1423,7 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             >
               Fit
             </button>
-
             <div class="w-px h-4 bg-base-300 mx-1" />
-
             <label class="flex items-center gap-1 text-xs cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -1193,67 +1435,145 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
             </label>
           </div>
 
-          {/* Cover Legend - top right */}
-          <div class="absolute top-3 right-3 bg-base-100/95 border border-base-300 rounded-lg shadow-sm px-3 py-1 text-[10px] flex items-center gap-2 z-10">
-            <span class="font-semibold text-base-content/70 mr-1">Cover</span>
-            {(["weak", "middling", "strong", "fortified"] as const).map((t) => (
-              <div
-                key={t}
-                class="flex items-center gap-1"
-                title={COVER_LABELS[t]}
-              >
-                <div
-                  class="w-3 h-3 border border-base-300 shrink-0"
-                  style={{
-                    background: t === "weak"
-                      ? "radial-gradient(circle, #64748b 0 25%, transparent 27%)"
-                      : t === "middling"
-                      ? "repeating-linear-gradient(45deg, #475569 0 1.8px, transparent 1.8px 5.5px)"
-                      : t === "strong"
-                      ? "repeating-linear-gradient(45deg, #334155 0 2px, transparent 2px 6px)"
-                      : "repeating-linear-gradient(45deg, #1e2937 0 1.6px, transparent 1.6px 4.5px), repeating-linear-gradient(-45deg, #1e2937 0 1.6px, transparent 1.6px 4.5px)",
-                  }}
-                />
-                <span class="text-base-content/80">{t[0].toUpperCase()}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Status line */}
           <div class="absolute bottom-2 right-3 text-[10px] px-2 py-0.5 bg-base-100/80 border border-base-300 rounded text-base-content/60 tabular-nums">
-            {mode === "place-cover" && placingCoverType
-              ? `Placing: ${
-                COVER_LABELS[placingCoverType]
-              } • Click hex to place • ESC to exit`
-              : `Scale ${
-                v.scale.toFixed(2)
-              }× • ${INITIAL_GRID.length} hexes • Drag background to pan • Scroll to zoom`}
+            Scale {v.scale.toFixed(2)}× · {INITIAL_GRID.length} hexes
           </div>
         </main>
 
-        {/* Right: Inspector stub */}
+        {/* Inspector */}
         <aside class="w-64 border-l border-base-300 bg-base-100 p-3 text-sm hidden xl:block overflow-auto">
-          <div class="font-semibold mb-1">Inspector</div>
-          <div class="text-xs text-base-content/60">
-            Select a hex, token, or cover to see details (coming in slice 04+).
-          </div>
-          <div class="mt-4 text-[10px] text-base-content/50">
-            Current mode: <span class="font-mono">{mode}</span>
+          <div class="font-semibold mb-2">Inspector</div>
+          {!selectedCombatant && !selectedHexKey && (
+            <div class="text-xs text-base-content/60">
+              Select a token or hex for details.
+            </div>
+          )}
+          {selectedCombatant && (
+            <div class="space-y-2 text-xs">
+              <div class="font-medium text-sm">{selectedCombatant.name}</div>
+              <div class="flex items-center gap-2">
+                <span
+                  class="w-3 h-3 rounded-full border"
+                  style={{
+                    backgroundColor: TEAM_COLORS[selectedCombatant.team],
+                  }}
+                />
+                <span class="capitalize">{selectedCombatant.team}</span>
+                {selectedCombatant.label && (
+                  <span class="badge badge-sm">
+                    {selectedCombatant.label}
+                  </span>
+                )}
+              </div>
+              <div class="tabular-nums">
+                HP {selectedCombatant.currentHealth} /{" "}
+                {selectedCombatant.maxHealth}
+              </div>
+              {canEdit && (
+                <button
+                  type="button"
+                  class="btn btn-xs btn-outline"
+                  onClick={() => {
+                    const v = prompt(
+                      "Max HP",
+                      String(selectedCombatant.maxHealth),
+                    );
+                    if (v == null) return;
+                    const n = Number(v);
+                    if (!Number.isFinite(n)) return;
+                    mutate((s) =>
+                      setCombatantMaxHealth(s, selectedCombatant.id, n)
+                    );
+                  }}
+                >
+                  Edit max HP
+                </button>
+              )}
+              {selectedCombatant.characterId && (
+                <a
+                  href={`/characters/${selectedCombatant.characterId}`}
+                  class="link link-primary block"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open character sheet
+                </a>
+              )}
+            </div>
+          )}
+          {selectedHexKey && (
+            <div class="mt-4 space-y-2 text-xs border-t border-base-300 pt-3">
+              <div class="font-medium">Hex {selectedHexKey}</div>
+              {selectedOccupantId && (
+                <div>
+                  Occupant:{" "}
+                  {state.combatants.find((c) => c.id === selectedOccupantId)
+                    ?.name ?? selectedOccupantId}
+                </div>
+              )}
+              {selectedCover
+                ? (
+                  <>
+                    <div>
+                      Cover: {COVER_LABELS[selectedCover.type]}
+                    </div>
+                    <div>
+                      Passable: {selectedCover.passable ? "yes" : "no"}
+                    </div>
+                    {canEdit && (
+                      <div class="flex flex-wrap gap-1">
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-outline"
+                          onClick={() =>
+                            mutate((s) =>
+                              setCoverPassable(
+                                s,
+                                selectedHexKey,
+                                !selectedCover.passable,
+                              )
+                            )}
+                        >
+                          Toggle passable
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-error btn-outline"
+                          onClick={() => {
+                            mutate((s) => removeCover(s, selectedHexKey));
+                          }}
+                        >
+                          Remove cover
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )
+                : <div class="text-base-content/60">No cover</div>}
+            </div>
+          )}
+          <div class="mt-6 text-[10px] text-base-content/50">
+            Mode: <span class="font-mono">{modeTool}</span>
+            {isOnline && room && (
+              <>
+                <br />
+                Room: <span class="font-mono">{room.status}</span>
+              </>
+            )}
           </div>
         </aside>
       </div>
 
-      {/* Import Characters Modal */}
+      {/* Import modal */}
       {showImportModal && (
         <div
           class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-          onClick={closeImportModal}
+          onClick={() => setShowImportModal(false)}
         >
           <div
             class="bg-base-100 border border-base-300 rounded-lg shadow-xl w-full max-w-2xl max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div class="flex items-center justify-between px-4 py-3 border-b border-base-300">
               <div>
                 <div class="font-semibold">Import Characters from Sheets</div>
@@ -1263,14 +1583,12 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
               </div>
               <button
                 type="button"
-                onClick={closeImportModal}
-                class="text-xl leading-none px-2 text-base-content/60 hover:text-base-content"
+                onClick={() => setShowImportModal(false)}
+                class="text-xl leading-none px-2 text-base-content/60"
               >
                 ×
               </button>
             </div>
-
-            {/* Search */}
             <div class="p-4 border-b border-base-300">
               <input
                 type="text"
@@ -1278,107 +1596,71 @@ export default function HexGridBattler({ user }: HexGridBattlerProps) {
                 onInput={(e) => {
                   const val = (e.target as HTMLInputElement).value;
                   setImportQuery(val);
-                  // Debounce lightly by just refetching on input
-                  const _timer = setTimeout(() => loadImportResults(val), 250);
-                  // Cleanup not critical for this simple case
+                  if (importDebounceRef.current) {
+                    clearTimeout(importDebounceRef.current);
+                  }
+                  importDebounceRef.current = setTimeout(() => {
+                    loadImportResults(val);
+                  }, 250) as unknown as number;
                 }}
                 placeholder="Search by name or race..."
                 class="w-full px-3 py-2 border border-base-300 rounded bg-base-100 text-sm focus:outline-none focus:border-primary"
               />
             </div>
-
-            {/* Results */}
             <div class="flex-1 overflow-auto p-4 space-y-6 text-sm">
               {importLoading && (
                 <div class="text-center text-base-content/60 py-8">
                   Loading characters...
                 </div>
               )}
-
               {!importLoading && importResults && (
                 <>
-                  {/* Your Characters */}
-                  <div>
-                    <div class="font-medium mb-2 text-base-content/80">
-                      Your Characters ({importResults.mine.length})
-                    </div>
-                    {importResults.mine.length === 0 && (
-                      <div class="text-xs text-base-content/50 pl-1">
-                        No matches.
+                  {(
+                    [
+                      ["Your Characters", importResults.mine],
+                      ["Public / Approved", importResults.public],
+                    ] as const
+                  ).map(([title, list]) => (
+                    <div key={title}>
+                      <div class="font-medium mb-2 text-base-content/80">
+                        {title} ({list.length})
                       </div>
-                    )}
-                    <div class="space-y-1">
-                      {importResults.mine.map((c) => (
-                        <button
-                          type="button"
-                          key={c.id}
-                          onClick={() => importCharacter(c)}
-                          class="w-full text-left px-3 py-2 border border-base-300 rounded hover:bg-base-200 flex justify-between items-center"
-                        >
-                          <div>
-                            <span class="font-medium">{c.name}</span>
-                            <span class="text-xs text-base-content/60 ml-2">
-                              {c.race}
-                            </span>
-                          </div>
-                          <div class="text-xs tabular-nums text-base-content/70">
-                            HP {c.maxHealth}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Public / Approved */}
-                  <div>
-                    <div class="font-medium mb-2 text-base-content/80">
-                      Public / Approved ({importResults.public.length})
-                    </div>
-                    {importResults.public.length === 0 && (
-                      <div class="text-xs text-base-content/50 pl-1">
-                        No matches.
+                      {list.length === 0 && (
+                        <div class="text-xs text-base-content/50 pl-1">
+                          No matches.
+                        </div>
+                      )}
+                      <div class="space-y-1">
+                        {list.map((c) => (
+                          <button
+                            type="button"
+                            key={c.id}
+                            onClick={() => importCharacter(c)}
+                            disabled={!canEdit}
+                            class="w-full text-left px-3 py-2 border border-base-300 rounded hover:bg-base-200 flex justify-between items-center disabled:opacity-50"
+                          >
+                            <div>
+                              <span class="font-medium">{c.name}</span>
+                              <span class="text-xs text-base-content/60 ml-2">
+                                {c.race}
+                              </span>
+                            </div>
+                            <div class="text-xs tabular-nums text-base-content/70">
+                              HP {c.maxHealth}
+                            </div>
+                          </button>
+                        ))}
                       </div>
-                    )}
-                    <div class="space-y-1">
-                      {importResults.public.map((c) => (
-                        <button
-                          type="button"
-                          key={c.id}
-                          onClick={() => importCharacter(c)}
-                          class="w-full text-left px-3 py-2 border border-base-300 rounded hover:bg-base-200 flex justify-between items-center"
-                        >
-                          <div>
-                            <span class="font-medium">{c.name}</span>
-                            <span class="text-xs text-base-content/60 ml-2">
-                              {c.race}
-                            </span>
-                          </div>
-                          <div class="text-xs tabular-nums text-base-content/70">
-                            HP {c.maxHealth}
-                          </div>
-                        </button>
-                      ))}
                     </div>
-                  </div>
+                  ))}
                 </>
               )}
-
-              {!importLoading && !importResults && (
-                <div class="text-center text-base-content/60 py-8">
-                  Start typing to search characters.
-                </div>
-              )}
             </div>
-
-            {/* Footer */}
-            <div class="p-3 border-t border-base-300 text-[10px] text-base-content/50 flex justify-between">
-              <div>
-                Click a character to add it to the roster at full health.
-              </div>
+            <div class="p-3 border-t border-base-300 text-[10px] text-base-content/50 flex justify-end">
               <button
                 type="button"
-                onClick={closeImportModal}
-                class="underline hover:no-underline"
+                onClick={() => setShowImportModal(false)}
+                class="underline"
               >
                 Done
               </button>

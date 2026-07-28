@@ -291,6 +291,111 @@ export const VEHICLES: VehicleDefinition[] = [
       *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
       *Two machineguns in each direction; front, left, right and rear.`
   },
+
+// CIVVIE VEHICLES
+
+  {
+    id: "car",
+    name: "Car",
+    nation: "Civilian",
+    pointCost: 1,
+    armor: {
+      front: "none",
+      side: "none",
+      rear: "none",
+    },
+    seats: 5,
+    doors: 4,
+    crew: 1,
+    size: 18,
+    agility: 2,
+    speed: 6,
+    modules: [
+      "civilian_engine",
+      "civilian_fuel_tank",
+      "civilian_wheels_4",
+    ],
+    description:
+      `An average ol' car. It's just like a Puma, it drives on all fours.
+
+      Crew:
+      1 driver ( 2/2/3 ).
+      1 front passenger seat ( 2/2/3 ).
+      3 passengers ( 3/2/2 ).
+      
+      *The driver cannot shoot out of the vehicle, they need to focus on driving!
+      *The trunk can hold up to 10 weight units of cargo.
+      *Remember that people are considered to have 3 weight.`,
+  },
+  {
+    id: "civilian_truck",
+    name: "Civilian truck",
+    nation: "Civilian",
+    pointCost: 1,
+    armor: {
+      front: "none",
+      side: "none",
+      rear: "none",
+    },
+    seats: 18,
+    doors: 18,
+    crew: 1,
+    size: 24,
+    agility: 2,
+    speed: 4,
+    modules: [
+      "civilian_engine",
+      "civilian_fuel_tank",
+      "civilian_wheels_4",
+    ],
+    description:
+      `A truck! A bit slower than most, but can carry a lot of weight!
+
+      Crew:
+      1 driver ( 2/2/5 ).
+      1 front passenger seat ( 2/2/5 ).
+      16 passengers on the back ( 5/2/2 ).
+      
+      *The driver cannot shoot out of the vehicle, they need to focus on driving!
+      *Each seat for passengers on the back can carry 3 weight units, for a total of 16 x 3 = 48 weight.
+      *Choose whether to have a tarp cover over the back of the truck. No cover leaves the stats as they are, and rear passengers can fire out of the vehicle.
+      *Covering the back with a tarp gives the rear passengers ( 5/3/2 ) cover instead, but only allows them to shoot backwards.
+      *The tarp limits the doors to 4 instead, as rear passengers can longer climb along the sides of the truck, only through the rear.`,
+  },
+  {
+    id: "motorcycle",
+    name: "Motorcycle",
+    nation: "Civilian",
+    pointCost: 1,
+    armor: {
+      front: "none",
+      side: "none",
+      rear: "none",
+    },
+    seats: 2,
+    doors: 2,
+    crew: 1,
+    size: 6,
+    agility: 2,
+    speed: 6,
+    modules: [
+      "civilian_engine",
+      "civilian_fuel_tank",
+      "civilian_wheels_2",
+    ],
+    description:
+      `An average motorcycle. Pretty agile, but you can't bring all of your friends.
+
+      Crew:
+      1 driver ( 0/0/0 ).
+      1 passenger ( 0/0/0 ).
+      
+      *The driver cannot shoot out of the vehicle, they need to focus on driving!
+      *If the driver is incapacitated/dies while the vehicle is moving, it collapses immediately.
+      *When collapsing, it will move however many distances it had moved last turn, dragging its rider(s) with it.
+      *The riders take damage equal to how many distances it moves.`,
+  },
+
   
 ];
 

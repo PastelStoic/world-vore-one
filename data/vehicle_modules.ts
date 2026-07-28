@@ -7,6 +7,9 @@
 import type { VehicleModuleDefinition } from "./equipment_types.ts";
 
 export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
+
+  // WEAPONS
+  
   {
     id: "light-cannon",
     name: "Light cannon",
@@ -100,6 +103,9 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     ammo: 100,
     reloadTurns: 3,
   },
+
+  // internal modules and components
+
   {
     id: "engine",
     name: "Engine",
@@ -109,6 +115,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     difficulty: { front: 5, side: 5, rear: 5 },
     destructionEffect: "The vehicle can no longer move.",
   },
+  
   {
     id: "fuel-tanks",
     name: "Fuel tanks",

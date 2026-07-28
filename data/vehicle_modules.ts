@@ -152,7 +152,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
   },
   {
-    id: "wheels_2",
+    id: "wheels-2",
     name: "Wheels ( 2 wheels )",
     description: "A pair of thick rubber wheels, can take a surprising amount of punishment!",
     hp: 4,
@@ -161,7 +161,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
   },
   {
-    id: "Wheels_4",
+    id: "Wheel-4",
     name: "Wheels ( 4 wheels )",
     description: "A set of four thick rubber wheels, can take a surprising amount of punishment!",
     hp: 6,
@@ -173,7 +173,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
 // CIVILIAN SHIZ
 
   {
-    id: "civilian_engine",
+    id: "civilian-engine",
     name: "Civilian engine",
     description: "A lighter, simpler Civilian engine, for most vehicles of the everyday life.",
     hp: 2,
@@ -197,7 +197,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     *A fire may only be started once per combat - it cannot be set alight again.`,
   },
   {
-    id: "civilian_wheels_2",
+    id: "civilian-wheels-2",
     name: "Civilian wheels ( 2 wheels )",
     description: "Light civilian wheels, can't take much punishment at all.",
     hp: 2,
@@ -206,7 +206,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "The vehicle can no longer move.",
   },
   {
-    id: "civilian_wheels_4",
+    id: "civilian-wheels-4",
     name: "Civilian wheels ( 4 wheels )",
     description: "Light civilian wheels, can't take much punishment at all.",
     hp: 4,

@@ -352,14 +352,15 @@ export const VEHICLES: VehicleDefinition[] = [
       `A truck! A bit slower than most, but can carry a lot of weight!
 
       Crew:
-      1 driver ( 2/2/5 ).
-      1 front passenger seat ( 2/2/5 ).
-      16 passengers on the back ( 5/2/2 ).
-      
+      1 driver ( 2/2/3 ).
+      1 front passenger seat ( 2/2/3 ).
+      16 passengers on the back ( 3/0/0 ).
+
+      *Targetting the rear crew on this vehicle does not deal damage to the vehicle.
       *The driver cannot shoot out of the vehicle, they need to focus on driving!
       *Each seat for passengers on the back can carry 3 weight units, for a total of 16 x 3 = 48 weight.
       *Choose whether to have a tarp cover over the back of the truck. No cover leaves the stats as they are, and rear passengers can fire out of the vehicle.
-      *Covering the back with a tarp gives the rear passengers ( 5/3/2 ) cover instead, but only allows them to shoot backwards.
+      *Covering the back with a tarp gives the rear passengers ( 3/3/0 ) cover instead, but only allows them to shoot backwards.
       *The tarp limits the doors to 4 instead, as rear passengers can longer climb along the sides of the truck, only through the rear.`,
   },
   {
@@ -389,11 +390,15 @@ export const VEHICLES: VehicleDefinition[] = [
       Crew:
       1 driver ( 0/0/0 ).
       1 passenger ( 0/0/0 ).
-      
+
+      *Targetting the crew on this vehicle does not deal damage to the vehicle.
       *The driver cannot shoot out of the vehicle, they need to focus on driving!
       *If the driver is incapacitated/dies while the vehicle is moving, it collapses immediately.
       *When collapsing, it will move however many distances it had moved last turn, dragging its rider(s) with it.
-      *The riders take damage equal to how many distances it moves.`,
+      *The riders take damage equal to how many distances it moves.
+      *Optionally choose to have a Pannier - a side cart to your motorcycle. Not having a pannier leaves the stats unchanged.
+      *Choosing to have a pannier decreases speed to 5, but allows a 3rd passenger, and raises the number of doors to 3.
+      *The 3rd passenger has ( 0/0/0 ) cover.`,
   },
 
   

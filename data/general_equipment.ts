@@ -246,6 +246,21 @@ export const EQUIPMENT: EquipmentDefinition[] = [
 *Granted by the Sapper perk: no weight, not a bulky kit.`,
   },
   {
+    id: "revolver-bandolier",
+    name: "Revolver bandolier",
+    weight: 0,
+    isGhost: true,
+    description:
+      `A tight, leather bandolier, with many revolvers accessible to you, whenever.
+*Infinite revolvers, go wild. But they're your babies - don't give them out, ever!
+*"The fastest draw in the west"
+*"I am the guy with no name . . ."
+*"Kershoot"
+*"Pew, wizz, bang"
+*"THERE'S A SNAKE IN MY BOOT"
+*Granted by the Gunslinger perk.`,
+  },
+  {
     id: "defenders-shield",
     name: "Defender's shield",
     weight: 2,

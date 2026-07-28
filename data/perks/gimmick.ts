@@ -156,7 +156,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `You are a mastermind of tactics; your brain can see the battlefield as though it is top-down. 
 
-*When doing anything related to military strategy, you gain +4d6 to perform it.
+*When doing anything related to military strategy, you gain +3d6 to perform it.
 *You now count successes on a 4 when doing that.
 *When in combat, if you have allies and you are the leader of your party, the entire party gains a flat +1 to their initiative ratings.
 *On every turn, freely, you can choose to order an individual ally or give an order for the party.

@@ -146,10 +146,73 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     description: `The vehicle's tracks, which allow it to move smoothly along the terrain ahead!
     
     *Considered to have light armor when targetted. Does not take area damage - it must be targetted directly.`,
+    hp: 8,
+    position: "external",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+  },
+  {
+    id: "wheels_2",
+    name: "Wheels ( 2 wheels )",
+    description: "A pair of thick rubber wheels, can take a surprising amount of punishment!",
+    hp: 4,
+    position: "external",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+  },
+  {
+    id: "Wheels_4",
+    name: "Wheels ( 4 wheels )",
+    description: "A set of four thick rubber wheels, can take a surprising amount of punishment!",
     hp: 6,
     position: "external",
     difficulty: { front: 3, side: 3, rear: 3 },
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+  },
+
+// CIVILIAN SHIZ
+
+  {
+    id: "civilian_engine",
+    name: "Civilian engine",
+    description: "A lighter, simpler Civilian engine, for most vehicles of the everyday life.",
+    hp: 2,
+    position: "internal",
+    difficulty: { front: 2, side: 2, rear: 2 },
+    destructionEffect: "The vehicle can no longer move.",
+  },
+  {
+    id: "civilian-fuel-tank",
+    name: "Civilian fuel tanks",
+    description: "A fuel tank for a civilian vehicle. Small, doesn't hold a whole lot. Doesn't burn as badly as a military vehicle's tanks.",
+    hp: 1,
+    position: "internal",
+    difficulty: { front: 2, side: 2, rear: 2 },
+    destructionEffect: `The fuel tanks catch fire!
+
+    *The fire deals a continuous 3 damage to the vehicle until it is put out.
+    *Crew is unharmed from the fire; you manage to keep your distance from it. 
+    *To put it out, one must roll a 6 on a 1d6. Any crewmember can attempt to put the fire(s) out.
+    *The vehicle will run out of fuel only at combat end or after 10 turns pass, whichever is faster, leaving it immobile.
+    *A fire may only be started once per combat - it cannot be set alight again.`,
+  },
+  {
+    id: "civilian_wheels_2",
+    name: "Civilian wheels ( 2 wheels )",
+    description: "Light civilian wheels, can't take much punishment at all.",
+    hp: 2,
+    position: "external",
+    difficulty: { front: 2, side: 2, rear: 2 },
+    destructionEffect: "The vehicle can no longer move.",
+  },
+  {
+    id: "civilian_wheels_4",
+    name: "Civilian wheels ( 4 wheels )",
+    description: "Light civilian wheels, can't take much punishment at all.",
+    hp: 4,
+    position: "external",
+    difficulty: { front: 2, side: 2, rear: 2 },
+    destructionEffect: "The vehicle can no longer move.",
   },
 ];
 

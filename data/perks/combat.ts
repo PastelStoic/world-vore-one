@@ -243,4 +243,22 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Semiautomatic weapons ( 3 rof or lower ) no longer need to waste a shot when multi-targetting.
 *Throwing weapons no longer deal decreased damage when you use them for melee.`,
   },
+  {
+    id: "gunslinger",
+    name: "Gunslinger",
+    category: "combat",
+    description:
+      `You are a natural gunslinger, your trigger finger itches for the next shootout.
+
+*Gain a special 'revolver bandolier', with infinite revolvers that you can whip out whenever you want.
+*Choose a single action revolver, this now becomes your special revolver - you have infinite copies of them, and only count the weight of one.
+*You may fanfire the revolver, increasing its rof. Each additional rof point deducts -1d6 from your shooting accuracy. Your other hand must be free in order to fanfire it.
+*Your revolvers are special to you. You cannot willingly hand them over, and must always recover them, even at the risk of your own life.
+*You do not reload your revolvers. Instead, throw them at the enemy as a free action, dealing 2 damage on hit, and then whip out another.
+*The revolvers break apart when thrown at an enemy, making them unusable.
+*Your bandolier and revolvers always return to you somehow, but you can be separated from them temporarily.`,
+      grantsEquipment: [
+      { equipmentId: "revolver-bandolier" },
+      ],
+  },
 ];

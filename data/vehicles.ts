@@ -311,9 +311,9 @@ export const VEHICLES: VehicleDefinition[] = [
     agility: 2,
     speed: 6,
     modules: [
-      "civilian_engine",
-      "civilian_fuel_tank",
-      "civilian_wheels_4",
+      "civilian-engine",
+      "civilian-fuel-tank",
+      "civilian-wheels-4",
     ],
     description:
       `An average ol' car. It's just like a Puma, it drives on all fours.
@@ -344,9 +344,9 @@ export const VEHICLES: VehicleDefinition[] = [
     agility: 2,
     speed: 4,
     modules: [
-      "civilian_engine",
-      "civilian_fuel_tank",
-      "civilian_wheels_4",
+      "civilian-engine",
+      "civilian-fuel-tank",
+      "civilian-wheels-4",
     ],
     description:
       `A truck! A bit slower than most, but can carry a lot of weight!
@@ -380,9 +380,9 @@ export const VEHICLES: VehicleDefinition[] = [
     agility: 2,
     speed: 6,
     modules: [
-      "civilian_engine",
-      "civilian_fuel_tank",
-      "civilian_wheels_2",
+      "civilian-engine",
+      "civilian-fuel-tank",
+      "civilian-wheels-2",
     ],
     description:
       `An average motorcycle. Pretty agile, but you can't bring all of your friends.

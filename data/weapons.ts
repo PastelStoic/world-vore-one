@@ -1132,6 +1132,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
     compatibleAttachmentIds: ["bayonet", "strong-sling"],
+    discountFactionPerkIds: ["king-s-royal-army-pf"],
   },
 ];
 

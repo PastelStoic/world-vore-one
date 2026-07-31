@@ -44,6 +44,8 @@ export const SMUT_PERKS: PerkDefinition[] = [
 
 *Whenever you are having sex with a template, you can hardcore fuck her, and thus, rewrire their brain!
 *You can turn them into a template of your choosing. The appearance remains the same though!
+*Alternatively, rewire their brain into thinking of you and your teammates as allies - your target will bind to you instead of something else!
+*If your target is unwilling, you must be grappling them, or pinning them, before you can start fucking them.
 *Whenever fucking them hard, roll your strength against their own.
 *You need [Victim's constitution] successes in order to rewrite them. 
 *Successes are cumulative, you don't need to get them all in a single roll.`,

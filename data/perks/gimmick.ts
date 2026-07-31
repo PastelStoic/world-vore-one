@@ -95,9 +95,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Your animal has special training - you can give it basic commands, such as attack, follow, sit, 'get that', etc.
 *It must have a sheet of their own, and start off with 9 points and two perks, and gains points at the same rate you do, including freebies.
 *Your pet may also use whatever animalistic abilities they have: Flight, smell, sight, etc.
-*Mark the sheet as 'Baseliner', not Pilzfraun or anything of the sort, dummy!
 *Your animal can be killed and if killed, the individual cannot be brought back. You may get a new pet - this perk cannot be refunded due to the animal's death! 
-*The Animal obeys typical HP rules for incapacitation, critical condition and death.`,
+*You can command stray animals at will, within reason: A starving wolf will not refrain from eating you. You always understand an animal's body language and intention.
+*Have +3d6 when using Charisma against Tierfraun.`,
   },
   {
     id: "free-range",

@@ -188,7 +188,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Language barriers, being mute, talking through radio interference - you are always clearly understood through this.
 *You are never misunderstood, and your interpretations are always correct. 
 *You can communicate with animals within reason; you can display you are no threat, for example, and always succeed.
-*You may use rp-discussions to talk to players and ask for clarifications on anything AND use it IRP.`,
+*You may use rp-discussions to talk to players and ask for clarifications on anything AND use it IRP.
+*Please note that you may still need to clarify things to *players*, as nobody can read your mind in actuality.`,
   },
   {
     id: "hypnotist",

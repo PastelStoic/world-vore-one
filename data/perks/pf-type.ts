@@ -329,8 +329,12 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You always immobilize your predator, even if they have the 'hauling-meat' perk. Does not apply if they're a hefty too.
 *Double your pred's penalties from being immobilized.
 *You should taller and bulkier than average - you're huge!
-*You can handle weapons that require bipods without issues. Ignore the penalty from not being set up.
-*You can use two-handed weapons, melee or ranged, with one hand.`,
+*You can use two-handed weapons, melee or ranged, with one hand.
+*Any weapon you wield with at least 1 hand is considered 'set up' for any rules that require that (such as LMGs and anti-tank rifles).
+*Any weapon you wield with BOTH hands is considered 'emplaced' for any rules that require that (such as HMGs and heavy anti-tank rifles).
+
+*If you have the "Ambidextrous" combat perk, note the following:
+   >Hefties, when using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.`,
     modifiers: {
       baseStatBonuses: { constitution: 2, strength: 1 },
     },

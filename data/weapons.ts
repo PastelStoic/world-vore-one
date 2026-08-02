@@ -207,7 +207,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 1,
     traitIds: [
       "two-handed",
-      "at-rifle",
+      "bipod", "at-kickback", "at-inaccurate",
     ],
     compatibleAttachmentIds: [],
   },
@@ -226,7 +226,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-at-rifle",
+      "tripod", "heavyat-kickback", "heavyat-inaccurate",
     ],
     compatibleAttachmentIds: [],
   },
@@ -275,7 +275,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun"],
+    traitIds: ["two-handed", "bipod", "lmg-recoil"],
     compatibleAttachmentIds: [],
   },
   {
@@ -292,7 +292,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "heavy-magazines",
     ],
     compatibleAttachmentIds: ["lewis-gun-shield"],
@@ -364,7 +364,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
     ],
     compatibleAttachmentIds: [],
   },
@@ -429,7 +429,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun"],
+    traitIds: ["two-handed", "bipod", "lmg-recoil"],
     compatibleAttachmentIds: [],
   },
 
@@ -542,7 +542,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
     ],
     compatibleAttachmentIds: [],
@@ -561,7 +561,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun","heavy-magazines"],
+    traitIds: ["two-handed", "bipod", "lmg-recoil","heavy-magazines"],
     freeAccessoryIds: ["mg08/15-magazine"],
     compatibleAttachmentIds: [],
     requiresMagazines: true,
@@ -620,7 +620,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
     ],
     compatibleAttachmentIds: [],
@@ -693,7 +693,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun", "select-fire"],
+    traitIds: ["two-handed", "bipod", "lmg-recoil", "select-fire"],
     compatibleAttachmentIds: [],
   },
   {
@@ -752,7 +752,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 1,
     traitIds: [
       "two-handed",
-      "light-machinegun",
+      "bipod", "lmg-recoil",
       "6mm-arisaka",
       "stripper-clip-fed",
     ],
@@ -773,7 +773,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "two-handed",
       "restricted",
       "6mm-arisaka",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
     ],
     compatibleAttachmentIds: [],
   },
@@ -855,7 +855,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
     ],
     compatibleAttachmentIds: ["maxim-gun-shield"],
@@ -876,7 +876,7 @@ export const WEAPONS: WeaponDefinition[] = [
     pointCost: 1,
     traitIds: [
       "two-handed",
-      "light-machinegun",
+      "bipod", "lmg-recoil",
       "overhead-magazine",
     ],
     compatibleAttachmentIds: [],
@@ -925,7 +925,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
     ],
     compatibleAttachmentIds: [],
@@ -1009,7 +1009,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 2,
     pointCost: 3,
-    traitIds: ["two-handed", "restricted","light-machinegun", "overhead-magazine","smg-hybrid",],
+    traitIds: ["two-handed", "restricted","bipod", "lmg-recoil", "overhead-magazine","smg-hybrid",],
     discountFactionPerkIds: ["italian-veteran",],
     compatibleAttachmentIds: ["strong-sling",],
   },
@@ -1027,7 +1027,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
       "6-5mm-carcano",
     ],
@@ -1097,7 +1097,7 @@ export const WEAPONS: WeaponDefinition[] = [
     traitIds: [
       "two-handed",
       "restricted",
-      "heavy-machinegun",
+      "tripod", "hmg-recoil",
       "extra-heavy-magazines",
     ],
     compatibleAttachmentIds: [],
@@ -1116,7 +1116,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 7,
     weight: 3,
     pointCost: 1,
-    traitIds: ["two-handed", "light-machinegun"],
+    traitIds: ["two-handed", "bipod", "lmg-recoil"],
     compatibleAttachmentIds: [],
   },
   {

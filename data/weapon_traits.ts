@@ -140,24 +140,6 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
       "The accuracy debuff (-3d6) applies at every 15 distances, instead of 10 distances.",
   },
   {
-    id: "light-machinegun",
-    name: "Light-machinegun",
-    description:
-      "Comes with a bipod but gains no benefit from it.\nAutomatic fire whilst not set up awards a -1d6 for every shot fired past the first, rather than an accuracy bonus.\nAfter the gun is set up, manning/unmanning it is a free action.",
-  },
-  {
-    id: "heavy-machinegun",
-    name: "Heavy-machinegun",
-    description:
-      "Comes with a bipod, but gains no benefit from it.\nAutomatic fire whilst not set up awards a -3d6 for every shot fired past the first, rather than an accuracy bonus.\nTakes 3 turns to set up the bipod. Allies can help in setting the gun up.\nAfter the gun is set up, manning/unmanning it is a free action.",
-  },
-  {
-    id: "multi-target",
-    name: "Multi-target",
-    description:
-      "Can hit multiple targets at once. Can choose how many bullets to spend per target.\nOne bullet is wasted with every additional target you fire at. Your dexterity is added to each target individually.",
-  },
-  {
     id: "heavy-magazines",
     name: "Heavy magazines",
     description:
@@ -173,7 +155,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "select-fire",
     name: "Select fire",
     description:
-      "Takes one action to choose between full auto or slower full auto.\nThe former has the weapon work normally.\nThe latter disregards the downside of light-machinegun, but reduces firerate to 3. You now gain the typical accuracy bonus from the fastened fire.",
+      "Takes one action to choose between full auto or semi auto.\nThe former has the weapon work normally.\nThe latter reduces firerate to 3, but the weapon is always considered 'set up' as long as you're holding it.",
   },
   {
     id: "walking-fire",
@@ -332,19 +314,57 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "smg-hybrid",
     name: "SMG hybrid",
     description:
-      "You may spend an ation to swap between using the weapon as an LMG or an SMG. The former has the weapon behave normally. The latter disregards 'light-machinegun', reduces firerate to 5, but gain no benefit from the hastened fire.",
+      "You may spend an action to swap between using the weapon as an LMG or an SMG. The former has the weapon behave normally. The latter reduces firerate to 5 and removes the accuracy bonus for firing multiple shots, but the weapon is always considered 'set up' as long as you're holding it.",
+  },
+
+  // SASS DOES A THING FOR ONCE
+  {
+    id: "bipod",
+    name: "Integrated Bipod",
+    description:
+      "Weapon cannot have a bipod attached to it - it already has one! The bipod can be deployed as an action, making the weapon 'set up'. When the weapon is 'set up', it can be manned or unmanned as a free action. Un-deploying the bipod takes an action and immediately causes the weapon to no longer be 'set up'.",
   },
   {
-    id: "at-rifle",
-    name: "Anti-tank rifle",
+    id: "tripod",
+    name: "Tripod Mounted",
     description:
-      "Medium armor piercing. Have -6d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 1 turn to set up.\nFiring while not set up has you roll a STR check afterwards, requiring 1 success. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
+      "Weapon cannot have a bipod attached to it - it's too big! Instead, it needs to be mounted on a tripod. Setting up the tripod takes 3 actions, your allies can help with this. Once the tripod is set up, the weapon is 'emplaced', and it can be manned or unmanned as a free action. Taking down the tripod also takes 3 actions, and the weapon is no longer 'emplaced' once you start.",
   },
   {
-    id: "heavy-at-rifle",
-    name: "Heavy anti-tank rifle",
+    id: "lmg-recoil",
+    name: "Heavy Recoil",
     description:
-      "Heavy armor piercing. Have -9d6 when targetting non-vehicles.\nComes with a bipod but gains no benefit from it. Takes 3 turns to set up, allies can help with this.\nFiring while not set up has you roll a STR check afterwards, requiring 3 successes. Failure has you drop the rifle onto the ground.\nAfter the gun is set up, manning/unmanning it is a free action.",
+      "Unless this weapon is 'set up', the +1d6 accuracy bonus per shot from firing multiple shots is replaced with a -1d6 accuracy penalty per shot.",
+  },
+  {
+    id: "hmg-recoil",
+    name: "Very Heavy Recoil",
+    description:
+      "Unless this weapon is 'emplaced', the +1d6 accuracy bonus per shot from firing multiple shots is replaced with a -3d6 accuracy penalty per shot.",
+  },
+  {
+    id: "at-kickback",
+    name: "Heavy Kickback",
+    description:
+      "Unless this weapon is 'set up', each time you fire it, roll a Strength check. If this check doesn't get at least 1 success, the shot automatically misses and the recoil forces you to drop the gun on the ground.",
+  },
+  {
+    id: "heavyat-kickback",
+    name: "Very Heavy Kickback",
+    description:
+      "Unless this weapon is 'emplaced', each time you fire it, roll a Strength check. If this check doesn't get at least 3 successes, the shot automatically misses and the recoil forces you to drop the gun on the ground.",
+  },
+  {
+    id: "at-inaccurate",
+    name: "Anti-Tank Weapon",
+    description:
+      "This weapon can pierce medium armor. Firing this weapon at a target other than a vehicle or building imposes a -6d6 accuracy penalty.",
+  },
+  {
+    id: "heavyat-inaccurate",
+    name: "Anti-Tank Emplacement",
+    description:
+      "This weapon can pierce heavy armor. Firing this weapon at a target other than a vehicle or building imposes a -9d6 accuracy penalty.",
   },
 
   // ── Traits added by attachments ──

@@ -101,7 +101,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You may only carry a single 1 weight item on your person. You cannot operate firearms.
 *You can pass through extremely tiny openings. You cannot lift anything normal sized other than that single 1 weight item of choice.
 *You have a permanent 6d6 cover, and gain +6d6 strength to avoid being melee'd, as you are too tiny to hit! Does NOT apply to grapple checks!
-*You gain +4d6 to hide and sneak around, thanks to your tiny size!
+*You gain +3d6 to hide and sneak around, counting successes on 4 and above, thanks to your tiny size!
 *You cannot escape the stomachs or grips of someone normal sized no matter how much you try.
 *You are extremely stretchy, You can take dick without issue, and you can eat ONE normal-sized person at all. You are immobile if you eat someone normal sized.
 *If you do manage to eat someone normal-sized, they are incapable of escaping you due to the sheer tightness.
@@ -247,7 +247,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+1 strength, +1 dexterity, +1 constitution, -3 stat points.
-*While submerged entirely in water: +4d6 strength and dexterity.  You have 4d6 cover when in the water, due to being hard to hit.
+*While submerged entirely in water: +3d6 strength and dexterity.  You have 4d6 cover when in the water, due to being hard to hit.
 *While submerged entirely in water, you may move up to two distances per turn.
 *You can hold your breath indefinitely and you can open your eyes in salt water. 
 *You can withstand the temperatures and pressure of the seas up to a kilometer deep
@@ -272,8 +272,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+2 dexterity, +1 charisma, -3 stat points.
 *You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.
-*While flying and engaging with something that is grounded: Have +4d6 strength. 
-*While flying and engaging something in the air: +4d6 strength and dexterity.
+*While flying and engaging with something that is grounded: Have +3d6 strength. 
+*While flying and engaging something in the air: +3d6 strength and dexterity.
 *You may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
 *Failing to vore them, or falling from the sky due to any other reason, deals a flat 4 damage to you.
 *You have 4d6 cover when in the air, due to being hard to hit.

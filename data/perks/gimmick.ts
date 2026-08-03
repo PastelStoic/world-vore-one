@@ -120,7 +120,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `Your mere presence commands authority! Most will not dare speak ill of you to your face!
 
-*When attempting to intimidate or force someone do something based on your authority, add +4d6 to your charisma.
+*When attempting to intimidate or force someone do something based on your authority, add +3d6 to your charisma.
 *You now count count successess on 4 and above when doing that. 
 *This is not a generalized charisma buff! You're meant to be a bully with it!`,
   },
@@ -131,7 +131,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `People will eat your bullshit up like a well baked fresh blueberry pie!
 
-*When trying to lie or manipulate someone, you roll an additional 4d6. 
+*When trying to lie or manipulate someone, you roll an additional 3d6. 
 *You now count successes on 4 and above when doing that.
 *This is not a generalized charisma buff! You're meant to lie and manipulate people with it!`,
   },

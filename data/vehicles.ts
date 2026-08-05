@@ -324,7 +324,8 @@ export const VEHICLES: VehicleDefinition[] = [
       3 loaders/assistant gunners ( 3/0/0 )
       
       *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The gun requires the entire crew to push it in order to move 1 distance per turn; they must spend their actions doing so.
+      *The gun requires a combined 5 strength in order to push it, allowing it to move 1 distance per turn. Pushing it takes an action.
+      *Only crewmembers may apply their strength. So long as 6 strength or more is being applied to the piece, it'll move. It cannot move faster than 1 distance by pushing.
       *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
   },
 
@@ -357,8 +358,9 @@ export const VEHICLES: VehicleDefinition[] = [
       1 gunner ( 3/0/0 )
       4 loaders/assistant gunners ( 3/0/0 )
       
-      *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The gun requires the entire crew to push it in order to move 1 distance per turn; they must spend their actions doing so.
+      *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks.
+      *The gun requires a combined 6 strength in order to push it, allowing it to move 1 distance per turn. Pushing it takes an action.
+      *Only crewmembers may apply their strength. So long as 6 strength or more is being applied to the piece, it'll move. It cannot move faster than 1 distance by pushing.
       *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
   },
 

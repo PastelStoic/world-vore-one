@@ -204,7 +204,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     hp: 2,
     position: "internal",
     difficulty: { front: 8, side: 8, rear: 8 },
-    destructionEffect: "The vehicle immediately explodes, destroying it and killing off everyone within it.",
+    destructionEffect: "The vehicle immediately explodes, destroying it and killing off everyone within it. Only explodes if it is directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.",
   },
   {
     id: "tracks",

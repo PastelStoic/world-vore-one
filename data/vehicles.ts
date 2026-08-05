@@ -354,6 +354,74 @@ export const VEHICLES: VehicleDefinition[] = [
       *You're still a brokie.`,
   },
 
+  {
+    id: "light-at-gun",
+    name: "Light anti-tank gun",
+    nation: "Any",
+    pointCost: 2,
+    armor: {
+      front: "light",
+      side: "none",
+      rear: "none",
+    },
+    seats: 5,
+    doors: 5,
+    crew: 5,
+    size: 18,
+    agility: 1,
+    speed: 1,
+    modules: [
+      "light-high-velocity-cannon",
+      "light-mantlet",
+      "wheels-2",
+    ],
+    description:
+      `A light anti-tank gun, meant to take out ... tanks!
+
+      Crew:
+      1 commander ( 3/0/0 )
+      1 gunner ( 3/0/0 )
+      3 loaders/assistant gunners ( 3/0/0 )
+      
+      *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
+      *The gun requires the entire crew to push it in order to move 1 distance per turn; they must spend their actions doing so.
+      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
+  },
+
+  {
+    id: "medium-at-gun",
+    name: "Medium anti-tank gun",
+    nation: "Any",
+    pointCost: 3,
+    armor: {
+      front: "medium",
+      side: "none",
+      rear: "none",
+    },
+    seats: 6,
+    doors: 6,
+    crew: 6,
+    size: 24,
+    agility: 1,
+    speed: 1,
+    modules: [
+      "medium-high-velocity-cannon",
+      "medum-mantlet",
+      "wheels-2",
+    ],
+    description:
+      `A medium anti-tank gun, packs a stronger punch, vehicles should avoid it greatly!
+
+      Crew:
+      1 commander ( 3/0/0 )
+      1 gunner ( 3/0/0 )
+      4 loaders/assistant gunners ( 3/0/0 )
+      
+      *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
+      *The gun requires the entire crew to push it in order to move 1 distance per turn; they must spend their actions doing so.
+      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
+  },
+
 // CIVVIE VEHICLES
 
   {

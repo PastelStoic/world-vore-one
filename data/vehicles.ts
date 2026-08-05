@@ -295,66 +295,6 @@ export const VEHICLES: VehicleDefinition[] = [
 // MILITARY BUT GENERIC
 
   {
-    id: "artillery-train",
-    name: "Artillery train",
-    nation: "Any",
-    pointCost: 1,
-    armor: {
-      front: "none",
-      side: "none",
-      rear: "none",
-    },
-    seats: 1,
-    doors: 1,
-    crew: 1,
-    size: 54,
-    agility: 1,
-    speed: 3,
-    modules: [
-      "artillery-train",
-      "wheels-4",
-    ],
-    description:
-      `An artillery train, meant to carry artillery around.
-
-      Crew:
-      1 conductor ( 0/0/0 ).
-      
-      *Required in order to move artillery around. Or better yet, use a truck! ...
-      *You're not using this if you can afford a truck, which means you're a brokie.`,
-  },
-
-  {
-    id: "horse-artillery-train",
-    name: "Horse artillery train",
-    nation: "Any",
-    pointCost: 2,
-    armor: {
-      front: "none",
-      side: "none",
-      rear: "none",
-    },
-    seats: 1,
-    doors: 1,
-    crew: 1,
-    size: 80,
-    agility: 1,
-    speed: 3,
-    modules: [
-      "horse-artillery-train",
-      "wheels-4",
-    ],
-    description:
-      `An artillery train, meant to carry artillery around, except its faster since it has more horses.
-
-      Crew:
-      1 conductor ( 0/0/0 ).
-      
-      *Required in order to move artillery around. Or better yet, use a truck! ...
-      *You're still a brokie.`,
-  },
-
-  {
     id: "light-at-gun",
     name: "Light anti-tank gun",
     nation: "Any",
@@ -420,6 +360,66 @@ export const VEHICLES: VehicleDefinition[] = [
       *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
       *The gun requires the entire crew to push it in order to move 1 distance per turn; they must spend their actions doing so.
       *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
+  },
+
+  {
+    id: "artillery-train",
+    name: "Artillery train",
+    nation: "Any",
+    pointCost: 1,
+    armor: {
+      front: "none",
+      side: "none",
+      rear: "none",
+    },
+    seats: 1,
+    doors: 1,
+    crew: 1,
+    size: 54,
+    agility: 1,
+    speed: 3,
+    modules: [
+      "artillery-train",
+      "wheels-4",
+    ],
+    description:
+      `An artillery train, meant to carry artillery around.
+
+      Crew:
+      1 conductor ( 0/0/0 ).
+      
+      *Required in order to move artillery around. Or better yet, use a truck! ...
+      *You're not using this if you can afford a truck, which means you're a brokie.`,
+  },
+
+  {
+    id: "horse-artillery-train",
+    name: "Horse artillery train",
+    nation: "Any",
+    pointCost: 2,
+    armor: {
+      front: "none",
+      side: "none",
+      rear: "none",
+    },
+    seats: 1,
+    doors: 1,
+    crew: 1,
+    size: 80,
+    agility: 1,
+    speed: 3,
+    modules: [
+      "horse-artillery-train",
+      "wheels-4",
+    ],
+    description:
+      `An artillery train, meant to carry artillery around, except its faster since it has more horses.
+
+      Crew:
+      1 conductor ( 0/0/0 ).
+      
+      *Required in order to move artillery around. Or better yet, use a truck! ...
+      *You're still a brokie.`,
   },
 
 // CIVVIE VEHICLES

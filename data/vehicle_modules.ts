@@ -235,6 +235,36 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     difficulty: { front: 3, side: 3, rear: 3 },
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
   },
+  {
+    id: "artillery-train",
+    name: "Artillery train",
+    description: `An artillery train, pulled by a pair of horses.
+    
+    *Each horse has 4 HP. 1 horse dies for every 4 HP lost.
+    *Light artillery requires 1 horse for each distance moved.
+    *Medium artillery requires 2 horses for each distance moved.
+    *Heavy artillery requires 3 horses for each distance moved.
+    *These horses are especially dumb, and do not accept being mounted.`,
+    hp: 8,
+    position: "external",
+    difficulty: { front: 0, side: 0, rear: 0 },
+    destructionEffect: "The horses are dead.",
+  },
+  {
+    id: "horse-artillery-train",
+    name: "Horse-artillery train",
+    description: `A horse artillery train, meant to be speedy, pulled by six horses.
+    
+    *Each horse has 4 HP. 1 horse dies for every 4 HP lost.
+    *Light artillery requires 1 horse for each distance moved.
+    *Medium artillery requires 2 horses for each distance moved.
+    *Heavy artillery requires 3 horses for each distance moved.
+    *These horses are especially dumb, and do not accept being mounted.`,
+    hp: 24,
+    position: "external",
+    difficulty: { front: 0, side: 0, rear: 0 },
+    destructionEffect: "The horses are dead.",
+  },
 
 // CIVILIAN SHIZ
 

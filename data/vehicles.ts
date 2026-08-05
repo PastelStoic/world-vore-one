@@ -346,7 +346,7 @@ export const VEHICLES: VehicleDefinition[] = [
     speed: 1,
     modules: [
       "medium-high-velocity-cannon",
-      "medum-mantlet",
+      "medium-mantlet",
       "wheels-2",
     ],
     description:

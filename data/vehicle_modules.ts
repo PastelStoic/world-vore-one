@@ -36,8 +36,8 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       `Small, light cannon. Quick to fire and reload, but with equally low damage.
 
       When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances.
-      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances.
+      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative
+      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances. Damages at most 3 targets in order of initiative. Deals 2 damage to targetted module.
       *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
@@ -47,6 +47,42 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     rateOfFire: 1,
     ammo: 1,
     reloadTurns: 3,
+  },
+  {
+    id: "light-high-velocity-cannon",
+    name: "Light high velocity cannon",
+    description:
+      `Light gun with exceptionally fast rounds, meant to take out armor. Not very effective against non-vehicles.
+
+      When reloading, choose which round to load:
+      *Armor-piercing-high-explosive: Heavy armor piercing, deals area damage, dealing 3 damage on the distance it is fired at. Damages at most 2 targets in order of initiative. Deals 5 damage to targetted module.
+      *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
+    hp: 6,
+    position: "internal",
+    difficulty: { front: 3, side: 3, rear: 5 },
+    destructionEffect: "Cannon destroyed.",
+    damage: "Variable",
+    rateOfFire: 1,
+    ammo: 1,
+    reloadTurns: 3,
+  },
+  {
+    id: "medium-high-velocity-cannon",
+    name: "Medium high velocity cannon",
+    description:
+      `Middle brother of the anti-tank emplacements. Devastates most light vehicles.
+
+      When reloading, choose which round to load:
+      *Armor-piercing-high-explosive: Heavy armor piercing, deals area damage, dealing 5 damage on the distance it is fired at. Damages at most 5 targets in order of initiative. Deals 8 damage to targetted module.
+      *Armor-piercing: Heavy armor piercing, deals 24 damage at what it is fired at. It's a solid shot - no area damage!`,
+    hp: 8,
+    position: "internal",
+    difficulty: { front: 3, side: 3, rear: 5 },
+    destructionEffect: "Cannon destroyed.",
+    damage: "Variable",
+    rateOfFire: 1,
+    ammo: 1,
+    reloadTurns: 4,
   },
   {
     id: "light-turret",
@@ -60,6 +96,36 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     position: "internal",
     difficulty: { front: 3, side: 3, rear: 3 },
     destructionEffect: "Turret destroyed, and can no longer turn.",
+  },
+  {
+    id: "light-mantlet",
+    name: "Light mantlet",
+    description:
+      `A light artillery mantlet, protecting against incoming fire.
+
+      *Crew and other sensitive modules behind it cannot be damaged by small arms fire.
+      *Explosions happening on the same distance as the gun, or ahead of it, do not damage the crew - the mantlet protects them and takes damage instead.
+      *The manlet does not protect from explosions happening behind it.
+      *Requiring 3 additional successes, a player may throw a grenade on the same distance as the gun, but behind the mantlet, avoiding its protection.`,
+    hp: 6,
+    position: "external",
+    difficulty: { front: 0, side: 0, rear: 1 },
+    destructionEffect: "Mantlet destroyed, no longer offers any protection.",
+  },
+  {
+    id: "medium-mantlet",
+    name: "Medium mantlet",
+    description:
+      `A thicker, stronger mantlet! Much sturdier!
+
+      *Crew and other sensitive modules behind it cannot be damaged by small arms fire.
+      *Explosions happening on the same distance as the gun, or ahead of it, do not damage the crew - the mantlet protects them and takes damage instead.
+      *The manlet does not protect from explosions happening behind it.
+      *Requiring 3 additional successes, a player may throw a grenade on the same distance as the gun, but behind the mantlet, avoiding its protection.`,
+    hp: 8,
+    position: "external",
+    difficulty: { front: 0, side: 0, rear: 1 },
+    destructionEffect: "Mantlet destroyed, no longer offers any protection.",
   },
   {
     id: "frontal-machine-gun",

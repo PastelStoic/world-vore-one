@@ -324,9 +324,11 @@ export const VEHICLES: VehicleDefinition[] = [
       3 loaders/assistant gunners ( 3/0/0 )
       
       *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The gun requires a combined 5 strength in order to push it, allowing it to move 1 distance per turn. Pushing it takes an action.
-      *Only crewmembers may apply their strength. So long as 6 strength or more is being applied to the piece, it'll move. It cannot move faster than 1 distance by pushing.
-      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
+      *To push the gun, add together the Strength of all crew members pushing it. If the total is 5 or greater, the gun may move 1 distance. Pushing the gun requires an action.
+      *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
+      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.
+      *Manning or unmanning the gun is a free action. One cannot fire a weapon, then re-man it in the same turn.
+      *Up to 5 individuals, crew included, can take cover behind the manlet. It is 6d6 cover if one isn't manning it.`,
   },
 
   {
@@ -359,9 +361,11 @@ export const VEHICLES: VehicleDefinition[] = [
       4 loaders/assistant gunners ( 3/0/0 )
       
       *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The gun requires a combined 6 strength in order to push it, allowing it to move 1 distance per turn. Pushing it takes an action.
-      *Only crewmembers may apply their strength. So long as 6 strength or more is being applied to the piece, it'll move. It cannot move faster than 1 distance by pushing.
-      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.`,
+      *To push the gun, add together the Strength of all crew members pushing it. If the total is 6 or greater, the gun may move 1 distance. Pushing the gun requires an action.
+      *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
+      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.
+      *Manning or unmanning the gun is a free action. One cannot fire a weapon, then re-man it in the same turn.
+      *Up to 5 individuals, crew included, can take cover behind the manlet. It is 6d6 cover if one isn't manning it.`,
   },
 
   {

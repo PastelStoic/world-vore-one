@@ -80,7 +80,7 @@ export const MELEE_TRAITS: MeleeTraitDefinition[] = [
     id: "cavalry-weapon",
     name: "Cavalry-weapon",
     description:
-      "Weapon is meant to be used whilst atop a horse or mount. If not atop a horse, gain -3d6 to hit enemies. If atop a horse, you can choose to charge with it! If charging, when moving to distance 0 of an enemy, an enemy may not roll to defend themselves in melee. Must be started at 2 distances away from your enemy, or further. If you hit your enemy, they do not get to attack you freely if you move away within that same turn.",
+      "Weapon is meant to be used whilst atop a horse or mount. If not atop a horse, gain -3d6 to hit enemies. If atop a horse, you can choose to charge with it! If charging, when moving to distance 0 of an enemy, an enemy may not roll to defend themselves in melee. Must be started at 2 distances away from your enemy, or further. If you hit your enemy while charging, they do not get to attack you freely if you move away within that same turn.",
   },
   {
     id: "concealable",

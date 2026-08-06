@@ -227,7 +227,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Your weight capacity is 3x that of a normal person.
 *You have the 'Hauling-meat' perk from Vore Perks.
 *You have an upgraded version of the Runner perk, allowing you to move 3 distances per turn. You cannot get the regular runner perk.
-*Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.`,
+*Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.
+*You may use melee weapons with the 'cavalry-weapon' trait as if you were mounted, seeing as you *are* cavalry yourself!`,
     modifiers: {
       baseStatBonuses: { strength: 2, constitution: 1 },
       carryCapacityMultiplier: 3,

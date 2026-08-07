@@ -27,6 +27,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *-1d6 to shoot targets every 10 distances away, instead of -3d6.
 *If a weapon modifies the ranging penalty with its gimmicks, use the weapon's ranging rather than the scope's.
 *Automatic/semiautomatic fire is impossible – you're firing single shots.
+*Damage transference effects do not apply ( veteran, defender, etc ) - you ignore them.
 *It takes 1 turn to put the scope on the gun, or to remove it.`,
   },
   {

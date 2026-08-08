@@ -432,7 +432,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
-*May be used alongside this weapon's other attachments..`,
+*You remain hidden even after firing, enemies must roll twice in order to spot you, taking the lower roll.
+*May be used alongside this weapon's other attachments.`,
   },
   {
     id: "m1917-moon-clips",
@@ -453,7 +454,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "Russia",
     weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
-*Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.`,
+*Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
+*You remain hidden even after firing, enemies must roll twice in order to spot you, taking the lower roll.`,
   },
   {
     id: "maxim-gun-shield",

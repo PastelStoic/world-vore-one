@@ -89,6 +89,25 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Authorities seeing you utilize your drug will immediately report it and arrest you for using it.`,
   },
   {
+    id: "crippling-obsession",
+    name: "Crippling obsession",
+    category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    customInput: "Subject of your obsession",
+    description:
+      `YOU DAMNED WHITE WHALE!!!! I'LL HUNT YOU TO THE ENDS OF THE EARTH!!!!
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+
+*You are a raving lunatic, whom is entirely obsessed with one thing, and one thing only.
+*In every scene you start, you must strive to acquire/destroy/hunt the object of your obsession. You *cannot* go a scene without contributing towards that goal.
+*You must bring up your obsession often and constantly talk about it, and optionally, try to convince others to assist you with your obsession in some form or another.
+*Your obsession must be crippling and inconvenient. Making a pred character whose obsession is "eating people" is not crippling, that's just free points.
+*You scare people with your obsession, and many aren't keen on following you, especially when you begin to ramble! Charisma checks require +1 success.`,
+  },
+  {
     id: "crippling-health-condition",
     name: "Crippling health condition",
     category: "negative",
@@ -123,5 +142,24 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Charisma: You are completely incapable of speech, either due to physical reasons ( no vocal cords ) or mental. In any circunstance, you cannot write nor use sign language to circunvent it.
 
 *You may have some other condition so long as it is crippling and cannot be easily circunvented.`,
+  },
+  {
+    id: "ridiculous-phobia",
+    name: "Ridiculous phobia",
+    category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    customInput: "Subject of your phobia",
+    description:
+      `You are absolutely, completely and entirely terrified of one thing, and one thing only! But it's a very normal and commonplace thing - that's a ridiculous fear!
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+
+*Pick something incredibly common - guns, pilzfrauns, vore - something that will be brought up in scenes fairly often.
+*Everytime you encounter this thing, you are consumed entirely by fear! You must run away immediately and avoid it at all costs.
+*You may perform no checks besides running away, or checks that contribute towards running away.
+*You automatically fail any checks others impose upon you, so long as they do not prevent you from running away - if they do prevent you, you may roll normally.
+*It is impossible to hide your phobia once you see what you fear - everyone around is immediately made aware of it.`,
   },
 ];

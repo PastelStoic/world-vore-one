@@ -431,8 +431,8 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     nation: "United States",
     weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
-*Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
-*You remain hidden even after firing, enemies must roll twice in order to spot you, taking the lower roll.
+*Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard. 
+*You remain hidden even after firing, enemies attacked by you must roll twice, taking the lower set, in order to spot you.
 *May be used alongside this weapon's other attachments.`,
   },
   {
@@ -455,7 +455,7 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 1,
     description: `*It takes 1 turn to put the suppressor on/off.
 *Shots are inaudible at distance 5 or beyond. Closer than that and they can be heard.
-*You remain hidden even after firing, enemies must roll twice in order to spot you, taking the lower roll.`,
+*You remain hidden even after firing, enemies attacked by you must roll twice, taking the lower set, in order to spot you.`,
   },
   {
     id: "maxim-gun-shield",

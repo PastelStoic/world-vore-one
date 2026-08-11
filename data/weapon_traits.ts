@@ -236,13 +236,13 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "utterly-silent-bow",
     name: "Utterly silent",
     description:
-      "Only those 1 distance away from you can hear your bow's string. It is completely silent otherwise.",
+      "Only those 1 distance away from you can hear your bow's string. It is completely silent otherwise. Enemies attacked by you must roll twice, taking the lower set, in order to spot you.",
   },
   {
     id: "utterly-silent-crossbow",
     name: "Utterly silent",
     description:
-      "Only those 1 distance away from you can hear your crossbow's string. It is completely silent otherwise.",
+      "Only those 1 distance away from you can hear your crossbow's string. It is completely silent otherwise. Enemies attacked by you must roll twice, taking the lower set, in order to spot you.",
   },
   {
     id: "flamethrower",

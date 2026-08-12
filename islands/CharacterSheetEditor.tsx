@@ -33,8 +33,8 @@ import {
   getDerivedPerkIds,
 } from "@/lib/character_parsing.ts";
 import {
+  getPerkAvailability,
   getStatFloor as getSharedStatFloor,
-  isPerkEligible,
 } from "@/lib/draft_validation.ts";
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
@@ -333,20 +333,23 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     .filter((group) => group.items.length > 0);
   const uncategorizedOwnedPerks = ownedPerkEntries.filter(({ perk }) => !perk);
 
-  const eligiblePerks = props.perks.filter((perk) =>
-    isPerkEligible(perk, {
-      race,
-      sex: description.sex,
-      faction: description.faction,
-      isTemplate: description.isTemplate,
-      ownedPerkIds: perkIds,
-      derivedPerkIds,
-      accountPerkCounts,
-      isModerator: props.isModerator,
-    })
-  );
+  const perkEligibilityCtx = {
+    race,
+    sex: description.sex,
+    faction: description.faction,
+    isTemplate: description.isTemplate,
+    ownedPerkIds: perkIds,
+    derivedPerkIds,
+    accountPerkCounts,
+    isModerator: props.isModerator,
+  };
+  const listedPerks = props.perks.flatMap((perk) => {
+    const availability = getPerkAvailability(perk, perkEligibilityCtx);
+    if (availability.status === "hidden") return [];
+    return [{ perk, availability }];
+  });
 
-  const availablePerks = eligiblePerks.filter((perk) => {
+  const availablePerks = listedPerks.filter(({ perk }) => {
     if (perkCategoryFilter && perk.category !== perkCategoryFilter) {
       return false;
     }
@@ -592,6 +595,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
     const perk = PERKS_BY_ID.get(perkId);
     if (!perk || perk.deprecated) return;
+    if (getPerkAvailability(perk, perkEligibilityCtx).status !== "available") {
+      return;
+    }
     const includedIds = (perk?.includesPerks ?? []).filter((id) =>
       !perkIds.includes(id)
     );
@@ -2102,7 +2108,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             )}
         </div>
 
-        {eligiblePerks.length > 0 && (
+        {listedPerks.length > 0 && (
           <div class="space-y-2">
             <button
               type="button"
@@ -2152,7 +2158,8 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                   )
                   : (
                     <ul class="space-y-2">
-                      {availablePerks.map((perk) => {
+                      {availablePerks.map(({ perk, availability }) => {
+                        const isBlocked = availability.status === "blocked";
                         const cost = calculatePerksCost(
                           [...perkIds, perk.id],
                           perkRanks,
@@ -2171,27 +2178,39 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           );
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;
-                        const costLabel = cost < 0
+                        const costLabel = isBlocked
+                          ? "Blocked"
+                          : cost < 0
                           ? `Unlock (+${-cost} SP)`
                           : cost === 0
                           ? "Unlock (Free)"
                           : `Buy (${cost} SP)`;
                         return (
                           <li
-                            class="flex items-center justify-between gap-2"
+                            class={`flex items-start justify-between gap-2 ${
+                              isBlocked ? "opacity-80" : ""
+                            }`}
                             key={perk.id}
                           >
-                            <span class="text-sm">
+                            <span class="text-sm min-w-0">
                               <PerkDescription
                                 name={perk.name}
                                 description={perk.description}
                               />
+                              {isBlocked && availability.reason && (
+                                <span class="mt-1 block text-xs text-error">
+                                  {availability.reason}
+                                </span>
+                              )}
                             </span>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 shrink-0">
                               <button
                                 type="button"
                                 class="px-2 py-1 border rounded disabled:opacity-40"
-                                disabled={!canAfford}
+                                disabled={isBlocked || !canAfford}
+                                title={isBlocked
+                                  ? availability.reason
+                                  : undefined}
                                 onClick={() => buyPerk(perk.id)}
                               >
                                 {costLabel}

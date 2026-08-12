@@ -7,10 +7,8 @@ import {
   EQUIPMENT_BY_ID,
   MELEE_WEAPONS_BY_ID,
   VEHICLES_BY_ID,
-  WEAPONS,
   WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
-import { LONG_GUN_ATTACHMENTS } from "@/data/weapons.ts";
 import type { WeaponDefinition } from "@/data/equipment_types.ts";
 import type {
   CharacterInventory,
@@ -128,21 +126,6 @@ export function getEffectiveWeaponTraitIds(
   return [...effectiveBaseTraitIds, ...effectiveAddedTraitIds];
 }
 
-/** Set of attachment IDs that appear in only one weapon's compatibleAttachmentIds. */
-const _UNIQUE_ATTACHMENT_IDS: Set<string> = (() => {
-  const counts = new Map<string, number>();
-  for (const w of WEAPONS) {
-    for (const aId of w.compatibleAttachmentIds) {
-      counts.set(aId, (counts.get(aId) ?? 0) + 1);
-    }
-  }
-  const unique = new Set<string>();
-  for (const [id, count] of counts) {
-    if (count === 1) unique.add(id);
-  }
-  return unique;
-})();
-
 export function getSignatureFreeAttachmentIds(
   inventory: CharacterInventory,
   perkIds?: string[],
@@ -159,25 +142,16 @@ export function getSignatureFreeAttachmentIds(
   const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
   if (!def) return new Set<string>();
 
-  // Only attachments unique to this weapon (not compatible with any other) are free
-  return new Set(
-    def.compatibleAttachmentIds.filter((aId) =>
-      !LONG_GUN_ATTACHMENTS.includes(aId)
-    ),
-  );
+  return new Set(def.compatibleAttachmentIds);
 }
 
-/** Check if an attachment is a signature-weapon perk attachment for the given weapon.
- * All compatible attachments except generic long-gun attachments (bayonet, scope, bipod,
- * strong-sling) are granted free by the perk.
- */
-export function isSignatureUniqueAttachment(
+/** True when the signature-weapon perk grants a free copy of this attachment. */
+export function isSignatureFreeAttachment(
   weaponDef: { compatibleAttachmentIds: string[] } | undefined,
   attachmentId: string,
 ): boolean {
   return !!weaponDef &&
-    weaponDef.compatibleAttachmentIds.includes(attachmentId) &&
-    !LONG_GUN_ATTACHMENTS.includes(attachmentId);
+    weaponDef.compatibleAttachmentIds.includes(attachmentId);
 }
 
 function mergedFreeAttachmentIds(

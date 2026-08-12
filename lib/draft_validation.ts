@@ -83,84 +83,156 @@ export interface PerkEligibilityContext {
   isModerator?: boolean;
 }
 
+export type PerkAvailabilityStatus = "available" | "hidden" | "blocked";
+
+export interface PerkAvailability {
+  status: PerkAvailabilityStatus;
+  /** Present when status is "blocked"; shown in the add-perk list. */
+  reason?: string;
+}
+
+function perkName(id: string): string {
+  return PERKS_BY_ID.get(id)?.name ?? id;
+}
+
+function hidden(): PerkAvailability {
+  return { status: "hidden" };
+}
+
+function blocked(reason: string): PerkAvailability {
+  return { status: "blocked", reason };
+}
+
+function available(): PerkAvailability {
+  return { status: "available" };
+}
+
 /**
- * Check whether a single perk is eligible to be added to a character given
- * their current state.  This is the single source of truth for the rules
- * that govern which perks appear in the editor's "Add Perk" picker and that
- * the server enforces via {@link validatePerkRequirements} in data/perks.ts.
+ * Resolve whether a perk can be purchased, and if not whether it is hidden
+ * from the add-perk list or shown as blocked with a reason.
  *
- * Rules checked:
- * - Not deprecated (soft-deleted; still resolve on existing sheets)
- * - Not already owned or derived
- * - Race / sex / faction requirements
- * - Lock category (at most one per category)
- * - Mutual exclusion (excludesPerks, checked in both directions)
+ * Hidden (omitted from the unlock list):
+ * - `hidden`, deprecated, selectionOnly, adminOnly (non-moderators)
+ * - already owned or derived
+ * - identity mismatches (race, sex, faction, template)
+ *
+ * Blocked (listed, cannot be purchased, reason is shown):
+ * - `blocked` / `blockedReason`
+ * - missing required perks
+ * - account character limit
+ * - lock category conflict
+ * - mutual exclusion (`excludesPerks`)
+ * - one-way restriction (`restrictsPerks`)
  */
-export function isPerkEligible(
+export function getPerkAvailability(
   perk: PerkDefinition,
   ctx: PerkEligibilityContext,
-): boolean {
-  if (perk.deprecated) return false;
-  if (perk.selectionOnly) return false;
-  if (perk.adminOnly && !ctx.isModerator) return false;
+): PerkAvailability {
+  if (perk.hidden) return hidden();
+  if (perk.deprecated) return hidden();
+  if (perk.selectionOnly) return hidden();
+  if (perk.adminOnly && !ctx.isModerator) return hidden();
 
-  // Already owned or derived
-  if (ctx.ownedPerkIds.includes(perk.id)) return false;
-  if (ctx.derivedPerkIds.has(perk.id)) return false;
+  if (ctx.ownedPerkIds.includes(perk.id)) return hidden();
+  if (ctx.derivedPerkIds.has(perk.id)) return hidden();
 
-  // Race restriction
   if (perk.requiredRaces && !perk.requiredRaces.includes(ctx.race)) {
-    return false;
+    return hidden();
   }
 
-  // Sex restriction
   if (perk.requiredSex && !perk.requiredSex.includes(ctx.sex)) {
-    return false;
+    return hidden();
   }
 
   if (perk.requiresTemplate && !ctx.isTemplate) {
-    return false;
+    return hidden();
   }
 
-  // Faction restriction
   if (perk.requiredFaction) {
     const factions = Array.isArray(perk.requiredFaction)
       ? perk.requiredFaction
       : [perk.requiredFaction];
     if (!factions.includes(ctx.faction as typeof factions[number])) {
-      return false;
+      return hidden();
     }
   }
 
-  if (perk.requiredPerkIds?.some((id) => !ctx.ownedPerkIds.includes(id))) {
-    return false;
+  if (perk.blocked) {
+    return blocked(
+      perk.blockedReason ?? `Perk "${perk.name}" cannot be unlocked.`,
+    );
+  }
+
+  if (perk.requiredPerkIds) {
+    for (const requiredId of perk.requiredPerkIds) {
+      if (!ctx.ownedPerkIds.includes(requiredId)) {
+        return blocked(`Requires "${perkName(requiredId)}".`);
+      }
+    }
   }
 
   if (
     perk.maxCharactersPerAccount !== undefined &&
     (ctx.accountPerkCounts?.get(perk.id) ?? 0) >= perk.maxCharactersPerAccount
   ) {
-    return false;
+    const limit = perk.maxCharactersPerAccount;
+    return blocked(
+      `Limited to ${limit} ${
+        limit === 1 ? "character" : "characters"
+      } per account.`,
+    );
   }
 
-  // Lock category — only one perk per lock category
   if (perk.lockCategory) {
     for (const id of ctx.ownedPerkIds) {
       const owned = PERKS_BY_ID.get(id);
-      if (owned?.lockCategory === perk.lockCategory) return false;
+      if (owned?.lockCategory === perk.lockCategory) {
+        return blocked(`Cannot be combined with "${owned.name}".`);
+      }
     }
   }
 
-  // Excluded by this perk's excludesPerks
-  if (perk.excludesPerks?.some((id) => ctx.ownedPerkIds.includes(id))) {
-    return false;
+  if (perk.excludesPerks) {
+    for (const excludedId of perk.excludesPerks) {
+      if (ctx.ownedPerkIds.includes(excludedId)) {
+        return blocked(`Cannot be combined with "${perkName(excludedId)}".`);
+      }
+    }
   }
 
-  // Excluded BY a currently-owned perk
   for (const id of ctx.ownedPerkIds) {
     const owned = PERKS_BY_ID.get(id);
-    if (owned?.excludesPerks?.includes(perk.id)) return false;
+    if (owned?.excludesPerks?.includes(perk.id)) {
+      return blocked(`Cannot be combined with "${owned.name}".`);
+    }
   }
 
-  return true;
+  for (const id of ctx.ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned?.restrictsPerks?.includes(perk.id)) {
+      return blocked(`Restricted by "${owned.name}".`);
+    }
+  }
+
+  if (perk.restrictsPerks) {
+    for (const restrictedId of perk.restrictsPerks) {
+      if (ctx.ownedPerkIds.includes(restrictedId)) {
+        return blocked(
+          `Cannot be taken while you have "${perkName(restrictedId)}".`,
+        );
+      }
+    }
+  }
+
+  return available();
+}
+
+/**
+ * True when {@link getPerkAvailability} resolves to `"available"`.
+ */
+export function isPerkEligible(
+  perk: PerkDefinition,
+  ctx: PerkEligibilityContext,
+): boolean {
+  return getPerkAvailability(perk, ctx).status === "available";
 }

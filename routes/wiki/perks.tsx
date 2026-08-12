@@ -111,6 +111,28 @@ export default define.page(function WikiPerks() {
                           </p>
                         )
                         : null}
+                      {perk.restrictsPerks?.length
+                        ? (
+                          <p class="text-error text-xs">
+                            Restricts: {perk.restrictsPerks.join(", ")}
+                          </p>
+                        )
+                        : null}
+                      {perk.hidden
+                        ? (
+                          <p class="text-xs text-base-content/60">
+                            Hidden from the unlock list.
+                          </p>
+                        )
+                        : null}
+                      {perk.blocked
+                        ? (
+                          <p class="text-error text-xs">
+                            Blocked: {perk.blockedReason ??
+                              "Cannot be unlocked."}
+                          </p>
+                        )
+                        : null}
                     </div>
                   </details>
                 );

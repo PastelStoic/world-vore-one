@@ -117,7 +117,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 *The weapon must be picked from the weapon's list, or reflavoured from there. It will then be considered the highest tier of weapon and deals +1 damage. 
 *No matter what happens, it always returns to you through one way or another. You may be temporarily separated from it.
-*Any attachments unique to this weapon are free. Certain weapons may also gain attachments that are shared by multiple weapons.
+*If it is ranged, you may grab any suitable attachments for it, free of charge, at any point, so long as they do not encumber you.
 *If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point. Every other weapon is free.
 *If you wish to pick a melee weapon, you may grab one melee weapon trait that wouldn't otherwise fit the weapon.`,
   },

@@ -217,6 +217,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     includesPerks: ["hauling-meat"],
+    restrictsPerks: ["runner"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.

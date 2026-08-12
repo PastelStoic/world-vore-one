@@ -103,6 +103,24 @@ export interface PerkDefinition {
   customInput?: string;
   /** Perk IDs that cannot be taken alongside this perk (mutual exclusion). */
   excludesPerks?: string[];
+  /**
+   * Perk IDs that cannot be purchased while this perk is owned.
+   * One-way: owning this perk blocks those perks; owning them does not
+   * by itself block this perk unless they also restrict it.
+   */
+  restrictsPerks?: string[];
+  /**
+   * When true, this perk never appears in the add-perk list and cannot be
+   * purchased directly. Derived grants (includesPerks / selections) still work.
+   */
+  hidden?: boolean;
+  /**
+   * When true, this perk appears in the add-perk list but cannot be purchased.
+   * Use `blockedReason` for the explanation shown to the player.
+   */
+  blocked?: boolean;
+  /** Reason shown when this perk is statically blocked. */
+  blockedReason?: string;
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
   /** When true, this perk is hidden from normal users and only selectable by admins. */
@@ -307,6 +325,17 @@ export function validatePerkRequirements(
           const excludedPerk = PERKS_BY_ID.get(excludedId);
           return `Perk "${perk.name}" cannot be combined with "${
             excludedPerk?.name ?? excludedId
+          }".`;
+        }
+      }
+    }
+
+    if (perk.restrictsPerks) {
+      for (const restrictedId of perk.restrictsPerks) {
+        if (perkIds.includes(restrictedId)) {
+          const restrictedPerk = PERKS_BY_ID.get(restrictedId);
+          return `Perk "${perk.name}" restricts "${
+            restrictedPerk?.name ?? restrictedId
           }".`;
         }
       }

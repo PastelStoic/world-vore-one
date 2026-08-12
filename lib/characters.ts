@@ -46,8 +46,11 @@ export {
 } from "./character_parsing.ts";
 
 export {
+  getPerkAvailability,
   getStatFloor,
   isPerkEligible,
+  type PerkAvailability,
+  type PerkAvailabilityStatus,
   type PerkEligibilityContext,
   validateStatCaps,
 } from "./draft_validation.ts";

@@ -18,7 +18,7 @@ import {
   getSignatureAdjustedPointCost,
   getWeaponPointCost,
   type InventoryLocation,
-  isSignatureUniqueAttachment,
+  isSignatureFreeAttachment,
 } from "./helpers.ts";
 
 interface WeaponCardProps {
@@ -693,7 +693,7 @@ export default function WeaponCard(props: WeaponCardProps) {
                         (adds {aDef.weight}W)
                       </span>
                     )}
-                    {isSignature && isSignatureUniqueAttachment(def, aId) && (
+                    {isSignature && isSignatureFreeAttachment(def, aId) && (
                       <span class="ml-1 text-xs font-semibold text-primary">
                         [Signature Weapon]
                       </span>

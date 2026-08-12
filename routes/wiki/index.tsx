@@ -14,7 +14,8 @@ export default define.page(function WikiIndex() {
         <BackLink href="/">← Home</BackLink>
         <h1 class="text-3xl font-bold mt-2">Wiki</h1>
         <p class="text-base-content">
-          Reference pages for game rules, factions, perks, and equipment.
+          Reference pages for game rules, factions, perks, equipment, and
+          vehicles.
         </p>
       </header>
 
@@ -38,6 +39,11 @@ export default define.page(function WikiIndex() {
           href="/wiki/equipment"
           title="Equipment & Attachments"
           description="General gear, weapon attachments, melee weapons, and melee weapon traits."
+        />
+        <WikiCard
+          href="/wiki/vehicles"
+          title="Vehicles"
+          description="Statistics, crew, armor, and modules for every vehicle, grouped by nation."
         />
       </div>
     </PageShell>

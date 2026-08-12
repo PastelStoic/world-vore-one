@@ -49,7 +49,7 @@ import {
   getVehiclePointCost,
   getWeaponPointCost,
   type InventoryLocation,
-  isSignatureUniqueAttachment,
+  isSignatureFreeAttachment,
   weightLookups,
 } from "./inventory/helpers.ts";
 
@@ -226,7 +226,7 @@ export default function InventorySection(props: InventorySectionProps) {
         const weaponId = inv[location].weapons[index].weaponId;
         const def = WEAPONS_BY_ID.get(weaponId);
         for (const aId of def?.compatibleAttachmentIds ?? []) {
-          if (!isSignatureUniqueAttachment(def, aId)) continue;
+          if (!isSignatureFreeAttachment(def, aId)) continue;
           const aDef = ATTACHMENTS_BY_ID.get(aId);
           inv[location].attachments.push({
             attachmentId: aId,
@@ -548,7 +548,7 @@ export default function InventorySection(props: InventorySectionProps) {
       if (
         !attInv &&
         isSignatureWeapon &&
-        isSignatureUniqueAttachment(weaponDef, attachmentId)
+        isSignatureFreeAttachment(weaponDef, attachmentId)
       ) {
         attInv = {
           attachmentId,
@@ -627,7 +627,7 @@ export default function InventorySection(props: InventorySectionProps) {
       const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
       const isSignaturePerkAttachment = hasSignatureWeaponPerk &&
         weapon.isSignatureWeapon &&
-        isSignatureUniqueAttachment(weaponDef, attachmentId);
+        isSignatureFreeAttachment(weaponDef, attachmentId);
 
       if (attDef?.isCharge && attDef.ammoOverride) {
         const restored = convertMagazinesToAttachment(weapon, attachmentId);
@@ -672,7 +672,7 @@ export default function InventorySection(props: InventorySectionProps) {
       const weaponDef = WEAPONS_BY_ID.get(weapon.weaponId);
       const isSignaturePerkAttachment = hasSignatureWeaponPerk &&
         weapon.isSignatureWeapon &&
-        isSignatureUniqueAttachment(weaponDef, drumAttachmentId);
+        isSignatureFreeAttachment(weaponDef, drumAttachmentId);
       if (attDef?.isCharge && attDef.ammoOverride) {
         const restored = convertMagazinesToAttachment(weapon, drumAttachmentId);
         if (isSignaturePerkAttachment) {

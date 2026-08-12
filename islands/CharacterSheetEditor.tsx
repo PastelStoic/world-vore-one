@@ -52,6 +52,7 @@ import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { Button } from "@/components/Button.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
+import { applyPerkGrantedInventory } from "@/lib/perk_grant_inventory.ts";
 
 interface CharacterSheetEditorProps {
   action: "create" | "update";
@@ -513,51 +514,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (addedPerkIds.length === 0 && removedPerkIds.length === 0) {
       return;
     }
-
-    setInventory((inv) => {
-      const nextInventory = structuredClone(inv);
-
-      for (const location of ["carried", "stowed"] as const) {
-        if (removedPerkIds.length > 0) {
-          nextInventory[location].equipment = nextInventory[location].equipment
-            .filter((item) => !removedPerkIds.includes(item.perkGranted ?? ""));
-          nextInventory[location].meleeWeapons = nextInventory[location]
-            .meleeWeapons.filter((weapon) =>
-              !removedPerkIds.includes(weapon.perkGranted ?? "")
-            );
-          nextInventory[location].attachments = nextInventory[location]
-            .attachments.filter((attachment) =>
-              !removedPerkIds.includes(attachment.perkGranted ?? "")
-            );
-        }
-      }
-
-      for (const perkId of addedPerkIds) {
-        const perk = PERKS_BY_ID.get(perkId);
-
-        for (const grant of perk?.grantsEquipment ?? []) {
-          nextInventory.carried.equipment.push({
-            equipmentId: grant.equipmentId,
-            totalCharges: 0,
-            usedCharges: 0,
-            perkGranted: perkId,
-            weightOverride: grant.weightOverride,
-            isBulkyOverride: grant.isBulkyOverride,
-          });
-        }
-
-        for (const grant of perk?.grantsMeleeWeapons ?? []) {
-          nextInventory.carried.meleeWeapons.push({
-            instanceId: crypto.randomUUID(),
-            meleeWeaponId: grant.meleeWeaponId,
-            isSignatureWeapon: true,
-            perkGranted: perkId,
-          });
-        }
-      }
-
-      return nextInventory;
-    });
+    setInventory((inv) =>
+      applyPerkGrantedInventory(inv, addedPerkIds, removedPerkIds)
+    );
   }
 
   function increaseStat(statKey: BaseStatKey) {
@@ -665,40 +624,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       }
     }
 
-    // Auto-add perk-granted equipment and melee weapons
-    const allNewPerks = [perkId, ...includedIds];
-    const hasGrantedItems = allNewPerks.some((id) => {
-      const p = PERKS_BY_ID.get(id);
-      return (p?.grantsEquipment?.length ?? 0) > 0 ||
-        (p?.grantsMeleeWeapons?.length ?? 0) > 0;
-    });
-    if (hasGrantedItems) {
-      setInventory((inv) => {
-        const newInv = structuredClone(inv);
-        for (const id of allNewPerks) {
-          const p = PERKS_BY_ID.get(id);
-          for (const grant of p?.grantsEquipment ?? []) {
-            newInv.carried.equipment.push({
-              equipmentId: grant.equipmentId,
-              totalCharges: 0,
-              usedCharges: 0,
-              perkGranted: id,
-              weightOverride: grant.weightOverride,
-              isBulkyOverride: grant.isBulkyOverride,
-            });
-          }
-          for (const grant of p?.grantsMeleeWeapons ?? []) {
-            newInv.carried.meleeWeapons.push({
-              instanceId: crypto.randomUUID(),
-              meleeWeaponId: grant.meleeWeaponId,
-              isSignatureWeapon: true,
-              perkGranted: id,
-            });
-          }
-        }
-        return newInv;
-      });
-    }
+    applyPerkGrantedInventoryChanges([perkId, ...includedIds], []);
   }
 
   function unbuyPerk(perkId: string) {
@@ -783,30 +709,16 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     setFactionCompensatedPerkIds(withoutRemovedCompensations(allRemovedIds));
     setUnallocatedStatPoints((current) => current + refund);
 
-    // Remove perk-granted items from inventory
     setInventory((inv) => {
-      const newInv = structuredClone(inv);
-      const removingSignatureWeapon = allRemovedIds.includes(
-        "signature-weapon",
-      );
+      const next = applyPerkGrantedInventory(inv, [], allRemovedIds);
+      if (!allRemovedIds.includes("signature-weapon")) return next;
       for (const location of ["carried", "stowed"] as const) {
-        newInv[location].equipment = newInv[location].equipment.filter(
-          (e) => !allRemovedIds.includes(e.perkGranted ?? ""),
-        );
-        newInv[location].meleeWeapons = newInv[location].meleeWeapons.filter(
-          (mw) => !allRemovedIds.includes(mw.perkGranted ?? ""),
-        );
-        newInv[location].attachments = newInv[location].attachments.filter(
-          (a) => !allRemovedIds.includes(a.perkGranted ?? ""),
-        );
-        if (removingSignatureWeapon) {
-          for (const w of newInv[location].weapons) w.isSignatureWeapon = false;
-          for (const mw of newInv[location].meleeWeapons) {
-            mw.isSignatureWeapon = false;
-          }
+        for (const w of next[location].weapons) w.isSignatureWeapon = false;
+        for (const mw of next[location].meleeWeapons) {
+          mw.isSignatureWeapon = false;
         }
       }
-      return newInv;
+      return next;
     });
   }
 

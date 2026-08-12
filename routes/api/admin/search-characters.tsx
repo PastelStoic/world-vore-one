@@ -1,12 +1,11 @@
 import { define } from "@/utils.ts";
 import { listCharacters } from "@/lib/characters.ts";
+import { requireAdmin } from "@/lib/http.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
-    const user = ctx.state.user;
-    if (!user || !ctx.state.isAdmin) {
-      return new Response("Forbidden", { status: 403 });
-    }
+    const admin = requireAdmin(ctx);
+    if (admin instanceof Response) return admin;
 
     const query = ctx.url.searchParams.get("q")?.trim().toLowerCase() ?? "";
     const statusFilter = ctx.url.searchParams.get("status") ?? "";
@@ -15,19 +14,16 @@ export const handler = define.handlers({
 
     let filtered = allCharacters;
 
-    // Exclude hidden characters unless explicitly requested
     if (!includeHidden) {
       filtered = filtered.filter((c) => !c.hidden);
     }
 
-    // Filter by status if specified
     if (statusFilter) {
       filtered = filtered.filter(
         (c) => (c.status ?? "approved") === statusFilter,
       );
     }
 
-    // Filter by search query if provided
     if (query) {
       filtered = filtered.filter(
         (c) =>
@@ -46,8 +42,6 @@ export const handler = define.handlers({
       updatedAt: c.updatedAt,
     }));
 
-    return new Response(JSON.stringify(results), {
-      headers: { "content-type": "application/json" },
-    });
+    return Response.json(results);
   },
 });

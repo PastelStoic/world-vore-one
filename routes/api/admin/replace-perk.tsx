@@ -1,14 +1,12 @@
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import { replacePerkAcrossCharacters } from "@/lib/characters.ts";
+import { jsonError, requireAdmin } from "@/lib/http.ts";
 import { define } from "@/utils.ts";
 
 export const handler = define.handlers({
-  /** Admin-only: replace one perk id with another across all characters. */
   async POST(ctx) {
-    const user = ctx.state.user;
-    if (!user || !ctx.state.isAdmin) {
-      return new Response("Forbidden", { status: 403 });
-    }
+    const admin = requireAdmin(ctx);
+    if (admin instanceof Response) return admin;
 
     const body = await ctx.req.json().catch(() => null);
     const fromPerkId = typeof body?.fromPerkId === "string"
@@ -20,32 +18,18 @@ export const handler = define.handlers({
     const dryRun = body?.dryRun !== false;
 
     if (!fromPerkId || !toPerkId) {
-      return new Response(
-        JSON.stringify({ error: "fromPerkId and toPerkId are required." }),
-        { status: 400, headers: { "content-type": "application/json" } },
-      );
+      return jsonError(400, "fromPerkId and toPerkId are required.");
     }
-
     if (fromPerkId === toPerkId) {
-      return new Response(
-        JSON.stringify({ error: "fromPerkId and toPerkId must differ." }),
-        { status: 400, headers: { "content-type": "application/json" } },
-      );
+      return jsonError(400, "fromPerkId and toPerkId must differ.");
     }
-
     if (!PERKS_BY_ID.has(toPerkId)) {
-      return new Response(
-        JSON.stringify({ error: `Unknown replacement perk: ${toPerkId}.` }),
-        { status: 400, headers: { "content-type": "application/json" } },
-      );
+      return jsonError(400, `Unknown replacement perk: ${toPerkId}.`);
     }
 
     const result = await replacePerkAcrossCharacters(fromPerkId, toPerkId, {
       dryRun,
     });
-
-    return new Response(JSON.stringify(result), {
-      headers: { "content-type": "application/json" },
-    });
+    return Response.json(result);
   },
 });

@@ -9,6 +9,7 @@ import type {
   CharacterDraft,
   PerkOrigin,
 } from "./character_types.ts";
+import { parseInventory } from "./inventory_parsing.ts";
 
 /**
  * The six perk customization state maps that live on CharacterDraft.
@@ -129,4 +130,18 @@ export function normalizeCharacterPerkIds<T extends CharacterDraft>(
     ...character,
     perkIds,
   };
+}
+
+/** Normalize perk IDs and re-parse inventory so stored blobs cannot drop fields. */
+export function normalizeLoadedDraft<T extends CharacterDraft>(
+  character: T,
+): T {
+  const withPerks = normalizeCharacterPerkIds(character);
+  if (!withPerks.inventory) return withPerks;
+
+  const inventory = parseInventory(withPerks.inventory);
+  if (!inventory) return withPerks;
+
+  if (inventory === withPerks.inventory) return withPerks;
+  return { ...withPerks, inventory };
 }

@@ -27,6 +27,7 @@ import {
   CREATION_FREE_ITEM_SLOTS,
   EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
+import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
 import PerkDescription from "./PerkDescription.tsx";
 import WeaponCard from "./inventory/WeaponCard.tsx";
 import EquipmentCard from "./inventory/EquipmentCard.tsx";
@@ -501,12 +502,7 @@ export default function InventorySection(props: InventorySectionProps) {
   ) {
     updateCombat((inv) => {
       const weapon = inv[location].weapons[index];
-      const def = WEAPONS_BY_ID.get(weapon.weaponId);
-      let maxAmmo = def?.ammo ?? 999;
-      for (const aId of weapon.attachedIds) {
-        const aDef = ATTACHMENTS_BY_ID.get(aId);
-        if (aDef?.ammoOverride) maxAmmo = aDef.ammoOverride;
-      }
+      const maxAmmo = getEffectiveWeaponStats(weapon)?.ammo ?? 999;
       weapon.currentAmmo = Math.max(0, Math.min(ammo, maxAmmo));
       return inv;
     });

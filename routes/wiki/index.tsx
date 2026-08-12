@@ -33,12 +33,12 @@ export default define.page(function WikiIndex() {
         <WikiCard
           href="/wiki/weapons"
           title="Weapons"
-          description="Statistics and gimmicks for every ranged weapon in the game, grouped by weapon type."
+          description="Statistics and gimmicks for every ranged and melee weapon, grouped by type."
         />
         <WikiCard
           href="/wiki/equipment"
           title="Equipment & Attachments"
-          description="General gear, weapon attachments, melee weapons, and melee weapon traits."
+          description="General gear, weapon attachments, free accessories, and melee weapon traits."
         />
         <WikiCard
           href="/wiki/vehicles"

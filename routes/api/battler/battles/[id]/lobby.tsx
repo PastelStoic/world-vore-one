@@ -1,13 +1,12 @@
 import { define } from "@/utils.ts";
-import { BattleError, updateLobby } from "@/lib/battles.ts";
+import { updateLobby } from "@/lib/battles.ts";
 import type { BattlePlayer, BattlerState } from "@/lib/battler_types.ts";
+import { handleBattleError, jsonError, requireUser } from "@/lib/http.ts";
 
 export const handler = define.handlers({
   async PATCH(ctx) {
-    const user = ctx.state.user;
-    if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = requireUser(ctx);
+    if (user instanceof Response) return user;
 
     let body: {
       name?: string | null;
@@ -17,7 +16,7 @@ export const handler = define.handlers({
     try {
       body = await ctx.req.json();
     } catch {
-      return Response.json({ error: "Invalid JSON" }, { status: 400 });
+      return jsonError(400, "Invalid JSON");
     }
 
     try {
@@ -28,10 +27,7 @@ export const handler = define.handlers({
       });
       return Response.json(room);
     } catch (e) {
-      if (e instanceof BattleError) {
-        return Response.json({ error: e.message }, { status: e.status });
-      }
-      throw e;
+      return handleBattleError(e);
     }
   },
 });

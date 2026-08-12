@@ -1,24 +1,21 @@
 import { define } from "@/utils.ts";
-import { BattleError, endTurn } from "@/lib/battles.ts";
+import { endTurn } from "@/lib/battles.ts";
+import { handleBattleError, jsonError, requireUser } from "@/lib/http.ts";
 
 export const handler = define.handlers({
   async POST(ctx) {
-    const user = ctx.state.user;
-    if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = requireUser(ctx);
+    if (user instanceof Response) return user;
 
     let body: { state?: unknown; expectedRevision?: number };
     try {
       body = await ctx.req.json();
     } catch {
-      return Response.json({ error: "Invalid JSON" }, { status: 400 });
+      return jsonError(400, "Invalid JSON");
     }
 
     if (typeof body.expectedRevision !== "number") {
-      return Response.json({ error: "expectedRevision required" }, {
-        status: 400,
-      });
+      return jsonError(400, "expectedRevision required");
     }
 
     try {
@@ -30,10 +27,7 @@ export const handler = define.handlers({
       );
       return Response.json(room);
     } catch (e) {
-      if (e instanceof BattleError) {
-        return Response.json({ error: e.message }, { status: e.status });
-      }
-      throw e;
+      return handleBattleError(e);
     }
   },
 });

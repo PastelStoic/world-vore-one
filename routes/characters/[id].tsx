@@ -7,7 +7,7 @@ import {
   setCharacterHidden,
   setCharacterStatus,
 } from "@/lib/characters.ts";
-import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
+import { cfImageUrl } from "@/lib/images.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 import { ButtonLink } from "@/components/Button.tsx";
 

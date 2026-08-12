@@ -12,7 +12,7 @@ import {
   buildAndValidateDraft,
   parseCharacterFormData,
 } from "@/lib/form_helpers.ts";
-import { cfImageUrl } from "@/routes/api/characters/[id]/image.tsx";
+import { cfImageUrl } from "@/lib/images.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 import { isModeratorOnlyFaction } from "@/data/factions.ts";
 
@@ -21,6 +21,11 @@ export const handler = define.handlers({
     const user = ctx.state.user;
     if (!user) {
       return new Response("Unauthorized", { status: 401 });
+    }
+    if (ctx.state.isBanned && !ctx.state.isAdmin) {
+      return new Response("You have been banned and cannot edit characters.", {
+        status: 403,
+      });
     }
 
     const formData = await ctx.req.formData();

@@ -8,6 +8,9 @@ import { PERKS_BY_ID } from "@/data/perks.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
+import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
+import InventoryItemActions from "./InventoryItemActions.tsx";
+import ChargeTracker from "./ChargeTracker.tsx";
 
 interface EquipmentCardProps {
   equipment: InventoryEquipment;
@@ -52,30 +55,14 @@ export default function EquipmentCard(props: EquipmentCardProps) {
   const def = EQUIPMENT_BY_ID.get(eq.equipmentId);
   if (!def) {
     return (
-      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
-        <span>
-          Unknown equipment: {eq.equipmentId}
-          <span class="block text-xs text-base-content/60 font-normal">
-            Removed from game data — remove to free inventory slots/points.
-          </span>
-        </span>
-        {!readOnly && (
-          <button
-            type="button"
-            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-            onClick={() => onRemove(location, index)}
-            title="Remove invalid item and refund its inventory cost"
-          >
-            Remove & refund
-          </button>
-        )}
-      </div>
+      <UnknownInventoryItem
+        kind="equipment"
+        id={eq.equipmentId}
+        readOnly={readOnly}
+        onRemove={() => onRemove(location, index)}
+      />
     );
   }
-
-  const otherLocation: InventoryLocation = location === "carried"
-    ? "stowed"
-    : "carried";
 
   const effectiveWeight = eq.weightOverride ?? def.weight;
   const effectiveBulky = eq.isBulkyOverride ?? def.isBulky;
@@ -86,7 +73,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     ? effectiveWeight * remaining
     : effectiveWeight;
   const canMoveToOther = !(
-    otherLocation === "carried" &&
+    location === "stowed" &&
     effectiveBulky &&
     carriedBulkyCount > 0
   );
@@ -112,31 +99,17 @@ export default function EquipmentCard(props: EquipmentCardProps) {
           )}
         </div>
         {!readOnly && (!isPerkGranted || def.deprecated) && (
-          <div class="flex gap-1">
-            {!isPerkGranted && (
-              <button
-                type="button"
-                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200 disabled:opacity-40 disabled:cursor-not-allowed"
-                onClick={() => onMove(location, index, otherLocation)}
-                disabled={!canMoveToOther}
-                title={!canMoveToOther
-                  ? "Only one bulky kit can be carried at a time"
-                  : undefined}
-              >
-                → {otherLocation === "carried" ? "Carry" : "Stow"}
-              </button>
-            )}
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-              onClick={() => onRemove(location, index)}
-              title={def.deprecated
-                ? "Remove deprecated item and free inventory slots/points"
-                : undefined}
-            >
-              {def.deprecated ? "Remove & refund" : "Remove"}
-            </button>
-          </div>
+          <InventoryItemActions
+            location={location}
+            deprecated={def.deprecated}
+            canMove={!isPerkGranted}
+            moveDisabled={!canMoveToOther}
+            moveTitle={!canMoveToOther
+              ? "Only one bulky kit can be carried at a time"
+              : undefined}
+            onMove={(to) => onMove(location, index, to)}
+            onRemove={() => onRemove(location, index)}
+          />
         )}
       </div>
 
@@ -150,64 +123,16 @@ export default function EquipmentCard(props: EquipmentCardProps) {
 
       {/* Charge tracking with checkboxes – editable for owner/admin combat tracking */}
       {def.isCharge && (
-        <div class="space-y-1 text-sm">
-          <div class="flex items-center gap-2">
-            <span>Charges:</span>
-            {!readOnly && (
-              <span class="text-xs text-base-content/60">
-                (Total:{" "}
-                <input
-                  type="number"
-                  class="w-12 border rounded px-1 text-xs"
-                  min="1"
-                  value={eq.totalCharges}
-                  onInput={(e) => {
-                    const val = Number((e.target as HTMLInputElement).value);
-                    if (!Number.isNaN(val)) {
-                      onSetTotalCharges(location, index, val);
-                    }
-                  }}
-                />
-                )
-              </span>
-            )}
-          </div>
-          <div class="flex flex-wrap gap-1 ml-2">
-            {Array.from({ length: eq.totalCharges }, (_, ci) => {
-              const isUsed = ci >= eq.totalCharges - eq.usedCharges;
-              return (
-                <button
-                  key={ci}
-                  type="button"
-                  class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
-                    isUsed
-                      ? "bg-error/20 border-error/70 text-error"
-                      : "bg-success/10 border-success/70 text-success"
-                  } ${
-                    combatReadOnly
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer hover:opacity-75"
-                  }`}
-                  title={combatReadOnly
-                    ? (isUsed ? "Used" : "Available")
-                    : (isUsed
-                      ? "Used (click to restore)"
-                      : "Available (click to use)")}
-                  disabled={combatReadOnly}
-                  onClick={() => {
-                    if (combatReadOnly) return;
-                    onToggleCharge(location, index, ci);
-                  }}
-                >
-                  {isUsed ? "✕" : "●"}
-                </button>
-              );
-            })}
-          </div>
-          <div class="text-xs text-base-content/60 ml-2">
-            {remaining} remaining · {eq.usedCharges} used · W:{currentWeight}
-          </div>
-        </div>
+        <ChargeTracker
+          totalCharges={eq.totalCharges}
+          usedCharges={eq.usedCharges}
+          currentWeight={currentWeight}
+          readOnly={readOnly}
+          combatReadOnly={combatReadOnly}
+          onSetTotalCharges={(total) =>
+            onSetTotalCharges(location, index, total)}
+          onToggleCharge={(ci) => onToggleCharge(location, index, ci)}
+        />
       )}
     </div>
   );

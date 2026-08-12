@@ -12,6 +12,8 @@ import {
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
+import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
+import InventoryItemActions from "./InventoryItemActions.tsx";
 
 interface VehicleCardProps {
   vehicle: InventoryVehicle;
@@ -32,24 +34,12 @@ export default function VehicleCard(props: VehicleCardProps) {
 
   if (!def) {
     return (
-      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
-        <span>
-          Unknown vehicle: {vehicle.vehicleId}
-          <span class="block text-xs text-base-content/60 font-normal">
-            Removed from game data — remove to free inventory slots/points.
-          </span>
-        </span>
-        {!readOnly && (
-          <button
-            type="button"
-            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-            onClick={() => onRemove(location, index)}
-            title="Remove invalid item and refund its inventory cost"
-          >
-            Remove & refund
-          </button>
-        )}
-      </div>
+      <UnknownInventoryItem
+        kind="vehicle"
+        id={vehicle.vehicleId}
+        readOnly={readOnly}
+        onRemove={() => onRemove(location, index)}
+      />
     );
   }
 
@@ -69,27 +59,13 @@ export default function VehicleCard(props: VehicleCardProps) {
           </span>
         </div>
         {!readOnly && (
-          <div class="flex gap-1">
-            {location === "carried" && (
-              <button
-                type="button"
-                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                onClick={() => onMove(location, index, "stowed")}
-              >
-                → Stow
-              </button>
-            )}
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-              onClick={() => onRemove(location, index)}
-              title={def.deprecated
-                ? "Remove deprecated item and free inventory slots/points"
-                : undefined}
-            >
-              {def.deprecated ? "Remove & refund" : "Remove"}
-            </button>
-          </div>
+          <InventoryItemActions
+            location={location}
+            deprecated={def.deprecated}
+            canMove={location === "carried"}
+            onMove={(to) => onMove(location, index, to)}
+            onRemove={() => onRemove(location, index)}
+          />
         )}
       </div>
       <div class="flex flex-wrap gap-3 text-xs text-base-content/70 ml-2">

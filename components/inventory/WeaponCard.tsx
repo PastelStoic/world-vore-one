@@ -10,7 +10,9 @@ import {
 } from "@/data/equipment.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
+import UnknownInventoryItem from "@/components/inventory/UnknownInventoryItem.tsx";
 import TraitBadge from "@/components/inventory/TraitBadge.tsx";
+import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
 import {
   canAttachToWeapon,
   getDependentAttachmentIds,
@@ -96,24 +98,12 @@ export default function WeaponCard(props: WeaponCardProps) {
   const def = WEAPONS_BY_ID.get(w.weaponId);
   if (!def) {
     return (
-      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
-        <span>
-          Unknown weapon: {w.weaponId}
-          <span class="block text-xs text-base-content/60 font-normal">
-            Removed from game data — remove to free inventory slots/points.
-          </span>
-        </span>
-        {!readOnly && (
-          <button
-            type="button"
-            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-            onClick={() => props.onRemove(location, index)}
-            title="Remove invalid item and refund its inventory cost"
-          >
-            Remove & refund
-          </button>
-        )}
-      </div>
+      <UnknownInventoryItem
+        kind="weapon"
+        id={w.weaponId}
+        readOnly={readOnly}
+        onRemove={() => props.onRemove(location, index)}
+      />
     );
   }
 
@@ -121,51 +111,15 @@ export default function WeaponCard(props: WeaponCardProps) {
     ? "stowed"
     : "carried";
   const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
-
-  // Check for ammo override from attached attachments
-  let effectiveAmmo = def.ammo;
-  let effectiveWeight = def.weight;
-  let effectiveDamage: string | number = def.damage;
-  let effectiveRateOfFire = def.rateOfFire;
-  let attachmentMagazineSystem = false;
-  let attachmentRequiresMags = false;
-  let reloadAmountOverride = def.reloadAmountOverride;
-  let attachedWeight = 0;
-  for (const aId of w.attachedIds) {
-    const aDef = ATTACHMENTS_BY_ID.get(aId);
-    if (aDef?.ammoOverride) {
-      effectiveAmmo = aDef.ammoOverride;
-    }
-    if (aDef?.weightOverride != null) {
-      effectiveWeight = aDef.weightOverride;
-    }
-    if (aDef?.damageOverride != null) {
-      effectiveDamage = aDef.damageOverride;
-    }
-    if (aDef?.rateOfFireBonus != null) {
-      effectiveRateOfFire += aDef.rateOfFireBonus;
-    }
-    if (aDef?.requiresMagazines) {
-      attachmentRequiresMags = true;
-      attachmentMagazineSystem = true;
-    }
-    if (aDef?.reloadAmountOverride != null) {
-      reloadAmountOverride = aDef.reloadAmountOverride;
-    }
-    if (aDef?.ammoOverride && aDef?.isCharge) {
-      attachmentMagazineSystem = true;
-    }
-    if (aDef) {
-      attachedWeight += aDef.weight;
-    }
-  }
-  const displayedWeight = effectiveWeight + attachedWeight;
-
-  // Detect charge-based magazine attachment currently in the chamber (e.g. Thompson drum)
-  const drumAttachmentId = w.attachedIds.find((aId) => {
-    const aDef = ATTACHMENTS_BY_ID.get(aId);
-    return aDef?.isCharge && Boolean(aDef?.ammoOverride);
-  });
+  const stats = getEffectiveWeaponStats(w)!;
+  const effectiveAmmo = stats.ammo;
+  const effectiveDamage = stats.damage;
+  const effectiveRateOfFire = stats.rateOfFire;
+  const attachmentMagazineSystem = stats.attachmentMagazineSystem;
+  const attachmentRequiresMags = stats.attachmentRequiresMags;
+  const reloadAmountOverride = stats.reloadAmountOverride;
+  const displayedWeight = stats.displayedWeight;
+  const drumAttachmentId = stats.drumAttachmentId;
 
   // Find compatible attachments owned in the same location's inventory
   // For charge-based attachments, only show if they have remaining charges
@@ -242,18 +196,7 @@ export default function WeaponCard(props: WeaponCardProps) {
   const canReload = !isAmmoFull &&
     (canUseMagazineReload || canUseStandardReload);
 
-  // Multi-turn reload tracking
-  let effectiveReloadTurns = def.reloadTurns ?? 1;
-  for (const aId of w.attachedIds) {
-    const aDef = ATTACHMENTS_BY_ID.get(aId);
-    if (aDef?.reloadTurnsOverride != null) {
-      effectiveReloadTurns = aDef.reloadTurnsOverride;
-    }
-  }
-  // C96 Mauser: "Wasteful reload" — 2 turns when rounds remain in magazine, 1 turn when empty
-  if (def.id === "c96-mauser" && w.currentAmmo > 0) {
-    effectiveReloadTurns = 2;
-  }
+  const effectiveReloadTurns = stats.reloadTurns;
   const reloadProgress = w.reloadProgress ?? 0;
   const isReloading = reloadProgress > 0;
 

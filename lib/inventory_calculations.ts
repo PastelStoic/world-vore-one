@@ -154,6 +154,94 @@ export function countAllItemSlots(
   return slots;
 }
 
+export interface EffectiveWeaponStats {
+  ammo: number;
+  weight: number;
+  attachedWeight: number;
+  displayedWeight: number;
+  damage: string | number;
+  rateOfFire: number;
+  reloadAmountOverride?: number;
+  reloadTurns: number;
+  requiresMagazines: boolean;
+  attachmentMagazineSystem: boolean;
+  attachmentRequiresMags: boolean;
+  drumAttachmentId?: string;
+}
+
+/**
+ * Weapon stats after applying every attached attachment override.
+ * Shared by the card UI, ammo clamp, and carried-weight math.
+ */
+export function getEffectiveWeaponStats(
+  weapon: {
+    weaponId: string;
+    attachedIds: readonly string[];
+    currentAmmo?: number;
+  },
+): EffectiveWeaponStats | null {
+  const def = WEAPONS_BY_ID.get(weapon.weaponId);
+  if (!def) return null;
+
+  let ammo = def.ammo;
+  let weight = def.weight;
+  let damage: string | number = def.damage;
+  let rateOfFire = def.rateOfFire;
+  let reloadAmountOverride = def.reloadAmountOverride;
+  let reloadTurns = def.reloadTurns ?? 1;
+  let attachmentMagazineSystem = false;
+  let attachmentRequiresMags = false;
+  let attachedWeight = 0;
+  let drumAttachmentId: string | undefined;
+
+  for (const attachmentId of weapon.attachedIds) {
+    const attachment = ATTACHMENTS_BY_ID.get(attachmentId);
+    if (!attachment) continue;
+
+    if (attachment.ammoOverride) ammo = attachment.ammoOverride;
+    if (attachment.weightOverride != null) weight = attachment.weightOverride;
+    if (attachment.damageOverride != null) damage = attachment.damageOverride;
+    if (attachment.rateOfFireBonus != null) {
+      rateOfFire += attachment.rateOfFireBonus;
+    }
+    if (attachment.requiresMagazines) {
+      attachmentRequiresMags = true;
+      attachmentMagazineSystem = true;
+    }
+    if (attachment.reloadAmountOverride != null) {
+      reloadAmountOverride = attachment.reloadAmountOverride;
+    }
+    if (attachment.reloadTurnsOverride != null) {
+      reloadTurns = attachment.reloadTurnsOverride;
+    }
+    if (attachment.ammoOverride && attachment.isCharge) {
+      attachmentMagazineSystem = true;
+      drumAttachmentId = attachmentId;
+    }
+    attachedWeight += attachment.weight;
+  }
+
+  if (def.id === "c96-mauser" && (weapon.currentAmmo ?? 0) > 0) {
+    reloadTurns = 2;
+  }
+
+  return {
+    ammo,
+    weight,
+    attachedWeight,
+    displayedWeight: weight + attachedWeight,
+    damage,
+    rateOfFire,
+    reloadAmountOverride,
+    reloadTurns,
+    requiresMagazines: !!def.requiresMagazines || attachmentRequiresMags ||
+      attachmentMagazineSystem,
+    attachmentMagazineSystem,
+    attachmentRequiresMags,
+    drumAttachmentId,
+  };
+}
+
 export function hasMultipleCarriedBulkyEquipment(
   inv: CharacterInventory,
   getEquipment: (id: string) => { isBulky?: boolean } | undefined,
@@ -190,26 +278,14 @@ export function calculateInventoryWeight(
   let total = 0;
 
   for (const w of inv.carried.weapons) {
-    const def = lookups.getWeapon(w.weaponId);
-    if (def) {
-      // Check for weight override from attached attachments
-      let weaponWeight = def.weight;
-      for (const aId of w.attachedIds) {
-        const aDef = lookups.getAttachment(aId);
-        if (aDef && aDef.weightOverride != null) {
-          weaponWeight = aDef.weightOverride;
-        }
-      }
-      total += weaponWeight;
+    const stats = getEffectiveWeaponStats(w);
+    if (stats) {
+      total += stats.displayedWeight;
+    } else {
+      const def = lookups.getWeapon(w.weaponId);
+      if (def) total += def.weight;
     }
-    // Attached attachment weight
-    for (const aId of w.attachedIds) {
-      const aDef = lookups.getAttachment(aId);
-      if (aDef) total += aDef.weight;
-    }
-    // Spare full magazine weight (each = 1)
     total += w.magazines;
-    // Spare partial magazine weight (each = 1)
     total += (w.partialMagazines ?? []).length;
   }
 

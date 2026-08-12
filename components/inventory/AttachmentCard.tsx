@@ -8,6 +8,9 @@ import { PERKS_BY_ID } from "@/data/perks.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
+import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
+import InventoryItemActions from "./InventoryItemActions.tsx";
+import ChargeTracker from "./ChargeTracker.tsx";
 
 interface AttachmentCardProps {
   attachment: InventoryAttachment;
@@ -47,30 +50,15 @@ export default function AttachmentCard(props: AttachmentCardProps) {
   const def = ATTACHMENTS_BY_ID.get(att.attachmentId);
   if (!def) {
     return (
-      <div class="border rounded p-2 bg-base-100 text-sm text-error flex items-center justify-between flex-wrap gap-1">
-        <span>
-          Unknown attachment: {att.attachmentId}
-          <span class="block text-xs text-base-content/60 font-normal">
-            Removed from game data — remove to free inventory slots/points.
-          </span>
-        </span>
-        {!readOnly && (
-          <button
-            type="button"
-            class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-            onClick={() => onRemove(location, index)}
-            title="Remove invalid item and refund its inventory cost"
-          >
-            Remove & refund
-          </button>
-        )}
-      </div>
+      <UnknownInventoryItem
+        kind="attachment"
+        id={att.attachmentId}
+        readOnly={readOnly}
+        onRemove={() => onRemove(location, index)}
+      />
     );
   }
 
-  const otherLocation: InventoryLocation = location === "carried"
-    ? "stowed"
-    : "carried";
   const remaining = def.isCharge
     ? Math.max(0, att.totalCharges - att.usedCharges)
     : 0;
@@ -95,39 +83,16 @@ export default function AttachmentCard(props: AttachmentCardProps) {
             </span>
           )}
         </div>
-        {!readOnly && (!isPerkGranted || def.deprecated) && (
-          <div class="flex gap-1">
-            {!isPerkGranted && (
-              <button
-                type="button"
-                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                onClick={() => onMove(location, index, otherLocation)}
-              >
-                → {otherLocation === "carried" ? "Carry" : "Stow"}
-              </button>
-            )}
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-              onClick={() => onRemove(location, index)}
-              title={def.deprecated
-                ? "Remove deprecated item and free inventory slots/points"
-                : undefined}
-            >
-              {def.deprecated ? "Remove & refund" : "Remove"}
-            </button>
-          </div>
-        )}
-        {!readOnly && isPerkGranted && !def.deprecated && (
-          <div class="flex gap-1">
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-              onClick={() => onMove(location, index, otherLocation)}
-            >
-              → {otherLocation === "carried" ? "Carry" : "Stow"}
-            </button>
-          </div>
+        {!readOnly && (
+          <InventoryItemActions
+            location={location}
+            deprecated={def.deprecated}
+            canMove
+            onMove={(to) => onMove(location, index, to)}
+            onRemove={!isPerkGranted || def.deprecated
+              ? () => onRemove(location, index)
+              : undefined}
+          />
         )}
       </div>
 
@@ -141,54 +106,15 @@ export default function AttachmentCard(props: AttachmentCardProps) {
 
       {/* Charge tracking for charge-based attachments */}
       {def.isCharge && (
-        <div class="space-y-1 text-sm">
-          <div class="flex items-center gap-2">
-            <span>Charges:</span>
-            {!readOnly && (
-              <span class="text-xs text-base-content/60">
-                (Total:{" "}
-                <input
-                  type="number"
-                  class="w-12 border rounded px-1 text-xs"
-                  min="1"
-                  value={att.totalCharges}
-                  onInput={(e) => {
-                    const val = Number((e.target as HTMLInputElement).value);
-                    if (!Number.isNaN(val)) {
-                      onSetTotalCharges(location, index, val);
-                    }
-                  }}
-                />
-                )
-              </span>
-            )}
-          </div>
-          <div class="flex flex-wrap gap-1 ml-2">
-            {Array.from({ length: att.totalCharges }, (_, ci) => {
-              const isUsed = ci >= att.totalCharges - att.usedCharges;
-              return (
-                <button
-                  key={ci}
-                  type="button"
-                  class={`w-6 h-6 border rounded text-xs flex items-center justify-center ${
-                    isUsed
-                      ? "bg-error/20 border-error/70 text-error"
-                      : "bg-success/10 border-success/70 text-success"
-                  } cursor-pointer hover:opacity-75`}
-                  title={isUsed
-                    ? "Used (click to restore)"
-                    : "Available (click to use)"}
-                  onClick={() => onToggleCharge(location, index, ci)}
-                >
-                  {isUsed ? "✕" : "●"}
-                </button>
-              );
-            })}
-          </div>
-          <div class="text-xs text-base-content/60 ml-2">
-            {remaining} remaining · {att.usedCharges} used · W:{currentWeight}
-          </div>
-        </div>
+        <ChargeTracker
+          totalCharges={att.totalCharges}
+          usedCharges={att.usedCharges}
+          currentWeight={currentWeight}
+          readOnly={readOnly}
+          onSetTotalCharges={(total) =>
+            onSetTotalCharges(location, index, total)}
+          onToggleCharge={(ci) => onToggleCharge(location, index, ci)}
+        />
       )}
     </div>
   );

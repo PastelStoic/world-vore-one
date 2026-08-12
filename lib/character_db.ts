@@ -15,6 +15,7 @@ import { getPerkAccountLimitError } from "@/data/perks.ts";
 import {
   cleanupPerkData,
   normalizeCharacterPerkIds,
+  normalizeLoadedDraft,
 } from "./perk_state_helpers.ts";
 import { getDb } from "./db/client.ts";
 import { characterSnapshots, characters } from "./db/schema.ts";
@@ -146,7 +147,7 @@ export async function replacePerkAcrossCharacters(
     if (!row.sheet) continue;
 
     result.scanned += 1;
-    const character = normalizeCharacterPerkIds(row.sheet);
+    const character = normalizeLoadedDraft(row.sheet);
     const hadFrom = character.perkIds.includes(fromPerkId);
     if (!hadFrom) continue;
 
@@ -274,7 +275,7 @@ export async function listCharacters(userId?: string) {
       .from(characters)
       .orderBy(desc(characters.updatedAt));
 
-  return rows.map((row) => normalizeCharacterPerkIds(row.sheet));
+  return rows.map((row) => normalizeLoadedDraft(row.sheet));
 }
 
 export async function getUserPerkCharacterCounts(
@@ -317,7 +318,7 @@ export async function getCharacter(id: string) {
     .where(eq(characters.id, id))
     .limit(1);
   const row = rows[0];
-  return row ? normalizeCharacterPerkIds(row.sheet) : null;
+  return row ? normalizeLoadedDraft(row.sheet) : null;
 }
 
 export async function upsertCharacter(
@@ -356,6 +357,8 @@ export async function upsertCharacter(
       perkDisguises: normalizedInput.perkDisguises,
       perkSelections: normalizedInput.perkSelections,
       perkPointChoices: normalizedInput.perkPointChoices,
+      perkOrigins: normalizedInput.perkOrigins,
+      factionCompensatedPerkIds: normalizedInput.factionCompensatedPerkIds,
       inventory: normalizedInput.inventory,
     },
   };
@@ -495,7 +498,7 @@ export async function listCharacterSnapshots(characterId: string) {
 
   return rows.map((row) => ({
     ...row.snapshot,
-    data: normalizeCharacterPerkIds(row.snapshot.data),
+    data: normalizeLoadedDraft(row.snapshot.data),
   }));
 }
 
@@ -518,7 +521,7 @@ export async function getCharacterSnapshot(
   return row
     ? {
       ...row.snapshot,
-      data: normalizeCharacterPerkIds(row.snapshot.data),
+      data: normalizeLoadedDraft(row.snapshot.data),
     }
     : null;
 }

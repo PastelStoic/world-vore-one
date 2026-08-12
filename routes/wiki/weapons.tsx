@@ -1,13 +1,16 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import {
+  MELEE_TRAITS_BY_ID,
+  MELEE_WEAPONS,
   WEAPON_TRAITS_BY_ID,
   type WeaponKind,
   WEAPONS,
 } from "@/data/equipment.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
-import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
+import { WikiDetailsRow } from "@/components/WikiDetailsRow.tsx";
+import { pointCostLabel } from "@/lib/format.ts";
 
 const KIND_LABELS: Record<WeaponKind, string> = {
   "bolt-action-rifle": "Bolt-action Rifles",
@@ -55,12 +58,6 @@ const KIND_ORDER: WeaponKind[] = [
   "melee",
 ];
 
-function pointCostLabel(cost: number): string {
-  if (cost === 0) return "Free slot";
-  if (cost === 3) return "Restricted (3 pts)";
-  return `+${cost} pt`;
-}
-
 export default define.page(function WikiWeapons() {
   return (
     <PageShell maxWidth="4xl" innerClass="space-y-8">
@@ -71,7 +68,7 @@ export default define.page(function WikiWeapons() {
         <BackLink href="/wiki">← Wiki</BackLink>
         <h1 class="text-3xl font-bold mt-2">Weapons</h1>
         <p class="text-base-content">
-          All ranged (and melee-category) weapons, grouped by type.
+          All ranged and melee weapons, grouped by type.
         </p>
       </header>
 
@@ -85,19 +82,17 @@ export default define.page(function WikiWeapons() {
             </h2>
             <div class="space-y-2">
               {weapons.map((weapon) => (
-                <details
+                <WikiDetailsRow
                   key={weapon.id}
-                  class="border rounded-lg bg-base-100/80 px-4 py-2"
-                >
-                  <summary class="cursor-pointer font-medium select-none list-none flex items-center gap-3 flex-wrap">
-                    <span class="font-semibold">
-                      {weapon.name}
-                      {weapon.deprecated ? <DeprecatedBadge /> : null}
-                    </span>
+                  title={weapon.name}
+                  deprecated={weapon.deprecated}
+                  badges={
                     <span class="text-xs text-base-content/60">
                       {weapon.nation}
                     </span>
-                    <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
+                  }
+                  summary={
+                    <>
                       <span>DMG: {weapon.damage}</span>
                       <span>Ammo: {weapon.ammo}</span>
                       <span>RoF: {weapon.rateOfFire}</span>
@@ -108,87 +103,129 @@ export default define.page(function WikiWeapons() {
                             ? "text-error font-medium"
                             : "text-warning"}
                         >
-                          {pointCostLabel(weapon.pointCost)}
+                          {pointCostLabel(weapon.pointCost, "Free slot")}
                         </span>
                       )}
-                      <span class="text-base-content/50">▶ details</span>
-                    </span>
-                  </summary>
-                  <div class="mt-2 text-sm text-base-content space-y-1 border-t pt-2">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-base-content/70">
-                      <div>
-                        <span class="font-medium">Damage:</span> {weapon.damage}
-                      </div>
-                      <div>
-                        <span class="font-medium">Ammo:</span> {weapon.ammo}
-                      </div>
-                      <div>
-                        <span class="font-medium">Rate of fire:</span>{" "}
-                        {weapon.rateOfFire}
-                      </div>
-                      <div>
-                        <span class="font-medium">Weight:</span> {weapon.weight}
-                      </div>
-                      <div>
-                        <span class="font-medium">Nation:</span> {weapon.nation}
-                      </div>
-                      <div>
-                        <span class="font-medium">Type:</span> {weapon.type}
-                      </div>
-                      <div>
-                        <span class="font-medium">Cost:</span>{" "}
-                        {pointCostLabel(weapon.pointCost)}
-                      </div>
-                      {weapon.reloadTurns && weapon.reloadTurns > 1 && (
-                        <div>
-                          <span class="font-medium">Reload turns:</span>{" "}
-                          {weapon.reloadTurns}
-                        </div>
-                      )}
-                      {weapon.reloadAmountOverride !== undefined &&
-                        weapon.reloadAmountOverride > 1 && (
-                        <div>
-                          <span class="font-medium">Reload amount:</span>{" "}
-                          {weapon.reloadAmountOverride}
-                        </div>
-                      )}
+                    </>
+                  }
+                >
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-base-content/70">
+                    <div>
+                      <span class="font-medium">Damage:</span> {weapon.damage}
                     </div>
-                    {weapon.requiresMagazines && (
-                      <p class="text-xs text-warning">
-                        Requires magazines to reload.
-                      </p>
+                    <div>
+                      <span class="font-medium">Ammo:</span> {weapon.ammo}
+                    </div>
+                    <div>
+                      <span class="font-medium">Rate of fire:</span>{" "}
+                      {weapon.rateOfFire}
+                    </div>
+                    <div>
+                      <span class="font-medium">Weight:</span> {weapon.weight}
+                    </div>
+                    <div>
+                      <span class="font-medium">Nation:</span> {weapon.nation}
+                    </div>
+                    <div>
+                      <span class="font-medium">Type:</span> {weapon.type}
+                    </div>
+                    <div>
+                      <span class="font-medium">Cost:</span>{" "}
+                      {pointCostLabel(weapon.pointCost, "Free slot")}
+                    </div>
+                    {weapon.reloadTurns && weapon.reloadTurns > 1 && (
+                      <div>
+                        <span class="font-medium">Reload turns:</span>{" "}
+                        {weapon.reloadTurns}
+                      </div>
                     )}
-                    {weapon.reloadAmountOverride === 1 && (
-                      <p class="text-xs text-warning">
-                        Reloads one round at a time.
-                      </p>
-                    )}
-                    {weapon.traitIds.length > 0 && (
-                      <div class="mt-1 space-y-1">
-                        <span class="text-xs font-medium">Traits:</span>
-                        {weapon.traitIds.map((tid) => {
-                          const trait = WEAPON_TRAITS_BY_ID.get(tid);
-                          return (
-                            <div
-                              key={tid}
-                              class="text-xs text-base-content/70 ml-2"
-                            >
-                              <span class="font-medium">
-                                {trait?.name ?? tid}:
-                              </span>{" "}
-                              {trait?.description ?? ""}
-                            </div>
-                          );
-                        })}
+                    {weapon.reloadAmountOverride !== undefined &&
+                      weapon.reloadAmountOverride > 1 && (
+                      <div>
+                        <span class="font-medium">Reload amount:</span>{" "}
+                        {weapon.reloadAmountOverride}
                       </div>
                     )}
                   </div>
-                </details>
+                  {weapon.requiresMagazines && (
+                    <p class="text-xs text-warning">
+                      Requires magazines to reload.
+                    </p>
+                  )}
+                  {weapon.reloadAmountOverride === 1 && (
+                    <p class="text-xs text-warning">
+                      Reloads one round at a time.
+                    </p>
+                  )}
+                  {weapon.traitIds.length > 0 && (
+                    <div class="mt-1 space-y-1">
+                      <span class="text-xs font-medium">Traits:</span>
+                      {weapon.traitIds.map((tid) => {
+                        const trait = WEAPON_TRAITS_BY_ID.get(tid);
+                        return (
+                          <div
+                            key={tid}
+                            class="text-xs text-base-content/70 ml-2"
+                          >
+                            <span class="font-medium">
+                              {trait?.name ?? tid}:
+                            </span>{" "}
+                            {trait?.description ?? ""}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </WikiDetailsRow>
               ))}
             </div>
           </section>
         );
       })}
+
+      {MELEE_WEAPONS.length > 0 && (
+        <section class="space-y-2">
+          <h2 class="text-xl font-semibold border-b pb-1">Melee Weapons</h2>
+          <div class="space-y-2">
+            {MELEE_WEAPONS.map((weapon) => (
+              <WikiDetailsRow
+                key={weapon.id}
+                title={weapon.name}
+                deprecated={weapon.deprecated}
+                summary={
+                  <>
+                    <span>DMG: {weapon.damage}</span>
+                    <span>Wt: {weapon.weight}</span>
+                  </>
+                }
+              >
+                <p class="text-base-content/70 whitespace-pre-line">
+                  {weapon.description}
+                </p>
+                {weapon.traitIds.length > 0 && (
+                  <div class="space-y-1">
+                    <span class="text-xs font-medium">Traits:</span>
+                    {weapon.traitIds.map((traitId) => {
+                      const trait = MELEE_TRAITS_BY_ID.get(traitId);
+                      return (
+                        <div
+                          key={`${weapon.id}-${traitId}`}
+                          class="text-xs text-base-content/70 ml-2"
+                        >
+                          <span class="font-medium">
+                            {trait?.name ?? traitId}:
+                          </span>{" "}
+                          {trait?.description ?? ""}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </WikiDetailsRow>
+            ))}
+          </div>
+        </section>
+      )}
     </PageShell>
   );
 });

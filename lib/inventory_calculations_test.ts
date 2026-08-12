@@ -10,6 +10,7 @@ import {
   countAllItemSlots,
   countCarriedItemSlots,
   countLocationSlots,
+  getEffectiveWeaponStats,
   getWeaponPointCost,
   slotLookups,
 } from "./inventory_calculations.ts";
@@ -69,4 +70,42 @@ Deno.test("restricted weapons add their catalog point cost", () => {
     calculateInventoryPointCostWithPerks(inv),
     weaponCost,
   );
+});
+
+Deno.test("getEffectiveWeaponStats returns catalog ammo when nothing is attached", () => {
+  const stats = getEffectiveWeaponStats({
+    weaponId: "lee-enfield",
+    attachedIds: [],
+  });
+  assertEquals(stats?.ammo, 10);
+  assertEquals(stats?.attachmentMagazineSystem, false);
+});
+
+Deno.test("parseInventory keeps attachmentChargeData and attachment perkGranted", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      weapons: [{
+        weaponId: "lee-enfield",
+        currentAmmo: 5,
+        attachedIds: ["scope"],
+        magazines: 1,
+        partialMagazines: [],
+        attachmentChargeData: {
+          "some-drum": { totalCharges: 3, usedCharges: 1 },
+        },
+      }],
+      attachments: [{
+        attachmentId: "bayonet",
+        totalCharges: 0,
+        usedCharges: 0,
+        perkGranted: "signature-weapon",
+      }],
+    },
+  });
+  assertEquals(
+    parsed?.carried.weapons[0].attachmentChargeData?.["some-drum"],
+    { totalCharges: 3, usedCharges: 1 },
+  );
+  assertEquals(parsed?.carried.attachments[0].perkGranted, "signature-weapon");
 });

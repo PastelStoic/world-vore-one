@@ -3,13 +3,12 @@ import { listCharacters } from "@/lib/characters.ts";
 import { calculateEffectiveHealth } from "@/lib/stat_calculations.ts";
 import type { CharacterSheet } from "@/lib/character_types.ts";
 import type { ImportableCharacter } from "@/lib/battler_types.ts";
+import { requireUser } from "@/lib/http.ts";
 
 export const handler = define.handlers({
   async GET(ctx) {
-    const user = ctx.state.user;
-    if (!user) {
-      return new Response("Unauthorized", { status: 401 });
-    }
+    const user = requireUser(ctx);
+    if (user instanceof Response) return user;
 
     const query = (ctx.url.searchParams.get("q") ?? "").toLowerCase().trim();
 

@@ -1,46 +1,30 @@
 import { define } from "@/utils.ts";
 import { listAdmins, removeAdmin, setAdmin } from "@/lib/admin.ts";
+import { jsonError, requireAdmin } from "@/lib/http.ts";
 
 export const handler = define.handlers({
-  /** List all admins. */
   async GET(ctx) {
-    const user = ctx.state.user;
-    if (!user || !ctx.state.isAdmin) {
-      return new Response("Forbidden", { status: 403 });
-    }
-
-    const admins = await listAdmins();
-    return new Response(JSON.stringify(admins), {
-      headers: { "content-type": "application/json" },
-    });
+    const admin = requireAdmin(ctx);
+    if (admin instanceof Response) return admin;
+    return Response.json(await listAdmins());
   },
 
-  /** Add or remove an admin. Body: { userId, username, action: "add" | "remove" } */
   async POST(ctx) {
-    const user = ctx.state.user;
-    if (!user || !ctx.state.isAdmin) {
-      return new Response("Forbidden", { status: 403 });
-    }
+    const admin = requireAdmin(ctx);
+    if (admin instanceof Response) return admin;
 
-    const body = await ctx.req.json();
-    const { userId, username, action } = body as {
-      userId: string;
-      username: string;
-      action: "add" | "remove";
-    };
-
+    const body = await ctx.req.json().catch(() => null);
+    const userId = body?.userId;
+    const username = body?.username;
+    const action = body?.action;
     if (!userId || !action) {
-      return new Response("Missing userId or action", { status: 400 });
+      return jsonError(400, "Missing userId or action");
     }
 
-    // Prevent removing yourself as admin if you're the last admin
-    if (action === "remove" && userId === user.id) {
+    if (action === "remove" && userId === admin.id) {
       const admins = await listAdmins();
       if (admins.length <= 1) {
-        return new Response(
-          JSON.stringify({ error: "Cannot remove the last admin." }),
-          { status: 400, headers: { "content-type": "application/json" } },
-        );
+        return jsonError(400, "Cannot remove the last admin.");
       }
     }
 
@@ -49,12 +33,9 @@ export const handler = define.handlers({
     } else if (action === "remove") {
       await removeAdmin(userId);
     } else {
-      return new Response("Invalid action", { status: 400 });
+      return jsonError(400, "Invalid action");
     }
 
-    const admins = await listAdmins();
-    return new Response(JSON.stringify(admins), {
-      headers: { "content-type": "application/json" },
-    });
+    return Response.json(await listAdmins());
   },
 });

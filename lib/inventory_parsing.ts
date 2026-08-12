@@ -12,130 +12,180 @@ import type {
 } from "./inventory_types.ts";
 import { createEmptyInventory } from "./inventory_types.ts";
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function asNumber(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+function asBoolean(value: unknown): boolean | undefined {
+  return typeof value === "boolean" ? value : undefined;
+}
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((id): id is string => typeof id === "string");
+}
+
+function asNumberArray(value: unknown): number[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((n): n is number =>
+    typeof n === "number" && Number.isFinite(n)
+  );
+}
+
+function parseAttachmentChargeData(
+  value: unknown,
+): InventoryWeapon["attachmentChargeData"] | undefined {
+  if (!isRecord(value)) return undefined;
+  const result: NonNullable<InventoryWeapon["attachmentChargeData"]> = {};
+  for (const [attachmentId, raw] of Object.entries(value)) {
+    if (!isRecord(raw)) continue;
+    const totalCharges = asNumber(raw.totalCharges);
+    const usedCharges = asNumber(raw.usedCharges);
+    if (totalCharges === undefined || usedCharges === undefined) continue;
+    result[attachmentId] = { totalCharges, usedCharges };
+  }
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
+function parseWeapon(raw: unknown): InventoryWeapon | null {
+  if (!isRecord(raw)) return null;
+  const weaponId = asString(raw.weaponId);
+  if (!weaponId) return null;
+
+  const weapon: InventoryWeapon = {
+    weaponId,
+    currentAmmo: asNumber(raw.currentAmmo) ?? 0,
+    attachedIds: asStringArray(raw.attachedIds),
+    magazines: asNumber(raw.magazines) ?? 0,
+    partialMagazines: asNumberArray(raw.partialMagazines),
+  };
+  if (raw.isSignatureWeapon) weapon.isSignatureWeapon = true;
+  const reloadProgress = asNumber(raw.reloadProgress);
+  if (reloadProgress !== undefined && reloadProgress > 0) {
+    weapon.reloadProgress = reloadProgress;
+  }
+  const chargeData = parseAttachmentChargeData(raw.attachmentChargeData);
+  if (chargeData) weapon.attachmentChargeData = chargeData;
+  return weapon;
+}
+
+function parseMeleeWeapon(raw: unknown): InventoryMeleeWeapon | null {
+  if (!isRecord(raw)) return null;
+  const instanceId = asString(raw.instanceId);
+  const meleeWeaponId = asString(raw.meleeWeaponId);
+  if (!instanceId || !meleeWeaponId) return null;
+
+  const melee: InventoryMeleeWeapon = { instanceId, meleeWeaponId };
+  if (raw.isSignatureWeapon) melee.isSignatureWeapon = true;
+  const extraTrait = asString(raw.signatureExtraTraitId);
+  if (extraTrait) melee.signatureExtraTraitId = extraTrait;
+  const perkGranted = asString(raw.perkGranted);
+  if (perkGranted) melee.perkGranted = perkGranted;
+  return melee;
+}
+
+function parseEquipment(raw: unknown): InventoryEquipment | null {
+  if (!isRecord(raw)) return null;
+  const equipmentId = asString(raw.equipmentId);
+  if (!equipmentId) return null;
+
+  const equipment: InventoryEquipment = {
+    equipmentId,
+    totalCharges: asNumber(raw.totalCharges) ?? asNumber(raw.charges) ?? 1,
+    usedCharges: asNumber(raw.usedCharges) ?? 0,
+  };
+  const perkGranted = asString(raw.perkGranted);
+  if (perkGranted) equipment.perkGranted = perkGranted;
+  const weightOverride = asNumber(raw.weightOverride);
+  if (weightOverride !== undefined) equipment.weightOverride = weightOverride;
+  const isBulkyOverride = asBoolean(raw.isBulkyOverride);
+  if (isBulkyOverride !== undefined) equipment.isBulkyOverride = isBulkyOverride;
+  return equipment;
+}
+
+function parseVehicle(raw: unknown): InventoryVehicle | null {
+  if (!isRecord(raw)) return null;
+  const vehicleId = asString(raw.vehicleId);
+  if (!vehicleId) return null;
+  return { vehicleId };
+}
+
+function parseAttachment(raw: unknown): InventoryAttachment | null {
+  if (!isRecord(raw)) return null;
+  const attachmentId = asString(raw.attachmentId);
+  if (!attachmentId) return null;
+
+  const attachment: InventoryAttachment = {
+    attachmentId,
+    totalCharges: asNumber(raw.totalCharges) ?? 0,
+    usedCharges: asNumber(raw.usedCharges) ?? 0,
+  };
+  const saved = asNumberArray(raw.savedMagazineStates);
+  if (saved.length > 0) attachment.savedMagazineStates = saved;
+  const perkGranted = asString(raw.perkGranted);
+  if (perkGranted) attachment.perkGranted = perkGranted;
+  return attachment;
+}
+
 /**
- * Parse an inventory from a JSON string (from form data).
+ * Parse an inventory from a JSON string or already-decoded object.
  * Backwards-compatible: reads old `charges` field as `totalCharges`.
  */
-export function parseInventory(raw: string): CharacterInventory | null {
+export function parseInventory(raw: unknown): CharacterInventory | null {
   try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object") return null;
+    const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!isRecord(parsed)) return null;
 
     const inv = createEmptyInventory();
-    inv.weaponMasterRestrictedUnlocks = Array.isArray(
-        parsed.weaponMasterRestrictedUnlocks,
-      )
-      ? (parsed.weaponMasterRestrictedUnlocks as unknown[]).filter(
-        (id): id is string => typeof id === "string",
-      )
-      : [];
+    inv.weaponMasterRestrictedUnlocks = asStringArray(
+      parsed.weaponMasterRestrictedUnlocks,
+    );
 
     for (const location of ["carried", "stowed"] as const) {
       const src = parsed[location];
-      if (!src || typeof src !== "object") continue;
+      if (!isRecord(src)) continue;
 
       if (Array.isArray(src.weapons)) {
-        inv[location].weapons = src.weapons.filter(
-          (w: unknown) =>
-            w &&
-            typeof w === "object" &&
-            typeof (w as Record<string, unknown>).weaponId === "string",
-        ).map((w: Record<string, unknown>): InventoryWeapon => ({
-          weaponId: String(w.weaponId),
-          currentAmmo: typeof w.currentAmmo === "number" ? w.currentAmmo : 0,
-          attachedIds: Array.isArray(w.attachedIds)
-            ? (w.attachedIds as unknown[]).filter((id): id is string =>
-              typeof id === "string"
-            )
-            : [],
-          magazines: typeof w.magazines === "number" ? w.magazines : 0,
-          partialMagazines: Array.isArray(w.partialMagazines)
-            ? (w.partialMagazines as unknown[]).filter((n): n is number =>
-              typeof n === "number"
-            )
-            : [],
-          ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
-          ...(typeof w.reloadProgress === "number" && w.reloadProgress > 0
-            ? { reloadProgress: w.reloadProgress }
-            : {}),
-        }));
+        inv[location].weapons = src.weapons.flatMap((item) => {
+          const weapon = parseWeapon(item);
+          return weapon ? [weapon] : [];
+        });
       }
 
       if (Array.isArray(src.meleeWeapons)) {
-        inv[location].meleeWeapons = src.meleeWeapons.filter(
-          (w: unknown) =>
-            w &&
-            typeof w === "object" &&
-            typeof (w as Record<string, unknown>).instanceId === "string" &&
-            typeof (w as Record<string, unknown>).meleeWeaponId === "string",
-        ).map((w: Record<string, unknown>): InventoryMeleeWeapon => ({
-          instanceId: String(w.instanceId),
-          meleeWeaponId: String(w.meleeWeaponId),
-          ...(w.isSignatureWeapon ? { isSignatureWeapon: true } : {}),
-          ...(typeof w.signatureExtraTraitId === "string"
-            ? { signatureExtraTraitId: w.signatureExtraTraitId }
-            : {}),
-          ...(typeof w.perkGranted === "string"
-            ? { perkGranted: w.perkGranted }
-            : {}),
-        }));
+        inv[location].meleeWeapons = src.meleeWeapons.flatMap((item) => {
+          const melee = parseMeleeWeapon(item);
+          return melee ? [melee] : [];
+        });
       }
 
       if (Array.isArray(src.equipment)) {
-        inv[location].equipment = src.equipment.filter(
-          (e: unknown) =>
-            e &&
-            typeof e === "object" &&
-            typeof (e as Record<string, unknown>).equipmentId === "string",
-        ).map((e: Record<string, unknown>): InventoryEquipment => ({
-          equipmentId: String(e.equipmentId),
-          totalCharges: typeof e.totalCharges === "number"
-            ? e.totalCharges
-            : typeof e.charges === "number"
-            ? e.charges
-            : 1,
-          usedCharges: typeof e.usedCharges === "number" ? e.usedCharges : 0,
-          ...(typeof e.perkGranted === "string"
-            ? { perkGranted: e.perkGranted }
-            : {}),
-          ...(typeof e.weightOverride === "number"
-            ? { weightOverride: e.weightOverride }
-            : {}),
-          ...(typeof e.isBulkyOverride === "boolean"
-            ? { isBulkyOverride: e.isBulkyOverride }
-            : {}),
-        }));
+        inv[location].equipment = src.equipment.flatMap((item) => {
+          const equipment = parseEquipment(item);
+          return equipment ? [equipment] : [];
+        });
       }
 
       if (Array.isArray(src.vehicles)) {
-        inv[location].vehicles = src.vehicles.filter(
-          (v: unknown) =>
-            v &&
-            typeof v === "object" &&
-            typeof (v as Record<string, unknown>).vehicleId === "string",
-        ).map((v: Record<string, unknown>): InventoryVehicle => ({
-          vehicleId: String(v.vehicleId),
-        }));
+        inv[location].vehicles = src.vehicles.flatMap((item) => {
+          const vehicle = parseVehicle(item);
+          return vehicle ? [vehicle] : [];
+        });
       }
 
       if (Array.isArray(src.attachments)) {
-        inv[location].attachments = src.attachments.filter(
-          (a: unknown) =>
-            a &&
-            typeof a === "object" &&
-            typeof (a as Record<string, unknown>).attachmentId === "string",
-        ).map((a: Record<string, unknown>): InventoryAttachment => ({
-          attachmentId: String(a.attachmentId),
-          totalCharges: typeof a.totalCharges === "number" ? a.totalCharges : 0,
-          usedCharges: typeof a.usedCharges === "number" ? a.usedCharges : 0,
-          ...(Array.isArray(a.savedMagazineStates)
-            ? {
-              savedMagazineStates: (a.savedMagazineStates as unknown[]).filter((
-                n,
-              ): n is number => typeof n === "number"),
-            }
-            : {}),
-        }));
+        inv[location].attachments = src.attachments.flatMap((item) => {
+          const attachment = parseAttachment(item);
+          return attachment ? [attachment] : [];
+        });
       }
     }
 

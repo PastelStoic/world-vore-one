@@ -13,7 +13,6 @@ import {
   parseCharacterFormData,
 } from "@/lib/form_helpers.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
-import { isUserBanned } from "@/lib/admin.ts";
 import { isModeratorOnlyFaction } from "@/data/factions.ts";
 
 export const handler = define.handlers({
@@ -23,7 +22,7 @@ export const handler = define.handlers({
       return new Response("Unauthorized", { status: 401 });
     }
 
-    if (await isUserBanned(user.id)) {
+    if (ctx.state.isBanned) {
       return new Response(
         "You have been banned and cannot create characters.",
         {
@@ -91,7 +90,7 @@ export default define.page<typeof handler>(async (ctx) => {
       headers: { location: "/auth/discord" },
     });
   }
-  if (await isUserBanned(ctx.state.user.id)) {
+  if (ctx.state.isBanned) {
     return new Response("You have been banned and cannot create characters.", {
       status: 403,
     });

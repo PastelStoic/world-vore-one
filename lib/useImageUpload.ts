@@ -39,9 +39,7 @@ export function useImageUpload(
     try {
       // 1. Get a direct upload URL
       const isUpdate = action === "update" && characterId;
-      const urlEndpoint = isUpdate
-        ? `/api/characters/${characterId}/image`
-        : `/api/images/direct-upload`;
+      const urlEndpoint = "/api/images/direct-upload";
 
       const urlRes = await fetch(urlEndpoint, { method: "POST" });
       if (!urlRes.ok) {

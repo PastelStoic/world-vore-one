@@ -98,6 +98,19 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "Turret destroyed, and can no longer turn.",
   },
   {
+    id: "rear-light-turret",
+    name: "Light turret",
+    description:
+      `A light turret mounting, for small cannons! Aims backwards instead, ooooo ...
+
+      *It can turn one direction per turn, assuming its user hasn' spent its action with something else.
+      *The turret turns alongside the tank: If the turret is aiming forward, and the tank turns to the right, naturally, the turret will aim right too!`,
+    hp: 6,
+    position: "internal",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "Turret destroyed, and can no longer turn.",
+  },
+  {
     id: "light-mantlet",
     name: "Light mantlet",
     description:

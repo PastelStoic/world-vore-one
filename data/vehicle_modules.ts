@@ -17,8 +17,8 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       `Small, light cannon. Quick to fire and reload, but with equally low damage.
 
       When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances.
-      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances.
+      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 1 damage to targetted module.
+      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances. Damages at most 3 targets in order of initiative. Deals 2 damage to targetted module.
       *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
@@ -36,7 +36,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       `Small, light cannon. Quick to fire and reload, but with equally low damage.
 
       When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative
+      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 1 damage to targetted module.
       *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances. Damages at most 3 targets in order of initiative. Deals 2 damage to targetted module.
       *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,

@@ -11,7 +11,7 @@ export const VEHICLES: VehicleDefinition[] = [
   // BRITISH VEHICLES
   
   {
-    id: "mark_v",
+    id: "mark-v",
     name: "Tank, Mark IV ( MALE )",
     nation: "Britain",
     pointCost: 6,
@@ -53,7 +53,7 @@ export const VEHICLES: VehicleDefinition[] = [
   },
 
   {
-    id: "mark_v_female",
+    id: "mark-v-female",
     name: "Tank, Mark IV ( FEMALE )",
     nation: "Britain",
     pointCost: 6,
@@ -136,7 +136,7 @@ export const VEHICLES: VehicleDefinition[] = [
 // FRENCH VEHICLES
 
   {
-    id: "renault_f17",
+    id: "renault-f17",
     name: "Renault FT-17 ( MALE )",
     nation: "France",
     pointCost: 4,
@@ -201,6 +201,47 @@ export const VEHICLES: VehicleDefinition[] = [
       *The commander is also the gunner and the engineer. Good luck doing all the work alone!
       *The machinegun is inside the turret, and turns alongside it.`,
   },
+
+//AMERICAN VEHICLES
+
+  {
+    id: "m1915-jeffery-armored-car",
+    name: "M1915 Jeffery Armored Car",
+    nation: "United States",
+    pointCost: 3,
+    armor: {
+      front: "light",
+      side: "light",
+      rear: "light",
+    },
+    seats: 5,
+    doors: 2,
+    crew: 5,
+    size: 40,
+    agility: 2,
+    speed: 6,
+    modules: [
+      "frontal-machine-gun",
+      "rear-machine-gun",
+      "light-turret",
+      "rear-light-turret",
+      "engine",
+      "fuel-tanks",
+      "wheels-4",
+    ],
+    description:
+      `Light armoured car with a pair of machineguns, with a pair of turrets!
+
+      Crew:
+      1 commander ( 3/3/4 ).
+      1 driver ( 3/3/4 ).
+      1 engineer ( 4/3/3 ).
+      1 frontal gunner (3/3/4)
+      1 rear gunner (4/3/3)
+      
+      *The rear turret can only aim to the back or the sides of the vehicle - it cannot aim forwards!
+      *The machineguns are inside the turret, and turn alongside it.`,
+  },
   
 // GERMAN VEHICLES
 
@@ -249,7 +290,7 @@ export const VEHICLES: VehicleDefinition[] = [
   },
 
   {
-    id: "a7v_female",
+    id: "a7v-female",
     name: "Sturmpanzerwagen A7V ( FEMALE )",
     nation: "Germany",
     pointCost: 6,

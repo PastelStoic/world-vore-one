@@ -162,8 +162,10 @@ export function createEmptyInventory(): CharacterInventory {
 // Re-export calculation and parsing functions for backward compatibility
 export {
   calculateInventoryPointCost,
+  calculateInventoryPointCostWithPerks,
   calculateInventoryWeight,
   countAllItemSlots,
+  countAllItemSlotsWithPerks,
   countCarriedItemSlots,
   hasMultipleCarriedBulkyEquipment,
 } from "./inventory_calculations.ts";

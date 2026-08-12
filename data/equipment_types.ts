@@ -195,7 +195,7 @@ export interface FreeAccessoryDefinition {
 
 // -- Vehicle types -----------------------------------------------------------
 
-export type VehicleArmorRating = "light" | "medium" | "heavy";
+export type VehicleArmorRating = "none" | "light" | "medium" | "heavy";
 
 export type VehicleModulePosition = "internal" | "external";
 

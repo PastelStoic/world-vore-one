@@ -2,99 +2,35 @@
 // Shared types and helpers for inventory components
 // ---------------------------------------------------------------------------
 
-import {
-  ATTACHMENTS_BY_ID,
-  EQUIPMENT_BY_ID,
-  MELEE_WEAPONS_BY_ID,
-  VEHICLES_BY_ID,
-  WEAPONS_BY_ID,
-} from "@/data/equipment.ts";
+import { ATTACHMENTS_BY_ID } from "@/data/equipment.ts";
 import type { WeaponDefinition } from "@/data/equipment_types.ts";
 import type {
-  CharacterInventory,
   InventoryAttachment,
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
 import {
-  countAllItemSlots,
-  CREATION_FREE_ITEM_SLOTS,
-  EXTRA_ITEM_POINT_COST,
-} from "@/lib/inventory_types.ts";
+  calculateInventoryPointCostWithPerks,
+  countAllItemSlotsWithPerks,
+  getSignatureAdjustedPointCost,
+  getSignatureFreeAttachmentIds,
+  getVehiclePointCost,
+  getWeaponPointCost,
+  slotLookups,
+  weightLookups,
+} from "@/lib/inventory_calculations.ts";
 
 export type InventoryLocation = "carried" | "stowed";
 
-// ── Lookups for weight / slot calculation ──────────────────────────────────
-
-export const weightLookups = {
-  getWeapon: (id: string) => WEAPONS_BY_ID.get(id),
-  getMeleeWeapon: (id: string) => MELEE_WEAPONS_BY_ID.get(id),
-  getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
-  getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
+export {
+  calculateInventoryPointCostWithPerks,
+  countAllItemSlotsWithPerks,
+  getSignatureAdjustedPointCost,
+  getSignatureFreeAttachmentIds,
+  getVehiclePointCost,
+  getWeaponPointCost,
+  slotLookups,
+  weightLookups,
 };
-
-export const slotLookups = {
-  getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
-  getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
-};
-
-// ── Weapon point cost helpers ─────────────────────────────────────────────
-
-export function getWeaponPointCost(
-  id: string,
-  perkIds?: string[],
-  weaponMasterRestrictedUnlocks?: string[],
-): number {
-  const def = WEAPONS_BY_ID.get(id);
-  if (!def) return 0;
-  // Weapon Master: non-restricted weapons are free, restricted cost 1pt
-  if (perkIds?.includes("weapon-master")) {
-    if (weaponMasterRestrictedUnlocks?.includes(id)) return 0;
-    if (def.pointCost >= 3) return 1; // Restricted still costs 1pt
-    return 0; // Everything else is free from the armory
-  }
-  // Apply faction discount: restricted weapons cost 1pt if character has a matching faction perk
-  if (def.pointCost >= 3 && def.discountFactionPerkIds && perkIds) {
-    if (
-      def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))
-    ) {
-      return 1;
-    }
-  }
-  return def.pointCost;
-}
-
-export function getVehiclePointCost(id: string): number {
-  return VEHICLES_BY_ID.get(id)?.pointCost ?? 0;
-}
-
-/**
- * Get the point cost for a weapon taking signature weapon status and faction discount into account.
- * Restricted signature weapons cost 1pt instead of 3pt; other signature weapons are free.
- */
-export function getSignatureAdjustedPointCost(
-  id: string,
-  isSignature: boolean,
-  perkIds?: string[],
-): number {
-  const def = WEAPONS_BY_ID.get(id);
-  if (!def) return 0;
-
-  // Apply faction discount first
-  let baseCost = def.pointCost;
-  if (baseCost >= 3 && def.discountFactionPerkIds && perkIds) {
-    if (
-      def.discountFactionPerkIds.some((pid: string) => perkIds.includes(pid))
-    ) {
-      baseCost = 1;
-    }
-  }
-
-  if (!isSignature) return baseCost;
-  // "If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point.
-  //  Every other weapon is free."
-  if (def.pointCost >= 3) return 1; // Originally restricted → still 1pt as signature
-  return 0;
-}
 
 export function getEffectiveWeaponTraitIds(
   weaponDef: Pick<WeaponDefinition, "traitIds">,
@@ -126,25 +62,6 @@ export function getEffectiveWeaponTraitIds(
   return [...effectiveBaseTraitIds, ...effectiveAddedTraitIds];
 }
 
-export function getSignatureFreeAttachmentIds(
-  inventory: CharacterInventory,
-  perkIds?: string[],
-): Set<string> {
-  if (!perkIds?.includes("signature-weapon")) return new Set<string>();
-
-  const signatureWeapon = [
-    ...inventory.carried.weapons,
-    ...inventory.stowed.weapons,
-  ]
-    .find((w) => w.isSignatureWeapon);
-  if (!signatureWeapon) return new Set<string>();
-
-  const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
-  if (!def) return new Set<string>();
-
-  return new Set(def.compatibleAttachmentIds);
-}
-
 /** True when the signature-weapon perk grants a free copy of this attachment. */
 export function isSignatureFreeAttachment(
   weaponDef: { compatibleAttachmentIds: string[] } | undefined,
@@ -152,66 +69,6 @@ export function isSignatureFreeAttachment(
 ): boolean {
   return !!weaponDef &&
     weaponDef.compatibleAttachmentIds.includes(attachmentId);
-}
-
-function mergedFreeAttachmentIds(
-  inventory: CharacterInventory,
-  perkIds?: string[],
-): Set<string> {
-  // Only signature-weapon attachment IDs go here; isFree attachments are
-  // already skipped directly inside the slot-counting loops.
-  return getSignatureFreeAttachmentIds(inventory, perkIds);
-}
-
-export function countAllItemSlotsWithPerks(
-  inventory: CharacterInventory,
-  perkIds?: string[],
-): number {
-  return countAllItemSlots(
-    inventory,
-    slotLookups,
-    mergedFreeAttachmentIds(inventory, perkIds),
-  );
-}
-
-export function calculateInventoryPointCostWithPerks(
-  inventory: CharacterInventory,
-  perkIds?: string[],
-): number {
-  const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
-    false;
-  const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
-  const freeAttachmentIds = mergedFreeAttachmentIds(inventory, perkIds);
-  const unlockedIds = inventory.weaponMasterRestrictedUnlocks ?? [];
-
-  const totalSlots = countAllItemSlots(
-    inventory,
-    slotLookups,
-    freeAttachmentIds,
-  );
-  const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
-  let cost = overFree * EXTRA_ITEM_POINT_COST;
-
-  if (hasWeaponMaster) {
-    const unlocks = new Set(unlockedIds);
-    cost += unlocks.size;
-  }
-
-  for (const location of ["carried", "stowed"] as const) {
-    for (const w of inventory[location].weapons) {
-      const isSignatureWeapon = hasSignatureWeaponPerk && !!w.isSignatureWeapon;
-      if (isSignatureWeapon && !hasWeaponMaster) {
-        cost += getSignatureAdjustedPointCost(w.weaponId, true, perkIds);
-      } else {
-        cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds);
-      }
-    }
-    for (const v of inventory[location].vehicles ?? []) {
-      cost += getVehiclePointCost(v.vehicleId);
-    }
-  }
-
-  return cost;
 }
 
 // ── Drum/magazine eject helper ──────────────────────────────────────────────

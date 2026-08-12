@@ -9,8 +9,8 @@ import {
   getPerkAvailability,
   isPerkEligible,
   type PerkEligibilityContext,
+  validatePerkRequirements,
 } from "./draft_validation.ts";
-import { validatePerkRequirements } from "@/data/perks.ts";
 
 function ctx(
   overrides: Partial<PerkEligibilityContext> = {},
@@ -131,5 +131,18 @@ Deno.test("validatePerkRequirements rejects restricted perk combinations", () =>
   assertEquals(
     error,
     'Perk "Tierfraun (CENTAURS, CERVINES)" restricts "Runner".',
+  );
+});
+
+Deno.test("validatePerkRequirements rejects selection-only perks that are not derived", () => {
+  const error = validatePerkRequirements(
+    "Baseliner",
+    "Female",
+    ["pilzfraun-artificer"],
+    "SWITZERLAND - King's Royal Artificers",
+  );
+  assertEquals(
+    error,
+    'Perk "Pilzfraun Artificer" cannot be selected directly.',
   );
 });

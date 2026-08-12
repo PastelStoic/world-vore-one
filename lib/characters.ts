@@ -52,6 +52,7 @@ export {
   type PerkAvailability,
   type PerkAvailabilityStatus,
   type PerkEligibilityContext,
+  validatePerkRequirements,
   validateStatCaps,
 } from "./draft_validation.ts";
 

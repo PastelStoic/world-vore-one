@@ -42,20 +42,26 @@ export function cleanupPerkData<K extends keyof PerkCustomizationState>(
   return result;
 }
 
-export function normalizePerkIds(
+/**
+ * Perk IDs granted by other owned perks, player selections, or the
+ * current faction — not the purchased IDs themselves.
+ *
+ * Walks `includesPerks` recursively so nested grants stay derived.
+ */
+export function collectGrantedPerkIds(
   perkIds: string[],
   perkSelections?: Record<string, string[]>,
   faction?: string,
   perkOrigins?: Record<string, PerkOrigin>,
-): string[] {
-  const normalized = new Set(perkIds);
+): Set<string> {
+  const derived = new Set<string>();
   const queue = [...perkIds];
 
   if (perkSelections) {
     for (const selectedIds of Object.values(perkSelections)) {
       for (const id of selectedIds) {
-        if (normalized.has(id)) continue;
-        normalized.add(id);
+        if (derived.has(id)) continue;
+        derived.add(id);
         queue.push(id);
       }
     }
@@ -65,8 +71,8 @@ export function normalizePerkIds(
     for (
       const id of FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? []
     ) {
-      if (perkOrigins?.[id] !== "faction" || normalized.has(id)) continue;
-      normalized.add(id);
+      if (perkOrigins?.[id] !== "faction" || derived.has(id)) continue;
+      derived.add(id);
       queue.push(id);
     }
   }
@@ -76,12 +82,29 @@ export function normalizePerkIds(
     if (!perkId) continue;
 
     for (const includedId of PERKS_BY_ID.get(perkId)?.includesPerks ?? []) {
-      if (normalized.has(includedId)) continue;
-      normalized.add(includedId);
+      if (derived.has(includedId)) continue;
+      derived.add(includedId);
       queue.push(includedId);
     }
   }
 
+  return derived;
+}
+
+export function normalizePerkIds(
+  perkIds: string[],
+  perkSelections?: Record<string, string[]>,
+  faction?: string,
+  perkOrigins?: Record<string, PerkOrigin>,
+): string[] {
+  const granted = collectGrantedPerkIds(
+    perkIds,
+    perkSelections,
+    faction,
+    perkOrigins,
+  );
+  const normalized = new Set(perkIds);
+  for (const id of granted) normalized.add(id);
   return [...normalized];
 }
 

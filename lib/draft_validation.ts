@@ -12,9 +12,11 @@ import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
   type CharacterDraft,
+  type PerkOrigin,
   type Race,
   type Sex,
 } from "./character_types.ts";
+import { collectGrantedPerkIds } from "./perk_state_helpers.ts";
 
 // ── Stat floor ──────────────────────────────────────────────────────────────
 
@@ -95,6 +97,132 @@ function perkName(id: string): string {
   return PERKS_BY_ID.get(id)?.name ?? id;
 }
 
+function requiredFactions(perk: PerkDefinition): string[] | undefined {
+  if (!perk.requiredFaction) return undefined;
+  return Array.isArray(perk.requiredFaction)
+    ? perk.requiredFaction
+    : [perk.requiredFaction];
+}
+
+/** Identity mismatch for an already-owned perk (server error wording). */
+function perkIdentityError(
+  perk: PerkDefinition,
+  ctx: Pick<PerkEligibilityContext, "race" | "sex" | "faction" | "isTemplate">,
+): string | null {
+  if (perk.requiredRaces && !perk.requiredRaces.includes(ctx.race)) {
+    return `Perk "${perk.name}" requires one of: ${
+      perk.requiredRaces.join(", ")
+    }.`;
+  }
+
+  if (perk.requiredSex && !perk.requiredSex.includes(ctx.sex)) {
+    return `Perk "${perk.name}" requires sex: ${
+      perk.requiredSex.join(" or ")
+    }.`;
+  }
+
+  if (perk.requiresTemplate && !ctx.isTemplate) {
+    return `Perk "${perk.name}" requires the character to be a template.`;
+  }
+
+  const factions = requiredFactions(perk);
+  if (factions && !factions.includes(ctx.faction)) {
+    return `Perk "${perk.name}" requires faction: ${factions.join(" or ")}.`;
+  }
+
+  return null;
+}
+
+function missingRequiredPerkId(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): string | undefined {
+  return perk.requiredPerkIds?.find((id) => !ownedPerkIds.includes(id));
+}
+
+function lockCategoryConflictName(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): string | undefined {
+  if (!perk.lockCategory) return undefined;
+  for (const id of ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned && owned.id !== perk.id && owned.lockCategory === perk.lockCategory) {
+      return owned.name;
+    }
+  }
+  return undefined;
+}
+
+function excludedOwnedPerkId(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): string | undefined {
+  return perk.excludesPerks?.find((id) => ownedPerkIds.includes(id));
+}
+
+function ownedPerkThatExcludes(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): PerkDefinition | undefined {
+  for (const id of ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned?.excludesPerks?.includes(perk.id)) return owned;
+  }
+  return undefined;
+}
+
+function restrictedOwnedPerkId(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): string | undefined {
+  return perk.restrictsPerks?.find((id) => ownedPerkIds.includes(id));
+}
+
+function ownedPerkThatRestricts(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): PerkDefinition | undefined {
+  for (const id of ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned?.restrictsPerks?.includes(perk.id)) return owned;
+  }
+  return undefined;
+}
+
+/**
+ * Combination error for an already-owned perk (server error wording).
+ * `ownedPerkIds` should include every owned perk, including `perk` itself.
+ */
+function perkCombinationError(
+  perk: PerkDefinition,
+  ownedPerkIds: string[],
+): string | null {
+  const missingRequired = missingRequiredPerkId(perk, ownedPerkIds);
+  if (missingRequired) {
+    return `Perk "${perk.name}" requires "${perkName(missingRequired)}".`;
+  }
+
+  const lockName = lockCategoryConflictName(perk, ownedPerkIds);
+  if (lockName) {
+    return `Perk "${perk.name}" cannot be combined with "${lockName}".`;
+  }
+
+  const excludedId = excludedOwnedPerkId(perk, ownedPerkIds);
+  if (excludedId) {
+    return `Perk "${perk.name}" cannot be combined with "${
+      perkName(excludedId)
+    }".`;
+  }
+
+  const restrictedId = restrictedOwnedPerkId(perk, ownedPerkIds);
+  if (restrictedId) {
+    return `Perk "${perk.name}" restricts "${perkName(restrictedId)}".`;
+  }
+
+  return null;
+}
+
 function hidden(): PerkAvailability {
   return { status: "hidden" };
 }
@@ -136,26 +264,7 @@ export function getPerkAvailability(
   if (ctx.ownedPerkIds.includes(perk.id)) return hidden();
   if (ctx.derivedPerkIds.has(perk.id)) return hidden();
 
-  if (perk.requiredRaces && !perk.requiredRaces.includes(ctx.race)) {
-    return hidden();
-  }
-
-  if (perk.requiredSex && !perk.requiredSex.includes(ctx.sex)) {
-    return hidden();
-  }
-
-  if (perk.requiresTemplate && !ctx.isTemplate) {
-    return hidden();
-  }
-
-  if (perk.requiredFaction) {
-    const factions = Array.isArray(perk.requiredFaction)
-      ? perk.requiredFaction
-      : [perk.requiredFaction];
-    if (!factions.includes(ctx.faction as typeof factions[number])) {
-      return hidden();
-    }
-  }
+  if (perkIdentityError(perk, ctx)) return hidden();
 
   if (perk.blocked) {
     return blocked(
@@ -163,12 +272,9 @@ export function getPerkAvailability(
     );
   }
 
-  if (perk.requiredPerkIds) {
-    for (const requiredId of perk.requiredPerkIds) {
-      if (!ctx.ownedPerkIds.includes(requiredId)) {
-        return blocked(`Requires "${perkName(requiredId)}".`);
-      }
-    }
+  const missingRequired = missingRequiredPerkId(perk, ctx.ownedPerkIds);
+  if (missingRequired) {
+    return blocked(`Requires "${perkName(missingRequired)}".`);
   }
 
   if (
@@ -183,48 +289,84 @@ export function getPerkAvailability(
     );
   }
 
-  if (perk.lockCategory) {
-    for (const id of ctx.ownedPerkIds) {
-      const owned = PERKS_BY_ID.get(id);
-      if (owned?.lockCategory === perk.lockCategory) {
-        return blocked(`Cannot be combined with "${owned.name}".`);
-      }
-    }
+  const lockName = lockCategoryConflictName(perk, ctx.ownedPerkIds);
+  if (lockName) {
+    return blocked(`Cannot be combined with "${lockName}".`);
   }
 
-  if (perk.excludesPerks) {
-    for (const excludedId of perk.excludesPerks) {
-      if (ctx.ownedPerkIds.includes(excludedId)) {
-        return blocked(`Cannot be combined with "${perkName(excludedId)}".`);
-      }
-    }
+  const excludedId = excludedOwnedPerkId(perk, ctx.ownedPerkIds);
+  if (excludedId) {
+    return blocked(`Cannot be combined with "${perkName(excludedId)}".`);
   }
 
-  for (const id of ctx.ownedPerkIds) {
-    const owned = PERKS_BY_ID.get(id);
-    if (owned?.excludesPerks?.includes(perk.id)) {
-      return blocked(`Cannot be combined with "${owned.name}".`);
-    }
+  const ownedExcluder = ownedPerkThatExcludes(perk, ctx.ownedPerkIds);
+  if (ownedExcluder) {
+    return blocked(`Cannot be combined with "${ownedExcluder.name}".`);
   }
 
-  for (const id of ctx.ownedPerkIds) {
-    const owned = PERKS_BY_ID.get(id);
-    if (owned?.restrictsPerks?.includes(perk.id)) {
-      return blocked(`Restricted by "${owned.name}".`);
-    }
+  const ownedRestrictor = ownedPerkThatRestricts(perk, ctx.ownedPerkIds);
+  if (ownedRestrictor) {
+    return blocked(`Restricted by "${ownedRestrictor.name}".`);
   }
 
-  if (perk.restrictsPerks) {
-    for (const restrictedId of perk.restrictsPerks) {
-      if (ctx.ownedPerkIds.includes(restrictedId)) {
-        return blocked(
-          `Cannot be taken while you have "${perkName(restrictedId)}".`,
-        );
-      }
-    }
+  const restrictedId = restrictedOwnedPerkId(perk, ctx.ownedPerkIds);
+  if (restrictedId) {
+    return blocked(
+      `Cannot be taken while you have "${perkName(restrictedId)}".`,
+    );
   }
 
   return available();
+}
+
+/**
+ * Server-side check that every owned perk is legal for this identity and
+ * does not conflict with the rest of the loadout. Uses the same identity
+ * and combination rules as {@link getPerkAvailability}.
+ */
+export function validatePerkRequirements(
+  race: Race,
+  sex: Sex,
+  perkIds: string[],
+  faction?: string,
+  options?: {
+    isTemplate?: boolean;
+    perkSelections?: Record<string, string[]>;
+    perkOrigins?: Record<string, PerkOrigin>;
+    isAdmin?: boolean;
+  },
+): string | null {
+  const derived = collectGrantedPerkIds(
+    perkIds,
+    options?.perkSelections,
+    faction,
+    options?.perkOrigins,
+  );
+  const identityCtx = {
+    race,
+    sex,
+    faction: faction ?? "",
+    isTemplate: options?.isTemplate ?? false,
+  };
+
+  for (const perkId of perkIds) {
+    const perk = PERKS_BY_ID.get(perkId);
+    if (!perk) {
+      return "Invalid perk id in payload.";
+    }
+
+    const identityError = perkIdentityError(perk, identityCtx);
+    if (identityError) return identityError;
+
+    if (perk.selectionOnly && !derived.has(perkId)) {
+      return `Perk "${perk.name}" cannot be selected directly.`;
+    }
+
+    const combinationError = perkCombinationError(perk, perkIds);
+    if (combinationError) return combinationError;
+  }
+
+  return null;
 }
 
 /**

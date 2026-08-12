@@ -34,6 +34,7 @@ const KIND_LABELS: Record<WeaponKind, string> = {
 
 const KIND_ORDER: WeaponKind[] = [
   "bolt-action-rifle",
+  "lever-action-rifle",
   "semiautomatic-rifle",
   "assault-rifle",
   "smg",
@@ -48,6 +49,7 @@ const KIND_ORDER: WeaponKind[] = [
   "black-powder-revolver",
   "flamethrower",
   "flintlock-musket",
+  "anti-tank-rifle",
   "bow",
   "crossbow",
   "melee",

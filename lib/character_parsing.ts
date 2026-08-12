@@ -21,6 +21,7 @@ import {
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import { getStatFloor } from "./draft_validation.ts";
+import { collectGrantedPerkIds } from "./perk_state_helpers.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -282,6 +283,8 @@ export function parseDescription(raw: string): CharacterDescription | null {
  * and extra ranks (if any) are costed normally.
  * Also includes player-chosen perks from perkSelections as derived (free).
  * Also includes perks auto-granted by the character's faction.
+ *
+ * Walks `includesPerks` recursively (same graph as normalize / validation).
  */
 export function getDerivedPerkIds(
   perkIds: string[],
@@ -289,33 +292,12 @@ export function getDerivedPerkIds(
   faction?: string,
   perkOrigins?: Record<string, PerkOrigin>,
 ): Set<string> {
-  const derived = new Set<string>();
-  for (const perkId of perkIds) {
-    const perk = PERKS_BY_ID.get(perkId);
-    for (const includedId of perk?.includesPerks ?? []) {
-      derived.add(includedId);
-    }
-  }
-  // Player-chosen perks (from selectablePerkIds) are also derived/free
-  if (perkSelections) {
-    for (const selectedIds of Object.values(perkSelections)) {
-      for (const id of selectedIds) {
-        derived.add(id);
-      }
-    }
-  }
-  // Faction-granted perks are derived/free
-  if (faction) {
-    const factionDef = FACTION_DEFINITIONS_BY_ID.get(faction);
-    if (factionDef?.grantsPerkIds) {
-      for (const id of factionDef.grantsPerkIds) {
-        if (perkOrigins?.[id] === "faction") {
-          derived.add(id);
-        }
-      }
-    }
-  }
-  return derived;
+  return collectGrantedPerkIds(
+    perkIds,
+    perkSelections,
+    faction,
+    perkOrigins,
+  );
 }
 
 function shouldChargeFactionGrantedPerk(

@@ -2,11 +2,9 @@ import type {
   BaseStatKey,
   Faction,
   OrganType,
-  PerkOrigin,
   Race,
   Sex,
 } from "@/lib/character_types.ts";
-import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { ADMIN_PERKS } from "./perks/admin.ts";
 import { COMBAT_PERKS } from "./perks/combat.ts";
 import { VORE_PERKS } from "./perks/vore.ts";
@@ -198,151 +196,6 @@ function formatPerkAccountLimitError(perk: PerkDefinition): string {
   return `Perk "${perk.name}" is limited to ${limit} ${
     limit === 1 ? "character" : "characters"
   } per account.`;
-}
-
-function getLegitimateDerivedPerkIds(
-  perkIds: string[],
-  perkSelections?: Record<string, string[]>,
-  faction?: string,
-  perkOrigins?: Record<string, PerkOrigin>,
-): Set<string> {
-  const derived = new Set<string>();
-  const queue = [...perkIds];
-
-  if (perkSelections) {
-    for (const selectedIds of Object.values(perkSelections)) {
-      for (const id of selectedIds) {
-        if (derived.has(id)) continue;
-        derived.add(id);
-        queue.push(id);
-      }
-    }
-  }
-
-  if (faction) {
-    for (
-      const id of FACTION_DEFINITIONS_BY_ID.get(faction)?.grantsPerkIds ?? []
-    ) {
-      if (perkOrigins?.[id] !== "faction" || derived.has(id)) continue;
-      derived.add(id);
-      queue.push(id);
-    }
-  }
-
-  while (queue.length > 0) {
-    const perkId = queue.shift();
-    if (!perkId) continue;
-
-    for (const includedId of PERKS_BY_ID.get(perkId)?.includesPerks ?? []) {
-      if (derived.has(includedId)) continue;
-      derived.add(includedId);
-      queue.push(includedId);
-    }
-  }
-
-  return derived;
-}
-
-export function validatePerkRequirements(
-  race: Race,
-  sex: Sex,
-  perkIds: string[],
-  faction?: string,
-  options?: {
-    isTemplate?: boolean;
-    perkSelections?: Record<string, string[]>;
-    perkOrigins?: Record<string, PerkOrigin>;
-    isAdmin?: boolean;
-  },
-): string | null {
-  const legitimateDerivedPerkIds = getLegitimateDerivedPerkIds(
-    perkIds,
-    options?.perkSelections,
-    faction,
-    options?.perkOrigins,
-  );
-  const selectedByLockCategory = new Map<string, string>();
-
-  for (const perkId of perkIds) {
-    const perk = PERKS_BY_ID.get(perkId);
-    if (!perk) {
-      return "Invalid perk id in payload.";
-    }
-
-    if (perk.requiredRaces && !perk.requiredRaces.includes(race)) {
-      return `Perk "${perk.name}" requires one of: ${
-        perk.requiredRaces.join(", ")
-      }.`;
-    }
-
-    if (perk.requiredSex && !perk.requiredSex.includes(sex)) {
-      return `Perk "${perk.name}" requires sex: ${
-        perk.requiredSex.join(" or ")
-      }.`;
-    }
-
-    if (perk.requiresTemplate && !options?.isTemplate) {
-      return `Perk "${perk.name}" requires the character to be a template.`;
-    }
-
-    if (perk.selectionOnly && !legitimateDerivedPerkIds.has(perkId)) {
-      return `Perk "${perk.name}" cannot be selected directly.`;
-    }
-
-    if (perk.requiredFaction) {
-      const factions = Array.isArray(perk.requiredFaction)
-        ? perk.requiredFaction
-        : [perk.requiredFaction];
-      if (!faction || !factions.includes(faction as typeof factions[number])) {
-        return `Perk "${perk.name}" requires faction: ${
-          factions.join(" or ")
-        }.`;
-      }
-    }
-
-    if (perk.requiredPerkIds) {
-      for (const requiredPerkId of perk.requiredPerkIds) {
-        if (!perkIds.includes(requiredPerkId)) {
-          const requiredPerk = PERKS_BY_ID.get(requiredPerkId);
-          return `Perk "${perk.name}" requires "${
-            requiredPerk?.name ?? requiredPerkId
-          }".`;
-        }
-      }
-    }
-
-    if (perk.lockCategory) {
-      const lockedByPerkName = selectedByLockCategory.get(perk.lockCategory);
-      if (lockedByPerkName && lockedByPerkName !== perk.name) {
-        return `Perk "${perk.name}" cannot be combined with "${lockedByPerkName}".`;
-      }
-      selectedByLockCategory.set(perk.lockCategory, perk.name);
-    }
-
-    if (perk.excludesPerks) {
-      for (const excludedId of perk.excludesPerks) {
-        if (perkIds.includes(excludedId)) {
-          const excludedPerk = PERKS_BY_ID.get(excludedId);
-          return `Perk "${perk.name}" cannot be combined with "${
-            excludedPerk?.name ?? excludedId
-          }".`;
-        }
-      }
-    }
-
-    if (perk.restrictsPerks) {
-      for (const restrictedId of perk.restrictsPerks) {
-        if (perkIds.includes(restrictedId)) {
-          const restrictedPerk = PERKS_BY_ID.get(restrictedId);
-          return `Perk "${perk.name}" restricts "${
-            restrictedPerk?.name ?? restrictedId
-          }".`;
-        }
-      }
-    }
-  }
-
-  return null;
 }
 
 export function getPerkAccountLimitError(

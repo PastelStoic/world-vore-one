@@ -1,28 +1,16 @@
 import { useMemo, useState } from "preact/hooks";
 import type { CharacterDraft } from "./character_types.ts";
 import {
-  ATTACHMENTS_BY_ID,
-  EQUIPMENT_BY_ID,
-  MELEE_WEAPONS_BY_ID,
-  WEAPONS_BY_ID,
-} from "@/data/equipment.ts";
-import {
   calculateInventoryWeight,
   createEmptyInventory,
 } from "./inventory_types.ts";
+import { weightLookups } from "./inventory_calculations.ts";
 import {
   calculateAllEffectiveStats,
   calculateEffectiveCarryCapacity,
   calculateEncumbranceLevel,
   type EncumbranceLevel,
 } from "./stat_calculations.ts";
-
-const weightLookups = {
-  getWeapon: (id: string) => WEAPONS_BY_ID.get(id),
-  getMeleeWeapon: (id: string) => MELEE_WEAPONS_BY_ID.get(id),
-  getEquipment: (id: string) => EQUIPMENT_BY_ID.get(id),
-  getAttachment: (id: string) => ATTACHMENTS_BY_ID.get(id),
-};
 
 export interface CharacterStatsResult {
   carriedWeight: number;

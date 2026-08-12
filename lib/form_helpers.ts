@@ -1,4 +1,4 @@
-import { PERK_IDS, validatePerkRequirements } from "@/data/perks.ts";
+import { PERK_IDS } from "@/data/perks.ts";
 import { isKnownFaction } from "@/data/factions.ts";
 import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
 import { type CharacterDraft, type Race } from "./character_types.ts";
@@ -21,8 +21,8 @@ import {
   parseRace,
   validateCharacterProgression,
 } from "./characters.ts";
-import { validateStatCaps } from "./draft_validation.ts";
-import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
+import { validatePerkRequirements, validateStatCaps } from "./draft_validation.ts";
+import { calculateInventoryPointCostWithPerks } from "./inventory_calculations.ts";
 import { normalizePerkIds } from "./perk_state_helpers.ts";
 
 export function parseNonNegativeInt(

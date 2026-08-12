@@ -202,7 +202,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     hp: 2,
     position: "internal",
     difficulty: { front: 5, side: 5, rear: 5 },
-    destructionEffect: `The fuel tanks catch fire, which begins to spread throughout the vehicle.
+    destructionEffect: `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.
     
     *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
     *The fire deals a continuous 3 damage to the vehicle until it is put out and it will spread to another non-burning module, at random, on the next turn.

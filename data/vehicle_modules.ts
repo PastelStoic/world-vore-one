@@ -227,7 +227,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
   },
   {
-    id: "Wheel-4",
+    id: "wheels-4",
     name: "Wheels ( 4 wheels )",
     description: "A set of four thick rubber wheels, can take a surprising amount of punishment!",
     hp: 6,

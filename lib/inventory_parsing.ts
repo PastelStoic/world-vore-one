@@ -62,12 +62,17 @@ function parseWeapon(raw: unknown): InventoryWeapon | null {
 
   const weapon: InventoryWeapon = {
     weaponId,
+    instanceId: asString(raw.instanceId) ?? crypto.randomUUID(),
     currentAmmo: asNumber(raw.currentAmmo) ?? 0,
     attachedIds: asStringArray(raw.attachedIds),
     magazines: asNumber(raw.magazines) ?? 0,
     partialMagazines: asNumberArray(raw.partialMagazines),
   };
   if (raw.isSignatureWeapon) weapon.isSignatureWeapon = true;
+  const extraTrait = asString(raw.signatureExtraTraitId);
+  if (extraTrait) weapon.signatureExtraTraitId = extraTrait;
+  const weaponPerk = asString(raw.perkGranted);
+  if (weaponPerk) weapon.perkGranted = weaponPerk;
   const reloadProgress = asNumber(raw.reloadProgress);
   if (reloadProgress !== undefined && reloadProgress > 0) {
     weapon.reloadProgress = reloadProgress;
@@ -92,16 +97,38 @@ function parseMeleeWeapon(raw: unknown): InventoryMeleeWeapon | null {
   return melee;
 }
 
+const GHOST_EQUIPMENT_REMAP: Record<
+  string,
+  { equipmentId: string; weightOverride: number; isBulkyOverride: boolean }
+> = {
+  "entrenching-gear-sapper": {
+    equipmentId: "entrenching-gear",
+    weightOverride: 0,
+    isBulkyOverride: false,
+  },
+  "explosives-kit-sapper": {
+    equipmentId: "explosives-kit",
+    weightOverride: 0,
+    isBulkyOverride: false,
+  },
+};
+
 function parseEquipment(raw: unknown): InventoryEquipment | null {
   if (!isRecord(raw)) return null;
-  const equipmentId = asString(raw.equipmentId);
+  let equipmentId = asString(raw.equipmentId);
   if (!equipmentId) return null;
+  const remap = GHOST_EQUIPMENT_REMAP[equipmentId];
+  if (remap) equipmentId = remap.equipmentId;
 
   const equipment: InventoryEquipment = {
     equipmentId,
     totalCharges: asNumber(raw.totalCharges) ?? asNumber(raw.charges) ?? 1,
     usedCharges: asNumber(raw.usedCharges) ?? 0,
   };
+  if (remap) {
+    equipment.weightOverride = remap.weightOverride;
+    equipment.isBulkyOverride = remap.isBulkyOverride;
+  }
   const perkGranted = asString(raw.perkGranted);
   if (perkGranted) equipment.perkGranted = perkGranted;
   const weightOverride = asNumber(raw.weightOverride);
@@ -186,6 +213,24 @@ export function parseInventory(raw: unknown): CharacterInventory | null {
           const attachment = parseAttachment(item);
           return attachment ? [attachment] : [];
         });
+      }
+
+      // Fold legacy meleeWeapons[] into weapons[] (kind is implied by catalog).
+      if (inv[location].meleeWeapons.length > 0) {
+        for (const melee of inv[location].meleeWeapons) {
+          inv[location].weapons.push({
+            weaponId: melee.meleeWeaponId,
+            instanceId: melee.instanceId,
+            currentAmmo: 0,
+            attachedIds: [],
+            magazines: 0,
+            partialMagazines: [],
+            isSignatureWeapon: melee.isSignatureWeapon,
+            signatureExtraTraitId: melee.signatureExtraTraitId,
+            perkGranted: melee.perkGranted,
+          });
+        }
+        inv[location].meleeWeapons = [];
       }
     }
 

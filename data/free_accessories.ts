@@ -1,4 +1,7 @@
-import type { FreeAccessoryDefinition } from "./equipment_types.ts";
+import type {
+  AttachmentDefinition,
+  FreeAccessoryDefinition,
+} from "./equipment_types.ts";
 
 // ---------------------------------------------------------------------------
 // Free accessories (magazines that come with a weapon, declared at scene start)
@@ -90,3 +93,17 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
 export const FREE_ACCESSORIES_BY_ID = new Map(
   FREE_ACCESSORIES.map((a) => [a.id, a]),
 );
+
+/** Same magazines as attachments so reload/charge UI shares one catalog. */
+export const MAGAZINE_ATTACHMENTS: AttachmentDefinition[] = FREE_ACCESSORIES
+  .map((accessory) => ({
+    id: accessory.id,
+    name: accessory.name,
+    appliesTo: "Weapon magazines",
+    nation: "Any" as const,
+    weight: accessory.weight,
+    description: accessory.description,
+    isCharge: true,
+    isFree: true,
+    ammoOverride: accessory.ammo,
+  }));

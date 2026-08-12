@@ -20,7 +20,7 @@ import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
-import type { CharacterInventory, InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
+import type { CharacterInventory, InventoryWeapon } from "@/lib/inventory_types.ts";
 import { MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 
@@ -108,20 +108,22 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
   // always use the full inventory so numbers don't leak info about hidden items.
   const displayInventory: CharacterInventory = (() => {
     if (canSeeConcealedMelee || !inventory) return inventory;
-    const filterConcealed = (mws: InventoryMeleeWeapon[] = []) =>
-      mws.filter((mw) => {
-        const def = MELEE_WEAPONS_BY_ID.get(mw.meleeWeaponId);
-        return !def?.traitIds.includes("concealable");
-      });
+    const isConcealed = (weaponId: string) =>
+      MELEE_WEAPONS_BY_ID.get(weaponId)?.traitIds.includes("concealable") ===
+        true;
+    const filterConcealedWeapons = (weapons: InventoryWeapon[] = []) =>
+      weapons.filter((w) => !isConcealed(w.weaponId));
     return {
       ...inventory,
       carried: {
         ...inventory.carried,
-        meleeWeapons: filterConcealed(inventory.carried.meleeWeapons),
+        weapons: filterConcealedWeapons(inventory.carried.weapons),
+        meleeWeapons: [],
       },
       stowed: {
         ...inventory.stowed,
-        meleeWeapons: filterConcealed(inventory.stowed.meleeWeapons),
+        weapons: filterConcealedWeapons(inventory.stowed.weapons),
+        meleeWeapons: [],
       },
     };
   })();

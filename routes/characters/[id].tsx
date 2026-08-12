@@ -1,12 +1,11 @@
 import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import CharacterSheetViewer from "@/islands/CharacterSheetViewer.tsx";
+import { getCharacter } from "@/lib/characters.ts";
 import {
-  deleteCharacter,
-  getCharacter,
-  setCharacterHidden,
-  setCharacterStatus,
-} from "@/lib/characters.ts";
+  type CharacterAdminAction,
+  applyCharacterAdminAction,
+} from "@/lib/character_actions.ts";
 import { cfImageUrl } from "@/lib/images.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
 import { ButtonLink } from "@/components/Button.tsx";
@@ -30,23 +29,25 @@ export const handler = define.handlers({
     }
 
     const formData = await ctx.req.formData();
-    const action = formData.get("action");
+    const action = String(formData.get("action") ?? "");
 
     if (action === "toggle-hidden") {
-      await setCharacterHidden(id, !character.hidden);
+      await applyCharacterAdminAction(
+        id,
+        character.hidden ? "unhide" : "hide",
+      );
     }
 
-    if (action === "approve" && ctx.state.isAdmin) {
-      await setCharacterStatus(id, "approved");
-    }
-
-    if (action === "disapprove" && ctx.state.isAdmin) {
-      await setCharacterStatus(id, "pending");
-    }
-
-    if (action === "delete" && ctx.state.isAdmin) {
-      await deleteCharacter(id);
-      return Response.redirect(new URL("/", ctx.url), 303);
+    const adminAction = action as CharacterAdminAction;
+    if (
+      ctx.state.isAdmin &&
+      (adminAction === "approve" || adminAction === "disapprove" ||
+        adminAction === "delete")
+    ) {
+      const result = await applyCharacterAdminAction(id, adminAction);
+      if (result.deleted) {
+        return Response.redirect(new URL("/", ctx.url), 303);
+      }
     }
 
     const returnTo = formData.get("returnTo");

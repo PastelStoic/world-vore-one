@@ -2,9 +2,9 @@
 // DATA – Premade Melee Weapons
 // ---------------------------------------------------------------------------
 
-import type { MeleeWeaponTemplate } from "./equipment_types.ts";
+import type { MeleeWeaponTemplate, WeaponDefinition } from "./equipment_types.ts";
 
-export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
+const MELEE_TEMPLATES: MeleeWeaponTemplate[] = [
   // ── Blades ─────────────────────────────────────────────────────────────
   {
     id: "dagger",
@@ -283,6 +283,30 @@ export const MELEE_WEAPONS: MeleeWeaponTemplate[] = [
   },
 ];
 
+function toMeleeWeaponDefinition(
+  template: MeleeWeaponTemplate,
+): WeaponDefinition {
+  return {
+    id: template.id,
+    name: template.name,
+    type: "Melee",
+    kind: "melee",
+    nation: "Any",
+    damage: String(template.damage),
+    ammo: 0,
+    rateOfFire: 0,
+    weight: template.weight,
+    pointCost: 0,
+    traitIds: template.traitIds,
+    compatibleAttachmentIds: [],
+    description: template.description,
+    deprecated: template.deprecated,
+  };
+}
+
+export const MELEE_WEAPONS: WeaponDefinition[] = MELEE_TEMPLATES.map(
+  toMeleeWeaponDefinition,
+);
 export const MELEE_WEAPONS_BY_ID = new Map(
   MELEE_WEAPONS.map((w) => [w.id, w]),
 );

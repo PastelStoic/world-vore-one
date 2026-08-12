@@ -53,6 +53,7 @@ export function countLocationSlots(
   }
 
   for (const w of pocket.weapons) {
+    if (w.perkGranted) continue;
     slots += 1;
     for (const attachmentId of w.attachedIds) {
       const def = lookups?.getAttachment?.(attachmentId);

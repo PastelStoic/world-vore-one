@@ -155,7 +155,8 @@ export default function WeaponCard(props: WeaponCardProps) {
     def.freeAccessoryIds.length > 0;
   const hasMagazines = hasFreeAccessoryMags || attachmentMagazineSystem;
   const magazineAccessory = hasFreeAccessoryMags
-    ? FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0])
+    ? (ATTACHMENTS_BY_ID.get(def.freeAccessoryIds![0]) ??
+      FREE_ACCESSORIES_BY_ID.get(def.freeAccessoryIds![0]))
     : undefined;
 
   // Weapon requires magazines to reload (no fallback to standard reload)

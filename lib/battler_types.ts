@@ -2,10 +2,8 @@
 
 export type CoverType = "weak" | "middling" | "strong" | "fortified";
 
-export interface AxialCoord {
-  q: number;
-  r: number;
-}
+export type { AxialCoord } from "./hex-grid.ts";
+export { coordKey, parseCoordKey } from "./hex-grid.ts";
 
 export interface Combatant {
   id: string; // crypto.randomUUID()
@@ -99,16 +97,6 @@ export function createEmptyBattlerState(): BattlerState {
     placedCharacters: {},
     covers: {},
   };
-}
-
-/** Stable string key for a hex coord. */
-export function coordKey(c: AxialCoord): string {
-  return `${c.q}:${c.r}`;
-}
-
-export function parseCoordKey(key: string): AxialCoord {
-  const [q, r] = key.split(":").map(Number);
-  return { q: q || 0, r: r || 0 };
 }
 
 export function cloneBattlerState(state: BattlerState): BattlerState {

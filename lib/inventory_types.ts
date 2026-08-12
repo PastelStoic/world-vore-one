@@ -7,9 +7,11 @@
  * Tracks current ammo, attached attachments, and spare magazines.
  */
 export interface InventoryWeapon {
-  /** Reference to a WeaponDefinition.id */
+  /** Reference to a WeaponDefinition.id (ranged or melee). */
   weaponId: string;
-  /** Current ammo in the magazine (tracked during play) */
+  /** Stable instance id. Always set on new items; backfilled on parse. */
+  instanceId?: string;
+  /** Current ammo in the magazine (tracked during play). Unused for melee. */
   currentAmmo: number;
   /** Attachment IDs currently attached to this weapon */
   attachedIds: string[];
@@ -25,6 +27,10 @@ export interface InventoryWeapon {
   partialMagazines: number[];
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** Extra trait chosen for a Signature melee weapon */
+  signatureExtraTraitId?: string;
+  /** If set, this item was granted by the named perk and cannot be removed manually */
+  perkGranted?: string;
   /** How many reload turns have been completed toward the current reload (for multi-turn reloads) */
   reloadProgress?: number;
   /**

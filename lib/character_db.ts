@@ -39,6 +39,12 @@ function replacePerkGrantedInventory(
         changed = true;
       }
     }
+    for (const item of inventory[location].weapons) {
+      if (item.perkGranted === fromPerkId) {
+        item.perkGranted = toPerkId;
+        changed = true;
+      }
+    }
     for (const item of inventory[location].meleeWeapons) {
       if (item.perkGranted === fromPerkId) {
         item.perkGranted = toPerkId;

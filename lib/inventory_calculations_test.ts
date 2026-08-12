@@ -81,6 +81,41 @@ Deno.test("getEffectiveWeaponStats returns catalog ammo when nothing is attached
   assertEquals(stats?.attachmentMagazineSystem, false);
 });
 
+Deno.test("parseInventory migrates meleeWeapons into weapons", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      meleeWeapons: [{
+        instanceId: "mw-1",
+        meleeWeaponId: "dagger",
+        isSignatureWeapon: true,
+        perkGranted: "brawler",
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.meleeWeapons.length, 0);
+  assertEquals(parsed?.carried.weapons[0].weaponId, "dagger");
+  assertEquals(parsed?.carried.weapons[0].instanceId, "mw-1");
+  assertEquals(parsed?.carried.weapons[0].perkGranted, "brawler");
+});
+
+Deno.test("parseInventory remaps sapper ghost equipment", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      equipment: [{
+        equipmentId: "entrenching-gear-sapper",
+        totalCharges: 0,
+        usedCharges: 0,
+        perkGranted: "sapper",
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.equipment[0].equipmentId, "entrenching-gear");
+  assertEquals(parsed?.carried.equipment[0].weightOverride, 0);
+  assertEquals(parsed?.carried.equipment[0].isBulkyOverride, false);
+});
+
 Deno.test("parseInventory keeps attachmentChargeData and attachment perkGranted", async () => {
   const { parseInventory } = await import("./inventory_parsing.ts");
   const parsed = parseInventory({

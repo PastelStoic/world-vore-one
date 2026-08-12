@@ -2,7 +2,6 @@ import { Head } from "fresh/runtime";
 import { define } from "@/utils.ts";
 import {
   MELEE_TRAITS_BY_ID,
-  MELEE_WEAPONS,
   WEAPON_TRAITS_BY_ID,
   type WeaponKind,
   WEAPONS,
@@ -157,11 +156,18 @@ export default define.page(function WikiWeapons() {
                       Reloads one round at a time.
                     </p>
                   )}
+                  {weapon.description && (
+                    <p class="text-base-content/70 whitespace-pre-line">
+                      {weapon.description}
+                    </p>
+                  )}
                   {weapon.traitIds.length > 0 && (
                     <div class="mt-1 space-y-1">
                       <span class="text-xs font-medium">Traits:</span>
                       {weapon.traitIds.map((tid) => {
-                        const trait = WEAPON_TRAITS_BY_ID.get(tid);
+                        const trait = weapon.kind === "melee"
+                          ? MELEE_TRAITS_BY_ID.get(tid)
+                          : WEAPON_TRAITS_BY_ID.get(tid);
                         return (
                           <div
                             key={tid}
@@ -183,49 +189,6 @@ export default define.page(function WikiWeapons() {
         );
       })}
 
-      {MELEE_WEAPONS.length > 0 && (
-        <section class="space-y-2">
-          <h2 class="text-xl font-semibold border-b pb-1">Melee Weapons</h2>
-          <div class="space-y-2">
-            {MELEE_WEAPONS.map((weapon) => (
-              <WikiDetailsRow
-                key={weapon.id}
-                title={weapon.name}
-                deprecated={weapon.deprecated}
-                summary={
-                  <>
-                    <span>DMG: {weapon.damage}</span>
-                    <span>Wt: {weapon.weight}</span>
-                  </>
-                }
-              >
-                <p class="text-base-content/70 whitespace-pre-line">
-                  {weapon.description}
-                </p>
-                {weapon.traitIds.length > 0 && (
-                  <div class="space-y-1">
-                    <span class="text-xs font-medium">Traits:</span>
-                    {weapon.traitIds.map((traitId) => {
-                      const trait = MELEE_TRAITS_BY_ID.get(traitId);
-                      return (
-                        <div
-                          key={`${weapon.id}-${traitId}`}
-                          class="text-xs text-base-content/70 ml-2"
-                        >
-                          <span class="font-medium">
-                            {trait?.name ?? traitId}:
-                          </span>{" "}
-                          {trait?.description ?? ""}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </WikiDetailsRow>
-            ))}
-          </div>
-        </section>
-      )}
     </PageShell>
   );
 });

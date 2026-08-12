@@ -11,6 +11,7 @@ import {
   coordKey,
   createEmptyBattlerState,
   type ImportableCharacter,
+  parseBattlerState,
   parseCoordKey,
   TEAM_COLORS,
   type ToolMode,
@@ -67,8 +68,8 @@ function loadLocalState(): BattlerState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as BattlerState;
-      if (parsed && parsed.version === 1) return parsed;
+      const parsed = parseBattlerState(JSON.parse(raw));
+      if (parsed) return parsed;
     }
   } catch {
     // ignore

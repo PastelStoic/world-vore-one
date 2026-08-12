@@ -75,6 +75,8 @@ export interface WeaponDefinition {
    * purchased. Soft-delete for migrations.
    */
   deprecated?: boolean;
+  /** Flavor / wiki text. Present on melee; optional on ranged. */
+  description?: string;
 }
 
 // ── Attachment types ────────────────────────────────────────────────────────

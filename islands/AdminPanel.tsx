@@ -115,10 +115,10 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   async function approveCharacter(id: string) {
     try {
-      const res = await fetch("/api/admin/approve-character", {
+      const res = await fetch("/api/admin/characters", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: id }),
+        body: JSON.stringify({ characterId: id, action: "approve" }),
       });
       if (res.ok) {
         // Update both local lists to reflect the approved status
@@ -323,10 +323,13 @@ export default function AdminPanel(props: AdminPanelProps) {
 
   async function toggleHideCharacter(id: string, currentlyHidden: boolean) {
     try {
-      const res = await fetch(`/api/admin/hide-character`, {
+      const res = await fetch(`/api/admin/characters`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: id, hidden: !currentlyHidden }),
+        body: JSON.stringify({
+          characterId: id,
+          action: currentlyHidden ? "unhide" : "hide",
+        }),
       });
       if (res.ok) {
         allCharacters.value = allCharacters.value.map((c) =>
@@ -345,10 +348,10 @@ export default function AdminPanel(props: AdminPanelProps) {
       )
     ) return;
     try {
-      const res = await fetch(`/api/admin/delete-character`, {
+      const res = await fetch(`/api/admin/characters`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ characterId: id }),
+        body: JSON.stringify({ characterId: id, action: "delete" }),
       });
       if (res.ok) {
         allCharacters.value = allCharacters.value.filter((c) => c.id !== id);

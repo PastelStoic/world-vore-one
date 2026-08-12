@@ -18,7 +18,6 @@ import type {
   CharacterInventory,
   InventoryAttachment,
   InventoryEquipment,
-  InventoryMeleeWeapon,
   InventoryVehicle,
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
@@ -28,6 +27,10 @@ import {
   EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
+import {
+  addWeapon as addWeaponToInventory,
+  toggleSignatureWeapon as toggleSignatureOnInventory,
+} from "@/lib/inventory_mutations.ts";
 import PerkDescription from "./PerkDescription.tsx";
 import WeaponCard from "./inventory/WeaponCard.tsx";
 import EquipmentCard from "./inventory/EquipmentCard.tsx";
@@ -218,63 +221,20 @@ export default function InventorySection(props: InventorySectionProps) {
 
   /** Toggle a ranged weapon as signature */
   function toggleSignatureWeapon(location: InventoryLocation, index: number) {
-    update((inv) => {
-      const isAlready = inv[location].weapons[index].isSignatureWeapon;
-      clearSignatureFlags(inv);
-      removeSignatureAttachments(inv);
-      if (!isAlready) {
-        inv[location].weapons[index].isSignatureWeapon = true;
-        const weaponId = inv[location].weapons[index].weaponId;
-        const def = WEAPONS_BY_ID.get(weaponId);
-        for (const aId of def?.compatibleAttachmentIds ?? []) {
-          if (!isSignatureFreeAttachment(def, aId)) continue;
-          const aDef = ATTACHMENTS_BY_ID.get(aId);
-          inv[location].attachments.push({
-            attachmentId: aId,
-            totalCharges: aDef?.isCharge ? 1 : 0,
-            usedCharges: 0,
-            perkGranted: "signature-weapon",
-          });
-        }
-      }
-      return inv;
-    });
+    update((inv) => toggleSignatureOnInventory(inv, location, index));
   }
 
-  /** Toggle a melee weapon as signature */
   function toggleSignatureMelee(location: InventoryLocation, index: number) {
-    update((inv) => {
-      const isAlready = inv[location].meleeWeapons[index].isSignatureWeapon;
-      clearSignatureFlags(inv);
-      removeSignatureAttachments(inv);
-      if (!isAlready) {
-        inv[location].meleeWeapons[index].isSignatureWeapon = true;
-      }
-      return inv;
-    });
+    update((inv) => toggleSignatureOnInventory(inv, location, index));
   }
 
   // -- Add weapon --
   function addWeapon(weaponId: string, location: InventoryLocation) {
-    const def = WEAPONS_BY_ID.get(weaponId);
-    if (!def || def.deprecated) return;
-    const item: InventoryWeapon = {
-      weaponId,
-      currentAmmo: def.ammo,
-      attachedIds: [],
-      magazines: 0,
-      partialMagazines: [],
-    };
-    update((inv) => {
-      if (hasWeaponMaster && def.pointCost >= 3) {
-        inv.weaponMasterRestrictedUnlocks ??= [];
-        if (!inv.weaponMasterRestrictedUnlocks.includes(weaponId)) {
-          inv.weaponMasterRestrictedUnlocks.push(weaponId);
-        }
-      }
-      inv[location].weapons.push(item);
-      return inv;
-    });
+    update((inv) =>
+      addWeaponToInventory(inv, weaponId, location, {
+        unlockRestricted: hasWeaponMaster,
+      })
+    );
     setActivePicker(null);
   }
 
@@ -777,38 +737,8 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // -- Add melee weapon --
   function addMeleeWeapon(meleeWeaponId: string, location: InventoryLocation) {
-    const def = MELEE_WEAPONS_BY_ID.get(meleeWeaponId);
-    if (!def || def.deprecated) return;
-    const item: InventoryMeleeWeapon = {
-      instanceId: crypto.randomUUID(),
-      meleeWeaponId,
-    };
-    update((inv) => {
-      inv[location].meleeWeapons.push(item);
-      return inv;
-    });
+    update((inv) => addWeaponToInventory(inv, meleeWeaponId, location));
     setActivePicker(null);
-  }
-
-  // -- Remove melee weapon --
-  function removeMeleeWeapon(location: InventoryLocation, index: number) {
-    update((inv) => {
-      inv[location].meleeWeapons.splice(index, 1);
-      return inv;
-    });
-  }
-
-  // -- Move melee weapon --
-  function moveMeleeWeapon(
-    from: InventoryLocation,
-    index: number,
-    to: InventoryLocation,
-  ) {
-    update((inv) => {
-      const [mw] = inv[from].meleeWeapons.splice(index, 1);
-      inv[to].meleeWeapons.push(mw);
-      return inv;
-    });
   }
 
   function setMeleeSignatureTrait(
@@ -817,7 +747,7 @@ export default function InventorySection(props: InventorySectionProps) {
     traitId: string,
   ) {
     update((inv) => {
-      const mw = inv[location].meleeWeapons[index];
+      const mw = inv[location].weapons[index];
       if (!mw) return inv;
       mw.signatureExtraTraitId = traitId || undefined;
       return inv;
@@ -831,6 +761,12 @@ export default function InventorySection(props: InventorySectionProps) {
     const label = location === "carried"
       ? "Equipment (On Person)"
       : "Stowed (Owned, Not Carried)";
+    const rangedWeapons = inv.weapons
+      .map((w, i) => ({ w, i }))
+      .filter(({ w }) => WEAPONS_BY_ID.get(w.weaponId)?.kind !== "melee");
+    const meleeWeapons = inv.weapons
+      .map((w, i) => ({ w, i }))
+      .filter(({ w }) => WEAPONS_BY_ID.get(w.weaponId)?.kind === "melee");
     const isEmpty = inv.weapons.length === 0 &&
       inv.meleeWeapons.length === 0 &&
       inv.equipment.length === 0 &&
@@ -854,13 +790,13 @@ export default function InventorySection(props: InventorySectionProps) {
           </p>
         )}
 
-        {inv.weapons.length > 0 && (
+        {rangedWeapons.length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Weapons
             </h5>
-            {inv.weapons.map((w, i) => (
-              <div key={`${location}-weapon-${i}`}>
+            {rangedWeapons.map(({ w, i }) => (
+              <div key={`${location}-weapon-${w.instanceId ?? i}`}>
                 <WeaponCard
                   weapon={w}
                   location={location}
@@ -893,23 +829,23 @@ export default function InventorySection(props: InventorySectionProps) {
           </div>
         )}
 
-        {inv.meleeWeapons.length > 0 && (
+        {meleeWeapons.length > 0 && (
           <div class="space-y-1">
             <h5 class="text-xs font-semibold text-base-content/70 uppercase tracking-wide">
               Melee Weapons
             </h5>
-            {inv.meleeWeapons.map((mw, i) => (
-              <div key={`${location}-melee-${mw.instanceId}`}>
+            {meleeWeapons.map(({ w, i }) => (
+              <div key={`${location}-melee-${w.instanceId ?? i}`}>
                 <MeleeWeaponCard
-                  meleeWeapon={mw}
+                  meleeWeapon={w}
                   location={location}
                   index={i}
                   readOnly={readOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
                   onToggleSignature={toggleSignatureMelee}
                   onSetSignatureTrait={setMeleeSignatureTrait}
-                  onMove={moveMeleeWeapon}
-                  onRemove={removeMeleeWeapon}
+                  onMove={moveWeapon}
+                  onRemove={removeWeapon}
                 />
               </div>
             ))}
@@ -987,6 +923,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
   // ── Filter available weapons/equipment ──
   const filteredWeapons = WEAPONS.filter((w) => {
+    if (w.kind === "melee") return false;
     if (w.deprecated) return false;
     if (nationFilter) {
       if (w.nation === "Any") {
@@ -1012,6 +949,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const filteredEquipment = EQUIPMENT.filter((e) => {
     if (e.deprecated) return false;
     if (e.isGhost) return false;
+    if (inventoryEquipmentIds.has(e.id)) return false;
     if (e.ghostVersionId && inventoryEquipmentIds.has(e.ghostVersionId)) {
       return false;
     }

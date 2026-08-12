@@ -14,6 +14,9 @@ export function applyPerkGrantedInventory(
       next[location].equipment = next[location].equipment.filter(
         (item) => !removedPerkIds.includes(item.perkGranted ?? ""),
       );
+      next[location].weapons = next[location].weapons.filter(
+        (weapon) => !removedPerkIds.includes(weapon.perkGranted ?? ""),
+      );
       next[location].meleeWeapons = next[location].meleeWeapons.filter(
         (weapon) => !removedPerkIds.includes(weapon.perkGranted ?? ""),
       );
@@ -35,11 +38,35 @@ export function applyPerkGrantedInventory(
         isBulkyOverride: grant.isBulkyOverride,
       });
     }
-    for (const grant of perk?.grantsMeleeWeapons ?? []) {
-      next.carried.meleeWeapons.push({
+    for (const grant of perk?.grantsWeapons ?? []) {
+      next.carried.weapons.push({
+        weaponId: grant.weaponId,
         instanceId: crypto.randomUUID(),
-        meleeWeaponId: grant.meleeWeaponId,
+        currentAmmo: 0,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
         isSignatureWeapon: true,
+        perkGranted: perkId,
+      });
+    }
+    for (const grant of perk?.grantsMeleeWeapons ?? []) {
+      next.carried.weapons.push({
+        weaponId: grant.meleeWeaponId,
+        instanceId: crypto.randomUUID(),
+        currentAmmo: 0,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
+        isSignatureWeapon: true,
+        perkGranted: perkId,
+      });
+    }
+    for (const grant of perk?.grantsAttachments ?? []) {
+      next.carried.attachments.push({
+        attachmentId: grant.attachmentId,
+        totalCharges: 0,
+        usedCharges: 0,
         perkGranted: perkId,
       });
     }

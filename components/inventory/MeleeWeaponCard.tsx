@@ -2,7 +2,7 @@
 // MeleeWeaponCard – renders a premade melee weapon in the inventory
 // ---------------------------------------------------------------------------
 
-import type { InventoryMeleeWeapon } from "@/lib/inventory_types.ts";
+import type { InventoryWeapon } from "@/lib/inventory_types.ts";
 import {
   MELEE_TRAITS,
   MELEE_TRAITS_BY_ID,
@@ -16,7 +16,7 @@ import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
 import InventoryItemActions from "./InventoryItemActions.tsx";
 
 interface MeleeWeaponCardProps {
-  meleeWeapon: InventoryMeleeWeapon;
+  meleeWeapon: InventoryWeapon;
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
@@ -48,7 +48,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     onRemove,
   } = props;
 
-  const def = MELEE_WEAPONS_BY_ID.get(mw.meleeWeaponId);
+  const def = MELEE_WEAPONS_BY_ID.get(mw.weaponId);
   const isPerkGranted = !!mw.perkGranted;
   const isConcealable = def ? def.traitIds.includes("concealable") : false;
 
@@ -57,7 +57,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     return (
       <UnknownInventoryItem
         kind="melee weapon"
-        id={mw.meleeWeaponId}
+        id={mw.weaponId}
         readOnly={readOnly}
         onRemove={() => onRemove(location, index)}
       />

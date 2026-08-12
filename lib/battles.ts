@@ -2,7 +2,7 @@
 // Battle room operations (server-only – Neon Postgres via Drizzle)
 // ---------------------------------------------------------------------------
 
-import { desc, eq, or, sql } from "drizzle-orm";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 import type { SessionUser } from "./session_types.ts";
 import {
   type BattlePlayer,
@@ -313,81 +313,77 @@ export async function startBattle(
 }
 
 /**
- * Active player commits full board state and advances turn.
+ * Advance the turn clock. Pass `nextState` to commit a draft (active player).
+ * Omit it to force-end without applying the draft (owner).
  */
-export async function endTurn(
+export async function commitTurn(
   id: string,
-  userId: string,
-  nextState: unknown,
-  expectedRevision: number,
+  actorId: string,
+  options: {
+    expectedRevision: number;
+    nextState?: unknown;
+    force?: boolean;
+  },
 ): Promise<BattleRoom> {
   const room = await getBattle(id);
   if (!room) throw new BattleError("Battle not found", 404);
   if (room.status !== "active") {
     throw new BattleError("Battle is not active", 400);
   }
-  const active = getActivePlayer(
-    room.players,
-    room.currentTurnIndex,
-    room.status,
-  );
-  if (!active || active.userId !== userId) {
-    throw new BattleError("Not your turn", 403);
-  }
-  if (room.stateRevision !== expectedRevision) {
-    throw new BattleError("Stale revision; resync", 409);
-  }
-
-  const parsed = parseBattlerState(nextState);
-  if (!parsed) throw new BattleError("Invalid battle state", 400);
-
-  const currentTurnIndex = nextTurnIndex(
-    room.players,
-    room.currentTurnIndex,
-  );
-
-  return await updateBattleRow(id, {
-    state: parsed,
-    currentTurnIndex,
-    turnNumber: room.turnNumber + 1,
-    stateRevision: room.stateRevision + 1,
-    updatedAt: nowIso(),
-  });
-}
-
-/**
- * Owner force-ends the current turn without applying any draft state.
- */
-export async function forceEndTurn(
-  id: string,
-  ownerId: string,
-  expectedRevision: number,
-): Promise<BattleRoom> {
-  const room = await getBattle(id);
-  if (!room) throw new BattleError("Battle not found", 404);
-  if (room.ownerId !== ownerId) throw new BattleError("Forbidden", 403);
-  if (room.status !== "active") {
-    throw new BattleError("Battle is not active", 400);
-  }
-  if (room.stateRevision !== expectedRevision) {
+  if (room.stateRevision !== options.expectedRevision) {
     throw new BattleError("Stale revision; resync", 409);
   }
   if (room.players.length === 0) {
     throw new BattleError("No players", 400);
   }
 
-  const currentTurnIndex = nextTurnIndex(
-    room.players,
-    room.currentTurnIndex,
-  );
+  if (options.force) {
+    if (room.ownerId !== actorId) throw new BattleError("Forbidden", 403);
+  } else {
+    const active = getActivePlayer(
+      room.players,
+      room.currentTurnIndex,
+      room.status,
+    );
+    if (!active || active.userId !== actorId) {
+      throw new BattleError("Not your turn", 403);
+    }
+    if (options.nextState === undefined) {
+      throw new BattleError("Invalid battle state", 400);
+    }
+  }
 
-  return await updateBattleRow(id, {
-    // state intentionally unchanged
-    currentTurnIndex,
+  const updates: Partial<typeof battles.$inferInsert> = {
+    currentTurnIndex: nextTurnIndex(room.players, room.currentTurnIndex),
     turnNumber: room.turnNumber + 1,
     stateRevision: room.stateRevision + 1,
     updatedAt: nowIso(),
-  });
+  };
+
+  if (!options.force) {
+    const parsed = parseBattlerState(options.nextState);
+    if (!parsed) throw new BattleError("Invalid battle state", 400);
+    updates.state = parsed;
+  }
+
+  return await updateBattleRow(id, updates, options.expectedRevision);
+}
+
+export async function endTurn(
+  id: string,
+  userId: string,
+  nextState: unknown,
+  expectedRevision: number,
+): Promise<BattleRoom> {
+  return commitTurn(id, userId, { expectedRevision, nextState });
+}
+
+export async function forceEndTurn(
+  id: string,
+  ownerId: string,
+  expectedRevision: number,
+): Promise<BattleRoom> {
+  return commitTurn(id, ownerId, { expectedRevision, force: true });
 }
 
 export async function endBattle(
@@ -409,14 +405,28 @@ export async function endBattle(
 async function updateBattleRow(
   id: string,
   updates: Partial<typeof battles.$inferInsert>,
+  expectedRevision?: number,
 ): Promise<BattleRoom> {
   const db = getDb();
+  const predicate = expectedRevision === undefined
+    ? eq(battles.id, id)
+    : and(
+      eq(battles.id, id),
+      eq(battles.stateRevision, expectedRevision),
+    );
   const rows = await db
     .update(battles)
     .set(updates)
-    .where(eq(battles.id, id))
+    .where(predicate)
     .returning();
   const row = rows[0];
-  if (!row) throw new BattleError("Battle not found", 404);
+  if (!row) {
+    throw new BattleError(
+      expectedRevision === undefined
+        ? "Battle not found"
+        : "Stale revision; resync",
+      expectedRevision === undefined ? 404 : 409,
+    );
+  }
   return rowToRoom(row);
 }

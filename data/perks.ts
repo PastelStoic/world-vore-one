@@ -70,6 +70,15 @@ export interface PerkGrantedMeleeWeapon {
   meleeWeaponId: string;
 }
 
+export interface PerkGrantedWeapon {
+  /** Reference to a WeaponDefinition.id (ranged or melee). */
+  weaponId: string;
+}
+
+export interface PerkGrantedAttachment {
+  attachmentId: string;
+}
+
 export const DefaultPerkDefinition: PerkDefinition = {
   id: "default-perk",
   name: "[PH] Default Perk",
@@ -147,8 +156,12 @@ export interface PerkDefinition {
   requiresStatChoice?: BaseStatKey[];
   /** Equipment automatically granted when this perk is taken. */
   grantsEquipment?: PerkGrantedEquipment[];
-  /** Melee weapons automatically granted when this perk is taken. */
+  /** Weapons automatically granted when this perk is taken. */
+  grantsWeapons?: PerkGrantedWeapon[];
+  /** @deprecated Use grantsWeapons. Still read when applying grants. */
   grantsMeleeWeapons?: PerkGrantedMeleeWeapon[];
+  /** Attachments automatically granted when this perk is taken. */
+  grantsAttachments?: PerkGrantedAttachment[];
   /**
    * When set, taking this perk lets the player choose one or more perks as a
    * free bonus. If the array is non-empty, only those perk IDs are offered; if

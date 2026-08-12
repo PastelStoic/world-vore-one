@@ -324,6 +324,7 @@ export const VEHICLES: VehicleDefinition[] = [
       3 loaders/assistant gunners ( 3/0/0 )
       
       *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
+      *The commander picks the targets, the Gunner rolls to shoot them. If the commander is dead or gone, the gunner picks targets instead.
       *To push the gun, add together the Strength of all crew members pushing it. If the total is 5 or greater, the gun may move 1 distance. Pushing the gun requires an action.
       *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
       *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.
@@ -361,6 +362,7 @@ export const VEHICLES: VehicleDefinition[] = [
       4 loaders/assistant gunners ( 3/0/0 )
       
       *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks.
+      *The commander picks the targets, the Gunner rolls to shoot them. If the commander is dead or gone, the gunner picks targets instead.
       *To push the gun, add together the Strength of all crew members pushing it. If the total is 6 or greater, the gun may move 1 distance. Pushing the gun requires an action.
       *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
       *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.

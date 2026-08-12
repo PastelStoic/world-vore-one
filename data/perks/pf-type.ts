@@ -149,7 +149,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+2 dexterity, +1 intelligence, -3 stat points.
 *Have the 'runner' and 'jäeger' perks from Combat perks.
-*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.`,
+*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.
+*Your claws may be used as makeshift weapons, dealing 2 damage on hit. You must be unarmed in order to use them as such.`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, intelligence: 1 },
     },

@@ -115,7 +115,11 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     customInput: "Good boy or bad boy?",
-    includesPerks: ["runner"],
+    includesPerks: ["runner", "canine-senses"],
+    selectablePerkIds: [
+      "canine-good",
+      "canine-bad",
+    ],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -124,14 +128,34 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 charisma, +1 intelligence, -3 stat points.
-*Can track your targets through smell and hearing - they cannot hide from you unless they can mask their scent.
-*You have the runner perk from Combat perks.
-*Pick one:
-->You are a 'good boy' ( +3 charisma to entertain/enthrall someone ).
-->You are a 'bad boy' ( +3 charisma to intimidate/scare someone ).`,
+*You gain the following perks for free: Runner, Canine Senses, and your choice of either Good Doggy or Bad Doggy.`,
     modifiers: {
       baseStatBonuses: { charisma: 2, intelligence: 1 },
     },
+  },
+  {
+    id: "canine-senses",
+    name: "Canine Senses",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `You have a very sharp nose! You can track your targets through smell and hearing - they cannot hide from you unless they can mask their scent.`,
+  },
+  {
+    id: "canine-good",
+    name: "Good Doggy!",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `You are a 'good boy' ( +3 charisma to entertain/enthrall someone ).`,
+  },
+  {
+    id: "canine-bad",
+    name: "Bad Doggy!",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `You are a 'bad boy' ( +3 charisma to intimidate/scare someone ).`,
   },
   {
     id: "tierfraun-felines-vulpines",
@@ -139,7 +163,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["runner","j-eger"],
+    includesPerks: ["runner","j-eger", "feline-vulpine-climb"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -148,12 +172,19 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 dexterity, +1 intelligence, -3 stat points.
-*Have the 'runner' and 'jäeger' perks from Combat perks.
-*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.
-*Your claws may be used as makeshift weapons, dealing 2 damage on hit. You must be unarmed in order to use them as such.`,
+*Have the 'runner' and 'jäeger' perks from Combat perks and the exclusive "Climbing Claws" perk.`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, intelligence: 1 },
     },
+  },
+  {
+    id: "feline-vulpine-climb",
+    name: "Climbing Claws",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Have climbing claws: You can climb vertical surfaces provided they aren't completely smooth. Your feet must be exposed for this.
+*Your claws may be used as makeshift weapons, dealing 2 damage on hit. You must be unarmed in order to use them as such.`,
   },
   {
     id: "tierfraun-bovines",
@@ -161,7 +192,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["milky", "heavy", "unreal-capacity", "speisfraun"],
+    includesPerks: ["milky", "heavy", "unreal-capacity", "speisfraun", "4-stomachs"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -174,13 +205,21 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Have the Heavy perk from Vore perks.
 *Have the Unreal Capacity perk from Vore perks.
 *Have the Speisfraun perk from PF perks.
-*You have four stomachs. Every two escape attempt fails, your prey slides into the deeper one.
-*Your organ capacity is not increased by the four stomachs, your skin can only stretch so far!
-*A escape success makes them climb back up a stomach and resets the fail counter. 
-*Prey must climb back into the first stomach to escape.`,
+*Have the Multiple Stomachs perk.`,
     modifiers: {
       baseStatBonuses: { constitution: 2, strength: 1 },
     },
+  },
+  {
+    id: "4-stomachs",
+    name: "Multiple Stomachs",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You have four stomachs. Every two escape attempt fails, your prey slides into the deeper one.
+*Your organ capacity is not increased by the four stomachs, your skin can only stretch so far!
+*A escape success makes them climb back up a stomach and resets the fail counter. 
+*Prey must climb back into the first stomach to escape.`,
   },
   {
     id: "tierfraun-caprinae",
@@ -188,7 +227,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["inescapable", "heavy", "brawler"],
+    includesPerks: ["inescapable", "heavy", "brawler", "4-stomachs", "caprinae-horns", "caprinae-weak-stomach"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -200,15 +239,26 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You have the Heavy perk from Vore perks
 *You have the Inescapable perk from Vore perks
 *You have the Brawler perk from Combat perks
-*Your horns and hooves count as makeshift weapons, and when attacking someone who has drawn your attention like with the baiter or defender perk, you deal an additional +1 damage on a hit
-*You have four stomachs. Every two escape attempt fails, your prey slides into the deeper one.
-*Your organ capacity is not increased by the four stomachs, your skin can only stretch so far!
-*A escape success makes them climb back up a stomach and resets the fail counter.
-*Prey must climb back into the first stomach to escape.
-*Your prey have +3d6 to their escape rolls`,
+*You have the Multiple Stomachs, Caprinae Horns, and Weak Stomach perks.`,
     modifiers: {
       baseStatBonuses: { constitution: 1, strength: 2 },
     },
+  },
+  {
+    id: "caprinae-horns",
+    name: "Caprinae Horns",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Your horns and hooves count as makeshift weapons, and when attacking someone who has drawn your attention like with the baiter or defender perk, you deal an additional +1 damage on a hit`,
+  },
+  {
+    id: "caprinae-weak-stomach",
+    name: "Weak Stomach",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Your prey have +3d6 to their escape rolls`,
   },
   {
     id: "tierfraun-centaurs-cervines",
@@ -216,7 +266,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["hauling-meat"],
+    includesPerks: ["hauling-meat", "equine-carry", "equine-runner", "equine-cavalry"],
     restrictsPerks: ["runner"],
     pointsGranted: -3,
     description:
@@ -226,15 +276,42 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 strength, +1 constitution, -3 stat points.
-*Your weight capacity is 3x that of a normal person.
 *You have the 'Hauling-meat' perk from Vore Perks.
-*You have an upgraded version of the Runner perk, allowing you to move 3 distances per turn. You cannot get the regular runner perk.
-*Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.
-*You may use melee weapons with the 'cavalry-weapon' trait as if you were mounted, seeing as you *are* cavalry yourself!`,
+*You have the exclusive Equine Strength, Equine Speed, and Cavalry Charge perks.`,
     modifiers: {
       baseStatBonuses: { strength: 2, constitution: 1 },
       carryCapacityMultiplier: 3,
     },
+  },
+  {
+    id: "equine-carry",
+    name: "Equine Strength",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Your weight capacity is 3x that of a normal person.
+*Someone can mount you, either piggyback or upon your back if you are a centaur. They will move alongside you.`,
+  },
+  {
+    id: "equine-runner",
+    name: "Equine Speed",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `An enhanced version of the Runner perk! You can't get the normal Runner perk... but why would you want to?!
+
+->If you are not encumbered:
+*Move up to THREE distances, instead of the usual one, in combat. 
+*You are always at the top of initative regardless of your dexterity.
+*If more than one person has this perk or the Runner perk, determine initiative using the usual rules.`,
+  },
+  {
+    id: "equine-cavalry",
+    name: "Cavalry Charge",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You may use melee weapons with the 'cavalry-weapon' trait as if you were mounted, seeing as you *are* cavalry yourself!`,
   },
   {
     id: "tierfraun-sealife",
@@ -242,6 +319,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["sealife-swimmer", "sealife-holdbreath"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -250,15 +328,31 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+1 strength, +1 dexterity, +1 constitution, -3 stat points.
-*While submerged entirely in water: +3d6 strength and dexterity.  You have 4d6 cover when in the water, due to being hard to hit.
-*While submerged entirely in water, you may move up to two distances per turn.
-*You can hold your breath indefinitely and you can open your eyes in salt water. 
-*You can withstand the temperatures and pressure of the seas up to a kilometer deep
-*You can cover long distances in the water. You can cross the english channel, the mediterranean, and other such bodies.
-*You cannot cross whole oceans.`,
+*You have the exclusive Aquatic Agility and Aquatic Adaptation perks.`,
     modifiers: {
       baseStatBonuses: { strength: 1, dexterity: 1, constitution: 1 },
     },
+  },
+  {
+    id: "sealife-swimmer",
+    name: "Aquatic Agility",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*While submerged entirely in water: +3d6 strength and dexterity.  
+*You have 4d6 cover when in the water, due to being hard to hit.
+*While submerged entirely in water, you may move up to two distances per turn.`,
+  },
+  {
+    id: "sealife-holdbreath",
+    name: "Aquatic Adaptation",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You can hold your breath indefinitely and you can open your eyes in salt water. 
+*You can withstand the temperatures and pressure of the seas up to a kilometer deep.
+*You can cover long distances in the water. You can cross the English Channel, the Mediterranean, and other such bodies.
+*You cannot cross whole oceans.`,
   },
   {
     id: "tierfraun-avian",
@@ -266,6 +360,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
+    includesPerks: ["avian-flight", "avian-dive", "avian-unarmed"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -274,26 +369,53 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+2 dexterity, +1 charisma, -3 stat points.
-*You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. You cannot fly if encumbered.
-*While flying and engaging with something that is grounded: Have +3d6 strength. 
-*While flying and engaging something in the air: +3d6 strength and dexterity.
-*You may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
-*Failing to vore them, or falling from the sky due to any other reason, deals a flat 4 damage to you.
-*You have 4d6 cover when in the air, due to being hard to hit.
-*While flying, you may move up to two distances per turn. Does not stack with Runner.
-*You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,
+*You have the exclusive Avian Flight, Avian Dive, and Avian Weaponry perks.`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, charisma: 1 },
     },
   },
   {
+    id: "avian-flight",
+    name: "Avian Flight",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You have wings and can fly. It takes one action to go from the ground and into the sky, and vice-versa. 
+*You cannot fly if encumbered.
+*While flying and engaging with something that is grounded: Have +3d6 strength. 
+*While flying and engaging something in the air: +3d6 strength and dexterity.
+*You have 4d6 cover when in the air, due to being hard to hit.
+*While flying, you may move up to two distances per turn. Does not stack with Runner.
+*Falling from the sky for any reason (crashing, getting hit with birdshot, failing an Avian Dive) deals a flat 4 damage to you.
+`,
+  },
+  {
+    id: "avian-dive",
+    name: "Avian Dive",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `You can dive on your prey from the sky, like a raptor!
+
+*While flying, you may optionally drop from the sky onto someone, foregoing the need for a grapple in order to vore them.
+*Failing to vore them counts as falling from the sky and deals a flat 4 damage to you.`,
+  },
+  {
+    id: "avian-unarmed",
+    name: "Avian Weaponry",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You have a beak and/or talons, which serve as a tier 1 ( makeshift ) weapon.`,
+  },
+  {
     id: "tierfraun-lizards",
-    name: "Tierfraun (LIZARDS)",
+    name: "Tierfraun (REPTILES)",
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     excludesPerks: ["defender", "baiter", "runner"],
-    includesPerks: ["tough", "heavy"],
+    includesPerks: ["tough", "heavy", "reptile-scales", "reptile-slow"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -302,14 +424,28 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Anyone can tell you are a tierfraun based on your characteristics.
 
 *+3 constitution, -3 stat point.
-*You have thick scales that protect you! Every attack deals -1 damage, unarmed combat deals no damage if reduced to 0.
 *You have the Tough perk from Combat perks.
 *You have the Heavy perk from Vore Perks.
-*You are always last in initiative, regardless of any modifiers.
-*You may not get the following perks: Defender, Baiter and Runner.`,
+*You may NOT get the following perks: Baiter, Runner, and Defender - you're unappetizing, cold-blooded, and you already HAVE armor!`,
     modifiers: {
       baseStatBonuses: { constitution: 3 },
     },
+  },
+  {
+    id: "reptile-scales",
+    name: "Reptilian Scales",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You have thick scales that protect you! Every attack deals -1 damage, unarmed combat deals no damage if reduced to 0.`,
+  },
+  {
+    id: "reptile-slow",
+    name: "Reptilian Slowness",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You are always last in initiative, regardless of any modifiers.`,
   },
   {
     id: "tierfraun-hefties",
@@ -317,7 +453,8 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["tough", "authoritarian"],
+    includesPerks: ["tough", "hefty-heavy", "hefty-1hand", "hefty-angry"],
+    excludesPerks: ["heavy"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -327,20 +464,48 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+2 Constitution, +1 strength, -3 stat points.
 *You have the Tough perk from Combat Perks.
-*You have the 'Authoritarian' perk from Gimmick perks.
-*You have -1 charisma in situations where you aren't being intimidating.
-*You always immobilize your predator, even if they have the 'hauling-meat' perk. Does not apply if they're a hefty too.
-*Double your pred's penalties from being immobilized.
-*You should taller and bulkier than average - you're huge!
-*You can use two-handed weapons, melee or ranged, with one hand.
+*You have the exclusive Extra Heavy, Hefty Dual-Wield, and Hefty Aggression perks - that last one gives you Authoritarian for free, too!
+*You should taller and bulkier than average - you're huge!`,
+    modifiers: {
+      baseStatBonuses: { constitution: 2, strength: 1 },
+    },
+  },
+  {
+    id: "hefty-heavy",
+    name: "Extra Heavy",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `An improved version of the Heavy perk, you can't get that perk if you have this one.
+
+*You always immobilize your predator, even if they have the 'hauling-meat' perk.
+*The only way your predator can get around this penalty is by being another Hefty with the 'hauling-meat' perk, you just weigh THAT much!
+*Double your pred's penalties from being immobilized.`,
+  },
+  {
+    id: "hefty-1hand",
+    name: "Hefty Dual-Wield",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*You can use two-handed weapons, melee or ranged, with one hand.
 *Any weapon you wield with at least 1 hand is considered 'set up' for any rules that require that (such as LMGs and anti-tank rifles).
 *Any weapon you wield with BOTH hands is considered 'emplaced' for any rules that require that (such as HMGs and heavy anti-tank rifles).
 
 *If you have the "Ambidextrous" combat perk, note the following:
    >Hefties, when using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.`,
-    modifiers: {
-      baseStatBonuses: { constitution: 2, strength: 1 },
-    },
+  },
+  {
+    id: "hefty-angry",
+    name: "Hefty Aggression",
+    category: "pf-type",
+    selectionOnly: true,
+    includesPerks: ["authoritarian"],
+    customInput: "Something you're REALLY protective of...",
+    description:
+      `*You have the 'Authoritarian' perk from Gimmick perks, but...
+*You have -1 charisma in situations where you aren't being intimidating.
+*You also have very strong territorial instincts - choose at least one thing that you're VERY protective of!`,
   },
   {
     id: "tierfraun-leporines",
@@ -348,7 +513,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["danger-sense", "runner", "survivor"],
+    includesPerks: ["danger-sense", "runner", "survivor", "leporine-burrow"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -360,13 +525,21 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Have the Danger Sense perk from Combat perks.
 *Have the Runner perk from Combat perks.
 *Have the Survivor perk from Vore perks.
-*Can dig a foxhole or a Burrow for yourself, provided the ground is soft. Takes 1 action, and hide inside it immediately when dug.
-->Foxhole: It is considered medium cover (4d6).
-->Burrow: You cannot shoot or be shot at. Enemies must enter the burrow in order to melee you.
-*Takes 1 turn to go inside or outside of your groundworks.`,
+*Have the exclusive Burrow Digger perk`,
     modifiers: {
       baseStatBonuses: { dexterity: 2, escapeTraining: 3 },
     },
+  },
+  {
+    id: "leporine-burrow",
+    name: "Burrow Digger",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Can dig a foxhole or a Burrow for yourself, provided the ground is soft. Takes 1 action, and hide inside it immediately when dug.
+->Foxhole: It is considered medium cover (4d6).
+->Burrow: You cannot shoot or be shot at. Enemies must enter the burrow in order to melee you.
+*Takes 1 turn to go inside or outside of your groundworks.`,
   },
   {
     id: "tierfraun-lamias",
@@ -375,7 +548,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
     excludesPerks: ["open-ended-tail"],
-    includesPerks: ["natural-predator"],
+    includesPerks: ["natural-predator", "lamia-tail", "lamia-slither"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.
@@ -385,17 +558,32 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+3 strength, -3 stat points.
 *Have the 'Natural Predator' perk.
-*Have two stomachs, one being your human half's, the other being your snake tail.
-*Your tail has 3x the capacity of your stomach, and scales accordingly.
-->For your first stomach: Once prey fails two escape attempts, they slide into your next stomach.
-->Prey inside the tail stomach must roll twice when trying to escape, always taking the set with the fewer successes. 
-->Should they succeed, they crawl back into the first stomach, but can be sent back into the tail if they fail another escape attempt.
-*Jungle and swampy terrain does not affect you - you can climb trees and move around freely.`,
+*Have the exclusive Snake Tail and Snake Slither perks.`,
     modifiers: {
       baseStatBonuses: { strength: 3 },
       grantsOrgans: ["tail"],
       organCapacityMultipliers: { tail: 3 },
     },
+  },
+  {
+    id: "lamia-tail",
+    name: "Snake Tail",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Have two stomachs, one being your human half's, the other being your snake tail.
+*Your tail has 3x the capacity of your stomach, and scales accordingly.
+->For your first stomach: Once prey fails two escape attempts, they slide into your next stomach.
+->Prey inside the tail stomach must roll twice when trying to escape, always taking the set with the fewer successes. 
+->Should they succeed, they crawl back into the first stomach, but can be sent back into the tail if they fail another escape attempt.`,
+  },
+  {
+    id: "lamia-slither",
+    name: "Snake Slither",
+    category: "pf-type",
+    selectionOnly: true,
+    description:
+      `*Jungle and swampy terrain does not affect you - you can climb trees and move around freely.`,
   },
   {
     id: "tierfraun-custom",

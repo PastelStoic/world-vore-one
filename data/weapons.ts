@@ -726,7 +726,7 @@ export const WEAPONS: WeaponDefinition[] = [
   // ── Japanese ──
   {
     id: "type-98-arisaka",
-    name: "Type 98 Arisaka",
+    name: "Type 38 Arisaka",
     type: "Bolt-action rifle",
     kind: "bolt-action-rifle",
     nation: "Japan",

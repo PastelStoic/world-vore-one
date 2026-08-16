@@ -239,13 +239,20 @@ export interface CharacterSnapshot {
   data: CharacterDraft;
 }
 
-export const BASELINER_STAT_POINTS = 7;
+export const BASELINER_STAT_POINTS = 9;
 export const DEFAULT_STAT_POINTS = 5;
 export const PERK_COST_STAT_POINTS = 3;
+export const BASELINER_FREE_PERKS = 2;
+export const DEFAULT_FREE_PERKS = 1;
 
-/** Returns the starting stat points for a given race. Baseliners get 7, others get 5. */
+/** Returns the starting stat points for a given race. Baseliners get 9, others get 5. */
 export function getStartingStatPoints(race: Race): number {
   return race === "Baseliner" ? BASELINER_STAT_POINTS : DEFAULT_STAT_POINTS;
+}
+
+/** Returns the number of free perk slots a race starts with. Baseliners get 2, others get 1. */
+export function getStartingFreePerks(race?: Race): number {
+  return race === "Baseliner" ? BASELINER_FREE_PERKS : DEFAULT_FREE_PERKS;
 }
 
 export function createDefaultBaseStats(): BaseStats {

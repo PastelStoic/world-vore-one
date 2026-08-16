@@ -10,6 +10,7 @@ import {
   type CharacterDraft,
   createDefaultBaseStats,
   createDefaultDescription,
+  getStartingFreePerks,
   getStartingStatPoints,
   PERK_COST_STAT_POINTS,
   type PerkOrigin,
@@ -332,6 +333,7 @@ export function calculatePerksCost(
   faction?: string,
   perkPointChoices?: Record<string, number>,
   perkOrigins?: Record<string, PerkOrigin>,
+  race?: Race,
 ): number {
   if (perkIds.length <= 0) return 0;
 
@@ -373,8 +375,8 @@ export function calculatePerksCost(
     totalPointsGranted += factionDef?.grantsStatPoints ?? 0;
   }
 
-  // First paid perk is free, plus any freePerks grants from active perks
-  const freeSlots = 1 + totalFreePerks;
+  // Race starting free perks (1, or 2 for Baseliners), plus any freePerks grants
+  const freeSlots = getStartingFreePerks(race) + totalFreePerks;
   const baseCost = Math.max(0, paidPerkCount - freeSlots) *
     PERK_COST_STAT_POINTS;
   return baseCost - totalPointsGranted;
@@ -411,6 +413,7 @@ export function validateCharacterProgression(
     input.description.faction,
     input.perkPointChoices,
     input.perkOrigins,
+    input.race,
   );
   const totalUsed = spentOnStats + spentOnPerks + input.unallocatedStatPoints;
 

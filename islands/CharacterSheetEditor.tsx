@@ -143,6 +143,7 @@ function inferInitialPerkState(
         faction,
         initialCharacter.perkPointChoices,
         candidateOrigins,
+        initialCharacter.race,
       );
       const totalUsed = spentOnStats + spentOnPerks +
         initialCharacter.unallocatedStatPoints;
@@ -184,6 +185,34 @@ function inferInitialPerkState(
   };
 }
 
+/** Grant leftover starting budget so older sheets pick up a raised race allotment. */
+function getStartingBudgetTopUp(
+  character: CharacterDraft | CharacterSheet,
+  perkOrigins: Record<string, PerkOrigin>,
+  factionCompensatedPerkIds: string[],
+): number {
+  const spentOnStats = BASE_STAT_FIELDS.reduce(
+    (total, stat) => total + character.baseStats[stat.key],
+    0,
+  ) - BASE_STAT_FIELDS.length;
+  const spentOnPerks = calculatePerksCost(
+    character.perkIds,
+    character.perkRanks,
+    character.perkSelections,
+    character.description.faction,
+    character.perkPointChoices,
+    perkOrigins,
+    character.race,
+  );
+  const totalUsed = spentOnStats + spentOnPerks +
+    character.unallocatedStatPoints;
+  const totalAvailable = getStartingStatPoints(character.race) +
+    (FACTION_DEFINITIONS_BY_ID.get(character.description.faction)
+      ?.grantsStatPoints ?? 0) +
+    factionCompensatedPerkIds.length * 2;
+  return Math.max(0, totalAvailable - totalUsed);
+}
+
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [initialCharacter] = useState(() =>
     normalizeCharacterPerkIds(props.initialCharacter)
@@ -201,7 +230,12 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [initialPerkIds] = useState(initialCharacter.perkIds);
   const [initialPerkRanks] = useState(initialCharacter.perkRanks ?? {});
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
-    initialCharacter.unallocatedStatPoints,
+    initialCharacter.unallocatedStatPoints +
+      getStartingBudgetTopUp(
+        initialCharacter,
+        initialPerkState.perkOrigins,
+        initialPerkState.factionCompensatedPerkIds,
+      ),
   );
   const [perkIds, setPerkIds] = useState(initialCharacter.perkIds);
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
@@ -417,6 +451,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       description.faction,
       perkPointChoices,
       perkOrigins,
+      race,
     ) -
       calculatePerksCost(
         keptPerkIds,
@@ -427,6 +462,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         withoutRemovedOrigins(
           perkIds.filter((id) => !keptPerkIds.includes(id)),
         ),
+        newRace,
       );
     if (keptPerkIds.length !== perkIds.length) {
       const removedIds = perkIds.filter((id) => !keptPerkIds.includes(id));
@@ -577,6 +613,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       description.faction,
       perkPointChoices,
       perkOrigins,
+      race,
     ) -
       calculatePerksCost(
         perkIds,
@@ -585,6 +622,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         description.faction,
         perkPointChoices,
         perkOrigins,
+        race,
       );
 
     const { nextBaseStats, requiredPoints } = applyRequiredStatFloors(
@@ -684,6 +722,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       description.faction,
       perkPointChoices,
       perkOrigins,
+      race,
     ) -
       calculatePerksCost(
         newPerkIds,
@@ -692,6 +731,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         description.faction,
         perkPointChoices,
         perkOrigins,
+        race,
       );
     setPerkIds(newPerkIds);
     const allRemovedIds = [perkId, ...orphanedIds];
@@ -752,6 +792,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       description.faction,
       perkPointChoices,
       perkOrigins,
+      race,
     ) -
       calculatePerksCost(
         perkIds,
@@ -760,6 +801,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         description.faction,
         perkPointChoices,
         perkOrigins,
+        race,
       );
 
     if (unallocatedStatPoints - inventoryPointCost < upgradeCost) return;
@@ -804,6 +846,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
       description.faction,
       perkPointChoices,
       perkOrigins,
+      race,
     ) -
       calculatePerksCost(
         perkIds,
@@ -812,6 +855,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         description.faction,
         perkPointChoices,
         perkOrigins,
+        race,
       );
 
     setPerkRanks(newRanks);
@@ -970,8 +1014,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
               <label class="block">
                 <span class="block font-medium mb-1">Race</span>
-                {/* key forces a full remount when sex changes so option lists
-                    cannot stick to the previous gendered set in the DOM */}
+                {
+                  /* key forces a full remount when sex changes so option lists
+                    cannot stick to the previous gendered set in the DOM */
+                }
                 <select
                   key={`race-${description.sex}`}
                   class="select w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -1583,6 +1629,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             description.faction,
                             perkPointChoices,
                             perkOrigins,
+                            race,
                           ) -
                             calculatePerksCost(
                               perkIds,
@@ -1591,6 +1638,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                               description.faction,
                               perkPointChoices,
                               perkOrigins,
+                              race,
                             )
                           : 0;
                         const canAffordUpgrade =
@@ -2094,6 +2142,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           description.faction,
                           perkPointChoices,
                           perkOrigins,
+                          race,
                         ) -
                           calculatePerksCost(
                             perkIds,
@@ -2102,6 +2151,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                             description.faction,
                             perkPointChoices,
                             perkOrigins,
+                            race,
                           );
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;

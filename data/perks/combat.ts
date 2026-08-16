@@ -227,7 +227,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 
 ->Adrenaline rush:
 *Your rush lasts 20 turns, or 20 minutes, whichever is faster.
-*For the duration, you cannot be incapacitated, and you must roll your constitution every turn. You need 1 + [your negative HP] / 2 ) successes to keep your rush going.
+*For the duration, you cannot be incapacitated, and you must roll your constitution every turn.
+*You may voluntarily give out and become incapacitated - however, you cannot undo this!
 *Once your rush is over, you 'crash' out.
 
 ->Crash out:

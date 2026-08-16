@@ -224,7 +224,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Tracks",
     description: `The vehicle's tracks, which allow it to move smoothly along the terrain ahead!
     
-    *Considered to have light armor when targetted. Does not take area damage - it must be targetted directly.`,
+    *Considered to have light armor when targeted. Does not take area damage - it must be targetted directly.`,
     hp: 8,
     position: "external",
     difficulty: { front: 3, side: 3, rear: 3 },
@@ -233,7 +233,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "wheels-2",
     name: "Wheels ( 2 wheels )",
-    description: "A pair of thick rubber wheels, can take a surprising amount of punishment!",
+    description: "A pair of thick rubber wheels, can take a surprising amount of punishment! Considered to have no armor when targeted. Does take area damage.",
     hp: 4,
     position: "external",
     difficulty: { front: 3, side: 3, rear: 3 },
@@ -242,7 +242,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "wheels-4",
     name: "Wheels ( 4 wheels )",
-    description: "A set of four thick rubber wheels, can take a surprising amount of punishment!",
+    description: "A set of four thick rubber wheels, can take a surprising amount of punishment! Considered to have no armor when targeted. Does take area damage.",
     hp: 6,
     position: "external",
     difficulty: { front: 3, side: 3, rear: 3 },
@@ -308,7 +308,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-wheels-2",
     name: "Civilian wheels ( 2 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all.",
+    description: "Light civilian wheels, can't take much punishment at all. Considered to have no armor when targeted. Does take area damage.",
     hp: 2,
     position: "external",
     difficulty: { front: 2, side: 2, rear: 2 },
@@ -317,7 +317,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-wheels-4",
     name: "Civilian wheels ( 4 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all.",
+    description: "Light civilian wheels, can't take much punishment at all. Considered to have no armor when targeted. Does take area damage.",
     hp: 4,
     position: "external",
     difficulty: { front: 2, side: 2, rear: 2 },

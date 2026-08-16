@@ -125,14 +125,6 @@ export default define.page(function WikiPerks() {
                           </p>
                         )
                         : null}
-                      {perk.blocked
-                        ? (
-                          <p class="text-error text-xs">
-                            Blocked: {perk.blockedReason ??
-                              "Cannot be unlocked."}
-                          </p>
-                        )
-                        : null}
                     </div>
                   </details>
                 );

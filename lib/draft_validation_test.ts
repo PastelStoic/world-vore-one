@@ -1,5 +1,5 @@
 /**
- * Unit tests for perk availability (hidden / blocked / restricts).
+ * Unit tests for perk availability (hidden / blocked reasons / restricts).
  * Run: deno test -A lib/draft_validation_test.ts
  */
 
@@ -36,17 +36,6 @@ Deno.test("hidden perks do not appear as unlock options", () => {
   assertEquals(isPerkEligible(perk, ctx()), false);
 });
 
-Deno.test("statically blocked perks are listed with a reason", () => {
-  const perk = {
-    ...PERKS_BY_ID.get("runner")!,
-    blocked: true,
-    blockedReason: "Not available in this scenario.",
-  };
-  const availability = getPerkAvailability(perk, ctx());
-  assertEquals(availability.status, "blocked");
-  assertEquals(availability.reason, "Not available in this scenario.");
-});
-
 Deno.test("deprecated and selection-only perks are hidden", () => {
   const deprecated = { ...PERKS_BY_ID.get("runner")!, deprecated: true };
   const selectionOnly = { ...PERKS_BY_ID.get("runner")!, selectionOnly: true };
@@ -54,13 +43,51 @@ Deno.test("deprecated and selection-only perks are hidden", () => {
   assertEquals(getPerkAvailability(selectionOnly, ctx()).status, "hidden");
 });
 
-Deno.test("race mismatch hides a perk from the unlock list", () => {
+Deno.test("race mismatch lists a perk as blocked with a reason", () => {
   const centaurs = PERKS_BY_ID.get("tierfraun-centaurs-cervines")!;
-  assertEquals(getPerkAvailability(centaurs, ctx()).status, "hidden");
+  const availability = getPerkAvailability(centaurs, ctx());
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, [
+    "Requires race: Tierfraun or Tierherr.",
+  ]);
   assertEquals(
     getPerkAvailability(centaurs, ctx({ race: "Tierfraun" })).status,
     "available",
   );
+});
+
+Deno.test("faction mismatch lists a perk as blocked with a reason", () => {
+  const army = PERKS_BY_ID.get("king-s-royal-army-pf")!;
+  const availability = getPerkAvailability(army, ctx());
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, [
+    "Requires faction: SWITZERLAND - King's Royal Army.",
+  ]);
+  assertEquals(
+    getPerkAvailability(
+      army,
+      ctx({ faction: "SWITZERLAND - King's Royal Army" }),
+    ).status,
+    "available",
+  );
+});
+
+Deno.test("multiple identity mismatches are all listed", () => {
+  const kami = PERKS_BY_ID.get("japanese-kami-champion")!;
+  const availability = getPerkAvailability(kami, ctx());
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, [
+    "Requires race: Tierfraun or Tierherr.",
+    "Requires the character to be a template.",
+    "Requires faction: JAPAN - Miscellaneous Japanese Clans.",
+  ]);
+});
+
+Deno.test("sex mismatch lists a perk as blocked with a reason", () => {
+  const perk = PERKS_BY_ID.get("the-impregnator")!;
+  const availability = getPerkAvailability(perk, ctx());
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, ["Requires sex: Male or Futa."]);
 });
 
 Deno.test("owned perk restricts purchase of listed perks", () => {
@@ -73,10 +100,9 @@ Deno.test("owned perk restricts purchase of listed perks", () => {
     }),
   );
   assertEquals(availability.status, "blocked");
-  assertEquals(
-    availability.reason,
+  assertEquals(availability.reasons, [
     'Restricted by "Tierfraun (CENTAURS, CERVINES)".',
-  );
+  ]);
 });
 
 Deno.test("a restricting perk is blocked if the restricted perk is already owned", () => {
@@ -89,7 +115,9 @@ Deno.test("a restricting perk is blocked if the restricted perk is already owned
     }),
   );
   assertEquals(availability.status, "blocked");
-  assertEquals(availability.reason, 'Cannot be taken while you have "Runner".');
+  assertEquals(availability.reasons, [
+    'Cannot be taken while you have "Runner".',
+  ]);
 });
 
 Deno.test("lock category and excludesPerks surface as blocked", () => {
@@ -102,10 +130,9 @@ Deno.test("lock category and excludesPerks surface as blocked", () => {
     }),
   );
   assertEquals(lock.status, "blocked");
-  assertEquals(
-    lock.reason,
+  assertEquals(lock.reasons, [
     'Cannot be combined with "Tierfraun (CENTAURS, CERVINES)".',
-  );
+  ]);
 
   const runner = PERKS_BY_ID.get("runner")!;
   const excluded = getPerkAvailability(
@@ -116,10 +143,9 @@ Deno.test("lock category and excludesPerks surface as blocked", () => {
     }),
   );
   assertEquals(excluded.status, "blocked");
-  assertEquals(
-    excluded.reason,
+  assertEquals(excluded.reasons, [
     'Cannot be combined with "Tierfraun (LIZARDS)".',
-  );
+  ]);
 });
 
 Deno.test("validatePerkRequirements rejects restricted perk combinations", () => {

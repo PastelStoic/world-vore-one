@@ -256,6 +256,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
     PerkCategory | ""
   >("");
   const [perkSearchFilter, setPerkSearchFilter] = useState("");
+  const [revealedBlockedPerkId, setRevealedBlockedPerkId] = useState<
+    string | null
+  >(null);
 
   // Image upload state
   const {
@@ -554,9 +557,15 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
 
     const perk = PERKS_BY_ID.get(perkId);
     if (!perk || perk.deprecated) return;
-    if (getPerkAvailability(perk, perkEligibilityCtx).status !== "available") {
+    const availability = getPerkAvailability(perk, perkEligibilityCtx);
+    if (availability.status === "blocked") {
+      setRevealedBlockedPerkId(perkId);
       return;
     }
+    if (availability.status !== "available") {
+      return;
+    }
+    setRevealedBlockedPerkId(null);
     const includedIds = (perk?.includesPerks ?? []).filter((id) =>
       !perkIds.includes(id)
     );
@@ -2025,7 +2034,10 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
             <button
               type="button"
               class="px-2 py-1 border rounded"
-              onClick={() => setShowPerkPicker((current) => !current)}
+              onClick={() => {
+                setShowPerkPicker((current) => !current);
+                setRevealedBlockedPerkId(null);
+              }}
             >
               {showPerkPicker ? "Cancel" : "Add Perk"}
             </button>
@@ -2072,6 +2084,9 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                     <ul class="space-y-2">
                       {availablePerks.map(({ perk, availability }) => {
                         const isBlocked = availability.status === "blocked";
+                        const blockReasons = availability.reasons ?? [];
+                        const showBlockReasons = isBlocked &&
+                          revealedBlockedPerkId === perk.id;
                         const cost = calculatePerksCost(
                           [...perkIds, perk.id],
                           perkRanks,
@@ -2090,9 +2105,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                           );
                         const canAfford =
                           (unallocatedStatPoints - inventoryPointCost) >= cost;
-                        const costLabel = isBlocked
-                          ? "Blocked"
-                          : cost < 0
+                        const costLabel = cost < 0
                           ? `Unlock (+${-cost} SP)`
                           : cost === 0
                           ? "Unlock (Free)"
@@ -2109,19 +2122,27 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
                                 name={perk.name}
                                 description={perk.description}
                               />
-                              {isBlocked && availability.reason && (
-                                <span class="mt-1 block text-xs text-error">
-                                  {availability.reason}
-                                </span>
+                              {showBlockReasons && (
+                                <ul class="mt-1 space-y-0.5">
+                                  {blockReasons.map((reason) => (
+                                    <li
+                                      key={reason}
+                                      class="text-xs text-error"
+                                    >
+                                      {reason}
+                                    </li>
+                                  ))}
+                                </ul>
                               )}
                             </span>
                             <div class="flex items-center gap-2 shrink-0">
                               <button
                                 type="button"
                                 class="px-2 py-1 border rounded disabled:opacity-40"
-                                disabled={isBlocked || !canAfford}
+                                disabled={!isBlocked && !canAfford}
+                                aria-disabled={isBlocked || undefined}
                                 title={isBlocked
-                                  ? availability.reason
+                                  ? blockReasons.join(" ")
                                   : undefined}
                                 onClick={() => buyPerk(perk.id)}
                               >

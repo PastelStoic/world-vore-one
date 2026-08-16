@@ -121,13 +121,6 @@ export interface PerkDefinition {
    * purchased directly. Derived grants (includesPerks / selections) still work.
    */
   hidden?: boolean;
-  /**
-   * When true, this perk appears in the add-perk list but cannot be purchased.
-   * Use `blockedReason` for the explanation shown to the player.
-   */
-  blocked?: boolean;
-  /** Reason shown when this perk is statically blocked. */
-  blockedReason?: string;
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
   /** When true, this perk is hidden from normal users and only selectable by admins. */

@@ -89,8 +89,8 @@ export type PerkAvailabilityStatus = "available" | "hidden" | "blocked";
 
 export interface PerkAvailability {
   status: PerkAvailabilityStatus;
-  /** Present when status is "blocked"; shown in the add-perk list. */
-  reason?: string;
+  /** Present when status is "blocked"; why the perk cannot be selected. */
+  reasons?: string[];
 }
 
 function perkName(id: string): string {
@@ -104,33 +104,42 @@ function requiredFactions(perk: PerkDefinition): string[] | undefined {
     : [perk.requiredFaction];
 }
 
+/** Player-facing identity mismatches (race, sex, faction, template). */
+function identityBlockReasons(
+  perk: PerkDefinition,
+  ctx: Pick<PerkEligibilityContext, "race" | "sex" | "faction" | "isTemplate">,
+): string[] {
+  const reasons: string[] = [];
+
+  if (perk.requiredRaces && !perk.requiredRaces.includes(ctx.race)) {
+    reasons.push(`Requires race: ${perk.requiredRaces.join(" or ")}.`);
+  }
+
+  if (perk.requiredSex && !perk.requiredSex.includes(ctx.sex)) {
+    reasons.push(`Requires sex: ${perk.requiredSex.join(" or ")}.`);
+  }
+
+  if (perk.requiresTemplate && !ctx.isTemplate) {
+    reasons.push("Requires the character to be a template.");
+  }
+
+  const factions = requiredFactions(perk);
+  if (factions && !factions.includes(ctx.faction)) {
+    reasons.push(`Requires faction: ${factions.join(" or ")}.`);
+  }
+
+  return reasons;
+}
+
 /** Identity mismatch for an already-owned perk (server error wording). */
 function perkIdentityError(
   perk: PerkDefinition,
   ctx: Pick<PerkEligibilityContext, "race" | "sex" | "faction" | "isTemplate">,
 ): string | null {
-  if (perk.requiredRaces && !perk.requiredRaces.includes(ctx.race)) {
-    return `Perk "${perk.name}" requires one of: ${
-      perk.requiredRaces.join(", ")
-    }.`;
-  }
-
-  if (perk.requiredSex && !perk.requiredSex.includes(ctx.sex)) {
-    return `Perk "${perk.name}" requires sex: ${
-      perk.requiredSex.join(" or ")
-    }.`;
-  }
-
-  if (perk.requiresTemplate && !ctx.isTemplate) {
-    return `Perk "${perk.name}" requires the character to be a template.`;
-  }
-
-  const factions = requiredFactions(perk);
-  if (factions && !factions.includes(ctx.faction)) {
-    return `Perk "${perk.name}" requires faction: ${factions.join(" or ")}.`;
-  }
-
-  return null;
+  const reasons = identityBlockReasons(perk, ctx);
+  if (reasons.length === 0) return null;
+  const first = reasons[0];
+  return `Perk "${perk.name}" ${first.charAt(0).toLowerCase()}${first.slice(1)}`;
 }
 
 function missingRequiredPerkId(
@@ -161,33 +170,11 @@ function excludedOwnedPerkId(
   return perk.excludesPerks?.find((id) => ownedPerkIds.includes(id));
 }
 
-function ownedPerkThatExcludes(
-  perk: PerkDefinition,
-  ownedPerkIds: string[],
-): PerkDefinition | undefined {
-  for (const id of ownedPerkIds) {
-    const owned = PERKS_BY_ID.get(id);
-    if (owned?.excludesPerks?.includes(perk.id)) return owned;
-  }
-  return undefined;
-}
-
 function restrictedOwnedPerkId(
   perk: PerkDefinition,
   ownedPerkIds: string[],
 ): string | undefined {
   return perk.restrictsPerks?.find((id) => ownedPerkIds.includes(id));
-}
-
-function ownedPerkThatRestricts(
-  perk: PerkDefinition,
-  ownedPerkIds: string[],
-): PerkDefinition | undefined {
-  for (const id of ownedPerkIds) {
-    const owned = PERKS_BY_ID.get(id);
-    if (owned?.restrictsPerks?.includes(perk.id)) return owned;
-  }
-  return undefined;
 }
 
 /**
@@ -227,25 +214,83 @@ function hidden(): PerkAvailability {
   return { status: "hidden" };
 }
 
-function blocked(reason: string): PerkAvailability {
-  return { status: "blocked", reason };
+function blocked(reasons: string[]): PerkAvailability {
+  return { status: "blocked", reasons };
 }
 
 function available(): PerkAvailability {
   return { status: "available" };
 }
 
+/** All reasons this perk cannot be purchased in the current context. */
+function collectBlockReasons(
+  perk: PerkDefinition,
+  ctx: PerkEligibilityContext,
+): string[] {
+  const reasons: string[] = [...identityBlockReasons(perk, ctx)];
+
+  for (const id of perk.requiredPerkIds ?? []) {
+    if (!ctx.ownedPerkIds.includes(id)) {
+      reasons.push(`Requires "${perkName(id)}".`);
+    }
+  }
+
+  if (
+    perk.maxCharactersPerAccount !== undefined &&
+    (ctx.accountPerkCounts?.get(perk.id) ?? 0) >= perk.maxCharactersPerAccount
+  ) {
+    const limit = perk.maxCharactersPerAccount;
+    reasons.push(
+      `Limited to ${limit} ${
+        limit === 1 ? "character" : "characters"
+      } per account.`,
+    );
+  }
+
+  const lockName = lockCategoryConflictName(perk, ctx.ownedPerkIds);
+  if (lockName) {
+    reasons.push(`Cannot be combined with "${lockName}".`);
+  }
+
+  for (const id of perk.excludesPerks ?? []) {
+    if (ctx.ownedPerkIds.includes(id)) {
+      reasons.push(`Cannot be combined with "${perkName(id)}".`);
+    }
+  }
+
+  for (const id of ctx.ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned?.excludesPerks?.includes(perk.id)) {
+      reasons.push(`Cannot be combined with "${owned.name}".`);
+    }
+  }
+
+  for (const id of ctx.ownedPerkIds) {
+    const owned = PERKS_BY_ID.get(id);
+    if (owned?.restrictsPerks?.includes(perk.id)) {
+      reasons.push(`Restricted by "${owned.name}".`);
+    }
+  }
+
+  for (const id of perk.restrictsPerks ?? []) {
+    if (ctx.ownedPerkIds.includes(id)) {
+      reasons.push(`Cannot be taken while you have "${perkName(id)}".`);
+    }
+  }
+
+  return [...new Set(reasons)];
+}
+
 /**
  * Resolve whether a perk can be purchased, and if not whether it is hidden
- * from the add-perk list or shown as blocked with a reason.
+ * from the add-perk list or shown as blocked with reasons.
  *
  * Hidden (omitted from the unlock list):
  * - `hidden`, deprecated, selectionOnly, adminOnly (non-moderators)
  * - already owned or derived
- * - identity mismatches (race, sex, faction, template)
  *
- * Blocked (listed, cannot be purchased, reason is shown):
- * - `blocked` / `blockedReason`
+ * Blocked (listed, cannot be purchased; reasons shown if the player tries):
+ * - identity mismatches (race, sex, faction, template)
  * - missing required perks
  * - account character limit
  * - lock category conflict
@@ -264,57 +309,8 @@ export function getPerkAvailability(
   if (ctx.ownedPerkIds.includes(perk.id)) return hidden();
   if (ctx.derivedPerkIds.has(perk.id)) return hidden();
 
-  if (perkIdentityError(perk, ctx)) return hidden();
-
-  if (perk.blocked) {
-    return blocked(
-      perk.blockedReason ?? `Perk "${perk.name}" cannot be unlocked.`,
-    );
-  }
-
-  const missingRequired = missingRequiredPerkId(perk, ctx.ownedPerkIds);
-  if (missingRequired) {
-    return blocked(`Requires "${perkName(missingRequired)}".`);
-  }
-
-  if (
-    perk.maxCharactersPerAccount !== undefined &&
-    (ctx.accountPerkCounts?.get(perk.id) ?? 0) >= perk.maxCharactersPerAccount
-  ) {
-    const limit = perk.maxCharactersPerAccount;
-    return blocked(
-      `Limited to ${limit} ${
-        limit === 1 ? "character" : "characters"
-      } per account.`,
-    );
-  }
-
-  const lockName = lockCategoryConflictName(perk, ctx.ownedPerkIds);
-  if (lockName) {
-    return blocked(`Cannot be combined with "${lockName}".`);
-  }
-
-  const excludedId = excludedOwnedPerkId(perk, ctx.ownedPerkIds);
-  if (excludedId) {
-    return blocked(`Cannot be combined with "${perkName(excludedId)}".`);
-  }
-
-  const ownedExcluder = ownedPerkThatExcludes(perk, ctx.ownedPerkIds);
-  if (ownedExcluder) {
-    return blocked(`Cannot be combined with "${ownedExcluder.name}".`);
-  }
-
-  const ownedRestrictor = ownedPerkThatRestricts(perk, ctx.ownedPerkIds);
-  if (ownedRestrictor) {
-    return blocked(`Restricted by "${ownedRestrictor.name}".`);
-  }
-
-  const restrictedId = restrictedOwnedPerkId(perk, ctx.ownedPerkIds);
-  if (restrictedId) {
-    return blocked(
-      `Cannot be taken while you have "${perkName(restrictedId)}".`,
-    );
-  }
+  const reasons = collectBlockReasons(perk, ctx);
+  if (reasons.length > 0) return blocked(reasons);
 
   return available();
 }

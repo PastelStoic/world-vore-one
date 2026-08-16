@@ -115,7 +115,9 @@ export const VORE_PERKS: PerkDefinition[] = [
       `Fatty! You keep your predator pinned with your weight, or your struggles are very destabilizing!
 
 *This may be justified through you being very heavy, or your struggles being too strong to move around with.
-*When eaten by someone, you make them immobile, and they receive the respective penalties!
+*When eaten by someone, you make them immobile, and they receive the respective penalties, regardless of your weight!
+*You now have a fixed weight of 15 for the purposes of being carried around, mounting, etc.
+*Your weight does not prevent you from being eaten by opponents - you obey standard rulings in such a scenario.
 *If the pred has "hauling-meat", typical rules apply instead.`,
   },
   {
@@ -262,7 +264,7 @@ If you have prey inside you, dead or alive:
 *Once your rush is over, you 'crash' out.
 
 ->Crash out:
-*You are incapacitated/critical conditione'd until your HP heals back to full. You cannot do any escape rolls if you are eaten.
+*You are incapacitated/critical condition'd until your HP heals back to full. You cannot do any escape rolls if you are eaten.
 *Being healed by allies does not speed this up; you've overexerted yourself, you need rest.`,
   },
   {

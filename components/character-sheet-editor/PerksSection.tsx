@@ -8,6 +8,7 @@ import {
   type BaseStatKey,
   type BaseStats,
   type CharacterDraft,
+  getStartingFreePerks,
   PERK_COST_STAT_POINTS,
   type PerkOrigin,
 } from "@/lib/character_types.ts";
@@ -68,6 +69,7 @@ export function PerksSection(props: PerksSectionProps) {
   const paidPerkInstances = props.perkIds
     .filter((id) => !PERKS_BY_ID.get(id)?.isFree)
     .reduce((sum, id) => sum + (props.perkRanks[id] ?? 1), 0);
+  const freePerkSlots = getStartingFreePerks(props.race);
 
   const cardProps = {
     ownedPerks: props.ownedPerks,
@@ -106,9 +108,14 @@ export function PerksSection(props: PerksSectionProps) {
       <h3 class="font-semibold">Perks</h3>
       <p class="text-sm text-base-content">
         Perks cost {PERK_COST_STAT_POINTS} stat points each.{" "}
-        {paidPerkInstances ===
-            0
-          ? <strong>First perk is free!</strong>
+        {paidPerkInstances < freePerkSlots
+          ? (
+            <strong>
+              {freePerkSlots === 1
+                ? "First perk is free!"
+                : "First two perks are free!"}
+            </strong>
+          )
           : null}
       </p>
 

@@ -122,31 +122,3 @@ export function inferInitialPerkState(
     factionCompensatedPerkIds: bestCompensatedIds ?? explicitCompensatedIds,
   };
 }
-
-/** Grant leftover starting budget so older sheets pick up a raised race allotment. */
-export function getStartingBudgetTopUp(
-  character: CharacterDraft | CharacterSheet,
-  perkOrigins: Record<string, PerkOrigin>,
-  factionCompensatedPerkIds: string[],
-): number {
-  const spentOnStats = BASE_STAT_FIELDS.reduce(
-    (total, stat) => total + character.baseStats[stat.key],
-    0,
-  ) - BASE_STAT_FIELDS.length;
-  const spentOnPerks = calculatePerksCost(
-    character.perkIds,
-    character.perkRanks,
-    character.perkSelections,
-    character.description.faction,
-    character.perkPointChoices,
-    perkOrigins,
-    character.race,
-  );
-  const totalUsed = spentOnStats + spentOnPerks +
-    character.unallocatedStatPoints;
-  const totalAvailable = getStartingStatPoints(character.race) +
-    (FACTION_DEFINITIONS_BY_ID.get(character.description.faction)
-      ?.grantsStatPoints ?? 0) +
-    factionCompensatedPerkIds.length * 2;
-  return Math.max(0, totalAvailable - totalUsed);
-}

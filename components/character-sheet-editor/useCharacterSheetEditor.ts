@@ -36,7 +36,7 @@ import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
 import { applyPerkGrantedInventory } from "@/lib/perk_grant_inventory.ts";
-import { getStartingBudgetTopUp, inferInitialPerkState } from "./helpers.ts";
+import { inferInitialPerkState } from "./helpers.ts";
 import type { CharacterSheetEditorProps, ListedPerk } from "./types.ts";
 
 export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
@@ -56,12 +56,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [initialPerkIds] = useState(initialCharacter.perkIds);
   const [initialPerkRanks] = useState(initialCharacter.perkRanks ?? {});
   const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
-    initialCharacter.unallocatedStatPoints +
-      getStartingBudgetTopUp(
-        initialCharacter,
-        initialPerkState.perkOrigins,
-        initialPerkState.factionCompensatedPerkIds,
-      ),
+    initialCharacter.unallocatedStatPoints,
   );
   const [perkIds, setPerkIds] = useState(initialCharacter.perkIds);
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(

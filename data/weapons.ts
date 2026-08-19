@@ -344,7 +344,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 1,
     weight: 2,
     pointCost: 0,
-    traitIds: ["two-handed", "half-agile", "short-rifle"],
+    traitIds: ["two-handed", "half-agile", "short-rifle", "en-block-clip"],
     compatibleAttachmentIds: [
       ...LONG_GUN_ATTACHMENTS,
       "berthier-chauchat-magazines",

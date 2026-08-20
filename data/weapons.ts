@@ -899,7 +899,21 @@ export const WEAPONS: WeaponDefinition[] = [
   // ── Austro-Hungarian ──
   {
     id: "mannlicher-m1895",
-    name: "Mannlicher M1895",
+    name: "Mannlicher M1888",
+    type: "Bolt-action rifle",
+    kind: "bolt-action-rifle",
+    nation: "Austria-Hungary",
+    damage: "3",
+    ammo: 5,
+    rateOfFire: 1,
+    weight: 1,
+    pointCost: 0,
+    traitIds: ["two-handed", "extra-long", "en-block-clip"],
+    compatibleAttachmentIds: [...LONG_GUN_ATTACHMENTS],
+  },
+  {
+    id: "mannlicher-m1895-stutzen",
+    name: "Mannlicher M1895 Stutzen",
     type: "Bolt-action rifle",
     kind: "bolt-action-rifle",
     nation: "Austria-Hungary",

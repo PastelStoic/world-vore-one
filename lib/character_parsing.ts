@@ -385,10 +385,6 @@ export function calculatePerksCost(
 export function validateCharacterProgression(
   input: CharacterDraft,
 ): string | null {
-  if (input.unallocatedStatPoints < 0) {
-    return "Unallocated stat points cannot be negative.";
-  }
-
   const statTotal = BASE_STAT_FIELDS.reduce((total, stat) => {
     return total + input.baseStats[stat.key];
   }, 0);

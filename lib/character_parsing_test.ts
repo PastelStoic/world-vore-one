@@ -7,6 +7,7 @@ import { assertEquals } from "jsr:@std/assert@1";
 import {
   BASELINER_FREE_PERKS,
   BASELINER_STAT_POINTS,
+  createDefaultCharacterDraft,
   DEFAULT_FREE_PERKS,
   DEFAULT_STAT_POINTS,
   getStartingFreePerks,
@@ -14,7 +15,10 @@ import {
   PERK_COST_STAT_POINTS,
   type Race,
 } from "./character_types.ts";
-import { calculatePerksCost } from "./character_parsing.ts";
+import {
+  calculatePerksCost,
+  validateCharacterProgression,
+} from "./character_parsing.ts";
 
 const PAID_PERKS = ["runner", "effective-cover-use", "tough"];
 const OTHER_RACES: Race[] = [
@@ -67,5 +71,21 @@ Deno.test("only the first paid perk is free for other races", () => {
   assertEquals(
     perkCost(PAID_PERKS, "Pilzfraun"),
     PERK_COST_STAT_POINTS * 2,
+  );
+});
+
+Deno.test("progression allows negative unallocated points when allocation still balances", () => {
+  const draft = createDefaultCharacterDraft();
+  draft.baseStats = { ...draft.baseStats, strength: 12 };
+  draft.unallocatedStatPoints = -2;
+  assertEquals(validateCharacterProgression(draft), null);
+});
+
+Deno.test("progression still rejects under-spent point totals", () => {
+  const draft = createDefaultCharacterDraft();
+  draft.unallocatedStatPoints = -2;
+  assertEquals(
+    validateCharacterProgression(draft),
+    "Invalid stat/perk point allocation.",
   );
 });

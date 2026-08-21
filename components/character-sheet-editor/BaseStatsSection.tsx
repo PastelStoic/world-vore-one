@@ -42,7 +42,10 @@ export function BaseStatsSection(props: BaseStatsSectionProps) {
     <div class="rounded border p-3 space-y-2">
       <h3 class="font-semibold">Base Stats</h3>
       <p class="text-sm text-base-content flex items-center gap-2">
-        Unallocated stat points: <strong>{availablePoints}</strong>
+        Unallocated stat points:{" "}
+        <strong class={availablePoints < 0 ? "text-error" : undefined}>
+          {availablePoints}
+        </strong>
         <button
           type="button"
           class="px-2 py-1 border rounded disabled:opacity-40"

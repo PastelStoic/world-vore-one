@@ -13,9 +13,18 @@ export type { CharacterSheetEditorProps };
 
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   const editor = useCharacterSheetEditor(props);
+  const remainingPoints = editor.unallocatedStatPoints -
+    editor.inventoryPointCost;
+  const hasNegativePoints = remainingPoints < 0;
 
   return (
-    <form method="POST" class="space-y-4 border rounded-lg p-4 bg-base-100/80">
+    <form
+      method="POST"
+      class="space-y-4 border rounded-lg p-4 bg-base-100/80"
+      onSubmit={(event) => {
+        if (hasNegativePoints) event.preventDefault();
+      }}
+    >
       <h2 class="text-xl font-semibold">{props.title}</h2>
       <HiddenFormFields
         action={props.action}
@@ -80,9 +89,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         onIncreaseStat={editor.increaseStat}
         onDecreaseStat={editor.decreaseStat}
         onAdjustUnallocated={(delta) =>
-          editor.setUnallocatedStatPoints((current) =>
-            current + delta
-          )}
+          editor.setUnallocatedStatPoints((current) => current + delta)}
       />
 
       <OtherStatsSection
@@ -158,7 +165,17 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         </label>
       )}
 
-      <Button type="submit">{props.submitLabel}</Button>
+      {hasNegativePoints && (
+        <p class="text-sm text-error">
+          Cannot save a sheet with negative stat points ({remainingPoints}pt
+          remaining). Decrease stats, remove paid perks, or drop inventory items
+          first.
+        </p>
+      )}
+
+      <Button type="submit" disabled={hasNegativePoints}>
+        {props.submitLabel}
+      </Button>
     </form>
   );
 }

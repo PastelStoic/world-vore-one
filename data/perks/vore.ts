@@ -13,7 +13,7 @@ export const VORE_PERKS: PerkDefinition[] = [
 *Ignores any perks that'd prevent you from doing escape attempts, regardless of conditions.
 *You still digest at the exact same speed.`,
     modifiers: {
-      baseStatBonuses: { escapeTraining: 4 },
+      baseStatBonuses: { escapeTraining: 3 },
     },
   },
   {

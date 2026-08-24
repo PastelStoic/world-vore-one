@@ -69,6 +69,7 @@ export function IdentitySection(props: IdentitySectionProps) {
               <span class="block font-medium mb-1">Sex</span>
               <select
                 class="select w-full border rounded px-3 py-2"
+                autocomplete="off"
                 value={description.sex}
                 onChange={(event) => {
                   props.onSexChange(
@@ -91,10 +92,8 @@ export function IdentitySection(props: IdentitySectionProps) {
               <select
                 key={`race-${description.sex}`}
                 class="select w-full border rounded px-3 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                name="race"
-                value={props.racesForCurrentSex.includes(props.race)
-                  ? props.race
-                  : props.racesForCurrentSex[0]}
+                autocomplete="off"
+                value={props.race}
                 disabled={props.lockIdentityFields}
                 onChange={(event) => {
                   props.onRaceChange(

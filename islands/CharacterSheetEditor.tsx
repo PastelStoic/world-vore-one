@@ -1,3 +1,4 @@
+import { useLayoutEffect, useState } from "preact/hooks";
 import OtherStatsSection from "@/components/OtherStatsSection.tsx";
 import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
@@ -11,7 +12,30 @@ import type { CharacterSheetEditorProps } from "@/components/character-sheet-edi
 
 export type { CharacterSheetEditorProps };
 
+function isBfcacheRestore(event?: Event): boolean {
+  return event instanceof PageTransitionEvent && event.persisted;
+}
+
 export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
+  const [formKey, setFormKey] = useState(0);
+  // Cold loads restore named fields after paint, mixing race/sex/points from
+  // earlier visits. Remount from server props once restoration has run; keep
+  // in-progress edits when the document comes back from bfcache.
+  useLayoutEffect(() => {
+    const discardRestoredForm = (event?: Event) => {
+      if (isBfcacheRestore(event)) return;
+      setFormKey((key) => key + 1);
+    };
+    discardRestoredForm();
+    globalThis.addEventListener("pageshow", discardRestoredForm);
+    return () =>
+      globalThis.removeEventListener("pageshow", discardRestoredForm);
+  }, []);
+
+  return <CharacterSheetEditorForm key={formKey} {...props} />;
+}
+
+function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
   const editor = useCharacterSheetEditor(props);
   const remainingPoints = editor.unallocatedStatPoints -
     editor.inventoryPointCost;
@@ -20,6 +44,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
   return (
     <form
       method="POST"
+      autocomplete="off"
       class="space-y-4 border rounded-lg p-4 bg-base-100/80"
       onSubmit={(event) => {
         if (hasNegativePoints) event.preventDefault();
@@ -32,6 +57,7 @@ export default function CharacterSheetEditor(props: CharacterSheetEditorProps) {
         basedOnSnapshotId={props.basedOnSnapshotId}
         lockIdentityFields={editor.lockIdentityFields}
         name={editor.name}
+        race={editor.race}
         baseStats={editor.baseStats}
         description={editor.description}
         perkIds={editor.perkIds}

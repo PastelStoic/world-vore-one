@@ -10,6 +10,7 @@ import {
   isPerkEligible,
   type PerkEligibilityContext,
   validatePerkRequirements,
+  validateRaceMatchesSex,
 } from "./draft_validation.ts";
 
 function ctx(
@@ -171,4 +172,19 @@ Deno.test("validatePerkRequirements rejects selection-only perks that are not de
     error,
     'Perk "Pilzfraun Artificer" cannot be selected directly.',
   );
+});
+
+Deno.test("validateRaceMatchesSex rejects gendered race/sex mismatches", () => {
+  assertEquals(
+    validateRaceMatchesSex("Pilzfraun", "Male"),
+    'Race "Pilzfraun" is not valid for sex "Male".',
+  );
+  assertEquals(validateRaceMatchesSex("Pilzherr", "Male"), null);
+  assertEquals(validateRaceMatchesSex("Pilzfraun", "Female"), null);
+  assertEquals(
+    validateRaceMatchesSex("Pilzherr", "Female"),
+    'Race "Pilzherr" is not valid for sex "Female".',
+  );
+  assertEquals(validateRaceMatchesSex("Baseliner", "Male"), null);
+  assertEquals(validateRaceMatchesSex("Baseliner", "Female"), null);
 });

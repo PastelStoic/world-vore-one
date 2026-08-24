@@ -12,6 +12,7 @@ import {
   BASE_STAT_FIELDS,
   type BaseStatKey,
   type CharacterDraft,
+  isRaceValidForSex,
   type PerkOrigin,
   type Race,
   type Sex,
@@ -70,6 +71,20 @@ export function validateStatCaps(draft: CharacterDraft): string | null {
     }
   }
   return null;
+}
+
+// ── Race / sex identity ─────────────────────────────────────────────────────
+
+/**
+ * Gendered races must match sex (Pilzfraun/Tierfraun for Female and Futa,
+ * Pilzherr/Tierherr for Male). Baseliner is valid for every sex.
+ */
+export function validateRaceMatchesSex(
+  race: Race,
+  sex: Sex,
+): string | null {
+  if (isRaceValidForSex(race, sex)) return null;
+  return `Race "${race}" is not valid for sex "${sex}".`;
 }
 
 // ── Perk eligibility ────────────────────────────────────────────────────────
@@ -139,7 +154,9 @@ function perkIdentityError(
   const reasons = identityBlockReasons(perk, ctx);
   if (reasons.length === 0) return null;
   const first = reasons[0];
-  return `Perk "${perk.name}" ${first.charAt(0).toLowerCase()}${first.slice(1)}`;
+  return `Perk "${perk.name}" ${first.charAt(0).toLowerCase()}${
+    first.slice(1)
+  }`;
 }
 
 function missingRequiredPerkId(
@@ -156,7 +173,9 @@ function lockCategoryConflictName(
   if (!perk.lockCategory) return undefined;
   for (const id of ownedPerkIds) {
     const owned = PERKS_BY_ID.get(id);
-    if (owned && owned.id !== perk.id && owned.lockCategory === perk.lockCategory) {
+    if (
+      owned && owned.id !== perk.id && owned.lockCategory === perk.lockCategory
+    ) {
       return owned.name;
     }
   }

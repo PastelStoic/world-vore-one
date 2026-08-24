@@ -3,6 +3,7 @@ import type {
   BaseStats,
   CharacterDescription,
   PerkOrigin,
+  Race,
 } from "@/lib/character_types.ts";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 
@@ -12,6 +13,7 @@ interface HiddenFormFieldsProps {
   basedOnSnapshotId?: string;
   lockIdentityFields: boolean;
   name: string;
+  race: Race;
   baseStats: BaseStats;
   description: CharacterDescription;
   perkIds: string[];
@@ -43,6 +45,7 @@ export function HiddenFormFields(props: HiddenFormFieldsProps) {
           value={props.basedOnSnapshotId}
         />
       )}
+      <input type="hidden" name="race" value={props.race} autocomplete="off" />
       <input
         type="hidden"
         name="baseStats"
@@ -52,6 +55,7 @@ export function HiddenFormFields(props: HiddenFormFieldsProps) {
         type="hidden"
         name="description"
         value={JSON.stringify(props.description)}
+        autocomplete="off"
       />
       <input
         type="hidden"
@@ -113,6 +117,7 @@ export function HiddenFormFields(props: HiddenFormFieldsProps) {
         type="hidden"
         name="unallocatedStatPoints"
         value={String(props.unallocatedStatPoints)}
+        autocomplete="off"
       />
       {
         /* When identity fields are locked the fieldset is disabled and its

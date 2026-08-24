@@ -1,0 +1,61 @@
+/**
+ * Unit tests for character form draft validation.
+ * Run: deno test -A lib/form_helpers_test.ts
+ */
+
+import { assertEquals } from "jsr:@std/assert@1";
+import {
+  createDefaultCharacterDraft,
+  createDefaultDescription,
+} from "./character_types.ts";
+import { createEmptyInventory } from "./inventory_types.ts";
+import {
+  buildAndValidateDraft,
+  type ParsedCharacterFields,
+} from "./form_helpers.ts";
+
+function fields(
+  overrides: Partial<ParsedCharacterFields> = {},
+): ParsedCharacterFields {
+  const draft = createDefaultCharacterDraft();
+  return {
+    name: "Test",
+    action: "create",
+    changelog: "Initial creation",
+    race: draft.race,
+    description: draft.description,
+    baseStats: draft.baseStats,
+    perkIds: [],
+    perkNotes: {},
+    perkUpgradeNotes: {},
+    perkStatChoices: {},
+    perkRanks: {},
+    perkDisguises: {},
+    perkSelections: {},
+    perkPointChoices: {},
+    perkOrigins: {},
+    factionCompensatedPerkIds: [],
+    unallocatedStatPoints: draft.unallocatedStatPoints,
+    basedOnSnapshotId: "",
+    pendingImageId: "",
+    inventory: createEmptyInventory(),
+    ...overrides,
+  };
+}
+
+Deno.test("buildAndValidateDraft accepts the default create draft", () => {
+  const result = buildAndValidateDraft(fields());
+  assertEquals(result instanceof Response, false);
+});
+
+Deno.test("buildAndValidateDraft rejects a male Pilzfraun", async () => {
+  const result = buildAndValidateDraft(fields({
+    race: "Pilzfraun",
+    description: { ...createDefaultDescription(), sex: "Male" },
+  }));
+  assertEquals(result instanceof Response, true);
+  assertEquals(
+    await (result as Response).text(),
+    'Race "Pilzfraun" is not valid for sex "Male".',
+  );
+});

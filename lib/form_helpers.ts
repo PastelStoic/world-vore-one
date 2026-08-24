@@ -23,6 +23,7 @@ import {
 } from "./characters.ts";
 import {
   validatePerkRequirements,
+  validateRaceMatchesSex,
   validateStatCaps,
 } from "./draft_validation.ts";
 import { normalizePerkIds } from "./perk_state_helpers.ts";
@@ -229,6 +230,14 @@ export function buildAndValidateDraft(
 
   if (draft.description.faction && !isKnownFaction(draft.description.faction)) {
     return new Response("Invalid faction selected.", { status: 400 });
+  }
+
+  const raceSexError = validateRaceMatchesSex(
+    draft.race,
+    draft.description.sex,
+  );
+  if (raceSexError) {
+    return new Response(raceSexError, { status: 400 });
   }
 
   const progressionError = validateCharacterProgression(draft);

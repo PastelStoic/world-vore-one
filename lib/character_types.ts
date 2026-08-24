@@ -100,6 +100,11 @@ export function getRacesForSex(sex: Sex): Race[] {
   return ["Pilzfraun", "Tierfraun", "Baseliner"];
 }
 
+/** True when `race` is one of the gendered options allowed for `sex`. */
+export function isRaceValidForSex(race: Race, sex: Sex): boolean {
+  return getRacesForSex(sex).includes(race);
+}
+
 /** Check whether a race is a Pilz-type (Pilzfraun or Pilzherr). */
 export function isPilzRace(race: Race): boolean {
   return race === "Pilzfraun" || race === "Pilzherr";

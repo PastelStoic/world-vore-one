@@ -9,6 +9,7 @@ import {
   getDisplayedRaceName,
   getRacesForSex,
   getStartingStatPoints,
+  isRaceValidForSex,
   mapRaceForSex,
   type PerkOrigin,
   type Sex,
@@ -40,9 +41,12 @@ import { inferInitialPerkState } from "./helpers.ts";
 import type { CharacterSheetEditorProps, ListedPerk } from "./types.ts";
 
 export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
-  const [initialCharacter] = useState(() =>
-    normalizeCharacterPerkIds(props.initialCharacter)
-  );
+  const [initialCharacter] = useState(() => {
+    const normalized = normalizeCharacterPerkIds(props.initialCharacter);
+    const sex = normalized.description.sex;
+    if (isRaceValidForSex(normalized.race, sex)) return normalized;
+    return { ...normalized, race: mapRaceForSex(normalized.race, sex) };
+  });
   const [initialPerkState] = useState(() =>
     inferInitialPerkState(initialCharacter)
   );

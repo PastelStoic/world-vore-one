@@ -12,6 +12,7 @@ import {
   DEFAULT_STAT_POINTS,
   getStartingFreePerks,
   getStartingStatPoints,
+  isRaceValidForSex,
   PERK_COST_STAT_POINTS,
   type Race,
 } from "./character_types.ts";
@@ -88,4 +89,18 @@ Deno.test("progression still rejects under-spent point totals", () => {
     validateCharacterProgression(draft),
     "Invalid stat/perk point allocation.",
   );
+});
+
+Deno.test("gendered races are only valid for matching sex", () => {
+  assertEquals(isRaceValidForSex("Pilzfraun", "Male"), false);
+  assertEquals(isRaceValidForSex("Pilzherr", "Male"), true);
+  assertEquals(isRaceValidForSex("Tierfraun", "Male"), false);
+  assertEquals(isRaceValidForSex("Tierherr", "Male"), true);
+  assertEquals(isRaceValidForSex("Pilzfraun", "Female"), true);
+  assertEquals(isRaceValidForSex("Pilzherr", "Female"), false);
+  assertEquals(isRaceValidForSex("Pilzfraun", "Futa"), true);
+  assertEquals(isRaceValidForSex("Pilzherr", "Futa"), false);
+  assertEquals(isRaceValidForSex("Baseliner", "Male"), true);
+  assertEquals(isRaceValidForSex("Baseliner", "Female"), true);
+  assertEquals(isRaceValidForSex("Baseliner", "Futa"), true);
 });

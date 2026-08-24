@@ -9,6 +9,7 @@ import { BaseStatsSection } from "@/components/character-sheet-editor/BaseStatsS
 import { PerksSection } from "@/components/character-sheet-editor/PerksSection.tsx";
 import { useCharacterSheetEditor } from "@/components/character-sheet-editor/useCharacterSheetEditor.ts";
 import type { CharacterSheetEditorProps } from "@/components/character-sheet-editor/types.ts";
+import { validatePerkDisguises } from "@/lib/draft_validation.ts";
 
 export type { CharacterSheetEditorProps };
 
@@ -40,6 +41,11 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
   const remainingPoints = editor.unallocatedStatPoints -
     editor.inventoryPointCost;
   const hasNegativePoints = remainingPoints < 0;
+  const disguiseError = validatePerkDisguises(
+    editor.perkIds,
+    editor.perkDisguises,
+  );
+  const cannotSave = hasNegativePoints || !!disguiseError;
 
   return (
     <form
@@ -47,7 +53,7 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
       autocomplete="off"
       class="space-y-4 border rounded-lg p-4 bg-base-100/80"
       onSubmit={(event) => {
-        if (hasNegativePoints) event.preventDefault();
+        if (cannotSave) event.preventDefault();
       }}
     >
       <h2 class="text-xl font-semibold">{props.title}</h2>
@@ -199,7 +205,11 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
         </p>
       )}
 
-      <Button type="submit" disabled={hasNegativePoints}>
+      {disguiseError && (
+        <p class="text-sm text-error">{disguiseError}</p>
+      )}
+
+      <Button type="submit" disabled={cannotSave}>
         {props.submitLabel}
       </Button>
     </form>

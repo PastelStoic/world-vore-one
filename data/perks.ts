@@ -123,6 +123,11 @@ export interface PerkDefinition {
   hidden?: boolean;
   /** When true, the owner can disguise this perk as a different perk on their sheet. */
   canDisguise?: boolean;
+  /**
+   * Categories this perk may disguise as. When `canDisguise` is true and this
+   * is unset, any non-disguise, non-free, non-deprecated perk is allowed.
+   */
+  disguiseCategories?: PerkCategory[];
   /** When true, this perk is hidden from normal users and only selectable by admins. */
   adminOnly?: boolean;
   /**

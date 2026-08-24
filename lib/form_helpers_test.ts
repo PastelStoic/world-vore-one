@@ -48,6 +48,38 @@ Deno.test("buildAndValidateDraft accepts the default create draft", () => {
   assertEquals(result instanceof Response, false);
 });
 
+Deno.test("buildAndValidateDraft rejects spy disguised as a faction perk", async () => {
+  const result = buildAndValidateDraft(fields({
+    perkIds: ["spy"],
+    perkDisguises: { spy: "sturmtruppen" },
+  }));
+  assertEquals(result instanceof Response, true);
+  assertEquals(
+    await (result as Response).text(),
+    'Perk "Spy" can only be disguised as a Combat, Vore, or Gimmick perk.',
+  );
+});
+
+Deno.test("buildAndValidateDraft rejects spy disguised as an owned perk", async () => {
+  const result = buildAndValidateDraft(fields({
+    perkIds: ["spy", "runner"],
+    perkDisguises: { spy: "runner" },
+  }));
+  assertEquals(result instanceof Response, true);
+  assertEquals(
+    await (result as Response).text(),
+    'Perk "Spy" cannot be disguised as "Runner", which this character already has. Choose a different disguise first.',
+  );
+});
+
+Deno.test("buildAndValidateDraft accepts spy disguised as an unowned combat perk", () => {
+  const result = buildAndValidateDraft(fields({
+    perkIds: ["spy"],
+    perkDisguises: { spy: "runner" },
+  }));
+  assertEquals(result instanceof Response, false);
+});
+
 Deno.test("buildAndValidateDraft rejects a male Pilzfraun", async () => {
   const result = buildAndValidateDraft(fields({
     race: "Pilzfraun",

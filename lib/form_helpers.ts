@@ -22,6 +22,7 @@ import {
   validateCharacterProgression,
 } from "./characters.ts";
 import {
+  validatePerkDisguises,
   validatePerkRequirements,
   validateRaceMatchesSex,
   validateStatCaps,
@@ -191,6 +192,11 @@ export function parseCharacterFormData(
 export function buildAndValidateDraft(
   fields: ParsedCharacterFields,
 ): CharacterDraft | Response {
+  const perkDisguises = Object.fromEntries(
+    Object.entries(fields.perkDisguises).filter(([id]) =>
+      fields.perkIds.includes(id)
+    ),
+  );
   const draft: CharacterDraft = {
     name: fields.name,
     race: fields.race,
@@ -208,8 +214,8 @@ export function buildAndValidateDraft(
     perkRanks: Object.keys(fields.perkRanks).length > 0
       ? fields.perkRanks
       : undefined,
-    perkDisguises: Object.keys(fields.perkDisguises).length > 0
-      ? fields.perkDisguises
+    perkDisguises: Object.keys(perkDisguises).length > 0
+      ? perkDisguises
       : undefined,
     perkSelections: Object.keys(fields.perkSelections).length > 0
       ? fields.perkSelections
@@ -264,6 +270,14 @@ export function buildAndValidateDraft(
   );
   if (perkRequirementError) {
     return new Response(perkRequirementError, { status: 400 });
+  }
+
+  const perkDisguiseError = validatePerkDisguises(
+    draft.perkIds,
+    draft.perkDisguises,
+  );
+  if (perkDisguiseError) {
+    return new Response(perkDisguiseError, { status: 400 });
   }
 
   if (

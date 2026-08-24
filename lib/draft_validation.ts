@@ -6,7 +6,12 @@
 // character sheet rules.
 // ---------------------------------------------------------------------------
 
-import { type PerkDefinition, PERKS_BY_ID } from "@/data/perks.ts";
+import {
+  PERK_CATEGORY_LABELS,
+  type PerkCategory,
+  type PerkDefinition,
+  PERKS_BY_ID,
+} from "@/data/perks.ts";
 import { getStatCap } from "./stat_calculations.ts";
 import {
   BASE_STAT_FIELDS,
@@ -98,6 +103,8 @@ export interface PerkEligibilityContext {
   derivedPerkIds: ReadonlySet<string>;
   accountPerkCounts?: ReadonlyMap<string, number>;
   isModerator?: boolean;
+  /** Maps disguisable perk IDs to the fake perk they currently appear as. */
+  perkDisguises?: Record<string, string>;
 }
 
 export type PerkAvailabilityStatus = "available" | "hidden" | "blocked";
@@ -110,6 +117,93 @@ export interface PerkAvailability {
 
 function perkName(id: string): string {
   return PERKS_BY_ID.get(id)?.name ?? id;
+}
+
+function formatDisguiseCategoryList(categories: PerkCategory[]): string {
+  const labels = categories.map((c) => PERK_CATEGORY_LABELS[c]);
+  if (labels.length <= 1) return labels[0] ?? "";
+  if (labels.length === 2) return `${labels[0]} or ${labels[1]}`;
+  return `${labels.slice(0, -1).join(", ")}, or ${labels[labels.length - 1]}`;
+}
+
+/**
+ * Why `target` is not a legal disguise for `source`, or null if it is allowed.
+ * Owned perks, other disguisable perks, free/deprecated perks, category limits,
+ * and targets already used by another disguise are rejected so a public sheet
+ * cannot show the same perk twice.
+ */
+export function getDisguiseTargetError(
+  source: PerkDefinition,
+  target: PerkDefinition,
+  ownedPerkIds: readonly string[],
+  perkDisguises?: Record<string, string>,
+): string | null {
+  if (target.id === source.id) {
+    return `Perk "${source.name}" cannot be disguised as itself.`;
+  }
+  if (target.canDisguise) {
+    return `Perk "${source.name}" cannot be disguised as another disguisable perk.`;
+  }
+  if (target.isFree) {
+    return `Perk "${source.name}" cannot be disguised as a free perk.`;
+  }
+  if (target.deprecated) {
+    return `Perk "${source.name}" cannot be disguised as a removed perk.`;
+  }
+  if (
+    source.disguiseCategories &&
+    !source.disguiseCategories.includes(target.category)
+  ) {
+    return `Perk "${source.name}" can only be disguised as a ${
+      formatDisguiseCategoryList(source.disguiseCategories)
+    } perk.`;
+  }
+  if (ownedPerkIds.includes(target.id)) {
+    return `Perk "${source.name}" cannot be disguised as "${target.name}", which this character already has. Choose a different disguise first.`;
+  }
+  if (perkDisguises) {
+    for (const [otherSourceId, otherTargetId] of Object.entries(perkDisguises)) {
+      if (otherSourceId !== source.id && otherTargetId === target.id) {
+        return `Perk "${perkName(otherSourceId)}" is already disguised as "${target.name}".`;
+      }
+    }
+  }
+  return null;
+}
+
+/** True when {@link getDisguiseTargetError} returns null. */
+export function isAllowedDisguiseTarget(
+  source: PerkDefinition,
+  target: PerkDefinition,
+  ownedPerkIds: readonly string[],
+  perkDisguises?: Record<string, string>,
+): boolean {
+  return getDisguiseTargetError(
+    source,
+    target,
+    ownedPerkIds,
+    perkDisguises,
+  ) === null;
+}
+
+function disguiseSourcesForTarget(
+  targetId: string,
+  perkDisguises?: Record<string, string>,
+): string[] {
+  if (!perkDisguises) return [];
+  return Object.entries(perkDisguises)
+    .filter(([, disguiseId]) => disguiseId === targetId)
+    .map(([sourceId]) => perkName(sourceId));
+}
+
+function disguiseUnlockBlockReason(
+  targetId: string,
+  perkDisguises?: Record<string, string>,
+): string | undefined {
+  const sources = disguiseSourcesForTarget(targetId, perkDisguises);
+  if (sources.length === 0) return undefined;
+  const who = sources.length === 1 ? sources[0] : sources.join(" and ");
+  return `${who} is currently disguised as this perk. Choose a different disguise first.`;
 }
 
 function requiredFactions(perk: PerkDefinition): string[] | undefined {
@@ -297,6 +391,23 @@ function collectBlockReasons(
     }
   }
 
+  const selfDisguiseReason = disguiseUnlockBlockReason(
+    perk.id,
+    ctx.perkDisguises,
+  );
+  if (selfDisguiseReason) {
+    reasons.push(selfDisguiseReason);
+  }
+
+  for (const id of perk.includesPerks ?? []) {
+    const sources = disguiseSourcesForTarget(id, ctx.perkDisguises);
+    if (sources.length === 0) continue;
+    const who = sources.length === 1 ? sources[0] : sources.join(" and ");
+    reasons.push(
+      `Includes "${perkName(id)}", which ${who} is currently disguised as. Choose a different disguise first.`,
+    );
+  }
+
   return [...new Set(reasons)];
 }
 
@@ -315,6 +426,7 @@ function collectBlockReasons(
  * - lock category conflict
  * - mutual exclusion (`excludesPerks`)
  * - one-way restriction (`restrictsPerks`)
+ * - currently used as a disguise target (change the disguise first)
  */
 export function getPerkAvailability(
   perk: PerkDefinition,
@@ -379,6 +491,44 @@ export function validatePerkRequirements(
 
     const combinationError = perkCombinationError(perk, perkIds);
     if (combinationError) return combinationError;
+  }
+
+  return null;
+}
+
+/**
+ * Server-side check that every stored disguise is legal: the source perk is
+ * owned and disguisable, and the target is an allowed fake perk that this
+ * sheet does not already have.
+ */
+export function validatePerkDisguises(
+  perkIds: string[],
+  perkDisguises?: Record<string, string>,
+): string | null {
+  if (!perkDisguises) return null;
+
+  for (const [sourceId, targetId] of Object.entries(perkDisguises)) {
+    if (!perkIds.includes(sourceId)) {
+      return `Cannot disguise perk "${perkName(sourceId)}" because it is not on this sheet.`;
+    }
+
+    const source = PERKS_BY_ID.get(sourceId);
+    if (!source?.canDisguise) {
+      return `Perk "${perkName(sourceId)}" cannot be disguised.`;
+    }
+
+    const target = PERKS_BY_ID.get(targetId);
+    if (!target) {
+      return `Perk "${source.name}" is disguised as unknown perk "${targetId}".`;
+    }
+
+    const error = getDisguiseTargetError(
+      source,
+      target,
+      perkIds,
+      perkDisguises,
+    );
+    if (error) return error;
   }
 
   return null;

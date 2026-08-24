@@ -8,6 +8,7 @@ import {
 } from "@/lib/character_types.ts";
 import { calculatePerksCost } from "@/lib/character_parsing.ts";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
+import { getDisguiseTargetError } from "@/lib/draft_validation.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 
@@ -296,33 +297,63 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
           }}
         />
       )}
-      {perk?.canDisguise && (
-        <div class="mt-1">
-          <label class="text-xs text-base-content/70">Disguise as:</label>
-          <select
-            class="select ml-2 border rounded px-2 py-1 text-sm"
-            value={props.perkDisguises[perk.id] ?? ""}
-            onChange={(e) => {
-              const value = (e.target as HTMLSelectElement).value;
-              props.onPerkDisguiseChange(perk.id, value);
-            }}
-          >
-            <option value="">(no disguise)</option>
-            {props.allPerks
-              .filter((p) =>
-                p.id !== perk.id &&
-                !p.canDisguise &&
-                !p.isFree &&
-                !p.deprecated
-              )
-              .map((p) => (
+      {perk?.canDisguise && (() => {
+        const currentDisguiseId = props.perkDisguises[perk.id] ?? "";
+        const currentDisguisePerk = currentDisguiseId
+          ? props.allPerks.find((p) => p.id === currentDisguiseId)
+          : undefined;
+        const currentDisguiseError = currentDisguiseId
+          ? (currentDisguisePerk
+            ? getDisguiseTargetError(
+              perk,
+              currentDisguisePerk,
+              props.perkIds,
+              props.perkDisguises,
+            )
+            : `Unknown perk "${currentDisguiseId}".`)
+          : null;
+        const disguiseOptions = props.allPerks.filter((p) =>
+          p.id === currentDisguiseId ||
+          getDisguiseTargetError(
+            perk,
+            p,
+            props.perkIds,
+            props.perkDisguises,
+          ) === null
+        );
+        return (
+          <div class="mt-1">
+            <label class="text-xs text-base-content/70">Disguise as:</label>
+            <select
+              class="select ml-2 border rounded px-2 py-1 text-sm"
+              value={currentDisguiseId}
+              onChange={(e) => {
+                const value = (e.target as HTMLSelectElement).value;
+                props.onPerkDisguiseChange(perk.id, value);
+              }}
+            >
+              <option value="">(no disguise)</option>
+              {currentDisguiseId &&
+                !disguiseOptions.some((p) => p.id === currentDisguiseId) && (
+                <option value={currentDisguiseId}>
+                  {currentDisguisePerk?.name ?? currentDisguiseId} (invalid)
+                </option>
+              )}
+              {disguiseOptions.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
+                  {p.id === currentDisguiseId && currentDisguiseError
+                    ? " (invalid)"
+                    : ""}
                 </option>
               ))}
-          </select>
-        </div>
-      )}
+            </select>
+            {currentDisguiseError && (
+              <p class="mt-1 text-xs text-error">{currentDisguiseError}</p>
+            )}
+          </div>
+        );
+      })()}
       {!isDerived && perk?.selectablePerkIds !== undefined && (() => {
         const count = perk.selectablePerksCount ?? 1;
         return (
@@ -332,6 +363,9 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
                 "";
               const otherSelectedIds = (props.perkSelections[perk.id] ?? [])
                 .filter((sel, i) => i !== si && Boolean(sel));
+              const disguiseTargetIds = new Set(
+                Object.values(props.perkDisguises),
+              );
               const candidatePerks = props.allPerks.filter((p) => {
                 if (p.deprecated) return false;
                 if (
@@ -339,6 +373,12 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
                   !perk.selectablePerkIds!.includes(p.id)
                 ) return false;
                 if (otherSelectedIds.includes(p.id)) {
+                  return false;
+                }
+                if (
+                  disguiseTargetIds.has(p.id) &&
+                  p.id !== currentSelectionId
+                ) {
                   return false;
                 }
                 return true;

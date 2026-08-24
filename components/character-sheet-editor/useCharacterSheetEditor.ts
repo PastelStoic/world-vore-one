@@ -195,6 +195,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     derivedPerkIds,
     accountPerkCounts,
     isModerator: props.isModerator,
+    perkDisguises,
   };
   const listedPerks: ListedPerk[] = props.perks.flatMap((perk) => {
     const availability = getPerkAvailability(perk, perkEligibilityCtx);

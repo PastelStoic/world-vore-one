@@ -6,9 +6,12 @@
 import { assertEquals } from "jsr:@std/assert@1";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import {
+  getDisguiseTargetError,
   getPerkAvailability,
+  isAllowedDisguiseTarget,
   isPerkEligible,
   type PerkEligibilityContext,
+  validatePerkDisguises,
   validatePerkRequirements,
   validateRaceMatchesSex,
 } from "./draft_validation.ts";
@@ -171,6 +174,107 @@ Deno.test("validatePerkRequirements rejects selection-only perks that are not de
   assertEquals(
     error,
     'Perk "Pilzfraun Artificer" cannot be selected directly.',
+  );
+});
+
+Deno.test("spy can only disguise as combat, vore, or gimmick perks", () => {
+  const spy = PERKS_BY_ID.get("spy")!;
+  const runner = PERKS_BY_ID.get("runner")!;
+  const survivor = PERKS_BY_ID.get("survivor")!;
+  const scrounger = PERKS_BY_ID.get("scrounger")!;
+  const milky = PERKS_BY_ID.get("milky")!;
+  const sturmtruppen = PERKS_BY_ID.get("sturmtruppen")!;
+  const speisfraun = PERKS_BY_ID.get("speisfraun")!;
+
+  assertEquals(isAllowedDisguiseTarget(spy, runner, ["spy"]), true);
+  assertEquals(isAllowedDisguiseTarget(spy, survivor, ["spy"]), true);
+  assertEquals(isAllowedDisguiseTarget(spy, scrounger, ["spy"]), true);
+  assertEquals(
+    getDisguiseTargetError(spy, milky, ["spy"]),
+    'Perk "Spy" can only be disguised as a Combat, Vore, or Gimmick perk.',
+  );
+  assertEquals(
+    getDisguiseTargetError(spy, sturmtruppen, ["spy"]),
+    'Perk "Spy" can only be disguised as a Combat, Vore, or Gimmick perk.',
+  );
+  assertEquals(
+    getDisguiseTargetError(spy, speisfraun, ["spy"]),
+    'Perk "Spy" can only be disguised as a Combat, Vore, or Gimmick perk.',
+  );
+});
+
+Deno.test("spy cannot be disguised as a perk the sheet already has", () => {
+  const spy = PERKS_BY_ID.get("spy")!;
+  const runner = PERKS_BY_ID.get("runner")!;
+  assertEquals(
+    getDisguiseTargetError(spy, runner, ["spy", "runner"]),
+    'Perk "Spy" cannot be disguised as "Runner", which this character already has. Choose a different disguise first.',
+  );
+  assertEquals(
+    validatePerkDisguises(["spy", "runner"], { spy: "runner" }),
+    'Perk "Spy" cannot be disguised as "Runner", which this character already has. Choose a different disguise first.',
+  );
+});
+
+Deno.test("validatePerkDisguises accepts a legal spy disguise", () => {
+  assertEquals(
+    validatePerkDisguises(["spy"], { spy: "runner" }),
+    null,
+  );
+});
+
+Deno.test("two disguisable perks cannot share the same fake perk", () => {
+  const spy = PERKS_BY_ID.get("spy")!;
+  const runner = PERKS_BY_ID.get("runner")!;
+  const disguises = { spy: "runner", "pilzherr-femboy": "runner" };
+  assertEquals(
+    getDisguiseTargetError(
+      spy,
+      runner,
+      ["spy", "pilzherr-femboy"],
+      disguises,
+    ),
+    'Perk "Pilzherr (FEMBOY)" is already disguised as "Runner".',
+  );
+});
+
+Deno.test("a perk used as a spy disguise cannot be unlocked until the disguise changes", () => {
+  const runner = PERKS_BY_ID.get("runner")!;
+  const availability = getPerkAvailability(
+    runner,
+    ctx({
+      ownedPerkIds: ["spy"],
+      perkDisguises: { spy: "runner" },
+    }),
+  );
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, [
+    "Spy is currently disguised as this perk. Choose a different disguise first.",
+  ]);
+});
+
+Deno.test("buying a perk that includes a disguised-as perk is blocked", () => {
+  const canine = PERKS_BY_ID.get("tierfraun-canine")!;
+  const availability = getPerkAvailability(
+    canine,
+    ctx({
+      race: "Tierfraun",
+      ownedPerkIds: ["spy"],
+      perkDisguises: { spy: "runner" },
+    }),
+  );
+  assertEquals(availability.status, "blocked");
+  assertEquals(availability.reasons, [
+    'Includes "Runner", which Spy is currently disguised as. Choose a different disguise first.',
+  ]);
+});
+
+Deno.test("femboy disguises are not limited to combat, vore, or gimmick", () => {
+  const femboy = PERKS_BY_ID.get("pilzherr-femboy")!;
+  const sturmtruppen = PERKS_BY_ID.get("sturmtruppen")!;
+  assertEquals(
+    isAllowedDisguiseTarget(femboy, sturmtruppen, ["pilzherr-femboy"]),
+    true,
   );
 });
 

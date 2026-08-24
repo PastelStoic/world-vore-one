@@ -74,6 +74,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     name: "Spy",
     category: "gimmick",
     canDisguise: true,
+    disguiseCategories: ["combat", "vore", "gimmick"],
     customInput: "Loyal faction and faction you're spying on",
     description: `You are a spy, infiltrated in an enemy faction! Sneaky sneak.
 

@@ -274,7 +274,7 @@ export const WEAPONS: WeaponDefinition[] = [
     ammo: 45,
     rateOfFire: 7,
     weight: 3,
-    pointCost: 3,
+    pointCost: 1,
     traitIds: [
       "two-handed",
       "restricted",

@@ -287,7 +287,7 @@ export const WEAPONS: WeaponDefinition[] = [
   },
   {
     id: "vickers-machinegun",
-    name: "Gun, Machine, Mark I, Vickers, .303-inch",
+    name: "Vickers machinegun",
     type: "Heavy Machinegun",
     kind: "heavy-machinegun",
     nation: "Britain",

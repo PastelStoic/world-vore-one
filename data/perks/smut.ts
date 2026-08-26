@@ -89,9 +89,10 @@ export const SMUT_PERKS: PerkDefinition[] = [
     category: "smut",
     description: `You love showing your intimates to people, much to their dismay!
 
-*When a combat starts, you may choose to flash your enemy. You must be clothed and visible in order to do so. Flashing is a contested check, your CHARISMA vs their INTELLIGENCE.
+*You may choose to flash a target as a free action anytime. You must be clothed and visible in order to do so. Flashing is a contested check, your CHARISMA vs their INTELLIGENCE.
 *For every success you obtain over your opponent, they remain stunned for that many turns, completely flabbergasted by your deed! The stun ends early if they are damaged in any way.
 *A flashed enemy receives -3d6 to perform any actions after the stun is over, for your [CHARISMA] amount of turns. They're distracted!
+*The same target cannot be flashed again for the duration of the scene/combat, your tricks won't work twice.
 *Whore.`,
   },
 ];

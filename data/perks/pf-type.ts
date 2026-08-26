@@ -54,7 +54,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *You are capable of vore all the same as a regular PF.
 
 *You're not very attractive.
-*Gain +2 strenght and +2 constitution, but your intelligence and carisma are capped to 1. 
+*Gain +2 strenght and +2 constitution, but intelligence and charisma checks require an additional 2 successes.
 *You're dumb and you speak with your muscles, not your words. Ooga booga.`,
     modifiers: {
       baseStatBonuses: { constitution: 2, strength: 2 },

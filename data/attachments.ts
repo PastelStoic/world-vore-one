@@ -387,6 +387,18 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
 *Larger, harder hitting, but more difficult to control. A longer barrel is required for proper usage.
 *Deals +1 damage.`,
   },
+  {
+    id: "mp18-extended-magazine",
+    name: "MP18: Extended magazines",
+    appliesTo: "mp-18",
+    nation: "Germany",
+    weight: 1,
+    isCharge: true,
+    ammoOverride: 50,
+    description: `*Holds 50 rounds instead of the default.
+*When buying this piece of gear, you're paying for charges of it. Each charge is an extended magazine. Each charge has 1 weight.
+*Once out of charges, you must swap back into standard magazines.`,
+  },
 
   // ── American ──
   {

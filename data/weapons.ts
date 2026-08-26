@@ -267,8 +267,8 @@ export const WEAPONS: WeaponDefinition[] = [
   {
     id: "lewis-gun",
     name: "Lewis Automatic Machine Gun",
-    type: "Heavy Machinegun",
-    kind: "heavy-machinegun",
+    type: "Leavy Machinegun",
+    kind: "leavy-machinegun",
     nation: "Britain",
     damage: "3",
     ammo: 45,

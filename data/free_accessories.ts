@@ -35,7 +35,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   {
     id: "browning-m1917-magazine",
     name: "Browning M1917 box magazine",
-    weight: 1,
+    weight: 3,
     ammo: 250,
     description:
       "A box magazine for the Browning M1917. Choose how many to bring at scene start.",
@@ -43,7 +43,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   {
     id: "maxim-m1910-magazine",
     name: "Maxim M1910 magazine",
-    weight: 1,
+    weight: 3,
     ammo: 250,
     description:
       "A box magazine for the Maxim M1910. Choose how many to bring at scene start.",
@@ -59,7 +59,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   {
     id: "schwarzlose-m07/12-magazine",
     name: "Schwarzlose M.07/12 magazine",
-    weight: 1,
+    weight: 3,
     ammo: 250,
     description:
       "A box magazine for the Schwarzlose. Choose how many to bring at scene start.",
@@ -67,7 +67,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   {
     id: "fiat-revelli-modello-1914",
     name: "Fiat revelli modello 1914",
-    weight: 1,
+    weight: 3,
     ammo: 250,
     description:
       "A box magazine for the Fiat Revelli. Choose how many to bring at scene start.",

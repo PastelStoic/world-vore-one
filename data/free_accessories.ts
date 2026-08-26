@@ -49,6 +49,14 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
       "A box magazine for the Maxim M1910. Choose how many to bring at scene start.",
   },
   {
+    id: "vickers-magazine",
+    name: "Vickers magazine",
+    weight: 1,
+    ammo: 250,
+    description:
+      "A box magazine for the Vickers machinegun. Choose how many to bring at scene start.",
+  },
+  {
     id: "schwarzlose-m07/12-magazine",
     name: "Schwarzlose M.07/12 magazine",
     weight: 1,

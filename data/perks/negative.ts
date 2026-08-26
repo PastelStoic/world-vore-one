@@ -130,6 +130,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Gain 4 points by picking this perk.
 *You may take this perk up to five times.
 *Multiple stacks of this perk cannot lock the same main stat, they must each lock a different one.
+*You may not grab perks whose stat would be locked by the perk. I.e, no 'melee-fighter' if Strength is locked.
+*You may not grab perks that'd negate your drawback. I.e, no 'cunning linguist' if Charisma is locked.
 
 *Charisma checks require 1 additional success. You are clearly ill and repulse people.
 *One of: STR, DEX, CONS, INT, CHAR, is permanently locked at 1, and you always fail such checks.

@@ -83,4 +83,15 @@ export const SMUT_PERKS: PerkDefinition[] = [
 *If interacting with 'THE IMPREGNATOR', pick Even or Odd, then roll a 1d6.  You get to pick who you're impregnated with AND how many if it lands favourably.
 *Using the 'in-charge' perk to digest people inside your womb will digest your children.`,
   },
+  {
+    id: "flasher",
+    name: "Flasher",
+    category: "smut",
+    description: `You love showing your intimates to people, much to their dismay!
+
+*When a combat starts, you may choose to flash your enemy. You must be clothed and visible in order to do so. Flashing is a contested check, your CHARISMA vs their INTELLIGENCE.
+*For every success you obtain over your opponent, they remain stunned for that many turns, completely flabbergasted by your deed! The stun ends early if they are damaged in any way.
+*A flashed enemy receives -3d6 to perform any actions after the stun is over, for your [CHARISMA] amount of turns. They're distracted!
+*Whore.`,
+  },
 ];

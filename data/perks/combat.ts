@@ -265,7 +265,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Your revolvers are special to you. You cannot willingly hand them over, and must always recover them, even at the risk of your own life.
 *You do not reload your revolvers. Instead, throw them at the enemy as a free action, dealing 2 damage on hit, and then whip out another.
 *The revolvers break apart when thrown at an enemy, making them unusable.
-*Your bandolier and revolvers always return to you somehow, but you can be separated from them temporarily.`,
+*Your bandolier and revolvers always return to you somehow, but you can be separated from them temporarily.
+*If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.`,
       customInput: "Choosen revolver",
       grantsEquipment: [
       { equipmentId: "revolver-bandolier" },

@@ -303,6 +303,7 @@ export const WEAPONS: WeaponDefinition[] = [
       "hmg-recoil",
       "extra-heavy-magazines",
     ],
+    compatibleAttachmentIds: [],
     freeAccessoryIds: ["vickers-magazine"],
     requiresMagazines: true,
     reloadTurns: 3,

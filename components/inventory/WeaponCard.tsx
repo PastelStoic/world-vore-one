@@ -135,7 +135,8 @@ export default function WeaponCard(props: WeaponCardProps) {
       })
       .map((a) => a.attachmentId),
   );
-  const availableAttachments = def.compatibleAttachmentIds
+  const compatibleAttachmentIds = def.compatibleAttachmentIds ?? [];
+  const availableAttachments = compatibleAttachmentIds
     .filter((aId) =>
       !w.attachedIds.includes(aId) &&
       ownedAttachmentIds.has(aId) &&
@@ -144,7 +145,7 @@ export default function WeaponCard(props: WeaponCardProps) {
     .map((aId) => ATTACHMENTS_BY_ID.get(aId))
     .filter(Boolean);
   const blockedByPrerequisiteCount =
-    def.compatibleAttachmentIds.filter((aId) =>
+    compatibleAttachmentIds.filter((aId) =>
       !w.attachedIds.includes(aId) &&
       ownedAttachmentIds.has(aId) &&
       !canAttachToWeapon(aId, w.attachedIds)
@@ -748,7 +749,7 @@ export default function WeaponCard(props: WeaponCardProps) {
         </div>
       )}
       {!readOnly && availableAttachments.length === 0 &&
-        def.compatibleAttachmentIds.filter((aId) =>
+        compatibleAttachmentIds.filter((aId) =>
             !w.attachedIds.includes(aId)
           ).length > 0 &&
         (

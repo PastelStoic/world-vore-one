@@ -388,7 +388,7 @@ export function getSignatureFreeAttachmentIds(
   const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
   if (!def) return new Set<string>();
 
-  return new Set(def.compatibleAttachmentIds);
+  return new Set(def.compatibleAttachmentIds ?? []);
 }
 
 export function countAllItemSlotsWithPerks(

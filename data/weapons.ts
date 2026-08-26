@@ -531,7 +531,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 2,
     pointCost: 3,
     traitIds: ["two-handed", "restricted"],
-    compatibleAttachmentIds: ["bayonet", "strong-sling"],
+    compatibleAttachmentIds: ["bayonet", "strong-sling", "mp18-extended-magazine"],
     discountFactionPerkIds: ["sturmtruppen"],
   },
   {

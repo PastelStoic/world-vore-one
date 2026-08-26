@@ -137,6 +137,18 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *This is not a generalized charisma buff! You're meant to lie and manipulate people with it!`,
   },
   {
+    id: "frightful-presence",
+    name: "Frightful prersence",
+    category: "gimmick",
+    description:
+      `You are particularly terrifying to see, and you scare people easily!
+
+*When trying to intimidate or scare someone, you roll an additional +3d6 charisma, counting successes on 4 and above.
+*When intimidating a target, your number of successes over then forces them into a panic! They must spend [SUCCESSES] number of turns running away from you.
+*If they are unable to create distance, they must keep you away through other means, including fighting. A cornered rat is very dangerous!
+*This is not a generalized charisma buff! You're meant to scare or intimidate people with it!`,
+  },
+  {
     id: "emergency-treatment-expertise",
     name: "Emergency treatment expertise",
     category: "gimmick",
@@ -180,7 +192,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
   },
   {
     id: "masterful-linguist",
-    name: "Masterful linguist",
+    name: "Cunning linguist",
     category: "gimmick",
     description:
       `You are a master of communications. You speak clearly, and your ears are awfully sharp! 

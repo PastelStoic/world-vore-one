@@ -316,6 +316,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "You may spend an action to swap between using the weapon as an LMG or an SMG. The former has the weapon behave normally. The latter reduces firerate to 5 and removes the accuracy bonus for firing multiple shots, but the weapon is always considered 'set up' as long as you're holding it.",
   },
+  {
+    id: "dual-magazine",
+    name: "Dual magazine",
+    description:
+      "The weapon has two magazines instead of one! Reloading only reloads one of the magazines at a time.",
+  },
 
   // SASS DOES A THING FOR ONCE
   {

@@ -51,7 +51,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
   {
     id: "vickers-magazine",
     name: "Vickers magazine",
-    weight: 1,
+    weight: 3,
     ammo: 250,
     description:
       "A box magazine for the Vickers machinegun. Choose how many to bring at scene start.",

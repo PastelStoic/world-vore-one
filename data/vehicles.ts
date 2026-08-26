@@ -157,6 +157,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "engine",
       "fuel-tanks",
       "tracks",
+      "light-ammo-stowage",
     ],
     description:
       `The first turreted tank in the world! Very small and compact, as well as easy to destroy, making it cheaper than most tanks.

@@ -282,6 +282,18 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     weight: 2,
     description: `*Has 2 weight. When in cover, +2d6 to cover rolls.`,
   },
+  {
+    id: "lewis-extended-magazine",
+    name: "Lewis gun: Extended magazine",
+    appliesTo: "Lewis Automatic Machine Gun",
+    nation: "Britain",
+    weight: 1,
+    isCharge: true,
+    ammoOverride: 97,
+    requiresMagazines: true,
+    description: `*Has 97 rounds and 1 weight.
+*When buying this piece of gear, you're paying for charges of it. Each charge is an additional 97 round magazine. Each charge has 1 weight.`,
+  },
 
   // ── French ──
   {

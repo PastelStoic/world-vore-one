@@ -282,7 +282,6 @@ export const WEAPONS: WeaponDefinition[] = [
       "lmg-recoil",
     ],
     compatibleAttachmentIds: ["lewis-gun-shield","lewis-extended-magazine"],
-    freeAccessoryIds: ["lewis-drum-magazine"],
     discountFactionPerkIds: ["british-trench-raider", "harlem-hellfighter"],
     reloadTurns: 1,
   },

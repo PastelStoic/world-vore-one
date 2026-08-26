@@ -119,11 +119,14 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     name: "Authoritarian",
     category: "gimmick",
     description:
-      `Your mere presence commands authority! Most will not dare speak ill of you to your face!
+      `Your mere presence commands authority! Your rank is recognized by all! Most will not dare speak ill of you to your face!
 
-*When attempting to intimidate or force someone do something based on your authority, add +3d6 to your charisma.
+*You are a high rank within an organization, one that is well-known wherever you go, enough that you may pull rank.
+*Your rank allows you to go to places you shouldn't be, and talk to people you shouldn't be able to.
+*You may requisition fitting items from your organization in order to help you in your endeavours.
+*When attempting to force someone do something based on your authority, add +3d6 to your charisma.
 *You now count count successess on 4 and above when doing that. 
-*This is not a generalized charisma buff! You're meant to be a bully with it!`,
+*This is not a generalized charisma buff! You're meant to be pulling rank with it!`,
   },
   {
     id: "natural-fibster",

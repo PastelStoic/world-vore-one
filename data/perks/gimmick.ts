@@ -124,8 +124,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *You are a high rank within an organization, one that is well-known wherever you go, enough that you may pull rank.
 *Your rank allows you to go to places you shouldn't be, and talk to people you shouldn't be able to.
 *You may requisition fitting items from your organization in order to help you in your endeavours.
+*You may intimidate your own allies into breaking out of mental effects, such as being flashed or intimidated by another.
 *When attempting to force someone do something based on your authority, add +3d6 to your charisma.
 *You now count count successess on 4 and above when doing that. 
+*If you succeed in pulling rank, your target(s) must obey your commands, so long as they are not suicidal!
 *This is not a generalized charisma buff! You're meant to be pulling rank with it!`,
   },
   {

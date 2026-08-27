@@ -272,6 +272,16 @@ export const EQUIPMENT: EquipmentDefinition[] = [
   *Like a 'signiature weapon', it will always return to you somehow, but you can be separated from it for some time.`,
   },
   {
+    id: "disguise-kit",
+    name: "Disguise kit",
+    weight: 1,
+    isGhost: true,
+    description: `A disguise kit, perfectly tailored for you!
+  *This kit allows you to disguise as other characters, faking being them entirely!
+  *No one can tell who you really are without getting a really close look ...
+  *Stilts, fake masks, and tons of makeup. Adjust your height, facial composition and even hair!`,
+  },
+  {
     id: "dreadnoughts-armor",
     name: "Dreadnought's armor",
     weight: 6,

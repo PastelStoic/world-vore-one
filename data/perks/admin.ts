@@ -56,6 +56,7 @@ export const ADMIN_PERKS: PerkDefinition[] = [
     name: "Munsterfraun (DRAKES)",
     category: "pf-type",
     adminOnly: true,
+    hidden: true,
     includesPerks: [
       "brawler",
       "runner",

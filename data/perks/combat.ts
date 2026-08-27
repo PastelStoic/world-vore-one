@@ -264,7 +264,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You do not reload your revolvers. Instead, throw them at the enemy as a free action, dealing 2 damage on hit, and then whip out another.
 *The revolvers break apart when thrown at an enemy, making them unusable.
 *Your bandolier and revolvers always return to you somehow, but you can be separated from them temporarily.
-*If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.`,
+*If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.
+*GUNSLINGER'S HONOUR: When meeting another gunslinger, must initiate a duel. Both roll their dexterities; winner instantly kills the loser.`,
       customInput: "Choosen revolver",
       grantsEquipment: [
       { equipmentId: "revolver-bandolier" },

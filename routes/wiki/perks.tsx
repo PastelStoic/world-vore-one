@@ -26,7 +26,9 @@ export default define.page(function WikiPerks() {
       </header>
 
       {PERK_CATEGORY_ORDER.map((category) => {
-        const perks = PERKS.filter((p) => p.category === category);
+        const perks = PERKS.filter((p) =>
+          p.category === category && !p.hidden
+        );
         if (perks.length === 0) return null;
         return (
           <section key={category} class="space-y-2">
@@ -115,13 +117,6 @@ export default define.page(function WikiPerks() {
                         ? (
                           <p class="text-error text-xs">
                             Restricts: {perk.restrictsPerks.join(", ")}
-                          </p>
-                        )
-                        : null}
-                      {perk.hidden
-                        ? (
-                          <p class="text-xs text-base-content/60">
-                            Hidden from the unlock list.
                           </p>
                         )
                         : null}

@@ -117,8 +117,8 @@ export interface PerkDefinition {
    */
   restrictsPerks?: string[];
   /**
-   * When true, this perk never appears in the add-perk list and cannot be
-   * purchased directly. Derived grants (includesPerks / selections) still work.
+   * When true, this perk never appears in the add-perk list or wiki and cannot
+   * be purchased directly. Derived grants (includesPerks / selections) still work.
    */
   hidden?: boolean;
   /** When true, the owner can disguise this perk as a different perk on their sheet. */

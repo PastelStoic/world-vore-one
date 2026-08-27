@@ -119,11 +119,16 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     name: "Authoritarian",
     category: "gimmick",
     description:
-      `Your mere presence commands authority! Most will not dare speak ill of you to your face!
+      `Your mere presence commands authority! Your rank is recognized by all! Most will not dare speak ill of you to your face!
 
-*When attempting to intimidate or force someone do something based on your authority, add +3d6 to your charisma.
+*You are a high rank within an organization, one that is well-known wherever you go, enough that you may pull rank.
+*Your rank allows you to go to places you shouldn't be, and talk to people you shouldn't be able to.
+*You may requisition fitting items from your organization in order to help you in your endeavours.
+*You may intimidate your own allies into breaking out of mental effects, such as being flashed or intimidated by another.
+*When attempting to force someone do something based on your authority, add +3d6 to your charisma.
 *You now count count successess on 4 and above when doing that. 
-*This is not a generalized charisma buff! You're meant to be a bully with it!`,
+*If you succeed in pulling rank, your target(s) must obey your commands, so long as they are not suicidal!
+*This is not a generalized charisma buff! You're meant to be pulling rank with it!`,
   },
   {
     id: "natural-fibster",
@@ -132,9 +137,30 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `People will eat your bullshit up like a well baked fresh blueberry pie!
 
-*When trying to lie or manipulate someone, you roll an additional 3d6. 
-*You now count successes on 4 and above when doing that.
-*This is not a generalized charisma buff! You're meant to lie and manipulate people with it!`,
+*Gain the special 'disguise-kit', which always returns to you somehow!
+*When trying to lie or manipulate someone, you roll an additional 3d6, and count successes on 4 and above.
+*This is not a generalized charisma buff! You're meant to lie and manipulate people with it!
+*You may disguise yourself as other characters, creating fake personas in order to act as them.
+*You may ask the owner of that character to post your posts on your behalf, so as to keep up the illusion better.
+*Consider sending your posts when you are certain your partner is not looking into the channel.
+*Like the 'spy' perk, this perk can be hidden and disguised as another.`,
+    grantsEquipment: [
+      { equipmentId: "disguise-kit" },
+    ],
+    canDisguise: true,
+    disguiseCategories: ["combat", "vore", "gimmick"],
+  },
+  {
+    id: "frightful-presence",
+    name: "Frightful prersence",
+    category: "gimmick",
+    description:
+      `You are particularly terrifying to see, and you scare people easily!
+
+*When trying to intimidate or scare someone, you roll an additional +3d6 charisma, counting successes on 4 and above.
+*When intimidating a target, your number of successes over then forces them into a panic! They must spend [SUCCESSES] number of turns running away from you.
+*If they are unable to create distance, they must keep you away through other means, including fighting. A cornered rat is very dangerous!
+*This is not a generalized charisma buff! You're meant to scare or intimidate people with it!`,
   },
   {
     id: "emergency-treatment-expertise",
@@ -180,7 +206,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
   },
   {
     id: "masterful-linguist",
-    name: "Masterful linguist",
+    name: "Cunning linguist",
     category: "gimmick",
     description:
       `You are a master of communications. You speak clearly, and your ears are awfully sharp! 

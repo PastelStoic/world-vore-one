@@ -130,6 +130,8 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Gain 4 points by picking this perk.
 *You may take this perk up to five times.
 *Multiple stacks of this perk cannot lock the same main stat, they must each lock a different one.
+*You may not grab perks whose stat would be locked by the perk. I.e, no 'melee-fighter' if Strength is locked.
+*You may not grab perks that'd negate your drawback. I.e, no 'cunning linguist' if Charisma is locked.
 
 *Charisma checks require 1 additional success. You are clearly ill and repulse people.
 *One of: STR, DEX, CONS, INT, CHAR, is permanently locked at 1, and you always fail such checks.
@@ -161,5 +163,44 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *You may perform no checks besides running away, or checks that contribute towards running away.
 *You automatically fail any checks others impose upon you, so long as they do not prevent you from running away - if they do prevent you, you may roll normally.
 *It is impossible to hide your phobia once you see what you fear - everyone around is immediately made aware of it.`,
+  },
+  {
+    id: "berserker",
+    name: "Berserker",
+    category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    description:
+      `RAAAAAHHHHHHH
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+
+*You are always on edge, just one little spark away from exploding towards anyone and anything around you!
+*Whenever you are attacked, take damage or have a hostile action done upon you, you go berserk! You can go berserk towards multiple things at once!
+*Your intelligence and charisma are both locked to 1, and you automatically fail such checks, whilst berserk.
+*While berserking, you must attack whatever triggered your berserk rage until it is dead or destroyed. You must focus solely on the trigger, and nothing else.
+*Gain +3d6 to attack your trigger, whether melee or ranged. Gain -3d6 to do anything except attacking whilst in your berserk rage.
+*The attacks must cause immediate damage, so long term digestion is off!`,
+  },
+  {
+    id: "titanic",
+    name: "Titanic",
+    category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    description:
+      `You are ridiculously massive, to the point that it is an extreme inconvenience! How's the weather way up there?
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+*You must be at least 8 feet tall or taller.
+
+*You are always at the bottom of initiative, regardless of your dexterity. Compare dexterities to determine initiative vs others with similar conditions.
+*You must spend 1 extra point on body armor, shields and melee weapons, as they must be sized for you. You can utilize 2-handed weapons as if 1 handed.
+*Does not apply to your initial 3 free equipment - those remain equally free.
+*You need an additional 2 successes in order to perform stealth actions and you can always be spotted in a crowd, unless everyone is equally huge!
+*Every tier of cover is rated 1 tier lower, and you must spend an action to take cover - it is not taken automatically.
+*You cannot fit inside vehicles that aren't open-top, like bikes or motorcycles.`,
   },
 ];

@@ -300,4 +300,16 @@ If you have prey inside you, dead or alive:
 *You may only get the first or second conditionals, both do not trigger together in a single scene.
 *The first conditional stacks - escaping multiple predators in a single scene and living grants cumulative points.`,
   },
+  {
+    id: "grabby",
+    name: "Grabby",
+    category: "vore",
+    description:
+      `You are a grabby one! Your touchy hands rarely let go of people.
+
+*This perk only applies if both of your hands are free and usable. This perk is made invalid if you are lacking a hand.
+*Gain +3d6, counting successes on 4 or above, in order to grapple targets. Your targets must roll twice in order to escape your grapple, taking the worst result.
+*You may grapple up to [STRENGTH] targets in one action, and you may grapple them from 1 distance away, immediately bringing them to your distance if you succeed.
+*When attacked in melee, you may attempt to grapple your target as a free action. If a target manages to escape your stomach, they come out still grappled by you.`,
+  },
 ];

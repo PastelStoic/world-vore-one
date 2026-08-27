@@ -114,12 +114,10 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     name: "Signature weapon",
     category: "combat",
     description: `You have a special weapon that belongs to you, and only you! 
-
-*The weapon must be picked from the weapon's list, or reflavoured from there. It will then be considered the highest tier of weapon and deals +1 damage. 
-*No matter what happens, it always returns to you through one way or another. You may be temporarily separated from it.
-*If it is ranged, you may grab any suitable attachments for it, free of charge, at any point, so long as they do not encumber you.
-*If you wish to pick a ranged weapon with the 'restricted' gimmick, you must still pay 1 point. Every other weapon is free.
-*If you wish to pick a melee weapon, you may grab one melee weapon trait that wouldn't otherwise fit the weapon.`,
+    
+*It deals +1 damage and always somehow returns to you, regardless of circumstances. However you may be temporarily separated from it.
+*If you pick a 'restricted' ranged weapon, you must pay 1 point. Every other weapon is free.
+*If it is a ranged weapon, all attachments are free. If it is a melee weapon, you may add 1 melee trait to it.`,
   },
   {
     id: "brawler",
@@ -266,7 +264,8 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You do not reload your revolvers. Instead, throw them at the enemy as a free action, dealing 2 damage on hit, and then whip out another.
 *The revolvers break apart when thrown at an enemy, making them unusable.
 *Your bandolier and revolvers always return to you somehow, but you can be separated from them temporarily.
-*If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.`,
+*If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.
+*GUNSLINGER'S HONOUR: When meeting another gunslinger, must initiate a duel. Both roll their dexterities; winner instantly kills the loser.`,
       customInput: "Choosen revolver",
       grantsEquipment: [
       { equipmentId: "revolver-bandolier" },

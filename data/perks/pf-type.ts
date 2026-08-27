@@ -317,7 +317,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
     category: "pf-type",
     requiredRaces: ["Tierfraun", "Tierherr"],
     lockCategory: "tierfraun-type",
-    includesPerks: ["tough", "authoritarian"],
+    includesPerks: ["tough", "frightful-presence"],
     pointsGranted: -3,
     description:
       `You have animal genes in you, making you stronger in certain areas.

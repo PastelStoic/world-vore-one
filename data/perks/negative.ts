@@ -177,7 +177,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Gain 4 points by picking this perk.
 
 *You are always on edge, just one little spark away from exploding towards anyone and anything around you!
-*Whenever you are attacked, take damage or have a hostile action done upon you, you go berserk!
+*Whenever you are attacked, take damage or have a hostile action done upon you, you go berserk! You can go berserk towards multiple things at once!
 *Your intelligence and charisma are both locked to 1, and you automatically fail such checks, whilst berserk.
 *While berserking, you must attack whatever triggered your berserk rage until it is dead or destroyed. You must focus solely on the trigger, and nothing else.
 *Gain +3d6 to attack your trigger, whether melee or ranged. Gain -3d6 to do anything except attacking whilst in your berserk rage.

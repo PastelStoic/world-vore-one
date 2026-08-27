@@ -147,6 +147,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     grantsEquipment: [
       { equipmentId: "disguise-kit" },
     ],
+    canDisguise: true,
     disguiseCategories: ["combat", "vore", "gimmick"],
   },
   {

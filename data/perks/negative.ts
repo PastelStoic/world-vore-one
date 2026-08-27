@@ -194,7 +194,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 
 *This perk is free.
 *Gain 4 points by picking this perk.
-*You must be at least 15 feet tall or taller.
+*You must be at least 8 feet tall or taller.
 
 *You are always at the bottom of initiative, regardless of your dexterity. Compare dexterities to determine initiative vs others with similar conditions.
 *You must spend 1 extra point on body armor, shields and melee weapons, as they must be sized for you. You can utilize 2-handed weapons as if 1 handed.

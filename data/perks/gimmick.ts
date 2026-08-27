@@ -137,9 +137,17 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `People will eat your bullshit up like a well baked fresh blueberry pie!
 
-*When trying to lie or manipulate someone, you roll an additional 3d6. 
-*You now count successes on 4 and above when doing that.
-*This is not a generalized charisma buff! You're meant to lie and manipulate people with it!`,
+*Gain the special 'disguise-kit', which always returns to you somehow!
+*When trying to lie or manipulate someone, you roll an additional 3d6, and count successes on 4 and above.
+*This is not a generalized charisma buff! You're meant to lie and manipulate people with it!
+*You may disguise yourself as other characters, creating fake personas in order to act as them.
+*You may ask the owner of that character to post your posts on your behalf, so as to keep up the illusion better.
+*Consider sending your posts when you are certain your partner is not looking into the channel.
+*Like the 'spy' perk, this perk can be hidden and disguised as another.`,
+    grantsEquipment: [
+      { equipmentId: "disguise-kit" },
+    ],
+    disguiseCategories: ["combat", "vore", "gimmick"],
   },
   {
     id: "frightful-presence",

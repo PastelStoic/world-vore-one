@@ -246,7 +246,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *You can dual wield any one handed weapon and attack with both of them in one turn. Each attack is rolled independently.
 *Your fists count as weapons for this purpose. You can punch someone twice, or hit them with a sword and punch them, etc.
 *When dual wielding, you cannot utilize alternative firing techniques.
-*Hefties, when using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
+*When using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
 *In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
 *Alternate firing techniques ( 'Mad minute technique', 'Walking fire', etc ... ) no longer have negative effects.
 *Semiautomatic weapons ( 3 rof or lower ) no longer need to waste a shot when multi-targetting.

@@ -183,4 +183,24 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Gain +3d6 to attack your trigger, whether melee or ranged. Gain -3d6 to do anything except attacking whilst in your berserk rage.
 *The attacks must cause immediate damage, so long term digestion is off!`,
   },
+  {
+    id: "titanic",
+    name: "Titanic",
+    category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    description:
+      `You are ridiculously massive, to the point that it is an extreme inconvenience! How's the weather way up there?
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+*You must be at least 15 feet tall or taller.
+
+*You are always at the bottom of initiative, regardless of your dexterity. Compare dexterities to determine initiative vs others with similar conditions.
+*You must spend 1 extra point on body armor, shields and melee weapons, as they must be sized for you. You can utilize 2-handed weapons as if 1 handed.
+*Does not apply to your initial 3 free equipment - those remain equally free.
+*You need an additional 2 successes in order to perform stealth actions and you can always be spotted in a crowd, unless everyone is equally huge!
+*Every tier of cover is rated 1 tier lower, and you must spend an action to take cover - it is not taken automatically.
+*You cannot fit inside vehicles that aren't open-top, like bikes or motorcycles.`,
+  },
 ];

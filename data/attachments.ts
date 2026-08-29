@@ -257,6 +257,22 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description:
       `*Removes the 'extremely-slow-reload' and 'overloaded-chamber' gimmicks, replacing it with 'loading gate'`,
   },
+  {
+    id: "derringer-buckshot",
+    name: "Derringer: Buckshot shells",
+    appliesTo: "Derringer",
+    nation: "Civilian",
+    weight: 1,
+    addsTraitIds: ["buckshot"],
+    description:
+      `*Extensive modification to the weapon, requiring it to be rebuild entirely.
+  *Adds the 'buckshot' trait - you're firing shotgun shells now.
+  *When firing, roll strength. On 0 succcesses, you take 3 damage and your wrist breaks - you can no longer use that hand.
+  *On 1-2 successes, you take 1 damage and the gun falls to the ground. You hurt your wrist!
+  *On 3+ successes, you hold onto the gun safely.
+  *Cannot be removed mid combat - your gun is entirely rebuilt. 
+  *You can only fire buckshot. The bore is too big for standard rounds, and other shells would be too unwieldy.`,
+  },
 
   // ── British ──
   {

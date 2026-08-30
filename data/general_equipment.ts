@@ -169,6 +169,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     id: "cyanide-pill",
     name: "Cyanide pill",
     weight: 1,
+    isConcealable: true,
     description: `A tiny cyanide pill, which guarantees death if ingested.
 *You have a tiny cyanide pill on your person, hidden away in some tiny compartment.
 *It takes one action to pull the pill out, and another to swallow it.
@@ -276,6 +277,7 @@ export const EQUIPMENT: EquipmentDefinition[] = [
     name: "Disguise kit",
     weight: 1,
     isGhost: true,
+    isConcealable: true,
     description: `A disguise kit, perfectly tailored for you!
   *This kit allows you to disguise as other characters, faking being them entirely!
   *No one can tell who you really are without getting a really close look ...

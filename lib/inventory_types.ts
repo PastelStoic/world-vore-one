@@ -78,6 +78,11 @@ export interface InventoryEquipment {
   weightOverride?: number;
   /** Bulky override from the granting perk (e.g. false for sapper equipment) */
   isBulkyOverride?: boolean;
+  /**
+   * Whether this instance is hidden from non-owner/admin character sheet
+   * viewers. When unset, falls back to the catalog `isConcealable` flag.
+   */
+  concealed?: boolean;
 }
 
 /**

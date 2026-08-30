@@ -8,7 +8,9 @@ import { LONG_GUN_ATTACHMENTS, WEAPONS_BY_ID } from "@/data/weapons.ts";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import {
   getSignatureFreeAttachmentIds,
+  isEquipmentConcealed,
   isSignatureFreeAttachment,
+  withoutConcealedItems,
 } from "./helpers.ts";
 
 Deno.test("signature weapon grants every compatible attachment", () => {
@@ -21,7 +23,9 @@ Deno.test("signature weapon grants every compatible attachment", () => {
     )
   );
   if (!leeEnfield) {
-    throw new Error("Expected a weapon with both shared and unique attachments");
+    throw new Error(
+      "Expected a weapon with both shared and unique attachments",
+    );
   }
 
   const inventory = createEmptyInventory();
@@ -46,4 +50,96 @@ Deno.test("signature weapon grants every compatible attachment", () => {
     assertEquals(isSignatureFreeAttachment(leeEnfield, attachmentId), true);
   }
   assertEquals(isSignatureFreeAttachment(leeEnfield, "not-real"), false);
+});
+
+Deno.test("catalog concealable equipment is concealed by default", () => {
+  assertEquals(
+    isEquipmentConcealed({
+      equipmentId: "cyanide-pill",
+      totalCharges: 0,
+      usedCharges: 0,
+    }),
+    true,
+  );
+  assertEquals(
+    isEquipmentConcealed({
+      equipmentId: "disguise-kit",
+      totalCharges: 0,
+      usedCharges: 0,
+    }),
+    true,
+  );
+  assertEquals(
+    isEquipmentConcealed({
+      equipmentId: "grenades",
+      totalCharges: 1,
+      usedCharges: 0,
+    }),
+    false,
+  );
+});
+
+Deno.test("instance concealed flag overrides catalog default", () => {
+  assertEquals(
+    isEquipmentConcealed({
+      equipmentId: "cyanide-pill",
+      totalCharges: 0,
+      usedCharges: 0,
+      concealed: false,
+    }),
+    false,
+  );
+  assertEquals(
+    isEquipmentConcealed({
+      equipmentId: "grenades",
+      totalCharges: 1,
+      usedCharges: 0,
+      concealed: true,
+    }),
+    true,
+  );
+});
+
+Deno.test("withoutConcealedItems hides concealable melee and concealed equipment", () => {
+  const inventory = createEmptyInventory();
+  inventory.carried.weapons.push({
+    weaponId: "dagger",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+  inventory.carried.weapons.push({
+    weaponId: "lee-enfield",
+    currentAmmo: 10,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+  inventory.carried.equipment.push({
+    equipmentId: "cyanide-pill",
+    totalCharges: 0,
+    usedCharges: 0,
+  });
+  inventory.carried.equipment.push({
+    equipmentId: "grenades",
+    totalCharges: 2,
+    usedCharges: 0,
+  });
+  inventory.stowed.equipment.push({
+    equipmentId: "radio-kit",
+    totalCharges: 0,
+    usedCharges: 0,
+    concealed: true,
+  });
+
+  const displayed = withoutConcealedItems(inventory);
+  assertEquals(displayed.carried.weapons.map((w) => w.weaponId), [
+    "lee-enfield",
+  ]);
+  assertEquals(displayed.carried.equipment.map((eq) => eq.equipmentId), [
+    "grenades",
+  ]);
+  assertEquals(displayed.stowed.equipment.length, 0);
+  assertEquals(inventory.carried.equipment.length, 2);
 });

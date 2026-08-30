@@ -1,5 +1,9 @@
+import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
-import type { CharacterInventory } from "./inventory_types.ts";
+import type {
+  CharacterInventory,
+  InventoryEquipment,
+} from "./inventory_types.ts";
 
 /** Add and remove perk-granted equipment / melee / attachments. */
 export function applyPerkGrantedInventory(
@@ -29,14 +33,18 @@ export function applyPerkGrantedInventory(
   for (const perkId of addedPerkIds) {
     const perk = PERKS_BY_ID.get(perkId);
     for (const grant of perk?.grantsEquipment ?? []) {
-      next.carried.equipment.push({
+      const granted: InventoryEquipment = {
         equipmentId: grant.equipmentId,
         totalCharges: 0,
         usedCharges: 0,
         perkGranted: perkId,
         weightOverride: grant.weightOverride,
         isBulkyOverride: grant.isBulkyOverride,
-      });
+      };
+      if (EQUIPMENT_BY_ID.get(grant.equipmentId)?.isConcealable) {
+        granted.concealed = true;
+      }
+      next.carried.equipment.push(granted);
     }
     for (const grant of perk?.grantsWeapons ?? []) {
       next.carried.weapons.push({

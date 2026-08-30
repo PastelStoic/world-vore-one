@@ -116,6 +116,30 @@ Deno.test("parseInventory remaps sapper ghost equipment", async () => {
   assertEquals(parsed?.carried.equipment[0].isBulkyOverride, false);
 });
 
+Deno.test("parseInventory preserves equipment concealed flag", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      equipment: [{
+        equipmentId: "grenades",
+        totalCharges: 2,
+        usedCharges: 0,
+        concealed: true,
+      }],
+    },
+    stowed: {
+      equipment: [{
+        equipmentId: "cyanide-pill",
+        totalCharges: 0,
+        usedCharges: 0,
+        concealed: false,
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.equipment[0].concealed, true);
+  assertEquals(parsed?.stowed.equipment[0].concealed, false);
+});
+
 Deno.test("parseInventory keeps attachmentChargeData and attachment perkGranted", async () => {
   const { parseInventory } = await import("./inventory_parsing.ts");
   const parsed = parseInventory({

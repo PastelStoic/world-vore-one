@@ -49,6 +49,9 @@ export default define.page(function WikiEquipment() {
                   {item.isBulky && (
                     <span class="text-xs text-warning">bulky</span>
                   )}
+                  {item.isConcealable && (
+                    <span class="text-xs text-info">concealable</span>
+                  )}
                   <span class="ml-auto flex items-center gap-3 text-xs text-base-content/70 shrink-0">
                     <span>Wt: {item.weight}</span>
                     <span class="text-base-content/50">▶ details</span>

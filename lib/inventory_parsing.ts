@@ -135,6 +135,8 @@ function parseEquipment(raw: unknown): InventoryEquipment | null {
   if (weightOverride !== undefined) equipment.weightOverride = weightOverride;
   const isBulkyOverride = asBoolean(raw.isBulkyOverride);
   if (isBulkyOverride !== undefined) equipment.isBulkyOverride = isBulkyOverride;
+  const concealed = asBoolean(raw.concealed);
+  if (concealed !== undefined) equipment.concealed = concealed;
   return equipment;
 }
 

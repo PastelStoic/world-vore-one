@@ -2,10 +2,16 @@
 // Shared types and helpers for inventory components
 // ---------------------------------------------------------------------------
 
-import { ATTACHMENTS_BY_ID } from "@/data/equipment.ts";
+import {
+  ATTACHMENTS_BY_ID,
+  EQUIPMENT_BY_ID,
+  MELEE_WEAPONS_BY_ID,
+} from "@/data/equipment.ts";
 import type { WeaponDefinition } from "@/data/equipment_types.ts";
 import type {
+  CharacterInventory,
   InventoryAttachment,
+  InventoryEquipment,
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
 import {
@@ -20,6 +26,49 @@ import {
 } from "@/lib/inventory_calculations.ts";
 
 export type InventoryLocation = "carried" | "stowed";
+
+/** True when a melee weapon definition has the concealable trait. */
+export function isConcealedMeleeWeapon(weaponId: string): boolean {
+  return MELEE_WEAPONS_BY_ID.get(weaponId)?.traitIds.includes("concealable") ===
+    true;
+}
+
+/**
+ * True when this equipment instance should be hidden from public sheets.
+ * An explicit instance flag overrides the catalog default.
+ */
+export function isEquipmentConcealed(eq: InventoryEquipment): boolean {
+  return eq.concealed ??
+    (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isConcealable === true);
+}
+
+/**
+ * Copy of inventory with concealable melee and concealed equipment removed.
+ * Use for public display only; keep the full inventory for weight/points.
+ */
+export function withoutConcealedItems(
+  inventory: CharacterInventory,
+): CharacterInventory {
+  const filterWeapons = (weapons: InventoryWeapon[] = []) =>
+    weapons.filter((w) => !isConcealedMeleeWeapon(w.weaponId));
+  const filterEquipment = (items: InventoryEquipment[] = []) =>
+    items.filter((eq) => !isEquipmentConcealed(eq));
+  return {
+    ...inventory,
+    carried: {
+      ...inventory.carried,
+      weapons: filterWeapons(inventory.carried.weapons),
+      meleeWeapons: [],
+      equipment: filterEquipment(inventory.carried.equipment),
+    },
+    stowed: {
+      ...inventory.stowed,
+      weapons: filterWeapons(inventory.stowed.weapons),
+      meleeWeapons: [],
+      equipment: filterEquipment(inventory.stowed.equipment),
+    },
+  };
+}
 
 export {
   calculateInventoryPointCostWithPerks,

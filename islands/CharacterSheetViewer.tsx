@@ -20,9 +20,11 @@ import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
-import type { CharacterInventory, InventoryWeapon } from "@/lib/inventory_types.ts";
-import { MELEE_WEAPONS_BY_ID } from "@/data/equipment.ts";
-import { calculateInventoryPointCostWithPerks } from "@/components/inventory/helpers.ts";
+import type { CharacterInventory } from "@/lib/inventory_types.ts";
+import {
+  calculateInventoryPointCostWithPerks,
+  withoutConcealedItems,
+} from "@/components/inventory/helpers.ts";
 
 interface CharacterSheetViewerProps {
   character: CharacterDraft | CharacterSheet;
@@ -36,8 +38,8 @@ interface CharacterSheetViewerProps {
   displayOnlyPerkIds?: string[];
   /** Whether the current user can edit ammo/charges (owner or admin). */
   canEditCombatState?: boolean;
-  /** Whether the current user can see concealed melee weapons (owner or admin). */
-  canSeeConcealedMelee?: boolean;
+  /** Whether the current user can see concealed melee/equipment (owner or admin). */
+  canSeeConcealedItems?: boolean;
 }
 
 export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
@@ -48,7 +50,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     canSeeDisguisedPerks = false,
     displayOnlyPerkIds = [],
     canEditCombatState = false,
-    canSeeConcealedMelee = false,
+    canSeeConcealedItems = false,
   } = props;
   const desc = character.description;
 
@@ -104,29 +106,12 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     inventory,
   };
 
-  // Filter concealed melee for display only; calculations (weight, points, etc.)
-  // always use the full inventory so numbers don't leak info about hidden items.
-  const displayInventory: CharacterInventory = (() => {
-    if (canSeeConcealedMelee || !inventory) return inventory;
-    const isConcealed = (weaponId: string) =>
-      MELEE_WEAPONS_BY_ID.get(weaponId)?.traitIds.includes("concealable") ===
-        true;
-    const filterConcealedWeapons = (weapons: InventoryWeapon[] = []) =>
-      weapons.filter((w) => !isConcealed(w.weaponId));
-    return {
-      ...inventory,
-      carried: {
-        ...inventory.carried,
-        weapons: filterConcealedWeapons(inventory.carried.weapons),
-        meleeWeapons: [],
-      },
-      stowed: {
-        ...inventory.stowed,
-        weapons: filterConcealedWeapons(inventory.stowed.weapons),
-        meleeWeapons: [],
-      },
-    };
-  })();
+  // Filter concealed melee/equipment for display only; calculations (weight,
+  // points, etc.) always use the full inventory so numbers don't leak info.
+  const displayInventory: CharacterInventory =
+    canSeeConcealedItems || !inventory
+      ? inventory
+      : withoutConcealedItems(inventory);
 
   const {
     carriedWeight,

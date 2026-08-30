@@ -53,6 +53,7 @@ import {
   getVehiclePointCost,
   getWeaponPointCost,
   type InventoryLocation,
+  isEquipmentConcealed,
   isSignatureFreeAttachment,
   weightLookups,
 } from "./inventory/helpers.ts";
@@ -340,6 +341,7 @@ export default function InventorySection(props: InventorySectionProps) {
       totalCharges: def.isCharge ? 1 : 0,
       usedCharges: 0,
     };
+    if (def.isConcealable) item.concealed = true;
     update((inv) => {
       inv[location].equipment.push(item);
       return inv;
@@ -382,6 +384,18 @@ export default function InventorySection(props: InventorySectionProps) {
       const [vehicle] = inv[from].vehicles.splice(index, 1);
       if (!vehicle) return inv;
       inv[to].vehicles.push(vehicle);
+      return inv;
+    });
+  }
+
+  function toggleEquipmentConcealed(
+    location: InventoryLocation,
+    index: number,
+  ) {
+    update((inv) => {
+      const eq = inv[location].equipment[index];
+      if (!eq) return inv;
+      eq.concealed = !isEquipmentConcealed(eq);
       return inv;
     });
   }
@@ -870,6 +884,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   onRemove={removeEquipment}
                   onSetTotalCharges={setTotalCharges}
                   onToggleCharge={toggleCharge}
+                  onToggleConcealed={toggleEquipmentConcealed}
                 />
               </div>
             ))}
@@ -1164,7 +1179,8 @@ export default function InventorySection(props: InventorySectionProps) {
                         <span class="text-xs text-base-content/60">
                           (W:{eq.weight}
                           {eq.isCharge ? " · Charges" : ""}
-                          {eq.isBulky ? " · Bulky" : ""})
+                          {eq.isBulky ? " · Bulky" : ""}
+                          {eq.isConcealable ? " · Concealed" : ""})
                         </span>
                       </span>
                       <button
@@ -1324,9 +1340,8 @@ export default function InventorySection(props: InventorySectionProps) {
                           ({vehicle.nation} · Size: {vehicle.size} · Agility:
                           {" "}
                           {vehicle.agility} · Speed: {vehicle.speed} · HP:
-                          {getVehicleHp(vehicle)} · Crew:
-                          {" "}
-                          {vehicle.crew} · Seats:
+                          {getVehicleHp(vehicle)} · Crew: {vehicle.crew}{" "}
+                          · Seats:
                           {vehicle.seats} · Doors: {vehicle.doors} · Armor:{" "}
                           {armorLabel(vehicle.id)})
                         </span>

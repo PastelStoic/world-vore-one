@@ -135,6 +135,12 @@ export interface EquipmentDefinition {
   /** Equipment that is bulky (cannot stack with other bulky kits) */
   isBulky?: boolean;
   /**
+   * When true, this item is hidden from non-owner/admin character sheet
+   * viewers by default, same as melee weapons with the concealable trait.
+   * Owners can still reveal a specific instance.
+   */
+  isConcealable?: boolean;
+  /**
    * When true, this item is hidden from the purchase picker and the wiki.
    * It can only be obtained by perk grants.
    */

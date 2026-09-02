@@ -6,23 +6,29 @@ import { VEHICLE_MODULES_BY_ID } from "@/data/vehicle_modules.ts";
 
 export interface GroupedVehicleModule {
   moduleId: string;
+  moduleIds: string[];
   count: number;
 }
 
-/** Collapse identical module IDs into first-seen order with a copy count. */
+/** Collapse modules that share a display name into first-seen order with a copy count. */
 export function groupVehicleModules(
   moduleIds: string[],
 ): GroupedVehicleModule[] {
   const grouped: GroupedVehicleModule[] = [];
-  const indexById = new Map<string, number>();
+  const indexByName = new Map<string, number>();
   for (const moduleId of moduleIds) {
-    const existingIndex = indexById.get(moduleId);
+    const name = resolveVehicleModule(moduleId).name;
+    const existingIndex = indexByName.get(name);
     if (existingIndex !== undefined) {
-      grouped[existingIndex].count += 1;
+      const group = grouped[existingIndex];
+      group.count += 1;
+      if (!group.moduleIds.includes(moduleId)) {
+        group.moduleIds.push(moduleId);
+      }
       continue;
     }
-    indexById.set(moduleId, grouped.length);
-    grouped.push({ moduleId, count: 1 });
+    indexByName.set(name, grouped.length);
+    grouped.push({ moduleId, moduleIds: [moduleId], count: 1 });
   }
   return grouped;
 }
@@ -60,7 +66,63 @@ export function formatVehicleModuleLabel(
   return `${count}x ${resolveVehicleModule(moduleId).name}`;
 }
 
-export function formatVehicleModuleDetails(moduleId: string): string {
+export function formatVehicleModuleDetails(
+  moduleId: string,
+): string;
+export function formatVehicleModuleDetails(
+  moduleIds: readonly string[],
+): string;
+export function formatVehicleModuleDetails(
+  moduleIdOrIds: string | readonly string[],
+): string {
+  const moduleIds = uniquePreserveOrder(
+    typeof moduleIdOrIds === "string" ? [moduleIdOrIds] : moduleIdOrIds,
+  );
+  if (moduleIds.length === 0) {
+    return "";
+  }
+
+  const formatted = moduleIds.map((moduleId) =>
+    formatSingleVehicleModuleDetails(moduleId)
+  );
+  const uniqueFormatted = uniquePreserveOrder(formatted);
+  if (uniqueFormatted.length === 1) {
+    return uniqueFormatted[0];
+  }
+
+  const statsBlocks = moduleIds.map((moduleId) =>
+    formatVehicleModuleStats(moduleId)
+  );
+  const uniqueStats = uniquePreserveOrder(statsBlocks);
+  const uniqueDescriptions = uniquePreserveOrder(
+    moduleIds
+      .map((moduleId) => resolveVehicleModule(moduleId).description)
+      .filter((description): description is string => Boolean(description)),
+  );
+
+  if (uniqueStats.length === 1) {
+    const lines = [uniqueStats[0]];
+    if (uniqueDescriptions.length > 0) {
+      lines.push("");
+      lines.push(uniqueDescriptions.join("\n\n"));
+    }
+    return lines.join("\n");
+  }
+
+  return uniqueFormatted.join("\n\n");
+}
+
+function formatSingleVehicleModuleDetails(moduleId: string): string {
+  const resolved = resolveVehicleModule(moduleId);
+  const lines = [formatVehicleModuleStats(moduleId)];
+  if (resolved.description) {
+    lines.push("");
+    lines.push(resolved.description);
+  }
+  return lines.join("\n");
+}
+
+function formatVehicleModuleStats(moduleId: string): string {
   const resolved = resolveVehicleModule(moduleId);
   const lines: string[] = [];
 
@@ -83,11 +145,18 @@ export function formatVehicleModuleDetails(moduleId: string): string {
     `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
   );
   lines.push(`On destruction: ${resolved.destructionEffect}`);
-
-  if (resolved.description) {
-    lines.push("");
-    lines.push(resolved.description);
-  }
-
   return lines.join("\n");
+}
+
+function uniquePreserveOrder<T>(items: readonly T[]): T[] {
+  const seen = new Set<T>();
+  const unique: T[] = [];
+  for (const item of items) {
+    if (seen.has(item)) {
+      continue;
+    }
+    seen.add(item);
+    unique.push(item);
+  }
+  return unique;
 }

@@ -122,7 +122,7 @@ export default define.page(function WikiVehicles() {
                         </p>
                         <div class="space-y-2">
                           {groupVehicleModules(vehicle.modules).map((
-                            { moduleId, count },
+                            { moduleId, moduleIds, count },
                           ) => (
                             <details
                               key={moduleId}
@@ -137,7 +137,7 @@ export default define.page(function WikiVehicles() {
                                 </span>
                               </summary>
                               <p class="mt-2 text-sm text-base-content border-t pt-2 whitespace-pre-line">
-                                {formatVehicleModuleDetails(moduleId)}
+                                {formatVehicleModuleDetails(moduleIds)}
                               </p>
                             </details>
                           ))}

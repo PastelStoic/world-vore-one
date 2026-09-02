@@ -76,11 +76,13 @@ export default function VehicleCard(props: VehicleCardProps) {
         <div class="ml-2 space-y-1">
           <span class="text-xs font-medium text-base-content/70">Modules:</span>
           <div class="flex flex-wrap gap-1">
-            {groupVehicleModules(def.modules).map(({ moduleId, count }) => (
+            {groupVehicleModules(def.modules).map((
+              { moduleId, moduleIds, count },
+            ) => (
               <TraitBadge
                 key={moduleId}
                 name={formatVehicleModuleLabel(moduleId, count)}
-                description={formatVehicleModuleDetails(moduleId)}
+                description={formatVehicleModuleDetails(moduleIds)}
               />
             ))}
           </div>

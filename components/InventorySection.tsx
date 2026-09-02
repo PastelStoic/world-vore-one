@@ -1363,12 +1363,12 @@ export default function InventorySection(props: InventorySectionProps) {
                     {vehicle.modules.length > 0 && (
                       <div class="flex flex-wrap gap-1 mt-1 ml-2">
                         {groupVehicleModules(vehicle.modules).map((
-                          { moduleId, count },
+                          { moduleId, moduleIds, count },
                         ) => (
                           <TraitBadge
                             key={moduleId}
                             name={formatVehicleModuleLabel(moduleId, count)}
-                            description={formatVehicleModuleDetails(moduleId)}
+                            description={formatVehicleModuleDetails(moduleIds)}
                           />
                         ))}
                       </div>

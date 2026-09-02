@@ -49,6 +49,25 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     reloadTurns: 3,
   },
   {
+    id: "medium-cannon",
+    name: "Medium cannon",
+    description:
+      `Medium cannon, meant for bigger explosions! Considerably more threatening!
+
+      When reloading, choose which round to load:
+      *High-explosive: Light armor piercing, deals area damage, dealing 10 damage on the distance it is fired at, and 6 on the adjacent distances. Damages at most 10 targets in order of initiative. Deals 2 damage to targetted module.
+      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 2 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 3 damage to targetted module.
+      *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
+    hp: 6,
+    position: "internal",
+    difficulty: { front: 3, side: 3, rear: 5 },
+    destructionEffect: "Cannon destroyed.",
+    damage: "Variable",
+    rateOfFire: 1,
+    ammo: 1,
+    reloadTurns: 3,
+  },
+  {
     id: "light-high-velocity-cannon",
     name: "Light high velocity cannon",
     description:
@@ -141,6 +160,20 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     destructionEffect: "Mantlet destroyed, no longer offers any protection.",
   },
   {
+    id: "flamethrower",
+    name: "Flamethrower",
+    description:
+      "Vehicular flamethrower, will burn whoever it comes across. Max range is 3 distances. Targets set on fire take 3 damage immediately, and 3 damage every turn thereafter. A target on fire can only do one the following: Create distance between themselves and you, try to put the fire out, or do an action that contributes towards putting the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well. Attacking a target that is already on fire does not deal any more damage. Rate of fire doesn't increase the damage of this weapon against individual targets.",
+    hp: 4,
+    position: "internal",
+    difficulty: { front: 3, side: 5, rear: 5 },
+    destructionEffect: "Flamethrower destroyed.",
+    damage: "3",
+    rateOfFire: 11,
+    ammo: 100,
+    reloadTurns: 3,
+  },
+  {
     id: "frontal-machine-gun",
     name: "Frontal machinegun",
     description:
@@ -226,6 +259,17 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     
     *Considered to have light armor when targeted. Does not take area damage - it must be targetted directly.`,
     hp: 8,
+    position: "external",
+    difficulty: { front: 3, side: 3, rear: 3 },
+    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+  },
+  {
+    id: "medium-tracks",
+    name: "Medium racks",
+    description: `Heavier tracks, meant for even courser terrain. These tracks won't stop for nothing!
+    
+    *Considered to have medium armor when targeted. Does not take area damage - it must be targetted directly.`,
+    hp: 12,
     position: "external",
     difficulty: { front: 3, side: 3, rear: 3 },
     destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",

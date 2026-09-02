@@ -8,6 +8,7 @@ import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
   getVehicleHp,
+  groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
@@ -53,9 +54,7 @@ export default function VehicleCard(props: VehicleCardProps) {
             ({def.nation} · Size: {def.size} · Agility: {def.agility} · Speed:
             {" "}
             {def.speed} · HP: {getVehicleHp(def)} · Crew: {def.crew} · Seats:
-            {def.seats} ·
-            Doors:{" "}
-            {def.doors})
+            {def.seats} · Doors: {def.doors})
           </span>
         </div>
         {!readOnly && (
@@ -77,11 +76,11 @@ export default function VehicleCard(props: VehicleCardProps) {
         <div class="ml-2 space-y-1">
           <span class="text-xs font-medium text-base-content/70">Modules:</span>
           <div class="flex flex-wrap gap-1">
-            {def.modules.map((module, i) => (
+            {groupVehicleModules(def.modules).map(({ moduleId, count }) => (
               <TraitBadge
-                key={`module-${i}`}
-                name={formatVehicleModuleLabel(module)}
-                description={formatVehicleModuleDetails(module)}
+                key={moduleId}
+                name={formatVehicleModuleLabel(moduleId, count)}
+                description={formatVehicleModuleDetails(moduleId)}
               />
             ))}
           </div>

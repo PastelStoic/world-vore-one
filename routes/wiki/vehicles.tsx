@@ -5,6 +5,7 @@ import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
   getVehicleHp,
+  groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
 import { PageShell } from "@/components/PageShell.tsx";
 import { BackLink } from "@/components/BackLink.tsx";
@@ -120,19 +121,23 @@ export default define.page(function WikiVehicles() {
                           Modules
                         </p>
                         <div class="space-y-2">
-                          {vehicle.modules.map((module, i) => (
+                          {groupVehicleModules(vehicle.modules).map((
+                            { moduleId, count },
+                          ) => (
                             <details
-                              key={`module-${i}`}
+                              key={moduleId}
                               class="border rounded-lg bg-base-100/80 px-4 py-2"
                             >
                               <summary class="cursor-pointer font-medium select-none list-none flex items-center justify-between">
-                                <span>{formatVehicleModuleLabel(module)}</span>
+                                <span>
+                                  {formatVehicleModuleLabel(moduleId, count)}
+                                </span>
                                 <span class="text-xs text-base-content/50">
                                   ▶ details
                                 </span>
                               </summary>
                               <p class="mt-2 text-sm text-base-content border-t pt-2 whitespace-pre-line">
-                                {formatVehicleModuleDetails(module)}
+                                {formatVehicleModuleDetails(moduleId)}
                               </p>
                             </details>
                           ))}

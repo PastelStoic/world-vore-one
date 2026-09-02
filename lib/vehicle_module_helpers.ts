@@ -2,7 +2,30 @@ import type {
   VehicleDefinition,
   VehicleModuleDefinition,
 } from "@/data/equipment_types.ts";
-import { VEHICLE_MODULES_BY_ID } from "@/data/equipment.ts";
+import { VEHICLE_MODULES_BY_ID } from "@/data/vehicle_modules.ts";
+
+export interface GroupedVehicleModule {
+  moduleId: string;
+  count: number;
+}
+
+/** Collapse identical module IDs into first-seen order with a copy count. */
+export function groupVehicleModules(
+  moduleIds: string[],
+): GroupedVehicleModule[] {
+  const grouped: GroupedVehicleModule[] = [];
+  const indexById = new Map<string, number>();
+  for (const moduleId of moduleIds) {
+    const existingIndex = indexById.get(moduleId);
+    if (existingIndex !== undefined) {
+      grouped[existingIndex].count += 1;
+      continue;
+    }
+    indexById.set(moduleId, grouped.length);
+    grouped.push({ moduleId, count: 1 });
+  }
+  return grouped;
+}
 
 export function getVehicleHp(vehicle: VehicleDefinition): number {
   const moduleHp = vehicle.modules.reduce(
@@ -12,7 +35,9 @@ export function getVehicleHp(vehicle: VehicleDefinition): number {
   return moduleHp + (vehicle.hpModifier ?? 0);
 }
 
-export function resolveVehicleModule(moduleId: string): VehicleModuleDefinition {
+export function resolveVehicleModule(
+  moduleId: string,
+): VehicleModuleDefinition {
   const module = VEHICLE_MODULES_BY_ID.get(moduleId);
   if (module) {
     return module;
@@ -28,8 +53,11 @@ export function resolveVehicleModule(moduleId: string): VehicleModuleDefinition 
   };
 }
 
-export function formatVehicleModuleLabel(moduleId: string): string {
-  return resolveVehicleModule(moduleId).name;
+export function formatVehicleModuleLabel(
+  moduleId: string,
+  count = 1,
+): string {
+  return `${count}x ${resolveVehicleModule(moduleId).name}`;
 }
 
 export function formatVehicleModuleDetails(moduleId: string): string {

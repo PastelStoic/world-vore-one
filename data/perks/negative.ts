@@ -181,6 +181,7 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Your intelligence and charisma are both locked to 1, and you automatically fail such checks, whilst berserk.
 *While berserking, you must attack whatever triggered your berserk rage until it is dead or destroyed. You must focus solely on the trigger, and nothing else.
 *Gain +3d6 to attack your trigger, whether melee or ranged. Gain -3d6 to do anything except attacking whilst in your berserk rage.
+*You cannot go berserk if you are entirely incapable of attacking your target, such as them being inside you. Self-damage also does not trigger berserk.
 *The attacks must cause immediate damage, so long term digestion is off!`,
   },
   {

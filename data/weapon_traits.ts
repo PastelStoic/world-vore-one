@@ -372,7 +372,12 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     description:
       "This weapon can pierce heavy armor. Firing this weapon at a target other than a vehicle or building imposes a -9d6 accuracy penalty.",
   },
-
+  {
+    id: "integrated-bayonet",
+    name: "Integrated Bayonet",
+    description:
+      "This weapon comes with a weightless folding bayonet that can be extended or stowed as an action. While extended, this gun can be used as a 2-handed 6 damage melee weapon, but takes a -2d6 accuracy penalty to shooting attacks. If using Half-Agile to shoot at point blank range, instead increase the accuracy penalty from that gimmick from -3d6 to -4d6.",
+  },
   // ── Traits added by attachments ──
   {
     id: "quickloader",

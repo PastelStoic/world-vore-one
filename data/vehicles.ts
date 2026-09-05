@@ -334,6 +334,57 @@ export const VEHICLES: VehicleDefinition[] = [
       *Two machineguns in each direction; front, left, right and rear.`
   },
 
+  {
+    id: "k-wagen",
+    name: "Großkampfwagen ( K-wagen )",
+    nation: "Germany",
+    pointCost: 8,
+    armor: {
+      front: "heavy",
+      side: "heavy",
+      rear: "heavy",
+    },
+    seats: 21,
+    doors: 11,
+    crew: 21,
+    size: 68,
+    agility: 1,
+    speed: 1,
+    modules: [
+      "medium-cannon",
+      "medium-cannon",
+      "medium-cannon",
+      "medium-cannon",
+      "frontal-machine-gun",
+      "side-machine-gun",
+      "side-machine-gun",
+      "side-machine-gun",
+      "side-machine-gun",
+      "flamethrower",
+      "flamethrower",
+      "engine",
+      "fuel-tanks",
+      "medium-tracks",
+      "light-ammo-stowage",
+    ],
+    description:
+      `A massive bunker on threads. The pinacle of heavy tanks. Slow, cumbersome, but deadly.
+
+      Crew:
+      1 commander ( 5/5/5 ).
+      1 driver ( 5/5/5 ).
+      1 engineer ( 5/5/5 ).
+      1 frontal gunner ( 3/4/4 )
+      4 lateral gunners ( mgs ) ( 4/3/4 )
+      2 lateral gunners ( flamethrowers ) ( 4/3/4 )
+      4 lateral gunners ( cannons ) ( 4/3/4 )
+      10 assistant gunners ( 4/3/4 )
+
+      *Two cannons aim forward, two cannons aim backwards; all can fire to the sides.
+      *One frontal machinegun, four lateral machineguns, two lateral flamethrowers.
+      *Difficulty doubled if trying to fire at a weapon on the opposite end of the vehicle.`
+  },
+
 // MILITARY BUT GENERIC
 
   {

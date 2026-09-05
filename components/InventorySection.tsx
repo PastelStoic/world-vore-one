@@ -43,6 +43,7 @@ import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
   getVehicleHp,
+  groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
 import {
   calculateInventoryPointCostWithPerks,
@@ -1361,11 +1362,13 @@ export default function InventorySection(props: InventorySectionProps) {
                     </div>
                     {vehicle.modules.length > 0 && (
                       <div class="flex flex-wrap gap-1 mt-1 ml-2">
-                        {vehicle.modules.map((module, i) => (
+                        {groupVehicleModules(vehicle.modules).map((
+                          { moduleId, moduleIds, count },
+                        ) => (
                           <TraitBadge
-                            key={`module-${i}`}
-                            name={formatVehicleModuleLabel(module)}
-                            description={formatVehicleModuleDetails(module)}
+                            key={moduleId}
+                            name={formatVehicleModuleLabel(moduleId, count)}
+                            description={formatVehicleModuleDetails(moduleIds)}
                           />
                         ))}
                       </div>

@@ -28,7 +28,7 @@ export const FREE_ACCESSORIES: FreeAccessoryDefinition[] = [
     id: "mg08/15-magazine",
     name: "MG08/15 drum magazine",
     weight: 1,
-    ammo: 30,
+    ammo: 100,
     description:
       "A drum magazine for the MG08/15. Choose how many to bring at scene start.",
   },

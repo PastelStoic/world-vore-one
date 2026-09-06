@@ -152,7 +152,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
   },
   {
     id: "frightful-presence",
-    name: "Frightful prersence",
+    name: "Frightful presence",
     category: "gimmick",
     description:
       `You are particularly terrifying to see, and you scare people easily!

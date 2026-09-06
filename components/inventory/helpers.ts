@@ -5,7 +5,7 @@
 import {
   ATTACHMENTS_BY_ID,
   EQUIPMENT_BY_ID,
-  MELEE_WEAPONS_BY_ID,
+  WEAPONS_BY_ID,
 } from "@/data/equipment.ts";
 import type { WeaponDefinition } from "@/data/equipment_types.ts";
 import type {
@@ -27,10 +27,17 @@ import {
 
 export type InventoryLocation = "carried" | "stowed";
 
-/** True when a melee weapon definition has the concealable trait. */
-export function isConcealedMeleeWeapon(weaponId: string): boolean {
-  return MELEE_WEAPONS_BY_ID.get(weaponId)?.traitIds.includes("concealable") ===
-    true;
+/** True when a weapon definition (melee or ranged) has the concealable trait. */
+export function isWeaponConcealable(weaponId: string): boolean {
+  return WEAPONS_BY_ID.get(weaponId)?.traitIds.includes("concealable") === true;
+}
+
+/**
+ * True when this weapon instance should be hidden from public sheets.
+ * An explicit instance flag overrides the catalog default.
+ */
+export function isWeaponConcealed(weapon: InventoryWeapon): boolean {
+  return weapon.concealed ?? isWeaponConcealable(weapon.weaponId);
 }
 
 /**
@@ -43,14 +50,20 @@ export function isEquipmentConcealed(eq: InventoryEquipment): boolean {
 }
 
 /**
- * Copy of inventory with concealable melee and concealed equipment removed.
+ * Copy of inventory with concealed weapons and equipment removed.
  * Use for public display only; keep the full inventory for weight/points.
  */
 export function withoutConcealedItems(
   inventory: CharacterInventory,
 ): CharacterInventory {
   const filterWeapons = (weapons: InventoryWeapon[] = []) =>
-    weapons.filter((w) => !isConcealedMeleeWeapon(w.weaponId));
+    weapons.filter((w) => !isWeaponConcealed(w));
+  const filterMeleeWeapons = (
+    items: CharacterInventory["carried"]["meleeWeapons"] = [],
+  ) =>
+    items.filter((mw) =>
+      !(mw.concealed ?? isWeaponConcealable(mw.meleeWeaponId))
+    );
   const filterEquipment = (items: InventoryEquipment[] = []) =>
     items.filter((eq) => !isEquipmentConcealed(eq));
   return {
@@ -58,13 +71,13 @@ export function withoutConcealedItems(
     carried: {
       ...inventory.carried,
       weapons: filterWeapons(inventory.carried.weapons),
-      meleeWeapons: [],
+      meleeWeapons: filterMeleeWeapons(inventory.carried.meleeWeapons),
       equipment: filterEquipment(inventory.carried.equipment),
     },
     stowed: {
       ...inventory.stowed,
       weapons: filterWeapons(inventory.stowed.weapons),
-      meleeWeapons: [],
+      meleeWeapons: filterMeleeWeapons(inventory.stowed.meleeWeapons),
       equipment: filterEquipment(inventory.stowed.equipment),
     },
   };

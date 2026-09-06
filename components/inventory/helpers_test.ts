@@ -10,6 +10,8 @@ import {
   getSignatureFreeAttachmentIds,
   isEquipmentConcealed,
   isSignatureFreeAttachment,
+  isWeaponConcealable,
+  isWeaponConcealed,
   withoutConcealedItems,
 } from "./helpers.ts";
 
@@ -100,11 +102,91 @@ Deno.test("instance concealed flag overrides catalog default", () => {
   );
 });
 
-Deno.test("withoutConcealedItems hides concealable melee and concealed equipment", () => {
+Deno.test("catalog concealable weapons are concealed by default", () => {
+  assertEquals(isWeaponConcealable("dagger"), true);
+  assertEquals(isWeaponConcealable("throwing-dagger"), true);
+  assertEquals(isWeaponConcealable("derringer"), true);
+  assertEquals(isWeaponConcealable("kolibri"), true);
+  assertEquals(isWeaponConcealable("lee-enfield"), false);
+  assertEquals(isWeaponConcealable("combat-knife"), false);
+
+  assertEquals(
+    isWeaponConcealed({
+      weaponId: "dagger",
+      currentAmmo: 0,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    }),
+    true,
+  );
+  assertEquals(
+    isWeaponConcealed({
+      weaponId: "derringer",
+      currentAmmo: 2,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    }),
+    true,
+  );
+  assertEquals(
+    isWeaponConcealed({
+      weaponId: "lee-enfield",
+      currentAmmo: 10,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    }),
+    false,
+  );
+});
+
+Deno.test("weapon instance concealed flag overrides catalog default", () => {
+  assertEquals(
+    isWeaponConcealed({
+      weaponId: "dagger",
+      currentAmmo: 0,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+      concealed: false,
+    }),
+    false,
+  );
+  assertEquals(
+    isWeaponConcealed({
+      weaponId: "lee-enfield",
+      currentAmmo: 10,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+      concealed: true,
+    }),
+    true,
+  );
+});
+
+Deno.test("withoutConcealedItems hides concealed weapons and concealed equipment", () => {
   const inventory = createEmptyInventory();
   inventory.carried.weapons.push({
     weaponId: "dagger",
     currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+  inventory.carried.weapons.push({
+    weaponId: "dagger",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+    concealed: false,
+  });
+  inventory.carried.weapons.push({
+    weaponId: "derringer",
+    currentAmmo: 2,
     attachedIds: [],
     magazines: 0,
     partialMagazines: [],
@@ -132,14 +214,35 @@ Deno.test("withoutConcealedItems hides concealable melee and concealed equipment
     usedCharges: 0,
     concealed: true,
   });
+  inventory.carried.meleeWeapons.push({
+    instanceId: "mw-dagger-hidden",
+    meleeWeaponId: "dagger",
+  });
+  inventory.carried.meleeWeapons.push({
+    instanceId: "mw-sabre",
+    meleeWeaponId: "sabre",
+  });
+  inventory.carried.meleeWeapons.push({
+    instanceId: "mw-dagger-revealed",
+    meleeWeaponId: "dagger",
+    concealed: false,
+  });
 
   const displayed = withoutConcealedItems(inventory);
   assertEquals(displayed.carried.weapons.map((w) => w.weaponId), [
+    "dagger",
     "lee-enfield",
   ]);
+  assertEquals(displayed.carried.weapons[0].concealed, false);
   assertEquals(displayed.carried.equipment.map((eq) => eq.equipmentId), [
     "grenades",
   ]);
   assertEquals(displayed.stowed.equipment.length, 0);
+  assertEquals(displayed.carried.meleeWeapons.map((mw) => mw.instanceId), [
+    "mw-sabre",
+    "mw-dagger-revealed",
+  ]);
   assertEquals(inventory.carried.equipment.length, 2);
+  assertEquals(inventory.carried.weapons.length, 4);
+  assertEquals(inventory.carried.meleeWeapons.length, 3);
 });

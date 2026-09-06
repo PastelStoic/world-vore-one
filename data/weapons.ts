@@ -68,7 +68,7 @@ export const WEAPONS: WeaponDefinition[] = [
     rateOfFire: 2,
     weight: 1,
     pointCost: 0,
-    traitIds: ["one-handed", "agile", "walking-fire", "kolibri"],
+    traitIds: ["one-handed", "agile", "walking-fire", "kolibri", "concealable"],
     compatibleAttachmentIds: [],
   },
   {
@@ -83,7 +83,7 @@ export const WEAPONS: WeaponDefinition[] = [
     weight: 1,
     reloadAmountOverride: 1,
     pointCost: 0,
-    traitIds: ["one-handed", "agile", "walking-fire",],
+    traitIds: ["one-handed", "agile", "walking-fire", "concealable"],
     compatibleAttachmentIds: ["derringer-buckshot"],
   },
   {

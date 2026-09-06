@@ -79,6 +79,8 @@ function parseWeapon(raw: unknown): InventoryWeapon | null {
   }
   const chargeData = parseAttachmentChargeData(raw.attachmentChargeData);
   if (chargeData) weapon.attachmentChargeData = chargeData;
+  const concealed = asBoolean(raw.concealed);
+  if (concealed !== undefined) weapon.concealed = concealed;
   return weapon;
 }
 
@@ -94,6 +96,8 @@ function parseMeleeWeapon(raw: unknown): InventoryMeleeWeapon | null {
   if (extraTrait) melee.signatureExtraTraitId = extraTrait;
   const perkGranted = asString(raw.perkGranted);
   if (perkGranted) melee.perkGranted = perkGranted;
+  const concealed = asBoolean(raw.concealed);
+  if (concealed !== undefined) melee.concealed = concealed;
   return melee;
 }
 
@@ -230,6 +234,7 @@ export function parseInventory(raw: unknown): CharacterInventory | null {
             isSignatureWeapon: melee.isSignatureWeapon,
             signatureExtraTraitId: melee.signatureExtraTraitId,
             perkGranted: melee.perkGranted,
+            concealed: melee.concealed,
           });
         }
         inv[location].meleeWeapons = [];

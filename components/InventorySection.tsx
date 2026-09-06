@@ -56,6 +56,7 @@ import {
   type InventoryLocation,
   isEquipmentConcealed,
   isSignatureFreeAttachment,
+  isWeaponConcealed,
   weightLookups,
 } from "./inventory/helpers.ts";
 
@@ -397,6 +398,18 @@ export default function InventorySection(props: InventorySectionProps) {
       const eq = inv[location].equipment[index];
       if (!eq) return inv;
       eq.concealed = !isEquipmentConcealed(eq);
+      return inv;
+    });
+  }
+
+  function toggleWeaponConcealed(
+    location: InventoryLocation,
+    index: number,
+  ) {
+    update((inv) => {
+      const weapon = inv[location].weapons[index];
+      if (!weapon) return inv;
+      weapon.concealed = !isWeaponConcealed(weapon);
       return inv;
     });
   }
@@ -838,6 +851,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   onEjectDrumAndReload={ejectDrumAndReload}
                   onToggleAttachedCharge={toggleAttachedWeaponCharge}
                   onUpdateCombat={updateCombat}
+                  onToggleConcealed={toggleWeaponConcealed}
                 />
               </div>
             ))}
@@ -861,6 +875,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   onSetSignatureTrait={setMeleeSignatureTrait}
                   onMove={moveWeapon}
                   onRemove={removeWeapon}
+                  onToggleConcealed={toggleWeaponConcealed}
                 />
               </div>
             ))}

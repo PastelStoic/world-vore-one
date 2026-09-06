@@ -21,6 +21,7 @@ import {
   getWeaponPointCost,
   type InventoryLocation,
   isSignatureFreeAttachment,
+  isWeaponConcealed,
 } from "./helpers.ts";
 
 interface WeaponCardProps {
@@ -80,6 +81,7 @@ interface WeaponCardProps {
   onUpdateCombat: (
     fn: (inv: CharacterInventory) => CharacterInventory,
   ) => void;
+  onToggleConcealed: (location: InventoryLocation, index: number) => void;
 }
 
 export default function WeaponCard(props: WeaponCardProps) {
@@ -96,6 +98,8 @@ export default function WeaponCard(props: WeaponCardProps) {
   } = props;
 
   const def = WEAPONS_BY_ID.get(w.weaponId);
+  const isConcealable = def ? def.traitIds.includes("concealable") : false;
+  const isConcealed = isWeaponConcealed(w);
   if (!def) {
     return (
       <UnknownInventoryItem
@@ -242,9 +246,33 @@ export default function WeaponCard(props: WeaponCardProps) {
                 )}pt]
             </span>
           )}
+          {isConcealed && (
+            <span
+              class="ml-1 text-xs font-semibold text-info"
+              title="Only visible to the character owner and admins"
+            >
+              [Concealed]
+            </span>
+          )}
         </div>
         {!readOnly && (
-          <div class="flex gap-1">
+          <div class="flex gap-1 flex-wrap">
+            {isConcealable && (
+              <button
+                type="button"
+                class={`px-2 py-0.5 text-xs border rounded ${
+                  isConcealed
+                    ? "bg-info/20 border-info/60 text-info"
+                    : "hover:bg-info/10 text-info"
+                }`}
+                onClick={() => props.onToggleConcealed(location, index)}
+                title={isConcealed
+                  ? "Show this item on the public character sheet"
+                  : "Hide this item from public character sheet viewers"}
+              >
+                {isConcealed ? "Concealed" : "Conceal"}
+              </button>
+            )}
             {hasSignatureWeaponPerk && (
               <button
                 type="button"

@@ -140,6 +140,62 @@ Deno.test("parseInventory preserves equipment concealed flag", async () => {
   assertEquals(parsed?.stowed.equipment[0].concealed, false);
 });
 
+Deno.test("parseInventory preserves weapon concealed flag", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      weapons: [{
+        weaponId: "dagger",
+        currentAmmo: 0,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
+        concealed: false,
+      }, {
+        weaponId: "derringer",
+        currentAmmo: 2,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
+        concealed: true,
+      }, {
+        weaponId: "lee-enfield",
+        currentAmmo: 10,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.weapons[0].concealed, false);
+  assertEquals(parsed?.carried.weapons[1].concealed, true);
+  assertEquals(parsed?.carried.weapons[2].concealed, undefined);
+});
+
+Deno.test("parseInventory preserves meleeWeapons concealed when folding into weapons", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      meleeWeapons: [{
+        instanceId: "mw-1",
+        meleeWeaponId: "dagger",
+        concealed: false,
+      }, {
+        instanceId: "mw-2",
+        meleeWeaponId: "throwing-dagger",
+        concealed: true,
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.meleeWeapons.length, 0);
+  assertEquals(parsed?.carried.weapons.map((w) => w.weaponId), [
+    "dagger",
+    "throwing-dagger",
+  ]);
+  assertEquals(parsed?.carried.weapons[0].concealed, false);
+  assertEquals(parsed?.carried.weapons[1].concealed, true);
+});
+
 Deno.test("parseInventory keeps attachmentChargeData and attachment perkGranted", async () => {
   const { parseInventory } = await import("./inventory_parsing.ts");
   const parsed = parseInventory({

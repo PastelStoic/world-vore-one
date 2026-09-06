@@ -38,7 +38,7 @@ interface CharacterSheetViewerProps {
   displayOnlyPerkIds?: string[];
   /** Whether the current user can edit ammo/charges (owner or admin). */
   canEditCombatState?: boolean;
-  /** Whether the current user can see concealed melee/equipment (owner or admin). */
+  /** Whether the current user can see concealed weapons/equipment (owner or admin). */
   canSeeConcealedItems?: boolean;
 }
 
@@ -106,7 +106,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     inventory,
   };
 
-  // Filter concealed melee/equipment for display only; calculations (weight,
+  // Filter concealed weapons/equipment for display only; calculations (weight,
   // points, etc.) always use the full inventory so numbers don't leak info.
   const displayInventory: CharacterInventory =
     canSeeConcealedItems || !inventory

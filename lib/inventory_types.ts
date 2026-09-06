@@ -41,6 +41,11 @@ export interface InventoryWeapon {
     string,
     { totalCharges: number; usedCharges: number }
   >;
+  /**
+   * Whether this instance is hidden from non-owner/admin character sheet
+   * viewers. When unset, falls back to the catalog `concealable` trait.
+   */
+  concealed?: boolean;
 }
 
 /**
@@ -58,6 +63,11 @@ export interface InventoryMeleeWeapon {
   signatureExtraTraitId?: string;
   /** If set, this item was granted by the named perk and cannot be removed manually */
   perkGranted?: string;
+  /**
+   * Whether this instance is hidden from non-owner/admin character sheet
+   * viewers. When unset, falls back to the catalog `concealable` trait.
+   */
+  concealed?: boolean;
 }
 
 /**

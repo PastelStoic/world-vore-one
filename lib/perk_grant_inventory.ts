@@ -1,8 +1,9 @@
-import { EQUIPMENT_BY_ID } from "@/data/equipment.ts";
+import { EQUIPMENT_BY_ID, WEAPONS_BY_ID } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import type {
   CharacterInventory,
   InventoryEquipment,
+  InventoryWeapon,
 } from "./inventory_types.ts";
 
 /** Add and remove perk-granted equipment / melee / attachments. */
@@ -47,7 +48,7 @@ export function applyPerkGrantedInventory(
       next.carried.equipment.push(granted);
     }
     for (const grant of perk?.grantsWeapons ?? []) {
-      next.carried.weapons.push({
+      const granted: InventoryWeapon = {
         weaponId: grant.weaponId,
         instanceId: crypto.randomUUID(),
         currentAmmo: 0,
@@ -56,10 +57,14 @@ export function applyPerkGrantedInventory(
         partialMagazines: [],
         isSignatureWeapon: true,
         perkGranted: perkId,
-      });
+      };
+      if (WEAPONS_BY_ID.get(grant.weaponId)?.traitIds.includes("concealable")) {
+        granted.concealed = true;
+      }
+      next.carried.weapons.push(granted);
     }
     for (const grant of perk?.grantsMeleeWeapons ?? []) {
-      next.carried.weapons.push({
+      const granted: InventoryWeapon = {
         weaponId: grant.meleeWeaponId,
         instanceId: crypto.randomUUID(),
         currentAmmo: 0,
@@ -68,7 +73,13 @@ export function applyPerkGrantedInventory(
         partialMagazines: [],
         isSignatureWeapon: true,
         perkGranted: perkId,
-      });
+      };
+      if (
+        WEAPONS_BY_ID.get(grant.meleeWeaponId)?.traitIds.includes("concealable")
+      ) {
+        granted.concealed = true;
+      }
+      next.carried.weapons.push(granted);
     }
     for (const grant of perk?.grantsAttachments ?? []) {
       next.carried.attachments.push({

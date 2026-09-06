@@ -36,6 +36,7 @@ export type WeaponKind =
   | "double-action-revolver"
   | "single-action-revolver"
   | "semiautomatic-pistol"
+  | "break-action-pistol"
   | "black-powder-revolver"
   | "flamethrower"
   | "flintlock-musket"

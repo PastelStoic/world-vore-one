@@ -10,7 +10,7 @@ import {
 } from "@/data/equipment.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
-import type { InventoryLocation } from "./helpers.ts";
+import { type InventoryLocation, isWeaponConcealed } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
 import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
 import InventoryItemActions from "./InventoryItemActions.tsx";
@@ -33,6 +33,7 @@ interface MeleeWeaponCardProps {
     to: InventoryLocation,
   ) => void;
   onRemove: (location: InventoryLocation, index: number) => void;
+  onToggleConcealed: (location: InventoryLocation, index: number) => void;
 }
 
 export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
@@ -46,11 +47,13 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     onSetSignatureTrait,
     onMove,
     onRemove,
+    onToggleConcealed,
   } = props;
 
   const def = MELEE_WEAPONS_BY_ID.get(mw.weaponId);
   const isPerkGranted = !!mw.perkGranted;
   const isConcealable = def ? def.traitIds.includes("concealable") : false;
+  const isConcealed = isWeaponConcealed(mw);
 
   // early return if weapon not found
   if (!def) {
@@ -114,7 +117,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
               [{grantingPerkName}]
             </span>
           )}
-          {isConcealable && (
+          {isConcealed && (
             <span
               class="ml-1 text-xs font-semibold text-info"
               title="Only visible to the character owner and admins"
@@ -123,43 +126,63 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
             </span>
           )}
         </div>
-        {!readOnly && (!isPerkGranted || def.deprecated) && (
-          <div class="flex gap-1">
-            {!isPerkGranted && hasSignatureWeaponPerk && (
+        {!readOnly && (isConcealable || !isPerkGranted || def.deprecated) && (
+          <div class="flex gap-1 flex-wrap">
+            {isConcealable && (
               <button
                 type="button"
                 class={`px-2 py-0.5 text-xs border rounded ${
-                  isSignature
-                    ? "bg-warning/20 border-warning/60 text-warning"
-                    : "hover:bg-warning/10 text-warning"
+                  isConcealed
+                    ? "bg-info/20 border-info/60 text-info"
+                    : "hover:bg-info/10 text-info"
                 }`}
-                onClick={() => onToggleSignature(location, index)}
-                title={isSignature
-                  ? "Unmark as Signature Weapon"
-                  : "Mark as Signature Weapon"}
+                onClick={() => onToggleConcealed(location, index)}
+                title={isConcealed
+                  ? "Show this item on the public character sheet"
+                  : "Hide this item from public character sheet viewers"}
               >
-                {isSignature ? "★ Signature" : "☆ Set Signature"}
+                {isConcealed ? "Concealed" : "Conceal"}
               </button>
             )}
-            {!isPerkGranted && (
-              <button
-                type="button"
-                class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
-                onClick={() => onMove(location, index, otherLocation)}
-              >
-                → {otherLocation === "carried" ? "Carry" : "Stow"}
-              </button>
+            {(!isPerkGranted || def.deprecated) && (
+              <>
+                {!isPerkGranted && hasSignatureWeaponPerk && (
+                  <button
+                    type="button"
+                    class={`px-2 py-0.5 text-xs border rounded ${
+                      isSignature
+                        ? "bg-warning/20 border-warning/60 text-warning"
+                        : "hover:bg-warning/10 text-warning"
+                    }`}
+                    onClick={() => onToggleSignature(location, index)}
+                    title={isSignature
+                      ? "Unmark as Signature Weapon"
+                      : "Mark as Signature Weapon"}
+                  >
+                    {isSignature ? "★ Signature" : "☆ Set Signature"}
+                  </button>
+                )}
+                {!isPerkGranted && (
+                  <button
+                    type="button"
+                    class="px-2 py-0.5 text-xs border rounded hover:bg-base-200"
+                    onClick={() => onMove(location, index, otherLocation)}
+                  >
+                    → {otherLocation === "carried" ? "Carry" : "Stow"}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
+                  onClick={() => onRemove(location, index)}
+                  title={def.deprecated
+                    ? "Remove deprecated item and free inventory slots/points"
+                    : undefined}
+                >
+                  {def.deprecated ? "Remove & refund" : "Remove"}
+                </button>
+              </>
             )}
-            <button
-              type="button"
-              class="px-2 py-0.5 text-xs border rounded text-error hover:bg-error/10"
-              onClick={() => onRemove(location, index)}
-              title={def.deprecated
-                ? "Remove deprecated item and free inventory slots/points"
-                : undefined}
-            >
-              {def.deprecated ? "Remove & refund" : "Remove"}
-            </button>
           </div>
         )}
       </div>

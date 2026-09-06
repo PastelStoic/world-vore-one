@@ -66,6 +66,7 @@ export function addWeapon(
     magazines: 0,
     partialMagazines: [],
   };
+  if (def.traitIds.includes("concealable")) item.concealed = true;
   if (options?.unlockRestricted && def.pointCost >= 3) {
     inv.weaponMasterRestrictedUnlocks ??= [];
     if (!inv.weaponMasterRestrictedUnlocks.includes(weaponId)) {

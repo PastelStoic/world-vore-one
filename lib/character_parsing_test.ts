@@ -20,6 +20,8 @@ import {
   calculatePerksCost,
   validateCharacterProgression,
 } from "./character_parsing.ts";
+import { getStatFloor, validateStatCaps } from "./draft_validation.ts";
+import { getStatCap } from "./stat_calculations.ts";
 
 const PAID_PERKS = ["runner", "effective-cover-use", "tough"];
 const OTHER_RACES: Race[] = [
@@ -103,4 +105,47 @@ Deno.test("gendered races are only valid for matching sex", () => {
   assertEquals(isRaceValidForSex("Baseliner", "Male"), true);
   assertEquals(isRaceValidForSex("Baseliner", "Female"), true);
   assertEquals(isRaceValidForSex("Baseliner", "Futa"), true);
+});
+
+Deno.test("extremely inefficient digestion grants a flat 4 points", () => {
+  assertEquals(
+    perkCost(["extremely-inefficient-digestion"], "Pilzfraun"),
+    -4,
+  );
+});
+
+Deno.test("extremely inefficient digestion progression locks dig at -4 without scaling points", () => {
+  const draft = createDefaultCharacterDraft();
+  draft.race = "Pilzfraun";
+  draft.description = { ...draft.description, sex: "Female" };
+  draft.perkIds = ["extremely-inefficient-digestion"];
+  draft.baseStats = { ...draft.baseStats, digestionStrength: -4 };
+  // Starting budget 5 + flat 4 from the perk = 9 unallocated when dig costs 0
+  draft.unallocatedStatPoints = 9;
+  assertEquals(validateCharacterProgression(draft), null);
+
+  // Dig at -4 must not count as 5 free points (would allow unallocated of only 4)
+  draft.unallocatedStatPoints = 4;
+  assertEquals(
+    validateCharacterProgression(draft),
+    "Invalid stat/perk point allocation.",
+  );
+});
+
+Deno.test("extremely inefficient digestion floors and caps dig strength at -4", () => {
+  assertEquals(
+    getStatFloor("digestionStrength", ["extremely-inefficient-digestion"]),
+    -4,
+  );
+  const draft = createDefaultCharacterDraft();
+  draft.perkIds = ["extremely-inefficient-digestion"];
+  draft.baseStats = { ...draft.baseStats, digestionStrength: -4 };
+  assertEquals(getStatCap(draft, "digestionStrength"), -4);
+  assertEquals(validateStatCaps(draft), null);
+
+  draft.baseStats = { ...draft.baseStats, digestionStrength: -3 };
+  assertEquals(
+    validateStatCaps(draft),
+    'Stat "Digestion Strength" exceeds its cap of -4.',
+  );
 });

@@ -399,8 +399,12 @@ export function validateCharacterProgression(
     return "Base stats cannot go below their minimum values.";
   }
 
-  const defaultStatTotal = BASE_STAT_FIELDS.length;
-  const spentOnStats = statTotal - defaultStatTotal;
+  // Values below the normal minimum of 1 (e.g. digestion strength locked at -4
+  // by Extremely inefficient digestion) do not grant spending points. That perk
+  // grants a flat pointsGranted amount instead of scaling with dig strength.
+  const spentOnStats = BASE_STAT_FIELDS.reduce((total, stat) => {
+    return total + Math.max(0, input.baseStats[stat.key] - 1);
+  }, 0);
 
   const spentOnPerks = calculatePerksCost(
     input.perkIds,

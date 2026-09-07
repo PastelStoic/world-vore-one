@@ -30,12 +30,18 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
     id: "extremely-inefficient-digestion",
     name: "Extremely inefficient digestion",
     category: "negative",
+    isFree: true,
+    pointsGranted: 4,
+    modifiers: {
+      statCaps: { digestionStrength: -4 },
+    },
     description:
       `Your metabolism is extremely slow - and it just doesn't work as well as others.
 
 *PFs only
-*Digestion strength can go into the negatives. You may bring it up to -4.
-*Gain one spending point for every point you go down in digestion strength.
+*This perk is free.
+*Gain 4 points by picking this perk.
+*Digestion strength is automatically set to -4. You cannot raise or lower it.
 *If your prey's dice pool to escape is <3/4ths (round down) of your dice pool to keep them in, they cannot attempt to escape.
 
 *Your HP does not heal at the end of a scene; only at the end of the next scene over, no matter how much time passed.

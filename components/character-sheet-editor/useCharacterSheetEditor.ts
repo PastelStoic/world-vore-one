@@ -55,13 +55,34 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
   const [description, setDescription] = useState<CharacterDescription>(
     initialCharacter.description,
   );
-  const [initialBaseStats] = useState(initialCharacter.baseStats);
-  const [baseStats, setBaseStats] = useState(initialCharacter.baseStats);
+  const [initialBaseStats] = useState(() => {
+    const stats = { ...initialCharacter.baseStats };
+    // Extremely inefficient digestion locks dig strength at -4.
+    if (
+      initialCharacter.perkIds.includes("extremely-inefficient-digestion") &&
+      stats.digestionStrength !== -4
+    ) {
+      stats.digestionStrength = -4;
+    }
+    return stats;
+  });
+  const [baseStats, setBaseStats] = useState(initialBaseStats);
   const [initialPerkIds] = useState(initialCharacter.perkIds);
   const [initialPerkRanks] = useState(initialCharacter.perkRanks ?? {});
-  const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(
-    initialCharacter.unallocatedStatPoints,
-  );
+  const [unallocatedStatPoints, setUnallocatedStatPoints] = useState(() => {
+    let points = initialCharacter.unallocatedStatPoints;
+    // Migrate older sheets that still have dig strength above the locked -4:
+    // replace variable dig-lowering points with the flat 4-point grant.
+    if (
+      initialCharacter.perkIds.includes("extremely-inefficient-digestion") &&
+      initialCharacter.baseStats.digestionStrength !== -4
+    ) {
+      const oldDig = initialCharacter.baseStats.digestionStrength;
+      const pointsAlreadyFromDig = Math.max(0, 1 - oldDig);
+      points += 4 - pointsAlreadyFromDig;
+    }
+    return points;
+  });
   const [perkIds, setPerkIds] = useState(initialCharacter.perkIds);
   const [perkNotes, setPerkNotes] = useState<Record<string, string>>(
     initialCharacter.perkNotes ?? {},
@@ -503,11 +524,15 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
       return;
     }
 
+    const previous = baseStats[statKey];
     setBaseStats((current) => ({
       ...current,
       [statKey]: current[statKey] - 1,
     }));
-    setUnallocatedStatPoints((current) => current + 1);
+    // Decreasing below the normal minimum of 1 does not grant points.
+    if (previous > 1) {
+      setUnallocatedStatPoints((current) => current + 1);
+    }
   }
 
   function buyPerk(perkId: string) {
@@ -561,20 +586,31 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
     setUnallocatedStatPoints((current) => current - cost - requiredPoints);
 
-    // Enforce stat caps from the new perk (e.g. Speisfraun caps STR/DEX to 1)
+    // Enforce stat caps from the new perk (e.g. dig strength locked at -4).
+    // Only refund points invested above the normal minimum of 1 — lowering a
+    // stat into negative-floor territory does not grant extra points.
     if (perk?.modifiers?.statCaps) {
       let refundedPoints = 0;
-      const newBaseStats = { ...baseStats };
+      let capsApplied = false;
+      const newBaseStats = {
+        ...(requiredPoints > 0 ? nextBaseStats : baseStats),
+      };
       for (const [statKey, cap] of Object.entries(perk.modifiers.statCaps)) {
         const key = statKey as BaseStatKey;
         if (newBaseStats[key] > cap) {
-          refundedPoints += newBaseStats[key] - cap;
+          refundedPoints += Math.max(
+            0,
+            newBaseStats[key] - Math.max(cap, 1),
+          );
           newBaseStats[key] = cap;
+          capsApplied = true;
         }
       }
-      if (refundedPoints > 0) {
+      if (capsApplied) {
         setBaseStats(newBaseStats);
-        setUnallocatedStatPoints((current) => current + refundedPoints);
+        if (refundedPoints > 0) {
+          setUnallocatedStatPoints((current) => current + refundedPoints);
+        }
       }
     }
 
@@ -677,6 +713,29 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkOrigins(withoutRemovedOrigins(allRemovedIds));
     setFactionCompensatedPerkIds(withoutRemovedCompensations(allRemovedIds));
     setUnallocatedStatPoints((current) => current + refund);
+
+    // Raise any stats that are now below their floor (e.g. dig strength -4 → 1
+    // after removing Extremely inefficient digestion). The portion below 1 was
+    // never purchased, so only charge for raising above 1 toward a higher floor.
+    {
+      let charge = 0;
+      const raised = { ...baseStats };
+      let changed = false;
+      for (const field of BASE_STAT_FIELDS) {
+        const floor = getSharedStatFloor(field.key, newPerkIds);
+        const current = raised[field.key];
+        if (current >= floor) continue;
+        charge += Math.max(0, floor - Math.max(current, 1));
+        raised[field.key] = floor;
+        changed = true;
+      }
+      if (changed) {
+        setBaseStats(raised);
+        if (charge > 0) {
+          setUnallocatedStatPoints((current) => current - charge);
+        }
+      }
+    }
 
     setInventory((inv) => {
       const next = applyPerkGrantedInventory(inv, [], allRemovedIds);

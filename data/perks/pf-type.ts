@@ -327,7 +327,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 
 *+2 Constitution, +1 strength, -3 stat points.
 *You have the Tough perk from Combat Perks.
-*You have the 'Authoritarian' perk from Gimmick perks.
+*You have the 'Frightful presence' perk from Gimmick perks.
 *You have -1 charisma in situations where you aren't being intimidating.
 *You always immobilize your predator, even if they have the 'hauling-meat' perk. Does not apply if they're a hefty too.
 *Double your pred's penalties from being immobilized.

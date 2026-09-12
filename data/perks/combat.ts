@@ -221,6 +221,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
       `You manage to push well past your limits, even at the detriment of your own life.
 
 *Even if your HP goes into the negatives, you are never put into critical condition, you're only ever considered incapacitated.
+*Effects that change your behavior do not work on you, such as being set on fire, or the 'flasher' perk, among all the others.
 *When reduced to 0HP, you are not incapacitated, and can continue fighting as normal, as you are hit with an 'adrenaline rush'.
 
 ->Adrenaline rush:

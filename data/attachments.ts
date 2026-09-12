@@ -515,10 +515,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
     weight: 0,
-    rateOfFireBonus: 3,
+    rateOfFireBonus: 5,
     addsTraitIds: ["uncontrollable"],
     description: `*Attachment has no weight.
-*Weapon gains +3 rate of fire.
+*Weapon gains +5 rate of fire.
 *Gain the 'uncontrollable' gimmick.
 *May be used alongside the other attachments of this weapon.`,
   },
@@ -527,10 +527,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Extended magazine",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 1,
+    weight: 0,
     ammoOverride: 16,
     reloadAmountOverride: 8,
-    description: `*Holds 16 rounds instead of the default.
+    description: `*Holds 16 rounds instead of the default. Weightless attachment.
 *Stripper clips can only load 8 shots at a time. The magazine is not detachable.
 *May be used alongside the other attachments of this weapon.`,
   },
@@ -539,10 +539,10 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     name: "Steyr M1912: Extended stock",
     appliesTo: "Steyr M1912",
     nation: "Austria-Hungary",
-    weight: 1,
-    removesTraitIds: ["agile", "one-handed", "uncontrollable", "walking-fire"],
+    weight: 0,
+    removesTraitIds: ["one-handed", "uncontrollable"],
     addsTraitIds: ["two-handed", "inconvenient"],
-    description: `*It takes 1 turn to put the stock on/off.
+    description: `*It takes 1 turn to put the stock on/off. Weightless attachment
 *The 'automatic fire' attachment's accuracy from extra shots now return to normal.
 *Gains the 'inconvenient' gimmick.
 *May be used alongside the other attachments of this weapon.`,

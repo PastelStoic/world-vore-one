@@ -30,6 +30,17 @@ export const COMBAT_PERKS: PerkDefinition[] = [
 *Compare dexterities if competing with someone with the same effect.`,
   },
   {
+    id: "thrower",
+    name: "Thrower",
+    category: "combat",
+    description:
+      `You are an olympic thrower for sure! Your throwing arm is close to perfect!
+
+*When throwing weapons at a target, gain +3d6, counting successes on a 4 and above.
+*Your throwing weapons have a convenient rope tied to them - they returns to you in the end of your next turn.
+*No longer have a damage drawback when using a throwable weapon in melee.`,
+  },
+  {
     id: "effective-cover-use",
     name: "Effective cover use",
     category: "combat",

@@ -279,7 +279,7 @@ If you have prey inside you, dead or alive:
     description:
       `Through some sort of strange mutation, your tail isn't normal - it's fleshy, stretchy, and opens near the end!
 
-*This perk gives you a special tail that may be used to carry things, but it cannot manipulate them.
+*This perk gives you a special tail that may be used to hold onto things and people alike, but it cannot manipulate them.
 *It can be used to eat prey without grappling first AND from 1 distance away; it can fit 2 prey by default and digests by default.
 *The tail leads straight into the stomach. After 2 escape attempts, prey may be pushed into the stomach.
 *It is constantly dripping acid from the tip, making you easy to track.

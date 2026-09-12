@@ -246,18 +246,6 @@ export const ATTACHMENTS: AttachmentDefinition[] = [
     description: `*Reloading the musket now only takes 1 turn.`,
   },
   {
-    id: "colt-walker-bullets",
-    name: "Colt walker: Bullets",
-    appliesTo: "Colt Walker",
-    nation: "Civilian",
-    weight: 1,
-    reloadTurnsOverride: 1,
-    removesTraitIds: ["extremely-slow-reload", "overloaded-chamber"],
-    addsTraitIds: ["loading-gate"],
-    description:
-      `*Removes the 'extremely-slow-reload' and 'overloaded-chamber' gimmicks, replacing it with 'loading gate'`,
-  },
-  {
     id: "derringer-buckshot",
     name: "Derringer: Buckshot shells",
     appliesTo: "Derringer",

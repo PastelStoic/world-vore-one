@@ -238,14 +238,21 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     name: "Ambidextrous",
     category: "combat",
     description:
-      `You have no dominant hand - you can use either one perfectly! You're awfully agile with them, too.
+      `You have no dominant hand - you can use either one perfectly!
+
+*You can dual wield any pair of one handed weapons and attack with both of them in one turn. Each attack is rolled independently.
+*Your fists count as weapons for this purpose. You can punch someone twice, or hit them with a sword and punch them, etc.
+*When dual wielding, you cannot utilize alternative firing techniques.`,
+  },
+  {
+    id: "nimble_hands",
+    name: "Nimble hands",
+    category: "combat",
+    description:
+      `Your hands are remarkably nimble, able to use weapons with unmatched proficiency.
 
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action.
-*You can dual wield any one handed weapon and attack with both of them in one turn. Each attack is rolled independently.
-*Your fists count as weapons for this purpose. You can punch someone twice, or hit them with a sword and punch them, etc.
-*When dual wielding, you cannot utilize alternative firing techniques.
-*When using two-handed weapons as if one handed, gain a base -3d6 to attack with their secondary weapon, and a cumulative -3d6 for every additional shot/swing done with it. No accuracy bonus from the extra shots.
-*In one turn, you can perform two reloading actions as if they were one, reloading both held weapons, or a single one.
+*In one turn, you can perform three reloading actions as if they were one.
 *Alternate firing techniques ( 'Mad minute technique', 'Walking fire', etc ... ) no longer have negative effects.
 *Semiautomatic weapons ( 3 rof or lower ) no longer need to waste a shot when multi-targetting.
 *Throwing weapons no longer deal decreased damage when you use them for melee.`,

@@ -28,7 +28,7 @@ export function WikiRulesLayout(props: WikiRulesLayoutProps) {
         <title>{title} – Wiki – World Vore One</title>
       </Head>
       <header>
-        <BackLink href="/wiki/rules">← Rules</BackLink>
+        <BackLink href="/wiki">← Wiki</BackLink>
         <h1 class="text-3xl font-bold mt-2">{title}</h1>
         <p class="text-base-content">{description}</p>
       </header>

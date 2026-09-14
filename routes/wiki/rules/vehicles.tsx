@@ -36,7 +36,7 @@ export default define.page(function WikiRulesVehicles() {
       <RulesSection id="stats" title="Vehicle stats">
         <p>
           Vehicles work similarly to regular player characters. They have HP,
-          speed, agility, and only occupy 1 distance regardless of size.
+          speed, and only occupy 1 distance regardless of size.
         </p>
         <ul class="list-disc pl-6 space-y-1">
           <li>
@@ -51,12 +51,6 @@ export default define.page(function WikiRulesVehicles() {
           <li>
             <strong>Speed</strong>{" "}
             is how many distances they can move in one turn.
-          </li>
-          <li>
-            <strong>Agility</strong>{" "}
-            is how much movement must be spent to turn it. If your speed is 3
-            and your agility is 2, you can move forward 1 distance, then spend 2
-            of your movement points to turn the vehicle one facing.
           </li>
           <li>
             <strong>Size</strong>{" "}
@@ -113,10 +107,10 @@ export default define.page(function WikiRulesVehicles() {
         <p>
           When attacking a vehicle, you can simply deal damage to its HP, or
           target a module or crew. Each module or crew has a difficulty rating,
-          which requires more successes in order to be hit, depending on facing.
-          Even if targeting a module or crew, getting a single success over the
-          vehicle's cover will still deal damage to the vehicle; it simply will
-          not damage the targeted module.
+          which requires more successes in order to be hit. Even if targeting a
+          module or crew, getting a single success over the vehicle's cover will
+          still deal damage to the vehicle; it simply will not damage the
+          targeted module.
         </p>
         <p>
           Explosions inside the vehicle damage all of its internal modules and

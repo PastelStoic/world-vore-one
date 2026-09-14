@@ -1,0 +1,519 @@
+The basics.
+How the system fundamentally works.
+You roll 1d6 for each point in your respective stat. You obtain 'successes' whenever you roll a 5 or a 6, unless modified by a perk.
+
+So for example: Having a 5d6 in strength means you roll 5 six-sided dice. If you roll: {6,5,4,4,2}, this means you have two successes, as you rolled a six and a five.
+
+A 'check' is called when you must use a stat to clear an obstacle. You roll your [stat]d6's.
+
+For most checks, simply having a single success is enough to pass. The difficulty of the check is up to the GM of course, so he may require two or more successes.
+
+Some checks are 'contested' checks, this means you and your opponent roll dice, and whoever has the most successes, wins. In the case of a tie, the 'defender' ( the one NOT initiating the contest ) always wins, unless stated otherwise.
+
+The game works by turns. You take your turn, then your opponent takes theirs. During your turns, you can only take ONE action. Shoot, reload, move, stab - only a singular action!
+
+Some actions are described as free actions. Those can be taken alongside as many free actions as you have, and alongside your actual action.
+
+Points and perks: What are they?
+Like most TTRPGS and Roleplaying systems, your character's capabilities are turned into numerable parameters. In this case, we have points and perks.
+
+Points are invested into your stats ( below ). Each point added to a stat increases its dice pool. Every stat starts at 1 by default.
+
+An example: You have 1 strength by default. You can use 3 points to bring it to 4. This means you'll roll 4d6 whenever a strength check is called.
+
+A perk is a gimmick you can add to your character. They can be found in ⁠⭐perks-and-equipment . While stats are 'broad' categories ( strength encompasses many things! ), perks are much more selective and special in what they affect.
+ 
+Every character sheet has 5 main stats:
+Strength: Your body's overall strength! How hard you can punch, how much you can lift, so on and so forth. Primarily used for melee combat.
+
+Dexterity: Your body's overral gility! How well you can squeeze into tight places, handle things in general, running, etc. Primarily used for ranged combat. No, this doesn't help with dodging attacks!
+
+Constitution: Your body's capability to sustain conditions and ailments! Represents your general health. Used for HP, surviving diseases/infections, excertive activities such as mountain-climbing, marathoning.
+
+Intelligence: Your overall smarts! the capability to remember things or reach logical conclusions, reaction speed, perception, trapping.
+
+Charisma: Your sociability! How well you are perceived, how well you communicate ideas, convert others to your cause, deceive them.
+
+A character also has vore stats, but you should read about these in the vore thread instead!
+
+HP and damage!
+Your HP is equal to you 2 x Constitution. A 5 in constitution means you have 5 HP.
+
+If an attack would bring your HP to 0 or below, your HP will be set to 0, and you will be considered 'Incapacitated'
+
+When incapacitated, you cannot fend off your assailants whatsoever. They may do as they please to you, and you may not contest their actions.The only exception to this is vore: If you are eaten, you are able to put up a fight, but even if you escape, you are still incapacitated.
+
+When incapacitated, you will definitely recover if you are given time to rest. If you are attacked while incapacitated, your HP will go into the negatives and you are put in critical condition, of which case, you will certainly die without being stabilized.
+
+If you are brought to the negative of your max HP, you outright die. ( So if you have 5 MAX HP and are brought to -5HP, you die ).
+
+When being digested, your HP decreases overtime. This is elaborated upon in the section related to vore.
+ 
+To stabilize you takes an intelligence check. It needs 1 + [HOW NEGATIVE YOUR HP IS] / 2, round down, successes.
+
+It is up to the GM on how quickly someone will die from being in critical condition. Perks that regen HP can stabilize, provided they bring their target to 0 HP or higher.
+
+If you have been stabilized, being attacked again can put you in critical conditioon once more.
+
+HP regeneration & exhaustion.
+Pilzfrauns and Baseliners require different amount of resting times. PFs are made to work down to the bone, so they require less overall rest than baseliners.
+
+For every 20 hours awake, a Pilzfraun then needs 4 hours of sleep. For every point of damage, a Pilzfraun needs 4 hours of rest.
+
+For every 16 hours awake, a Baseliner then needs 8 hours of sleep. For every point of damage, a Baseliners needs 24 hours of rest.
+
+Encumbrance:
+Encumbrance comes in three levels. Each level deducts 1 from your strength and dexterity. Those stats cannot be deducted below 1 through this. Any level immediately makes you the slowest when deciding initiative. If you're as encumbered as someone else, usual initiative rules apply to you & the other person(s).
+
+The levels are "Encumbered", "heavily encumbered" and "immobile". If you are immobile, you cannot move at all.
+
+You can carry up to 2 + [STR] weight worth of gear without penalty. Between that and up to double that value leaves you encumbered. Up to triple that value leaves you heavily encumbered. Up to quadruple that value is your absolute limit, leaving you immobile.
+
+People are worth 3 weight.
+
+Helping someone:
+When trying to help someone fulfill a task, one that CAN be helped with, both of you roll the proper stat, and then add the successes together.
+
+Some tasks cannot be given help to, such as firing a rifle or picking a lock. It is up to GM interpretation to decide whether or not this applies.
+
+Earning more points:
+Whenever you feel like you've earned a point, post so in ⁠📝character-updates so that staff is made aware of it and may check it so.
+
+You gain 1 point whenever you finish a scene in which you have fulfilled your 'role', described in your character sheet.
+
+You gain 1 point whenever you successfully digest someone as predator, or successfully escape someone as prey. For this to apply, one side must be unwilling, either the predator or the prey. Willing vore awards no point.
+
+Exception: If you prefer endo vore - or if you'd rather spare your prey - then keeping your prey inside of you for the same amount of checks/time as it would've taken to digest will award you with a point, even if they leave/are expelled afterwards. In such a case, your prey does not get a point.
+
+You gain 1 point for every three scenes in which your role is not fulfilled ( colloquially called 'misc' scenes ).
+
+You gain points whenever an event ends and points are awarded.
+
+Points/perks added to a character in the middle of a scene do not impact that scene - you must use the stats you had when starting the scene.
+
+Creating and handling NPCs.
+Any user within the server is free to create and manage NPCs as they deem best, so long as it fits the scene they are in, and its participants consent to it. Whether or not they can do it in events is up to GM discretion.
+
+Churning, fighting and beating NPCs does not award points, unless they are given a full stat block, utilizing the same points as any other character.
+
+The stat block must make sense for the NPC in question and it must be competitive for the scene they are in. For example, if your NPC is a soldier, they should have high strength, dex and/or constitution, as well as a fitting perk and weapon. Don't give them high charisma and a nonsensical perk! That'll be invalid!
+
+Figuring out if someone is lying.
+To figure out if someone is lying, it is a contested check, your intelligence vs their charisma.
+
+The target cannot voluntarily fail or avoid this check, you both must roll, even if the target has no intention of lying. This is because it'd be obvious someone is lying if they don't voluntarily fail the check - therefore, every scum read must be rolled.
+
+If you fail the check, you don't know whether you're being lied to or told the truth.
+
+If you succeed, you figure out whether or not the opponent is lying.
+
+Vore and sex!
+The vore stats:
+There are three vore stats, but only PFs have digestion strength - baseliners do not. Read about baseliners and PFs in ⁠🌎world-summary .
+
+By default, you get 4 escape attempts.
+
+Digestion strength: FOR PFS ONLY! Represents how quickly you digest someone. By default, it takes 3 full days. Each point decreases this by 12 hours, and reduces your prey's escape attempts by 1. Read about 'digestion abstraction' below.
+
+Digestion resilience: Everyone has this! Represents how long you can endure digestion, everyone digests eventually though~ By default, it takes 3 full days to digest. Each point increases this by 12 hours, and increases your escape attempts by 1! Read about 'digestion abstraction' below.
+
+Escape training: Everyone has this! Your capability to escape tummies. No, this is not affected by strength, it is an entirely separate stat! Done so on purpose so it's harder for prey to escape once eaten~
+
+Digestion abstraction:
+In a personal scene with someone else, you can abstract digestion in whatever way you damn right please. Churn them as quickly or as slowly as you want regardless of stats - make it only last a few minutes, or several days! Provided prey gets all of their escape attempts, you are still allowed to earn points off of it.
+
+In events or if both players cannot reach a consensus, this is what is always used:
+
+Prey takes, by default, 3 days to be processed. This is separated into "alive time" (digesting) and "dead time" (being absorbed). Prey is alive for 1/3rd of total processing time, and dead for 2/3rds of total processing time. In other words, it takes 1 day to die from digestion, and another two for your body to be absorbed and become entirely gone.
+
+Each point in digestion strength decreases the total timer by 12 hours. This means your 'alive time' decreases by 4 hours, and your 'dead time' decreases by 8 hours.
+ 
+Each point in digestion resilience increases the total timer by 12 hours. This means your 'alive time' increases by 4 hours, and your 'dead time' incrases by 8 hours.
+
+Predding, preying and digesting:
+We've defined the stats, and how long you take to digest. This is how your stats actually come into play:
+
+TUTORIAL: When you want to gulp someone:
+-> Check the grappling rules in ⁠Combat for more clarity.
+
+-> You must roll to grapple them on your turn, which is a contested check ( STR vs STR ).
+
+-> It is then their turn, they may choose to try to escape the grapple, which is a contested check ( STR vs STR ).
+
+-> It is then your turn. If you still have them grappled, you may swallow them, which is the final contested check ( STR vs STR ).
+
+-> Once prey is swallowed, they can roll their Escape Training contested by the predator's Strength.
+
+Note that the predator adds the difference between stats when doing any of this
+
+-> As an example: If pred strength is 5, and prey strength is 3, then the predator rolls 7 die : ( 5 + ( 5 - 3 ) ) = 7, whereas their prey rolls only 3.
+
+-> When prey is gulped, they are entirely disarmed. They keep no items on their person whatsoever - not even ones that could otherwise be hidden!
+
+-> When prey is gulped, to escape your stomach, they roll escape training, NOT strength. The predator still adds the difference in strength-escape training to their rolls.
+
+-> This is all intentional, so that predators may have an easier time gulping prey and keeping them down!
+
+Digestion:
+In events, digestion is dragged on for as long as described above in 'digestion abstraction'. Prey may only do their escape checks every 4 hours of in-event time.
+
+During combat, however, prey may do their escape checks every time it'd be their turn, as the predator is too distracted to focus on keeping them down.
+ 
+By default, prey gets 4 attempts to escape their predator. They gain an additional attempt for each digestion resilience, and lose one attempt for each digestion strength of their predator. If the prey's resilience is overwheled and they'd have no escape attempts, they digest in 3 turns - meaning they have three turns to be saved! Their HP is set to 0 as well.
+
+Stomachs digest by default, breasts, testicles and womb do not, they're safe. You do not have a choice on this, unless you have a perk that'd change it.
+
+If prey is digested and absorbed, the predator immediately heals to full HP.
+
+What if I digest for a bit, escape, then get eaten by another predator?
+You do not regenerate your escape attempts until you rest. Tally up how many escape attempts you've done so far, then see if you'd have any left when eaten by your new predator.
+
+Example: I spent 2/4 escape attempts in my first predator. My second predator, however, has 2 digestion strength, compared to my 1 digestion resilience. This means I'd have 3 escape attempts within my second predator - but I've already used 2 with my previous one, meaning I only have 1 escape attempt left.
+
+Only the predator who digests you dead gets the point - the other one gets nothing.
+
+Capacity:
+By default, you fit 2 people in each organ. Only perks modify this.
+
+In the case of breasts and testicles, you fit one per breast/testicle.
+
+ON ESCAPE: If a prey escapes their predator, they cannot be eaten again by that same predator due to feeling too ill! Strangely, they can eat other prey though ... Prey can escape with 0 HP, but they remain incapacitated. So you can still stab them dead. Yeah.
+
+Unwilling pred, willing prey:
+When you have an unwilling predator and a willing prey, or in other words, prey is forcing themselves into the pred, every value is reversed.
+
+Pred's strength is to expel the prey.
+
+Prey's escape training is to remain inside.
+ 
+Prey gains the difference bonuses to grapple and shove themselves inside, rather than the pred.
+
+Prey gains 1 point ( if they're a template ) should they digest. Pred gains 1 point if they expel their prey.
+
+HP loss during digestion:
+While digesting, you stop regenerating HP entirely.
+
+HP loss per turn follows this formula: [MAX HP] / [ESCAPE ATTEMPTS]
+
+If you have a max 2 HP, and you have 4 escape attempts, this mans you lose 0.5 HP for each attempt. So if you digest for 2 turns and then manage to escape, you'd have 1 HP leftover!
+
+Note that this is based on your total HP, not current HP. So if your max HP is 2, and your current HP is 1, you're still gonna lose 0.5 per turn. HP can be brought below 0 through digestion, and you can die earlier than your resilience would otherwise allow you to.
+
+Always round HP up should you escape.
+
+Being at or below 0 HP inside a stomach does not matter, you can still try to escape, but you will be incapacitated/critical if you do.
+
+Pregnancy!
+We leave it up for players to decide whenever they do or do not get pregnant. Relevant perks apply of course.
+
+If you want a formula for it, roll: [average constitution of both partners, rounded down] D6's. Rolling a single 5 or 6 means you are impregnated.
+
+Baseliners have standard pregnancy cycles, no hyperpreg!
+
+PFs birth whole damn humans. They can gestate as many as described in the 'capacity' section up above.
+
+Pilzfrauns take 2 years to gestate their birthlings. This is halved for each nutrition unit they eat. Digesting prey counts as 1 nutrition unit, unless modified by a perk, like Speisfraun.
+
+The fastest pregnancy for a PF is 1 month, it cannot be faster than that, unless relevant perks apply.
+
+Pilzfrauns birth, exclusively, other Pilzfrauns. Their offspring may be Futas or not. As for whether or not they're tierfraun, that depends on their genealogical tree - if there's a tierfraun in there, there's always a chance. You're basically playing the generic lottery at this point.
+
+Once a Pilzherr cums inside a Pilzfraun, even without pregnancy, she can only birth Pilzherrs from there on out.
+
+Baseliners only birth baseliners.
+
+When a character is impregnated, they roll a flat 1d6. On a 1-4, it is a normal pregnancy. On a 5, they are twins. On a 6, they are triplets.
+
+Combat!
+This section is dedicated solely to the combat section of the game.
+
+Attacking and defending!
+To attack someone in melee, you roll strength. It is a contested STR check.
+
+To attack someone with a ranged weapon, you roll your dexterity versus their cover. If they have no cover, you still need 1 success.
+
+Weapons and damage:
+All weapons are detailed in ⁠⭐perks-and-equipment , alongside their stats and gimmicks.
+
+The list does not encompass every weapon in existance of course, we have a general rule for them though.
+
+For ranged:
+
+Random thrown objects deal 2 damage. Chairs, rocks, bricks, so on and so forth. They have 1 weight.
+
+'Rate of fire' describes how many shots you can fire in one turn. You can shoot multiple targets per turn, but you must waste one shot per additional target.
+
+I.E: You have a rof of 5, and want to shoot 3 targets. So you: 'shoot, waste, shoot, waste, shoot'. You waste 2 bullets as you have 2 additional targets past the first one.
+
+If you have multiple ammo types, you must declare the order your shots are loaded in. If you fire multiple times in a turn, your successes fire the bullets in the order you declared.
+
+Shooting each target is rolled individually, so in the case above, you must roll your shooting stats three times, against the three enemy's covers.
+
+You need 1 success over the opponent's cover to shoot them. Every success above that is an additional shot into your target, up to how many shots you've fired.
+
+Every shot past the first adds +1d6 to your accuracy.
+
+Damage reductions apply to each shot individually.
+
+For melee:
+
+Unarmed combat deals 1 damage ( fists, slaps, biting ), they have no weight; they're a part of you!
+
+Random objects are called 'makeshift' weapons, they deal 2 damage, have 1 weight, and have no gimmicks other than being one or two handed.
+ 
+Misc gear:
+A soldier, naturally, has more than just a gun. There's several misc gear stuffs for you to choose from. The consumables listed there are charges, meaning you get an X amount of uses per scene - and they regenerate afterwards.
+
+Every piece of misc gear has a flat 1 weight unless stated otherwise. You start with 3 free pieces of gear, but you may need to justify how you got them depending on how uncommon/rare they'd be for you to get. This is based on where you are, who you are, your role, among many other things.
+
+Minimum attack hit-chance and damage.
+Every attack, unless stated otherwise through some perk or gimmick, always has a 1d6 chance to hit, and deals at minimum 1 damage.
+
+Covering cover:
+You automatically take cover when you move into it, unless specifically stated otherwise due to special conditions.
+
+Cover has four ratings: Weak (2d6), middling (4d6) and strong (6d6) and fortified (8d6). Certain perks can make cover stronger!
+
+Weak cover is anything that doesn't actually block shots at all, but does block vision: Tall grass, curtains ... These offer 2d6.
+
+Middling cover is anything that does offer considerable cover, but is not intended to be so: A building's wall, a car ... These offer 4d6.
+
+Strong cover is anything militarily built for taking hits. Tanks, trenches, sandbags. These offer 6d6.
+
+Only the 'sapper' perk can build 8d6 cover. It is an upgraded Strong cover.
+
+Cover has no effect on melee.
+
+Initiative and Movements:
+Initiative is ordered from highest dex to lowest. In case of ties, all tied parties roll their dexterities, whoever has more successes goes first among them. Roll off multiple times if needed. Relevant perks apply.
+
+In this game, your distance to someone is measured in "distance" units. These are relative to you and your target, or a reference point of sorts. They represent 5 meters worth of distance.
+ 
+Each character can only move 1 distance per turn. Moving is considered your action for the turn, it is not free.
+
+Distance 0 is called "melee range". You can only melee attack someone if you're in distance 0. You cannot perform ranged attacks if there are enemies within distance 0. If someone tries to leave distance 0, they may be freely melee-attacked as a free action. Such an attack can only be done once per character. You may defend yourself from such attacks. There is no safe disengagement.
+
+Distances 1 and beyond forbid melee attacks, but allow for ranged attacks.
+
+Each 'distance' may have usable cover so as to approach gunners with relative safety.
+
+For every 10 distances away from the target, you have a -3d6 penalty to shoot them.
+
+If there are allies in the same distance as your enemy, and you are shooting them from 1 distance away or beyond, you need 1 additional success for each ally within that group in order to hit an enemy. If you do not have as many successes as you have allies in that spot, you will shoot your ally instead, in order of initiative.
+
+If there's 3x or more enemies as you have allies in a distance, you have no chance of hitting your allies, as there's enough enemies to pick a safe target to hit.
+
+Ambushing, perception and stealth!
+Stealth is a contested intelligence check. If you succeed, the opponent is not aware of your presence - otherwise, they are!
+
+A stealth check cannot be done if the enemy already knows of where you are. You need to relocate and/or find a new hiding spot before you can stealth again.
+
+If you have succeeded in a stealth check, no further stealth checks are done, unless the enemy spends their action to perform another contested intelligence check, which can only be done if they are actively searching for you. If they are entirely unaware of your presence, no further perception checks may be made, unless you do something that they can reasonably spot, like walking by them or making noise.
+
+If you try to do something to someone you are hiding from - such as attacking them - you must do a final contested perception check, and this is considered an ambush. If multiple characters are involved, all roll their intelligences, compare to one another, and then decide the action order individually.
+
+If the ambush succeeds, the ones setting up the ambush go first regardless of dexterity, and their first actions automatically succeed against the targets that were ambushed.
+
+If the ambush fails, the ones being ambushed go first, regardless of dexterity.
+
+Ambushing someone gives away your position, unless your attack cannot be detected, such as by using a suppressed/silent weapon.
+
+In order to spot someone at all, you must be within viewing range of them. Your comfortable view range is [INTELLIGENCE] x 20 + 40 distances. If the enemy is beyond this range, you cannot accurately see them, and thus, roll -3d6 for every 10 distances past your maximum comfortable view range.
+
+Trappings!
+A trap is something set up to cause harm to another. When laying a trap, the trapmaster must decide whether the trap is incapacitating or killing.
+
+A trap then requires 2 intelligence checks. The first is how well-hidden the trap is, it is the amount of successess prey needs to spot it. The second is how damaging it is, if at all, each success means one point of damage.
+
+A 'killing' trap can kill its prey, and its damage can push someone into negative HP directly.
+
+A 'incapacitating' trap will never kill, even if its damage would be killing otherwise; prey is always left at 0 HP.
+
+Dual wielding!
+Provided two items can be held with one single hand, you can wield them both at once. Additional members ( such as a tail ) can also hold items.
+
+Swapping hands is considered free, this extends to additional members - you can hold something with your tail and immediately grab onto it.
+
+Whether or not the additional member can manipulate items itself depends on specific perks, so you cannot, for example, hold a pistol in one hand, then use a two-handed weapon with one hand and your tail. Unless your tail allows for item manipulation.
+
+There are no penalties to dual-wielding. You can hold a pistol and a one-handed melee weapon and use both without issues.
+
+You can only use one item/weapon in a turn, not both. You cannot attack with both in the same turn.
+
+Weapons or items that are two handed require you to use both hands to operate it. Unless specifically stated otherwise, every 'kit' requires both hands to be used properly. ( Survivalist, entrenching, demolition, etc. ).
+
+Mounting!
+It takes one turn to mount/dismount a creature.
+
+When mounting a mountable creature, you cannot move - it is the creature that does the moving instead. It uses their speed values and your weight + your gear's weight affects it. This does mean that carrying a lot of stuff, or having the 'heavy' perk, will affect your mount.
+
+Whilst mounted, moving becomes free, as it is your mount that is moving, not you. You may perform attacks at any point during movement - at the start, in the middle of movement, or after movement. This does mean you can move up to someone, attack them, and then move away.
+
+If the mounted creature is a player, they give up their actions and let you take control instead, provided they are willing. The mounted player cannot act on their own anymore - they behave well and truly like your mount.
+
+Holding actions!
+You can create a basic "if [something] happens then [I do this]" statement for your action. If the trigger does happen, your action takes priority over anyone else's.
+
+Grappling!
+Grappling is a contested Strength check, where the one initiating the grapple adds the differences in strength to their dice pool.
+
+So if you have 5 strength, and your target has 3, you'd be rolling 7 dice against their 3, this is because 2 is the difference between 5 and 3.
+
+A grappled target can still fight back! They can attack you or someone else, put away/pull out items, so on and so forth. The only thing a grappled target cannot do is move.
+
+The target may try to break free from the graple, which is a contested STR vs STR check, in which the one holding the grapple still applies the difference between strengths to their dice pool.
+
+After a target is grappled, you may do ONE of several things as an action on your subsequent turns:
+
+You may drag them alongside you, moving them however many distances you can also move.
+
+You may 'pin' them, putting them onto the ground and holding them there. In a pin, a character may do nothing but try to break free, which is a contested strength check, where they roll twice, always taking the worse roll. The one who initiated the grapple still adds the differences in strengths to do this.
+
+You may eat them, which is a contested strength check. The one who initiated the grapple still adds the differences in strengths to do this. On a success, the target is devoured! Read the vore rules for more clarification on this.
+
+You may use them as a human shield, making enemies target them instead of you. You must hold them with at least one hand. Enemies deal damage to your human shield before they can deal damage to you, unless they have an effect that'd circunvent this. Incapacitated/dead enemies absorb no more damage, but work as 2d6 cover instead. If your cover saves you from being shot, an incapacitated human shield takes the full damage.
+
+You may try to disarm them, which is a contested strength check. On a success, you may choose to either grab their weapon for yourself, or to drop it onto the ground/throw it up to 5 + STR distances away. When throwing it, roll dexterity, on a success, it lands where you wanted it to. On a fail, roll a 1d[DISTANCE THROWN]-1. The result is where it lands instead.
+
+Altitude and flying!
+Some characters can fly for one reason or another. When they start flying, their positions are determined through "altitude" units. This effectivelly turns the 1D field into a 2D field.
+
+Someone can occupy, for example, distance 5 and altitude 3, meaning they occupy distance 5 and are at altitude 3.
+
+Everyone is at altitude 0 by default, and this does not change unless they can get off the ground somehow. You need to occupy the same distance and altitude in order to attack someone in melee.
+
+When falling, you fall 1 altitude at first, increasing by 1 with every subsequent turn of falling.
+
+Once you hit the ground - reaching altitude 0 - you take [speed] x 3 damage.
+
+Armor & its effects.
+Armor has five categories:
+
+-> None: The target has no armor at all. Any and all attacks do their regular damage.
+
+-> Personal: Personal armor with middling effects, each piece of personal armor has its unique characteristics.
+
+-> Light: Can only be pierced by weapons with 'light' armor piercing or higher. Immune to weapons with lower armor piercing.
+
+-> Medium: Can only be pierced by weapons with 'medium' armor piercing or higher. Immune to weapons with lower armor piercing.
+
+-> Heavy: Can only be pierced by weapons with 'Heavy' armor piercing or higher. Immune to weapons with lower armor piercing.
+
+Melee attacks cannot damage Light armor or above.
+
+Darkness, fog and smoke:
+If you cannot see a target directly due to darkness, fog or smoke, but you know they are there, you may roll to attack, but may only roll 1 die, and only obtain success on a 6 or higher.
+
+Vehicles and their stats.
+Vehicles work similarly to regular player characters. They have HP, speed, agility, and only occupy 1 distance regardless of size.
+
+Their HP is how much punishment they can take before they're out of combat. Once HP hits 0, it is disabled and can no longer move, its speed is fixed to 0, but its weapons still function. Once HP hits its full negative, the vehicle's hull is entirely destroyed - crew is exposed and it now becomes cover. None of its weapons may be used.
+
+Their speed are how many distances they can move in one turn.
+
+Their agility is how much movement must be spent to turn it. As an example, if your speed is 3 and your agility is 2, this means you can move forward 1 distance, then spend 2 of your movement points to turn the vehicle one facing.
+
+Their size represents how much space they take up inside a stomach. Note that by default, you can only carry 2 people inside your stomach, so any vehicle a size bigger than 2 cannot be eaten! A vehicle can only be eaten if its weapons and engine are no longer working, otherwise, they'd escape or shoot you from within. In such a condition, a vehicle cannot resist being eaten - you still need to grapple it and swallow it as if it were a regular character. The vehicle's size is also its weight for encumbrance purposes.
+
+You cannot digest a vehicle unless you have the "living furnace" perk. In this case, the vehicle's size also represents its digestion resilience.
+
+Vehicles cannot run people over in combat. They can do it as an ambush, dealing as much damage as the vehicle's speed times its seats. ( Speed X seats ).
+
+Fighting a vehicle.
+Vehicles have armor, and their armor can only be pierced by a weapon that has the adequate armor piercing stat. Armor ranges from "Light, Medium, Heavy". A vehicle has 4 facings, its front, its sides and its rear - depending on which is facing the enemy, that is the one that they'll have to pierce through.
+ 
+ 
+You cannot damage a vehicle if its armor rating is higher than your weapon's armor piercing value. You can pierce values equal or lower than your armor piercing value.
+
+A vehicle has modules and crew, which can be internal or external. Damage dealt to a module also directly deals damage to the vehicle, but not the other way around.
+
+Crew can also be targetted, and damage dealt to crew is also dealt to the vehicle, as you'd still be piercing the vehicle!
+
+If a module hits 0 HP, it stops functioning until repaired. Every time a module is hit thereafter, it will stop functioning again until repaired once more. If a module hits its full negative HP, it is entirely destroyed and cannot be repaired.
+
+When attacking a vehicle, you can simply deal damage to its HP, or target a module/crew. Each module/crew has a difficulty rating, which requires more successes in order to be hit, depending on facing. Even if targetting a module/crew, getting a single success over the vehicle's cover will still deal damage to the vehicle, it simply won't damage the targetted module.
+
+Explosions inside the vehicle damage all of its internal modules and crew equally.
+
+If you are within distance 0 of a vehicle, then you can exploit its gaps and holes - you can push grenades inside it as a dex check. Failure drops it on your feet, exploding on your next turn.
+
+Manning the thing
+It takes one action to enter/leave the vehicle, you may take any available seat immediately. Up to [DOORS] number of people can enter/leave a vehicle in a turn. A vehicle that has its doors open can be shot in/out of, even if the enemy is at distance 0.
+
+It takes one action to swap seats. If there is a dead teammate sitting on it, an action must be spent pulling them out of there before the seat can be occupied.
+
+There are many roles within a vehicle, most are self-explanatory, but two in particular require explanations.
+ 
+ 
+The Commander is required for the functioning of certain vehicles. With the commander dead or gone, there is no coordination between the members of the vehicle.
+
+Without a commander:
+--> Every action taken inside the vehicle takes a -3d6 to be performed. 
+--> The roleplayers may not use RP-discussions or other means to decide what to do; each must act on their own turns, they cannot communicate their intentions to one another. 
+--> The vehicle is blind and cannot clearly see enemies approaching, making it automatically fail at spotting ambushes, traps and hiding enemies.
+
+The lack of a commander being listed in a vehicle's sheet implies that the vehicle does not need one to be operated properly, such as a car, truck, motorcycle, etc.
+
+The Engineer is required to make sure the unwieldy machines keep working properly. An engineer can repair ONE internal module per turn, this is an inteligence check, requiring 1 + [ how negative the module's HP is ] / 2, round down, successes. Without an engineer, malfunctions cannot be repaired. They do not heal the module, rather, they just make it work again.
+
+The lack of an engineer being listed in a vehicle's seat implies you cannot repair the vehicle's internal modules from within the vehicle itself. You'd have to go outside in order to do so. Like with a car for example, you'd have to get out of the vehicle to fix the engine or wheels.
+
+A vehicle has many seats and roles. In order to fulfill a role, you must also occupy its seat: A gunner needs to occupy the gunner's seat. A commander needs to occupy the commander's seat, an engineer needs to occupy the engineer's seat.
+
+In other words: If, for example, your engineer dies - you must pull them out of their seat, then occupy it, before you can start doing any repairs.
+
+Likewise, if the commander is gone, they must be taken out of their seat, then have it occupied by a live member, so as to command the vehicle while they're away.
+Two crewmembers can swap seats if they hold their actions to do so at the same time.
+
+Fighting while inside the thing.
+A vehicle has five phases, which are always done in this order, without exception:
+
+Commands given by the commander, if any.
+Movement by the driver.
+Shooting by the gunners/crew.
+Repairs by the Engineer, if any.
+Miscellaneous crew does things. ( Passengers enter/leave, shoot out of the vehicle, equip something, etc ).
+
+A vehicle's initiative is decided by the Commander's charisma. If the vehicle has no commander, it is then decided by the driver's dexterity. If a vehicle has neither, it will go to the bottom of initiative. A vehicle keeps its starting initiative even if its crew dies, so as to avoid confusion and the need to re-arrange initiatives mid combat.
+
+The crew of a vehicle no longer have individual initiatives, they act when it is the vehicle's turn, in the order described above.
+
+Vehicles are tight and cramped! Two-handed weapons cannot be used inside it.
+
+Shooting while the vehicle is moving is extremely difficult. Any attempt by the gunners or crew to shoot immediately default to a single 1d6, which succeeds on a 5 or a 6. Perks do not change this. A weapon's rate of fire is the only way to increase the dice pool, utilizing the standard ROF rules to do so. If the vehicle is entirely still, then there are no penalties.
+
+Utilizing the vehicle's weapons follows the same rules as operating any other weapon.
+
+Vehicles have facings. Front, sides and rear. Vehicles can only go back and forward, so if a vehicle is on its side, you'd have to turn before you can start moving!
+
+Any vehicle can only reverse 1 distance per turn, unless stated otherwise. Forward movement is stated in each vehicle's description.
+
+A vehicle cannot attack targets in distance 0, they are too close for your weapons to be effective.
+Airplanes: How they work.
+By virtue of flying, planes enforce that the battle becomes a 2D field, instead of our typical 1D. In this case, how high something is is described as "altitude". One could be, for example, in distance 5, altitude 13.
+
+Planes have a maximum and a minimum speed threshold. If they're below the minimum, they immediately start falling. A plane starts falling by 1 altitude per turn, increasing by 1 altitude for every subsequent turn. The plane's nose is also considered to be pointing down once it begins to fall.
+
+A plane falling and crashing is completely destroyed and its pilot dies, no matter how small of a fall it was.
+
+It does not take an action to move a plane - they're always moving forward - it takes an action to switch their speed.
+
+Planes can only go up/down 1 speed per action, unless stated otherwise.
+
+If the engine is not working for whatever reason, the plane loses 1 speed per turn, until it hits 0.
+
+Airplanes have 6d6 cover naturally, for as long as they're moving, gaining + 2d6 for every distance they've moved that turn. They can be targetted by small arms, however, any such attacks immediately default to a 1d6, with successes on a 5 or a 6, perks do not affect this. A weapon's rate of fire can increase the dice pool, obeying typical ROF rules.
+Ships & boats: How they work.
+Boats work exactly like ground vehicles, but only move in the water! The same rules that apply for ground vehicles also apply to boats.
+
+Ships, however, are an entirely different can of worms ...
+
+Ships, in spite of being realistically immune to practically every light artillery cannon in real life, in virtue of their heavy armor - in this system, they are not. Sufficient artillery, even if light, can sink them.
+
+The issue arises in sinking the thing, because ships have a lot of HP. It will never be cost-effective to destroy ships whilst using light artillery and whatnot.
+
+Ships fight from extremely far distances, to the point that measuring them would be moot. Instead, ships have detection and stealth stats, which allows them to spot enemy ships and try to attack them, with varying degrees of prediction.
+
+Ships also cannot be manned by single persons, requiring instead massive crews and coordinated efforts to manage. Ships require spotters, signalers, captains, coordinators, gunners, sailors, and much, much more.
+
+Ships will remain a WIP. They're simply too huge to be treated as pieces on a battlefield. They'll be handled as scenes demand them.

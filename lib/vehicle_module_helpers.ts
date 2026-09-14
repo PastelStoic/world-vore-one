@@ -54,7 +54,7 @@ export function resolveVehicleModule(
     description: "Unknown module",
     hp: 1,
     position: "external",
-    difficulty: { front: 1, side: 1, rear: 1 },
+    difficulty: 1,
     destructionEffect: "Module destroyed.",
   };
 }
@@ -139,13 +139,36 @@ function formatVehicleModuleStats(moduleId: string): string {
 
   lines.push(`HP: ${resolved.hp}`);
   lines.push(
-    `Difficulty: ${resolved.difficulty.front} / ${resolved.difficulty.side} / ${resolved.difficulty.rear}`,
+    `Difficulty: ${resolved.difficulty}`,
   );
   lines.push(
     `Position: ${resolved.position === "internal" ? "Internal" : "External"}`,
   );
   lines.push(`On destruction: ${resolved.destructionEffect}`);
   return lines.join("\n");
+}
+
+export function getEffectiveVehicleTraitIds(
+  vehicle: {
+    traitIds?: readonly string[];
+    modules: readonly string[];
+  },
+): string[] {
+  const seen = new Set<string>();
+  const traitIds: string[] = [];
+  for (const traitId of vehicle.traitIds ?? []) {
+    if (seen.has(traitId)) continue;
+    seen.add(traitId);
+    traitIds.push(traitId);
+  }
+  for (const moduleId of vehicle.modules) {
+    for (const traitId of resolveVehicleModule(moduleId).addsTraitIds ?? []) {
+      if (seen.has(traitId)) continue;
+      seen.add(traitId);
+      traitIds.push(traitId);
+    }
+  }
+  return traitIds;
 }
 
 function uniquePreserveOrder<T>(items: readonly T[]): T[] {

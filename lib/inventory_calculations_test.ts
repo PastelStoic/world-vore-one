@@ -6,11 +6,13 @@
 import { assertEquals } from "jsr:@std/assert@1";
 import { createEmptyInventory } from "./inventory_types.ts";
 import {
+  applyCharismaItemDiscount,
   calculateInventoryPointCostWithPerks,
   countAllItemSlots,
   countCarriedItemSlots,
   countLocationSlots,
   getEffectiveWeaponStats,
+  getVehiclePointCost,
   getWeaponPointCost,
   slotLookups,
 } from "./inventory_calculations.ts";
@@ -70,6 +72,53 @@ Deno.test("restricted weapons add their catalog point cost", () => {
     calculateInventoryPointCostWithPerks(inv),
     weaponCost,
   );
+});
+
+Deno.test("applyCharismaItemDiscount leaves free items free", () => {
+  assertEquals(applyCharismaItemDiscount(0, 5), 0);
+});
+
+Deno.test("applyCharismaItemDiscount does nothing at Charisma 1", () => {
+  assertEquals(applyCharismaItemDiscount(3, 1), 3);
+  assertEquals(applyCharismaItemDiscount(1, 1), 1);
+});
+
+Deno.test("applyCharismaItemDiscount subtracts each point past the first", () => {
+  assertEquals(applyCharismaItemDiscount(6, 2), 5);
+  assertEquals(applyCharismaItemDiscount(6, 4), 3);
+});
+
+Deno.test("applyCharismaItemDiscount never drops a paid item below 1", () => {
+  assertEquals(applyCharismaItemDiscount(3, 8), 1);
+  assertEquals(applyCharismaItemDiscount(1, 5), 1);
+});
+
+Deno.test("getWeaponPointCost applies Charisma discount after perk discounts", () => {
+  const expensiveId = "flamethrower";
+  assertEquals(getWeaponPointCost(expensiveId), 3);
+  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 2), 2);
+  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 8), 1);
+});
+
+Deno.test("getVehiclePointCost applies Charisma discount with a minimum of 1", () => {
+  assertEquals(getVehiclePointCost("mark-v"), 6);
+  assertEquals(getVehiclePointCost("mark-v", 1), 6);
+  assertEquals(getVehiclePointCost("mark-v", 3), 4);
+  assertEquals(getVehiclePointCost("motorcycle", 5), 1);
+});
+
+Deno.test("inventory point cost discounts paid weapons and vehicles by Charisma", () => {
+  const inv = createEmptyInventory();
+  inv.carried.weapons.push({
+    weaponId: "flamethrower",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+  inv.stowed.vehicles.push({ vehicleId: "mark-v" });
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 1), 9);
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 3), 5);
 });
 
 Deno.test("getEffectiveWeaponStats returns catalog ammo when nothing is attached", () => {

@@ -11,8 +11,8 @@ export type {
   VehicleArmorRating,
   VehicleDefinition,
   VehicleModuleDefinition,
-  VehicleModuleDifficulty,
   VehicleModulePosition,
+  VehicleTraitDefinition,
   WeaponDefinition,
   WeaponKind,
   WeaponTraitDefinition,
@@ -21,6 +21,7 @@ export { type Nation, NATIONS } from "./equipment_types.ts";
 
 export { MELEE_TRAITS, MELEE_TRAITS_BY_ID } from "./melee_traits.ts";
 export { WEAPON_TRAITS, WEAPON_TRAITS_BY_ID } from "./weapon_traits.ts";
+export { VEHICLE_TRAITS, VEHICLE_TRAITS_BY_ID } from "./vehicle_traits.ts";
 export { MELEE_WEAPONS, MELEE_WEAPONS_BY_ID } from "./melee_weapons.ts";
 export { EQUIPMENT, EQUIPMENT_BY_ID } from "./general_equipment.ts";
 export {

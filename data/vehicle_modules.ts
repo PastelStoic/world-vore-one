@@ -7,9 +7,8 @@
 import type { VehicleModuleDefinition } from "./equipment_types.ts";
 
 export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
-
   // WEAPONS
-  
+
   {
     id: "light-cannon",
     name: "Light cannon",
@@ -22,7 +21,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Cannon destroyed.",
     damage: "Variable",
     rateOfFire: 1,
@@ -41,7 +40,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
-    difficulty: { front: 5, side: 3, rear: 3 },
+    difficulty: 5,
     destructionEffect: "Cannon destroyed.",
     damage: "Variable",
     rateOfFire: 1,
@@ -60,7 +59,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Cannon destroyed.",
     damage: "Variable",
     rateOfFire: 1,
@@ -78,7 +77,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Cannon destroyed.",
     damage: "Variable",
     rateOfFire: 1,
@@ -96,7 +95,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       *Armor-piercing: Heavy armor piercing, deals 24 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 8,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Cannon destroyed.",
     damage: "Variable",
     rateOfFire: 1,
@@ -106,58 +105,43 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-turret",
     name: "Light turret",
-    description:
-      `A light turret mounting, for small cannons!
-
-      *It can turn one direction per turn, assuming its user hasn' spent its action with something else.
-      *The turret turns alongside the tank: If the turret is aiming forward, and the tank turns to the right, naturally, the turret will aim right too!`,
+    description: "A light turret mounting, for small cannons!",
     hp: 6,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 3 },
+    difficulty: 3,
     destructionEffect: "Turret destroyed, and can no longer turn.",
+    addsTraitIds: ["turreted"],
   },
   {
     id: "rear-light-turret",
     name: "Light turret",
     description:
-      `A light turret mounting, for small cannons! Aims backwards instead, ooooo ...
-
-      *It can turn one direction per turn, assuming its user hasn' spent its action with something else.
-      *The turret turns alongside the tank: If the turret is aiming forward, and the tank turns to the right, naturally, the turret will aim right too!`,
+      "A light turret mounting, for small cannons! Aims backwards instead, ooooo ...",
     hp: 6,
     position: "internal",
-    difficulty: { front: 3, side: 3, rear: 3 },
+    difficulty: 3,
     destructionEffect: "Turret destroyed, and can no longer turn.",
+    addsTraitIds: ["turreted"],
   },
   {
     id: "light-mantlet",
     name: "Light mantlet",
-    description:
-      `A light artillery mantlet, protecting against incoming fire.
-
-      *Crew and other sensitive modules behind it cannot be damaged by small arms fire.
-      *Explosions happening on the same distance as the gun, or ahead of it, do not damage the crew - the mantlet protects them and takes damage instead.
-      *The manlet does not protect from explosions happening behind it.
-      *Requiring 3 additional successes, a player may throw a grenade on the same distance as the gun, but behind the mantlet, avoiding its protection.`,
+    description: "A light artillery mantlet, protecting against incoming fire.",
     hp: 6,
     position: "external",
-    difficulty: { front: 0, side: 0, rear: 1 },
+    difficulty: 1,
     destructionEffect: "Mantlet destroyed, no longer offers any protection.",
+    addsTraitIds: ["mantlet"],
   },
   {
     id: "medium-mantlet",
     name: "Medium mantlet",
-    description:
-      `A thicker, stronger mantlet! Much sturdier!
-
-      *Crew and other sensitive modules behind it cannot be damaged by small arms fire.
-      *Explosions happening on the same distance as the gun, or ahead of it, do not damage the crew - the mantlet protects them and takes damage instead.
-      *The manlet does not protect from explosions happening behind it.
-      *Requiring 3 additional successes, a player may throw a grenade on the same distance as the gun, but behind the mantlet, avoiding its protection.`,
+    description: "A thicker, stronger mantlet! Much sturdier!",
     hp: 8,
     position: "external",
-    difficulty: { front: 0, side: 0, rear: 1 },
+    difficulty: 1,
     destructionEffect: "Mantlet destroyed, no longer offers any protection.",
+    addsTraitIds: ["mantlet"],
   },
   {
     id: "flamethrower",
@@ -166,7 +150,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       "Vehicular flamethrower, will burn whoever it comes across. Max range is 3 distances. Targets set on fire take 3 damage immediately, and 3 damage every turn thereafter. A target on fire can only do one the following: Create distance between themselves and you, try to put the fire out, or do an action that contributes towards putting the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well. Attacking a target that is already on fire does not deal any more damage. Rate of fire doesn't increase the damage of this weapon against individual targets.",
     hp: 4,
     position: "internal",
-    difficulty: { front: 3, side: 5, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Flamethrower destroyed.",
     damage: "3",
     rateOfFire: 11,
@@ -180,7 +164,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       "Vehicle-mounted machinegun to fend off infantry, aiming forward.",
     hp: 4,
     position: "internal",
-    difficulty: { front: 3, side: 5, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Machine gun destroyed.",
     damage: "3",
     rateOfFire: 11,
@@ -194,7 +178,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       "Vehicle-mounted machinegun to fend off infantry, aiming to the side(s).",
     hp: 4,
     position: "internal",
-    difficulty: { front: 5, side: 3, rear: 5 },
+    difficulty: 5,
     destructionEffect: "Machine gun destroyed.",
     damage: "3",
     rateOfFire: 11,
@@ -208,7 +192,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
       "Vehicle-mounted machinegun to fend off infantry, aiming backwards.",
     hp: 4,
     position: "internal",
-    difficulty: { front: 5, side: 5, rear: 3 },
+    difficulty: 5,
     destructionEffect: "Machine gun destroyed.",
     damage: "3",
     rateOfFire: 11,
@@ -221,21 +205,24 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "engine",
     name: "Engine",
-    description: "The vehicle's engine, required for the vehicle to move and operate its weaponry.",
+    description:
+      "The vehicle's engine, required for the vehicle to move and operate its weaponry.",
     hp: 4,
     position: "internal",
-    difficulty: { front: 5, side: 5, rear: 5 },
+    difficulty: 5,
     destructionEffect: "The vehicle can no longer move.",
   },
-  
+
   {
     id: "fuel-tanks",
     name: "Fuel tanks",
-    description: "Fuel tanks, required for a vehicle to operate - no fuel tanks means no fuel, dummy!",
+    description:
+      "Fuel tanks, required for a vehicle to operate - no fuel tanks means no fuel, dummy!",
     hp: 2,
     position: "internal",
-    difficulty: { front: 5, side: 5, rear: 5 },
-    destructionEffect: `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.
+    difficulty: 5,
+    destructionEffect:
+      `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.
     
     *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
     *The fire deals a continuous 3 damage to the vehicle until it is put out and it will spread to another non-burning module, at random, on the next turn.
@@ -246,101 +233,104 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-ammo-stowage",
     name: "Light ammo stowage",
-    description: `The vehicle's ammo stowage, where all of its ammunition is held. Careful that it does not blow up!`,
+    description:
+      `The vehicle's ammo stowage, where all of its ammunition is held. Careful that it does not blow up!`,
     hp: 2,
     position: "internal",
-    difficulty: { front: 8, side: 8, rear: 8 },
-    destructionEffect: "The vehicle immediately explodes, destroying it and killing off everyone within it. Only explodes if it is directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.",
+    difficulty: 8,
+    destructionEffect:
+      "The vehicle immediately explodes, destroying it and killing off everyone within it. Only explodes if it is directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.",
   },
   {
     id: "tracks",
     name: "Tracks",
-    description: `The vehicle's tracks, which allow it to move smoothly along the terrain ahead!
-    
-    *Considered to have light armor when targeted. Does not take area damage - it must be targetted directly.`,
+    description:
+      "The vehicle's tracks, which allow it to move smoothly along the terrain ahead! Considered to have light armor when targeted.",
     hp: 8,
     position: "external",
-    difficulty: { front: 3, side: 3, rear: 3 },
-    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    difficulty: 3,
+    destructionEffect:
+      "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    addsTraitIds: ["tracked"],
   },
   {
     id: "medium-tracks",
     name: "Medium racks",
-    description: `Heavier tracks, meant for even courser terrain. These tracks won't stop for nothing!
-    
-    *Considered to have medium armor when targeted. Does not take area damage - it must be targetted directly.`,
+    description:
+      "Heavier tracks, meant for even courser terrain. These tracks won't stop for nothing! Considered to have medium armor when targeted.",
     hp: 12,
     position: "external",
-    difficulty: { front: 3, side: 3, rear: 3 },
-    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    difficulty: 3,
+    destructionEffect:
+      "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    addsTraitIds: ["tracked"],
   },
   {
     id: "wheels-2",
     name: "Wheels ( 2 wheels )",
-    description: "A pair of thick rubber wheels, can take a surprising amount of punishment! Considered to have no armor when targeted. Does take area damage.",
+    description:
+      "A pair of thick rubber wheels, can take a surprising amount of punishment!",
     hp: 4,
     position: "external",
-    difficulty: { front: 3, side: 3, rear: 3 },
-    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    difficulty: 3,
+    destructionEffect:
+      "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    addsTraitIds: ["wheeled"],
   },
   {
     id: "wheels-4",
     name: "Wheels ( 4 wheels )",
-    description: "A set of four thick rubber wheels, can take a surprising amount of punishment! Considered to have no armor when targeted. Does take area damage.",
+    description:
+      "A set of four thick rubber wheels, can take a surprising amount of punishment!",
     hp: 6,
     position: "external",
-    difficulty: { front: 3, side: 3, rear: 3 },
-    destructionEffect: "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    difficulty: 3,
+    destructionEffect:
+      "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
+    addsTraitIds: ["wheeled"],
   },
   {
     id: "artillery-train",
     name: "Artillery train",
-    description: `An artillery train, pulled by a pair of horses.
-    
-    *Each horse has 4 HP. 1 horse dies for every 4 HP lost.
-    *Light artillery requires 1 horse for each distance moved.
-    *Medium artillery requires 2 horses for each distance moved.
-    *Heavy artillery requires 3 horses for each distance moved.
-    *These horses are especially dumb, and do not accept being mounted.`,
+    description: "An artillery train, pulled by a pair of horses.",
     hp: 8,
     position: "external",
-    difficulty: { front: 0, side: 0, rear: 0 },
+    difficulty: 0,
     destructionEffect: "The horses are dead.",
+    addsTraitIds: ["horse-team"],
   },
   {
     id: "horse-artillery-train",
     name: "Horse-artillery train",
-    description: `A horse artillery train, meant to be speedy, pulled by six horses.
-    
-    *Each horse has 4 HP. 1 horse dies for every 4 HP lost.
-    *Light artillery requires 1 horse for each distance moved.
-    *Medium artillery requires 2 horses for each distance moved.
-    *Heavy artillery requires 3 horses for each distance moved.
-    *These horses are especially dumb, and do not accept being mounted.`,
+    description:
+      "A horse artillery train, meant to be speedy, pulled by six horses.",
     hp: 24,
     position: "external",
-    difficulty: { front: 0, side: 0, rear: 0 },
+    difficulty: 0,
     destructionEffect: "The horses are dead.",
+    addsTraitIds: ["horse-team"],
   },
 
-// CIVILIAN SHIZ
+  // CIVILIAN SHIZ
 
   {
     id: "civilian-engine",
     name: "Civilian engine",
-    description: "A lighter, simpler Civilian engine, for most vehicles of the everyday life.",
+    description:
+      "A lighter, simpler Civilian engine, for most vehicles of the everyday life.",
     hp: 2,
     position: "internal",
-    difficulty: { front: 2, side: 2, rear: 2 },
+    difficulty: 2,
     destructionEffect: "The vehicle can no longer move.",
   },
   {
     id: "civilian-fuel-tank",
     name: "Civilian fuel tanks",
-    description: "A fuel tank for a civilian vehicle. Small, doesn't hold a whole lot. Doesn't burn as badly as a military vehicle's tanks.",
+    description:
+      "A fuel tank for a civilian vehicle. Small, doesn't hold a whole lot. Doesn't burn as badly as a military vehicle's tanks.",
     hp: 1,
     position: "internal",
-    difficulty: { front: 2, side: 2, rear: 2 },
+    difficulty: 2,
     destructionEffect: `The fuel tanks catch fire!
 
     *The fire deals a continuous 3 damage to the vehicle until it is put out.
@@ -352,20 +342,22 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-wheels-2",
     name: "Civilian wheels ( 2 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all. Considered to have no armor when targeted. Does take area damage.",
+    description: "Light civilian wheels, can't take much punishment at all.",
     hp: 2,
     position: "external",
-    difficulty: { front: 2, side: 2, rear: 2 },
+    difficulty: 2,
     destructionEffect: "The vehicle can no longer move.",
+    addsTraitIds: ["wheeled"],
   },
   {
     id: "civilian-wheels-4",
     name: "Civilian wheels ( 4 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all. Considered to have no armor when targeted. Does take area damage.",
+    description: "Light civilian wheels, can't take much punishment at all.",
     hp: 4,
     position: "external",
-    difficulty: { front: 2, side: 2, rear: 2 },
+    difficulty: 2,
     destructionEffect: "The vehicle can no longer move.",
+    addsTraitIds: ["wheeled"],
   },
 ];
 

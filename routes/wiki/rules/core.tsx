@@ -220,6 +220,10 @@ export default define.page(function WikiRulesCore() {
             Lying, convincing people of something, getting them to do what you
             want.
           </li>
+          <li>
+            Haggling: each point of Charisma past the first reduces the point
+            cost of items by 1, to a minimum of 1. Free items stay free.
+          </li>
         </ul>
       </RulesSection>
 

@@ -208,10 +208,10 @@ export type VehicleArmorRating = "none" | "light" | "medium" | "heavy";
 
 export type VehicleModulePosition = "internal" | "external";
 
-export interface VehicleModuleDifficulty {
-  front: number;
-  side: number;
-  rear: number;
+export interface VehicleTraitDefinition {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface VehicleModuleDefinition {
@@ -220,8 +220,8 @@ export interface VehicleModuleDefinition {
   description: string;
   hp: number;
   position: VehicleModulePosition;
-  /** How hard this module is to hit from each facing */
-  difficulty: VehicleModuleDifficulty;
+  /** How hard this module is to hit */
+  difficulty: number;
   /** Effect on the vehicle when this module is destroyed */
   destructionEffect: string;
   /** Weapon modules include combat stats */
@@ -230,6 +230,8 @@ export interface VehicleModuleDefinition {
   ammo?: number;
   /** How many turns it takes to reload to full capacity (default: 1) */
   reloadTurns?: number;
+  /** Trait IDs this module grants to any vehicle that includes it */
+  addsTraitIds?: string[];
 }
 
 export interface VehicleDefinition {
@@ -252,11 +254,12 @@ export interface VehicleDefinition {
   doors: number;
   crew: number;
   size: number;
-  agility: number;
   speed: number;
   /** Added to the sum of module HP; omitted or zero means no adjustment */
   hpModifier?: number;
   /** Module IDs from vehicle_modules.ts; repeat an ID for multiple copies */
   modules: string[];
+  /** Trait IDs from vehicle_traits.ts applied directly to this vehicle */
+  traitIds?: string[];
   description?: string;
 }

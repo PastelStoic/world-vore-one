@@ -95,11 +95,6 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     character.inventory ?? createEmptyInventory(),
   );
 
-  const inventoryPointCost = calculateInventoryPointCostWithPerks(
-    inventory,
-    character.perkIds,
-  );
-
   // Build a draft that uses the local inventory state so weight/encumbrance updates live
   const viewerDraft = {
     ...character,
@@ -122,6 +117,12 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
     encumbrancePenaltyText,
     effectiveByStat,
   } = useCharacterStats(viewerDraft);
+
+  const inventoryPointCost = calculateInventoryPointCostWithPerks(
+    inventory,
+    character.perkIds,
+    effectiveByStat.charisma,
+  );
 
   const isHidden = "hidden" in character &&
     (character as CharacterSheet).hidden;
@@ -334,6 +335,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         readOnly
         characterId={characterId}
         perkIds={character.perkIds}
+        charisma={effectiveByStat.charisma}
         canEditCombatState={canEditCombatState}
       />
 

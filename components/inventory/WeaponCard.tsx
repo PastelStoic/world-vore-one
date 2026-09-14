@@ -33,6 +33,7 @@ interface WeaponCardProps {
   combatReadOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
   perkIds?: string[];
+  charisma?: number;
   weaponMasterRestrictedUnlocks?: string[];
   inventory: CharacterInventory;
   onToggleSignature: (location: InventoryLocation, index: number) => void;
@@ -238,11 +239,17 @@ export default function WeaponCard(props: WeaponCardProps) {
           {def.pointCost > 0 && (
             <span class="text-xs text-warning ml-1">
               [Cost: {isSignature
-                ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
+                ? getSignatureAdjustedPointCost(
+                  w.weaponId,
+                  true,
+                  perkIds,
+                  props.charisma,
+                )
                 : getWeaponPointCost(
                   w.weaponId,
                   perkIds,
                   weaponMasterRestrictedUnlocks,
+                  props.charisma,
                 )}pt]
             </span>
           )}
@@ -777,9 +784,8 @@ export default function WeaponCard(props: WeaponCardProps) {
         </div>
       )}
       {!readOnly && availableAttachments.length === 0 &&
-        compatibleAttachmentIds.filter((aId) =>
-            !w.attachedIds.includes(aId)
-          ).length > 0 &&
+        compatibleAttachmentIds.filter((aId) => !w.attachedIds.includes(aId))
+            .length > 0 &&
         (
           <div class="ml-2 text-xs text-base-content/50 italic">
             Compatible attachments exist but none are in your inventory. Add

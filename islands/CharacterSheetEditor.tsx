@@ -178,6 +178,7 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
         onChange={editor.setInventory}
         availablePoints={editor.unallocatedStatPoints}
         perkIds={editor.perkIds}
+        charisma={editor.effectiveByStat.charisma}
         onLoseWeaponPermanently={(cost) =>
           editor.setUnallocatedStatPoints((current) => current - cost)}
       />
@@ -205,9 +206,7 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
         </p>
       )}
 
-      {disguiseError && (
-        <p class="text-sm text-error">{disguiseError}</p>
-      )}
+      {disguiseError && <p class="text-sm text-error">{disguiseError}</p>}
 
       <Button type="submit" disabled={cannotSave}>
         {props.submitLabel}

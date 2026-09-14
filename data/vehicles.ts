@@ -7,9 +7,8 @@ import type { VehicleDefinition } from "./equipment_types.ts";
 // ---------------------------------------------------------------------------
 
 export const VEHICLES: VehicleDefinition[] = [
-
   // BRITISH VEHICLES
-  
+
   {
     id: "mark-v",
     name: "Tank, Mark IV ( MALE )",
@@ -24,7 +23,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 3,
     crew: 9,
     size: 54,
-    agility: 1,
     speed: 2,
     modules: [
       "light-cannon",
@@ -37,6 +35,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "tracks",
       "light-ammo-stowage",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.
 
@@ -48,7 +47,6 @@ export const VEHICLES: VehicleDefinition[] = [
 
       *The commander mans one of the frontal machineguns.
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
-      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
       *One machinegun points left, one right, and one to the front.`,
   },
 
@@ -66,7 +64,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 3,
     crew: 9,
     size: 54,
-    agility: 1,
     speed: 2,
     modules: [
       "frontal-machine-gun",
@@ -78,6 +75,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "fuel-tanks",
       "tracks",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike. Female variant, sporting only MGs.
 
@@ -89,7 +87,6 @@ export const VEHICLES: VehicleDefinition[] = [
 
       *The commander mans one of the frontal machineguns.
       *Two frontal machineguns can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
-      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
       *One machinegun points left, one right, and one to the front.`,
   },
 
@@ -107,7 +104,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 2,
     crew: 5,
     size: 54,
-    agility: 1,
     speed: 3,
     modules: [
       "frontal-machine-gun",
@@ -118,6 +114,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "fuel-tanks",
       "tracks",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `Light and fast "cavalry" tank, meant to fit Britain's armor doctrine. Faster than most other tanks, but only armed with machineguns!
 
@@ -127,13 +124,11 @@ export const VEHICLES: VehicleDefinition[] = [
       1 engineer ( 5/5/5 ).
       2 gunner ( 3/3/3 ).
       
-      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
       *The vehicle has a rear gun port, allowing one of the machineguns to be slotted into it. It takes 3 turns to do so.
-      *Slotting the machinegun into the rear port also flips its front/rearr targetting difficulties.
       *One of the side machinegun points left, one points right.`,
   },
 
-// FRENCH VEHICLES
+  // FRENCH VEHICLES
 
   {
     id: "renault-f17",
@@ -149,7 +144,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 1,
     crew: 2,
     size: 32,
-    agility: 1,
     speed: 3,
     modules: [
       "light-cannon",
@@ -168,7 +162,7 @@ export const VEHICLES: VehicleDefinition[] = [
       
       *The commander is also the gunner and the engineer. Good luck doing all the work alone!`,
   },
-  
+
   {
     id: "renault_f17_female",
     name: "Renault FT-17 ( FEMALE )",
@@ -183,7 +177,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 1,
     crew: 2,
     size: 32,
-    agility: 1,
     speed: 3,
     modules: [
       "frontal-machine-gun",
@@ -203,7 +196,7 @@ export const VEHICLES: VehicleDefinition[] = [
       *The machinegun is inside the turret, and turns alongside it.`,
   },
 
-//AMERICAN VEHICLES
+  //AMERICAN VEHICLES
 
   {
     id: "m1915-jeffery-armored-car",
@@ -219,7 +212,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 2,
     crew: 5,
     size: 40,
-    agility: 2,
     speed: 6,
     modules: [
       "frontal-machine-gun",
@@ -243,8 +235,8 @@ export const VEHICLES: VehicleDefinition[] = [
       *The rear turret can only aim to the back or the sides of the vehicle - it cannot aim forwards!
       *The machineguns are inside the turret, and turn alongside it.`,
   },
-  
-// GERMAN VEHICLES
+
+  // GERMAN VEHICLES
 
   {
     id: "a7v",
@@ -260,7 +252,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 2,
     crew: 11,
     size: 54,
-    agility: 1,
     speed: 1,
     modules: [
       "light-cannon",
@@ -274,6 +265,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "tracks",
       "light-ammo-stowage",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `German tank, more closely resembling a pilbox on threads! Outdated, but still used - crew has been optimized!
 
@@ -286,8 +278,7 @@ export const VEHICLES: VehicleDefinition[] = [
       4 lateral machinegunners ( 4/3/4 ).
 
       *One cannon is aiming forwards, one cannon is aming backwards.
-      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
-      *Two machineguns point left, and two machineguns point right.`
+      *Two machineguns point left, and two machineguns point right.`,
   },
 
   {
@@ -304,7 +295,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 2,
     crew: 11,
     size: 54,
-    agility: 1,
     speed: 1,
     modules: [
       "front-machine-gun",
@@ -319,6 +309,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "fuel-tanks",
       "tracks",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `German tank, more closely resembling a pilbox on threads! Outdated, but still used - crew has been optimized! Female variant, with only MGs!
 
@@ -330,8 +321,7 @@ export const VEHICLES: VehicleDefinition[] = [
       2 rear machinegunners ( 5/4/3 ).
       4 lateral machinegunners ( 4/3/4 ).
 
-      *Each machinegun can only fire in their respective directions. Difficulty doubled if trying to attack a machinegun that's on the opposite end.
-      *Two machineguns in each direction; front, left, right and rear.`
+      *Two machineguns in each direction; front, left, right and rear.`,
   },
 
   {
@@ -348,7 +338,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 11,
     crew: 21,
     size: 68,
-    agility: 1,
     speed: 1,
     modules: [
       "medium-cannon",
@@ -367,6 +356,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "medium-tracks",
       "light-ammo-stowage",
     ],
+    traitIds: ["directional-mounts"],
     description:
       `A massive bunker on threads. The pinacle of heavy tanks. Slow, cumbersome, but deadly.
 
@@ -381,11 +371,10 @@ export const VEHICLES: VehicleDefinition[] = [
       10 assistant gunners ( 4/3/4 )
 
       *Two cannons aim forward, two cannons aim backwards; all can fire to the sides.
-      *One frontal machinegun, four lateral machineguns, two lateral flamethrowers.
-      *Difficulty doubled if trying to fire at a weapon on the opposite end of the vehicle.`
+      *One frontal machinegun, four lateral machineguns, two lateral flamethrowers.`,
   },
 
-// MILITARY BUT GENERIC
+  // MILITARY BUT GENERIC
 
   {
     id: "light-at-gun",
@@ -401,15 +390,14 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 5,
     crew: 5,
     size: 18,
-    agility: 1,
     speed: 1,
     modules: [
       "light-high-velocity-cannon",
       "light-mantlet",
       "wheels-2",
     ],
-    description:
-      `A light anti-tank gun, meant to take out ... tanks!
+    traitIds: ["towed-gun"],
+    description: `A light anti-tank gun, meant to take out ... tanks!
 
       Crew:
       1 commander ( 3/0/0 )
@@ -417,12 +405,7 @@ export const VEHICLES: VehicleDefinition[] = [
       3 loaders/assistant gunners ( 3/0/0 )
       
       *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The commander picks the targets, the Gunner rolls to shoot them. If the commander is dead or gone, the gunner picks targets instead.
-      *To push the gun, add together the Strength of all crew members pushing it. If the total is 5 or greater, the gun may move 1 distance. Pushing the gun requires an action.
-      *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
-      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.
-      *Manning or unmanning the gun is a free action. One cannot fire a weapon, then re-man it in the same turn.
-      *Up to 5 individuals, crew included, can take cover behind the manlet. It is 6d6 cover if one isn't manning it.`,
+      *To push the gun, add together the Strength of all crew members pushing it. If the total is 5 or greater, the gun may move 1 distance.`,
   },
 
   {
@@ -439,13 +422,13 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 6,
     crew: 6,
     size: 24,
-    agility: 1,
     speed: 1,
     modules: [
       "medium-high-velocity-cannon",
       "medium-mantlet",
       "wheels-2",
     ],
+    traitIds: ["towed-gun"],
     description:
       `A medium anti-tank gun, packs a stronger punch, vehicles should avoid it greatly!
 
@@ -455,12 +438,7 @@ export const VEHICLES: VehicleDefinition[] = [
       4 loaders/assistant gunners ( 3/0/0 )
       
       *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *The commander picks the targets, the Gunner rolls to shoot them. If the commander is dead or gone, the gunner picks targets instead.
-      *To push the gun, add together the Strength of all crew members pushing it. If the total is 6 or greater, the gun may move 1 distance. Pushing the gun requires an action.
-      *Only crewmembers may apply their strength. It may not move faster than 1 distance from pushing.
-      *Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around.
-      *Manning or unmanning the gun is a free action. One cannot fire a weapon, then re-man it in the same turn.
-      *Up to 5 individuals, crew included, can take cover behind the manlet. It is 6d6 cover if one isn't manning it.`,
+      *To push the gun, add together the Strength of all crew members pushing it. If the total is 6 or greater, the gun may move 1 distance.`,
   },
 
   {
@@ -477,14 +455,12 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 1,
     crew: 1,
     size: 54,
-    agility: 1,
     speed: 3,
     modules: [
       "artillery-train",
       "wheels-4",
     ],
-    description:
-      `An artillery train, meant to carry artillery around.
+    description: `An artillery train, meant to carry artillery around.
 
       Crew:
       1 conductor ( 0/0/0 ).
@@ -507,7 +483,6 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 1,
     crew: 1,
     size: 80,
-    agility: 1,
     speed: 3,
     modules: [
       "horse-artillery-train",
@@ -523,7 +498,7 @@ export const VEHICLES: VehicleDefinition[] = [
       *You're still a brokie.`,
   },
 
-// CIVVIE VEHICLES
+  // CIVVIE VEHICLES
 
   {
     id: "car",
@@ -539,13 +514,13 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 4,
     crew: 1,
     size: 18,
-    agility: 2,
     speed: 6,
     modules: [
       "civilian-engine",
       "civilian-fuel-tank",
       "civilian-wheels-4",
     ],
+    traitIds: ["focused-driver"],
     description:
       `An average ol' car. It's just like a Puma, it drives on all fours.
 
@@ -554,7 +529,6 @@ export const VEHICLES: VehicleDefinition[] = [
       1 front passenger seat ( 2/2/3 ).
       3 passengers ( 3/2/2 ).
       
-      *The driver cannot shoot out of the vehicle, they need to focus on driving!
       *The trunk can hold up to 10 weight units of cargo.
       *Remember that people are considered to have 3 weight.`,
   },
@@ -572,13 +546,13 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 18,
     crew: 1,
     size: 24,
-    agility: 2,
     speed: 4,
     modules: [
       "civilian-engine",
       "civilian-fuel-tank",
       "civilian-wheels-4",
     ],
+    traitIds: ["focused-driver", "exposed-rear-crew"],
     description:
       `A truck! A bit slower than most, but can carry a lot of weight!
 
@@ -587,8 +561,6 @@ export const VEHICLES: VehicleDefinition[] = [
       1 front passenger seat ( 2/2/3 ).
       16 passengers on the back ( 3/0/0 ).
 
-      *Targetting the rear crew on this vehicle does not deal damage to the vehicle.
-      *The driver cannot shoot out of the vehicle, they need to focus on driving!
       *Each seat for passengers on the back can carry 3 weight units, for a total of 16 x 3 = 48 weight.
       *Choose whether to have a tarp cover over the back of the truck. No cover leaves the stats as they are, and rear passengers can fire out of the vehicle.
       *Covering the back with a tarp gives the rear passengers ( 3/3/0 ) cover instead, but only allows them to shoot backwards.
@@ -608,13 +580,13 @@ export const VEHICLES: VehicleDefinition[] = [
     doors: 2,
     crew: 1,
     size: 6,
-    agility: 2,
     speed: 6,
     modules: [
       "civilian-engine",
       "civilian-fuel-tank",
       "civilian-wheels-2",
     ],
+    traitIds: ["focused-driver", "exposed-crew"],
     description:
       `An average motorcycle. Pretty agile, but you can't bring all of your friends.
 
@@ -622,8 +594,6 @@ export const VEHICLES: VehicleDefinition[] = [
       1 driver ( 0/0/0 ).
       1 passenger ( 0/0/0 ).
 
-      *Targetting the crew on this vehicle does not deal damage to the vehicle.
-      *The driver cannot shoot out of the vehicle, they need to focus on driving!
       *If the driver is incapacitated/dies while the vehicle is moving, it collapses immediately.
       *When collapsing, it will move however many distances it had moved last turn, dragging its rider(s) with it.
       *The riders take damage equal to how many distances it moves.
@@ -631,8 +601,6 @@ export const VEHICLES: VehicleDefinition[] = [
       *Choosing to have a pannier decreases speed to 5, but allows a 3rd passenger, and raises the number of doors to 3.
       *The 3rd passenger has ( 0/0/0 ) cover.`,
   },
-
-  
 ];
 
 export const VEHICLES_BY_ID = new Map(VEHICLES.map((vehicle) => [

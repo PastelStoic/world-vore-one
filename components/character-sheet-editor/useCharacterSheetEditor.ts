@@ -182,6 +182,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
   const inventoryPointCost = calculateInventoryPointCostWithPerks(
     inventory,
     perkIds,
+    effectiveByStat.charisma,
   );
 
   const accountPerkCounts = useMemo(

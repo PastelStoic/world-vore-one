@@ -325,28 +325,44 @@ export function calculateInventoryWeight(
   return total;
 }
 
+/**
+ * Charisma reduces paid item costs: each point past the first subtracts 1,
+ * down to a minimum of 1. Free items (cost 0) stay free.
+ */
+export function applyCharismaItemDiscount(
+  cost: number,
+  charisma = 1,
+): number {
+  if (cost <= 0) return cost;
+  const discount = Math.max(0, charisma - 1);
+  return Math.max(1, cost - discount);
+}
+
 export function getWeaponPointCost(
   id: string,
   perkIds?: string[],
   weaponMasterRestrictedUnlocks?: string[],
+  charisma = 1,
 ): number {
   const def = WEAPONS_BY_ID.get(id);
   if (!def) return 0;
+  let cost = def.pointCost;
   if (perkIds?.includes("weapon-master")) {
     if (weaponMasterRestrictedUnlocks?.includes(id)) return 0;
-    if (def.pointCost >= 3) return 1;
-    return 0;
-  }
-  if (def.pointCost >= 3 && def.discountFactionPerkIds && perkIds) {
+    cost = def.pointCost >= 3 ? 1 : 0;
+  } else if (def.pointCost >= 3 && def.discountFactionPerkIds && perkIds) {
     if (def.discountFactionPerkIds.some((pid) => perkIds.includes(pid))) {
-      return 1;
+      cost = 1;
     }
   }
-  return def.pointCost;
+  return applyCharismaItemDiscount(cost, charisma);
 }
 
-export function getVehiclePointCost(id: string): number {
-  return VEHICLES_BY_ID.get(id)?.pointCost ?? 0;
+export function getVehiclePointCost(id: string, charisma = 1): number {
+  return applyCharismaItemDiscount(
+    VEHICLES_BY_ID.get(id)?.pointCost ?? 0,
+    charisma,
+  );
 }
 
 /**
@@ -357,6 +373,7 @@ export function getSignatureAdjustedPointCost(
   id: string,
   isSignature: boolean,
   perkIds?: string[],
+  charisma = 1,
 ): number {
   const def = WEAPONS_BY_ID.get(id);
   if (!def) return 0;
@@ -368,9 +385,11 @@ export function getSignatureAdjustedPointCost(
     }
   }
 
-  if (!isSignature) return baseCost;
-  if (def.pointCost >= 3) return 1;
-  return 0;
+  if (isSignature) {
+    if (def.pointCost >= 3) baseCost = 1;
+    else baseCost = 0;
+  }
+  return applyCharismaItemDiscount(baseCost, charisma);
 }
 
 export function getSignatureFreeAttachmentIds(
@@ -404,11 +423,12 @@ export function countAllItemSlotsWithPerks(
 
 /**
  * Extra points the inventory costs beyond the free creation slots, including
- * signature-weapon, weapon-master, and faction discounts.
+ * signature-weapon, weapon-master, faction, and Charisma discounts.
  */
 export function calculateInventoryPointCostWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
+  charisma = 1,
 ): number {
   const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
     false;
@@ -432,13 +452,18 @@ export function calculateInventoryPointCostWithPerks(
     for (const w of inventory[location].weapons) {
       const isSignatureWeapon = hasSignatureWeaponPerk && !!w.isSignatureWeapon;
       if (isSignatureWeapon && !hasWeaponMaster) {
-        cost += getSignatureAdjustedPointCost(w.weaponId, true, perkIds);
+        cost += getSignatureAdjustedPointCost(
+          w.weaponId,
+          true,
+          perkIds,
+          charisma,
+        );
       } else {
-        cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds);
+        cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds, charisma);
       }
     }
     for (const v of inventory[location].vehicles ?? []) {
-      cost += getVehiclePointCost(v.vehicleId);
+      cost += getVehiclePointCost(v.vehicleId, charisma);
     }
   }
 
@@ -449,6 +474,7 @@ export function calculateInventoryPointCostWithPerks(
 export function calculateInventoryPointCost(
   inventory: CharacterInventory,
   perkIds?: string[],
+  charisma = 1,
 ): number {
-  return calculateInventoryPointCostWithPerks(inventory, perkIds);
+  return calculateInventoryPointCostWithPerks(inventory, perkIds, charisma);
 }

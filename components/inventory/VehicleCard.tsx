@@ -2,11 +2,12 @@
 // VehicleCard - renders a single vehicle item in the inventory
 // ---------------------------------------------------------------------------
 
-import { VEHICLES_BY_ID } from "@/data/equipment.ts";
+import { VEHICLE_TRAITS_BY_ID, VEHICLES_BY_ID } from "@/data/equipment.ts";
 import type { InventoryVehicle } from "@/lib/inventory_types.ts";
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getEffectiveVehicleTraitIds,
   getVehicleHp,
   groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
@@ -44,6 +45,8 @@ export default function VehicleCard(props: VehicleCardProps) {
     );
   }
 
+  const traitIds = getEffectiveVehicleTraitIds(def);
+
   return (
     <div class="border rounded p-2 space-y-1 bg-base-100">
       <div class="flex items-center justify-between flex-wrap gap-1">
@@ -51,10 +54,9 @@ export default function VehicleCard(props: VehicleCardProps) {
           <strong>{def.name}</strong>
           {def.deprecated && <DeprecatedBadge />}{" "}
           <span class="text-xs text-base-content/60">
-            ({def.nation} · Size: {def.size} · Agility: {def.agility} · Speed:
-            {" "}
-            {def.speed} · HP: {getVehicleHp(def)} · Crew: {def.crew} · Seats:
-            {def.seats} · Doors: {def.doors})
+            ({def.nation} · Size: {def.size} · Speed: {def.speed} · HP:{" "}
+            {getVehicleHp(def)} · Crew: {def.crew} · Seats: {def.seats} · Doors:
+            {def.doors})
           </span>
         </div>
         {!readOnly && (
@@ -72,6 +74,23 @@ export default function VehicleCard(props: VehicleCardProps) {
         <span>Side: {def.armor.side}</span>
         <span>Rear: {def.armor.rear}</span>
       </div>
+      {traitIds.length > 0 && (
+        <div class="ml-2 space-y-1">
+          <span class="text-xs font-medium text-base-content/70">Traits:</span>
+          <div class="flex flex-wrap gap-1">
+            {traitIds.map((tid) => {
+              const trait = VEHICLE_TRAITS_BY_ID.get(tid);
+              return (
+                <TraitBadge
+                  key={tid}
+                  name={trait?.name ?? tid}
+                  description={trait?.description ?? ""}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
       {def.modules.length > 0 && (
         <div class="ml-2 space-y-1">
           <span class="text-xs font-medium text-base-content/70">Modules:</span>

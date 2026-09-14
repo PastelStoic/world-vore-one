@@ -8,6 +8,7 @@ import { VEHICLES } from "@/data/vehicles.ts";
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getEffectiveVehicleTraitIds,
   getVehicleHp,
   groupVehicleModules,
 } from "./vehicle_module_helpers.ts";
@@ -146,7 +147,7 @@ Deno.test("formatVehicleModuleLabel prefixes the module name with Nx", () => {
 Deno.test("formatVehicleModuleDetails keeps single-module output for one ID", () => {
   const expected = [
     "HP: 4",
-    "Difficulty: 5 / 5 / 5",
+    "Difficulty: 5",
     "Position: Internal",
     "On destruction: The vehicle can no longer move.",
     "",
@@ -174,4 +175,28 @@ Deno.test("getVehicleHp still counts each module copy", () => {
   const markV = catalogVehicle("mark-v");
   assertEquals(markV.modules.length > new Set(markV.modules).size, true);
   assertEquals(getVehicleHp(markV), 40);
+});
+
+Deno.test("getEffectiveVehicleTraitIds includes vehicle traits then unique module traits", () => {
+  assertEquals(
+    getEffectiveVehicleTraitIds({
+      traitIds: ["focused-driver", "tracked"],
+      modules: ["tracks", "engine", "tracks"],
+    }),
+    ["focused-driver", "tracked"],
+  );
+});
+
+Deno.test("getEffectiveVehicleTraitIds pulls traits from catalog modules", () => {
+  const markV = catalogVehicle("mark-v");
+  const traitIds = getEffectiveVehicleTraitIds(markV);
+  assertEquals(traitIds.includes("directional-mounts"), true);
+  assertEquals(traitIds.includes("tracked"), true);
+});
+
+Deno.test("civilian vehicles pick up focused-driver and wheeled from catalog data", () => {
+  const car = catalogVehicle("car");
+  const traitIds = getEffectiveVehicleTraitIds(car);
+  assertEquals(traitIds.includes("focused-driver"), true);
+  assertEquals(traitIds.includes("wheeled"), true);
 });

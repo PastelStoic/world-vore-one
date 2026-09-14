@@ -8,6 +8,7 @@ import {
   MELEE_WEAPONS,
   MELEE_WEAPONS_BY_ID,
   type Nation,
+  VEHICLE_TRAITS_BY_ID,
   VEHICLES,
   VEHICLES_BY_ID,
   WEAPON_TRAITS_BY_ID,
@@ -42,6 +43,7 @@ import TraitBadge from "./inventory/TraitBadge.tsx";
 import {
   formatVehicleModuleDetails,
   formatVehicleModuleLabel,
+  getEffectiveVehicleTraitIds,
   getVehicleHp,
   groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
@@ -74,6 +76,8 @@ interface InventorySectionProps {
   characterId?: string;
   /** The character's perk IDs – used for features like Signature Weapon */
   perkIds?: string[];
+  /** Effective Charisma used to discount paid item costs */
+  charisma?: number;
   /**
    * Whether ammo/charges can be edited (combat tracking).
    * Only the sheet owner and admins should be able to change these.
@@ -106,6 +110,7 @@ export default function InventorySection(props: InventorySectionProps) {
     availablePoints,
     characterId,
     perkIds,
+    charisma = 1,
     canEditCombatState,
     onLoseWeaponPermanently,
   } = props;
@@ -148,6 +153,7 @@ export default function InventorySection(props: InventorySectionProps) {
   const inventoryPointCost = calculateInventoryPointCostWithPerks(
     inventory,
     perkIds,
+    charisma,
   );
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
@@ -286,6 +292,7 @@ export default function InventorySection(props: InventorySectionProps) {
         weapon.weaponId,
         perkIds,
         weaponMasterRestrictedUnlocks,
+        charisma,
       );
 
     update((inv) => {
@@ -839,6 +846,7 @@ export default function InventorySection(props: InventorySectionProps) {
                     ? returnWeaponToArmory
                     : undefined}
                   perkIds={perkIds}
+                  charisma={charisma}
                   weaponMasterRestrictedUnlocks={weaponMasterRestrictedUnlocks}
                   inventory={inventory}
                   onToggleSignature={toggleSignatureWeapon}
@@ -1120,6 +1128,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   w.id,
                   perkIds,
                   weaponMasterRestrictedUnlocks,
+                  charisma,
                 ) + slotCost();
                 return (
                   <li
@@ -1139,6 +1148,7 @@ export default function InventorySection(props: InventorySectionProps) {
                               w.id,
                               perkIds,
                               weaponMasterRestrictedUnlocks,
+                              charisma,
                             )}pt]
                           </span>
                         )}
@@ -1343,7 +1353,9 @@ export default function InventorySection(props: InventorySectionProps) {
                 onChange: setVehicleNationFilter,
               }}
               renderItem={(vehicle) => {
-                const addCost = getVehiclePointCost(vehicle.id) + slotCost();
+                const addCost = getVehiclePointCost(vehicle.id, charisma) +
+                  slotCost();
+                const traitIds = getEffectiveVehicleTraitIds(vehicle);
                 return (
                   <li
                     key={vehicle.id}
@@ -1353,17 +1365,16 @@ export default function InventorySection(props: InventorySectionProps) {
                       <span>
                         {vehicle.name}{" "}
                         <span class="text-xs text-base-content/60">
-                          ({vehicle.nation} · Size: {vehicle.size} · Agility:
+                          ({vehicle.nation} · Size: {vehicle.size} · Speed:{" "}
+                          {vehicle.speed} · HP: {getVehicleHp(vehicle)} · Crew:
                           {" "}
-                          {vehicle.agility} · Speed: {vehicle.speed} · HP:
-                          {getVehicleHp(vehicle)} · Crew: {vehicle.crew}{" "}
-                          · Seats:
-                          {vehicle.seats} · Doors: {vehicle.doors} · Armor:{" "}
-                          {armorLabel(vehicle.id)})
+                          {vehicle.crew} · Seats: {vehicle.seats} · Doors:{" "}
+                          {vehicle.doors} · Armor: {armorLabel(vehicle.id)})
                         </span>
                         {vehicle.pointCost > 0 && (
                           <span class="text-xs text-warning ml-1">
-                            [Cost: {getVehiclePointCost(vehicle.id)}pt]
+                            [Cost:{" "}
+                            {getVehiclePointCost(vehicle.id, charisma)}pt]
                           </span>
                         )}
                       </span>
@@ -1375,6 +1386,20 @@ export default function InventorySection(props: InventorySectionProps) {
                         Stow ({costLabel(addCost)})
                       </button>
                     </div>
+                    {traitIds.length > 0 && (
+                      <div class="flex flex-wrap gap-1 mt-1 ml-2">
+                        {traitIds.map((tid) => {
+                          const trait = VEHICLE_TRAITS_BY_ID.get(tid);
+                          return (
+                            <TraitBadge
+                              key={tid}
+                              name={trait?.name ?? tid}
+                              description={trait?.description ?? ""}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
                     {vehicle.modules.length > 0 && (
                       <div class="flex flex-wrap gap-1 mt-1 ml-2">
                         {groupVehicleModules(vehicle.modules).map((

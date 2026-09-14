@@ -150,25 +150,24 @@ Deno.test("formatVehicleModuleDetails keeps single-module output for one ID", ()
     "Difficulty: 5",
     "Position: Internal",
     "On destruction: The vehicle can no longer move.",
-    "",
-    "The vehicle's engine, required for the vehicle to move and operate its weaponry.",
   ].join("\n");
   assertEquals(formatVehicleModuleDetails("engine"), expected);
   assertEquals(formatVehicleModuleDetails(["engine"]), expected);
   assertEquals(formatVehicleModuleDetails(["engine", "engine"]), expected);
 });
 
-Deno.test("formatVehicleModuleDetails includes rear-aiming text for grouped Light turrets", () => {
+Deno.test("formatVehicleModuleDetails does not include module descriptions", () => {
+  const details = formatVehicleModuleDetails("engine");
+  assertEquals(details.includes("required for the vehicle to move"), false);
+});
+
+Deno.test("formatVehicleModuleDetails shares one stats block for grouped Light turrets", () => {
   const details = formatVehicleModuleDetails([
     "light-turret",
     "rear-light-turret",
   ]);
-  assertEquals(
-    details.includes("A light turret mounting, for small cannons!"),
-    true,
-  );
-  assertEquals(details.includes("Aims backwards instead"), true);
   assertEquals(details.match(/HP: 6/g)?.length, 1);
+  assertEquals(details.includes("Aims backwards instead"), false);
 });
 
 Deno.test("getVehicleHp still counts each module copy", () => {

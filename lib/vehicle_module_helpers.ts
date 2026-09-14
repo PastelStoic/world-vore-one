@@ -51,7 +51,6 @@ export function resolveVehicleModule(
   return {
     id: moduleId,
     name: moduleId,
-    description: "Unknown module",
     hp: 1,
     position: "external",
     difficulty: 1,
@@ -82,44 +81,10 @@ export function formatVehicleModuleDetails(
     return "";
   }
 
-  const formatted = moduleIds.map((moduleId) =>
-    formatSingleVehicleModuleDetails(moduleId)
-  );
-  const uniqueFormatted = uniquePreserveOrder(formatted);
-  if (uniqueFormatted.length === 1) {
-    return uniqueFormatted[0];
-  }
-
   const statsBlocks = moduleIds.map((moduleId) =>
     formatVehicleModuleStats(moduleId)
   );
-  const uniqueStats = uniquePreserveOrder(statsBlocks);
-  const uniqueDescriptions = uniquePreserveOrder(
-    moduleIds
-      .map((moduleId) => resolveVehicleModule(moduleId).description)
-      .filter((description): description is string => Boolean(description)),
-  );
-
-  if (uniqueStats.length === 1) {
-    const lines = [uniqueStats[0]];
-    if (uniqueDescriptions.length > 0) {
-      lines.push("");
-      lines.push(uniqueDescriptions.join("\n\n"));
-    }
-    return lines.join("\n");
-  }
-
-  return uniqueFormatted.join("\n\n");
-}
-
-function formatSingleVehicleModuleDetails(moduleId: string): string {
-  const resolved = resolveVehicleModule(moduleId);
-  const lines = [formatVehicleModuleStats(moduleId)];
-  if (resolved.description) {
-    lines.push("");
-    lines.push(resolved.description);
-  }
-  return lines.join("\n");
+  return uniquePreserveOrder(statsBlocks).join("\n\n");
 }
 
 function formatVehicleModuleStats(moduleId: string): string {

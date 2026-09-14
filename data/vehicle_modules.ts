@@ -12,13 +12,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-cannon",
     name: "Light cannon",
-    description:
-      `Small, light cannon. Quick to fire and reload, but with equally low damage.
-
-      When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 1 damage to targetted module.
-      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances. Damages at most 3 targets in order of initiative. Deals 2 damage to targetted module.
-      *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
     difficulty: 5,
@@ -31,13 +24,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "rear-light-cannon",
     name: "Rear light cannon",
-    description:
-      `Small, light cannon. Quick to fire and reload, but with equally low damage.
-
-      When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 3 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 1 damage to targetted module.
-      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 3 damage on the distance it is fired at, and 1 on the adjacent distances. Damages at most 3 targets in order of initiative. Deals 2 damage to targetted module.
-      *Armor-piercing: Heavy armor piercing, deals 12 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
     difficulty: 5,
@@ -50,13 +36,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "medium-cannon",
     name: "Medium cannon",
-    description:
-      `Medium cannon, meant for bigger explosions! Considerably more threatening!
-
-      When reloading, choose which round to load:
-      *High-explosive: Light armor piercing, deals area damage, dealing 10 damage on the distance it is fired at, and 6 on the adjacent distances. Damages at most 10 targets in order of initiative. Deals 2 damage to targetted module.
-      *Armor-piercing-high-explosive: Medium armor piercing, deals area damage, dealing 6 damage on the distance it is fired at, and 2 on the adjacent distances. Damages at most 5 targets in order of initiative. Deals 3 damage to targetted module.
-      *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
     difficulty: 5,
@@ -69,12 +48,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-high-velocity-cannon",
     name: "Light high velocity cannon",
-    description:
-      `Light gun with exceptionally fast rounds, meant to take out armor. Not very effective against non-vehicles.
-
-      When reloading, choose which round to load:
-      *Armor-piercing-high-explosive: Heavy armor piercing, deals area damage, dealing 3 damage on the distance it is fired at. Damages at most 2 targets in order of initiative. Deals 5 damage to targetted module.
-      *Armor-piercing: Heavy armor piercing, deals 16 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 6,
     position: "internal",
     difficulty: 5,
@@ -87,12 +60,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "medium-high-velocity-cannon",
     name: "Medium high velocity cannon",
-    description:
-      `Middle brother of the anti-tank emplacements. Devastates most light vehicles.
-
-      When reloading, choose which round to load:
-      *Armor-piercing-high-explosive: Heavy armor piercing, deals area damage, dealing 5 damage on the distance it is fired at. Damages at most 5 targets in order of initiative. Deals 8 damage to targetted module.
-      *Armor-piercing: Heavy armor piercing, deals 24 damage at what it is fired at. It's a solid shot - no area damage!`,
     hp: 8,
     position: "internal",
     difficulty: 5,
@@ -105,7 +72,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-turret",
     name: "Light turret",
-    description: "A light turret mounting, for small cannons!",
     hp: 6,
     position: "internal",
     difficulty: 3,
@@ -115,8 +81,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "rear-light-turret",
     name: "Light turret",
-    description:
-      "A light turret mounting, for small cannons! Aims backwards instead, ooooo ...",
     hp: 6,
     position: "internal",
     difficulty: 3,
@@ -126,7 +90,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-mantlet",
     name: "Light mantlet",
-    description: "A light artillery mantlet, protecting against incoming fire.",
     hp: 6,
     position: "external",
     difficulty: 1,
@@ -136,7 +99,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "medium-mantlet",
     name: "Medium mantlet",
-    description: "A thicker, stronger mantlet! Much sturdier!",
     hp: 8,
     position: "external",
     difficulty: 1,
@@ -146,8 +108,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "flamethrower",
     name: "Flamethrower",
-    description:
-      "Vehicular flamethrower, will burn whoever it comes across. Max range is 3 distances. Targets set on fire take 3 damage immediately, and 3 damage every turn thereafter. A target on fire can only do one the following: Create distance between themselves and you, try to put the fire out, or do an action that contributes towards putting the fire out. To put it out, they must roll a 1d6, with a success on a 5 or a 6. Allies may try to put the fire out as well. Attacking a target that is already on fire does not deal any more damage. Rate of fire doesn't increase the damage of this weapon against individual targets.",
     hp: 4,
     position: "internal",
     difficulty: 5,
@@ -160,8 +120,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "frontal-machine-gun",
     name: "Frontal machinegun",
-    description:
-      "Vehicle-mounted machinegun to fend off infantry, aiming forward.",
     hp: 4,
     position: "internal",
     difficulty: 5,
@@ -174,8 +132,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "side-machine-gun",
     name: "Lateral machinegun",
-    description:
-      "Vehicle-mounted machinegun to fend off infantry, aiming to the side(s).",
     hp: 4,
     position: "internal",
     difficulty: 5,
@@ -188,8 +144,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "rear-machine-gun",
     name: "Rear machinegun",
-    description:
-      "Vehicle-mounted machinegun to fend off infantry, aiming backwards.",
     hp: 4,
     position: "internal",
     difficulty: 5,
@@ -205,8 +159,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "engine",
     name: "Engine",
-    description:
-      "The vehicle's engine, required for the vehicle to move and operate its weaponry.",
     hp: 4,
     position: "internal",
     difficulty: 5,
@@ -216,8 +168,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "fuel-tanks",
     name: "Fuel tanks",
-    description:
-      "Fuel tanks, required for a vehicle to operate - no fuel tanks means no fuel, dummy!",
     hp: 2,
     position: "internal",
     difficulty: 5,
@@ -233,8 +183,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "light-ammo-stowage",
     name: "Light ammo stowage",
-    description:
-      `The vehicle's ammo stowage, where all of its ammunition is held. Careful that it does not blow up!`,
     hp: 2,
     position: "internal",
     difficulty: 8,
@@ -244,8 +192,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "tracks",
     name: "Tracks",
-    description:
-      "The vehicle's tracks, which allow it to move smoothly along the terrain ahead! Considered to have light armor when targeted.",
     hp: 8,
     position: "external",
     difficulty: 3,
@@ -256,8 +202,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "medium-tracks",
     name: "Medium racks",
-    description:
-      "Heavier tracks, meant for even courser terrain. These tracks won't stop for nothing! Considered to have medium armor when targeted.",
     hp: 12,
     position: "external",
     difficulty: 3,
@@ -268,8 +212,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "wheels-2",
     name: "Wheels ( 2 wheels )",
-    description:
-      "A pair of thick rubber wheels, can take a surprising amount of punishment!",
     hp: 4,
     position: "external",
     difficulty: 3,
@@ -280,8 +222,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "wheels-4",
     name: "Wheels ( 4 wheels )",
-    description:
-      "A set of four thick rubber wheels, can take a surprising amount of punishment!",
     hp: 6,
     position: "external",
     difficulty: 3,
@@ -292,7 +232,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "artillery-train",
     name: "Artillery train",
-    description: "An artillery train, pulled by a pair of horses.",
     hp: 8,
     position: "external",
     difficulty: 0,
@@ -302,8 +241,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "horse-artillery-train",
     name: "Horse-artillery train",
-    description:
-      "A horse artillery train, meant to be speedy, pulled by six horses.",
     hp: 24,
     position: "external",
     difficulty: 0,
@@ -316,8 +253,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-engine",
     name: "Civilian engine",
-    description:
-      "A lighter, simpler Civilian engine, for most vehicles of the everyday life.",
     hp: 2,
     position: "internal",
     difficulty: 2,
@@ -326,8 +261,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-fuel-tank",
     name: "Civilian fuel tanks",
-    description:
-      "A fuel tank for a civilian vehicle. Small, doesn't hold a whole lot. Doesn't burn as badly as a military vehicle's tanks.",
     hp: 1,
     position: "internal",
     difficulty: 2,
@@ -342,7 +275,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-wheels-2",
     name: "Civilian wheels ( 2 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all.",
     hp: 2,
     position: "external",
     difficulty: 2,
@@ -352,7 +284,6 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   {
     id: "civilian-wheels-4",
     name: "Civilian wheels ( 4 wheels )",
-    description: "Light civilian wheels, can't take much punishment at all.",
     hp: 4,
     position: "external",
     difficulty: 2,

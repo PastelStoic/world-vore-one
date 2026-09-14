@@ -217,7 +217,6 @@ export interface VehicleTraitDefinition {
 export interface VehicleModuleDefinition {
   id: string;
   name: string;
-  description: string;
   hp: number;
   position: VehicleModulePosition;
   /** How hard this module is to hit */

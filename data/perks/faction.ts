@@ -11,9 +11,9 @@ export const FACTION_PERKS: PerkDefinition[] = [
       `You have uncovered secrets that few are able to ever peer into. It will take a long time to learn them properly, though.
 
   *For any transformation, you may pay the entirety of the cost, the target may do it, or both may contribute towards it.
-  *You can turn Baseliners into Pilzfrauns. It costs 3 points to do so.
-  *You can turn Pilzfrauns into Templates. It costs 1 point to do so.
-  *You can turn Pilzfrauns into Tierfrauns. It costs 3 points to do so.
+  *You can turn Baseliners into Pilzfrauns for 3 points.
+  *You can turn Pilzfrauns into Templates for 1 point.
+  *You can turn Pilzfrauns into Tierfrauns for 3 points.
   *A baseliner must be turned into a Pilzfraun before being turned into a Tierfraun or Template, requiring two/three separate operations.
   *To perform any of these transformations, you must roll your intelligence - you need 2 successes.
   *On 0 successes, the target is killed outright.
@@ -44,15 +44,11 @@ export const FACTION_PERKS: PerkDefinition[] = [
     description: `You are a commended, loyal soldier of your beloved king.
 
 Advantages:
-*This perk is free.
-*Start with an additional 3 points.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Free perk, start with an additional 3 points, and gain 1 free perk from a selection of perks.
 *Cheaper restricted SWISS weapons.
 
 Disadvantages:
-*Only one per player.
-*Must be Swiss-born.
-*Must be part of the King's Royal Army in #factions
+*One per player, must be Swiss-born, must be part of the 'King's royal army' faction.
 *If you are a PF, give two points to a PF that digests you, instead of one.
 *You are a target: You may be abducted for very nasty experimentation purposes.`,
   },
@@ -83,15 +79,12 @@ Disadvantages:
     description: `You are an elite Stormtrooper of the German Empire!
 
 Advantages:
-*Start with an additional 2 points compared to normal PFs.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Start with an additional 2 points, and gain 1 free perk from a selection of perks.
 *Cheaper restricted GERMAN weapons.
 
 Disadvantages:
-*Only three per player.
-*Must be German-born.
-*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.
-*Extra edgy.`,
+*Three per player, must be German-born.
+*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
     id: "british-trench-raider",
@@ -119,15 +112,12 @@ Disadvantages:
     description: `ENGERLAAAANNDDD
 
 Advantages:
-*Start with an additional 2 points compared to normal PFs.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
-*Cheaper restricted AMERICAN weapons.
+*Start with an additional 2 points, and gain 1 free perk from a selection of perks.
+*Cheaper restricted *AMERICAN* weapons.
 
 Disadvantages:
-*Only three per player.
-*Must be British.
-*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.
-*British.`,
+*Three per player. Must be from the British empire.
+*Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
     id: "french-foreign-legion",
@@ -151,12 +141,11 @@ Disadvantages:
     description: `You are a member of the French Foreign Legion!
 
 Advantages:
-*Start with an additional 2 points compared to normal PFs.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Start with an additional 2 points, and gain 1 free perk from a selection of perks.
 *Cheaper restricted FRENCH weapons.
 
 Disadvantages:
-*Only three per player.
+*Three per player.
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
@@ -182,14 +171,11 @@ Disadvantages:
     description: `You are a tough French mountaineer
 
 Advantages:
-*This perk is free.
-*Start with an additional 3 points.
+*Free perk, start with an additional 3 points, and gain 1 free perk from a selection of perks.
 *Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
 
 Disadvantages:
-*Only one per player.
-*Must be French-born.
-*Must be part of the Chasseurs Alpins in #factions`,
+*One per player, must be French-born, must be part of the Chasseurs Alpins faction.`,
   },
   {
     id: "harlem-hellfighter",
@@ -213,13 +199,11 @@ Disadvantages:
     description: `You are a soldier from a legendary American regiment
  
 Advantages:
-*Start with an additional 2 points compared to normal PFs.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Start with an additional 2 points, and gain 1 free perk from a selection of perks.
 *Cheaper restricted AMERICAN weapons.
 
 Disadvantages:
-*Only three per player.
-*Must be American.
+*Three per player. Must be American-born.
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
@@ -245,16 +229,14 @@ Disadvantages:
       "effective-cover-use",
       "veteran",
     ],
-    description: `You are a veteran of the Italian forces.
+    description: `You are a veteran of the Italian forces, regardless of side.
  
 Advantages:
-*Start with an additional 2 points compared to normal PFs.
-*Better gear & training: You are the best and you get the best. Pick from a selection of provided perks.
+*Start with an additional 2 points, and gain 1 free perk from a selection of perks.
 *Cheaper restricted ITALIAN weapons.
 
 Disadvantages:
-*Only three per player.
-*Must be Italian
+*Three per player. Must be Italian.
 *Less vore: Efficiency is expected. When fighting, kill your enemy, don't waste time.`,
   },
   {
@@ -272,14 +254,10 @@ Disadvantages:
       `You are an Arditi! Endlessly fanatical for Italy, you will fight until you can't anymore.
 
 Advantages:
-*This perk is free.
-*Start with an additional 2 points.
-*Gain a special 'arditi armor' gear, only available for this faction.
+*Free perk, start with an additional 2 points. Gain a special 'arditi armor' gear, only available for this faction.
 
 Disadvantages:
-*Only one per player.
-*Must be Italian-born
-*Must be part of the 'Royal italian army remnants - The Arditi' faction in #factions`,
+*One per player. Must be Italian-born, must be part of the 'Royal italian army remnants - The Arditi' faction.`,
   },
   {
     id: "capo",
@@ -300,22 +278,16 @@ Disadvantages:
       `You are an underboss of your respective mafia, owning some sort of safehouse/business within New Orleans!
 
 Advantages:
-*This perk is free.
-*You have an extra 3 points.
-*You have an extra 2 perks.
-*You have the ‘allies’ perk for free. You have goon underlings who do your bidding.
-*You have the ‘patron’ perk for free. Your boss supports you.
+*Free perk, start with an additional 3 points, and an extra 2 perks.
+*Gain the 'allies' perk ( your goons ) and the 'patron' perk ( your boss ).
 *You have a safehouse that also happens to be a business - a source of (illegal) income.
+*You can make a new Capo if this one dies.
 
 Disadvantages:
 
-*Only one per player.
-*No ‘free range’ perk.
-*You are a target. Killing you off will greatly weaken your Mafia.
-*You must be a baseliner. You can make a new Capo if this one dies.
-*You do not betray your family no matter what.
-*Crimes can be linked back to you if you’re not careful! Your goons should do the work, not you!
-*Must be in America and be part of one of three mafias.`,
+*One per player. Must be a baseliner. You cannot betray your mafia ever. Must be in America and be part of any Mafia faction.
+*You are a target. Killing you off will greatly weaken your Mafia. Crimes can be linked back to you - be careful!
+*You may not acquire the 'free-range' perk.`,
   },
   {
     id: "champion-retainer",
@@ -332,19 +304,13 @@ Disadvantages:
       `You are a retainer of a Champion. This means you serve their every wish to the best of your ability. Goddess needs her retainers!
 
 Advantages:
-*You have four additional points.
-*You hold some sort of office within your clan. Perhaps you manage the treasury, perhaps commerce, perhaps housing. Your employiment is stable and respectable.
-If a Human, you are not endlessly loyal. You may betray your Champion if you have a good justificative.
-Like your champion, you have a very high standard of living.
-You may be snacked on by your champion.
+*Free perk, start with an additional 4 points. Hold some office within your clan, a stable and respectable position of power.
+*You may be snacked on by your champion.
 
 Disadvantages:
-*Two per player at maximum.
-*A champion must accept you as their retainer - ask other roleplayers if you can become their retainers. You cannot make a retainer for your own champion.
+*Two per player. You must be a retainer to a champion, and the champion's player must accept you as their retainer. You cannot make a retainer for your own champion.
 *You must obey your champion. You are supposidely loyal to them, and may not betray them unless you have a justificative. 
-*If you are a PF, you are endlessly loyal no matter what.
 *Unlike your champion, you do not hold nearly as much authority. You are not above the law, unless doing your champion's bidding.
-*You must serve a purpose for your champion. If you are useless, you'd be removed from office.
 *You may be snacked on by your champion`,
   },
   {
@@ -380,26 +346,20 @@ Disadvantages:
 *Incredibly complex perk for newcomers, requires a lot of setting knowledge. Don't pick this if you don't know what you're doing.
 
 Advantages:
-*Must be KPF. In current sheet terms this is enforced as a Japanese faction-aligned Tierfraun template.
-*This perk is free.
-*Your sheet starts with 20 points instead of the typical 5.
-*The general Japanese populous worships you to no end. Most will do your bidding even if it costs them their lives.
-*You may be up to 15 feet tall. You don't have to be; you can be normal-sized if preferred.
-*When digesting a Pilzfraun, you acquire all of her points and perks so long as the perk is a type of skill. Allies, Patron, Signature Weapon and similar perks are not absorbed.
+*Free perk, start with 20 points instead of the default. Youo may be up to 15 feet tall.
+*The general Japanese populous worships you; Most will do your bidding even if it costs them their lives.
+*When you digest a pilzfraun, add all of her points and perks to your sheet, so long as the perk is a type of skill. ( Wouldn't apply to allies, sig weapon, and similar perks. )
 *When you die from non-digestion causes, your memories and consciousness overwrite your oldest daughter and you live on.
-*Choose one Kami aspect below.
+*Gain one special 'Kami' aspect of your choosing.
 
 Disadvantages:
-*Only one per player. You may make another if yours dies.
-*You must purchase the tierfraun perk.
-*No 'free range' perk.
-*You must make a second sheet for your daughters. They follow normal PF sheet rules, but must share your tierfraun type. They must purchase the tierfraun perk.
-*At character creation, choose how many daughters you have. You can only make more daughters if you roleplay it out.
-*When starting/joining a scene, roll 1d100 for every *other* person involved. If the rolls are less than or equal to your number of daughters, that person may choose to ambush one of your daughters in any future scene.
-*If you are digested, your consciousness remains in the body of your predator until your predator dies from non-digestion.
-*If one of your daughters is digested, roll 1d[number of daughters]. This determines which daughter she is in line of inheritance; note down that daughter number X has been digested.
-*If you die and the next daughter in line of inheritance has been digested, you will inhabit the fat in the body of the predator who ate her.
-*Of your total points, 2 will be assigned to each main stat automatically ( Strength, Dexterity, Constitution, Intelligence and Charisma. )`,
+*One per player. You may create another if yours dies. Must have the 'Tierfraun' perk; cannot have the 'Free-range' perk.
+*2 points are automatically assigned to each main stat (STR, DEX, CON, INT, CHA).
+*Keep a separate sheet for your daughters. They use normal PF rules, and must share your Tierfraun type. Choose your initial number at creation, additional daughters require RP and follow pregnancy rules.
+*A hunter may ambush your daughters. Your champion and the hunter make a contested INT vs INT check. The hunter gets +1 success per 2 daughters.
+*If you are digested, your consciousness remains in your predator until they die by means other than digestion.
+*If a daughter is digested, roll 1d[total daughters] to determine her inheritance position, then record daughter #X as digested.
+*If you die and the next daughter in inheritance line has been digested, you inhabit the fat of the predator who ate her.`,
   },
   {
     id: "japanese-kami-champion-war-strength",
@@ -416,12 +376,9 @@ Disadvantages:
     ],
     description: `You are a warlike Kami-Champion who leads by personal might.
 
-*+3 Strength.
-*You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
-*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
-*It is tailored for you specifically. Nobody else can wear it.
-*You are a tank, in person.
-*Pick this for a stronger individual character.`,
+*+3 Strength. You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
+*You have a set of 'Dreadnought' armour, which has 'light' armor, as if it were a vehicle.
+*It is tailored for you specifically. Nobody else can wear it.`,
   },
   {
     id: "japanese-kami-champion-war-dexterity",
@@ -439,12 +396,9 @@ Disadvantages:
     description:
       `You are a warlike Kami-Champion who leads through martial precision.
 
-*+3 Dexterity.
-*You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
-*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
-*It is tailored for you specifically. Nobody else can wear it.
-*You are a tank, in person.
-*Pick this for a stronger individual character.`,
+*+3 Dexterity. You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
+*You have a set of 'Dreadnought' armour, which has 'light' armor, as if it were a vehicle.
+*It is tailored for you specifically. Nobody else can wear it.`,
   },
   {
     id: "japanese-kami-champion-war-constitution",
@@ -462,11 +416,9 @@ Disadvantages:
     description:
       `You are a warlike Kami-Champion whose body shrugs off punishment.
 
-*+3 Constitution.
-*You have a set of 'Dreadnought' armour, making you immune to small arms fire and melee weapons. Explosions, anti-tank weapons and similar threats still present a very real danger.
-*It is tailored for you specifically. Nobody else can wear it.
-*You are a tank, in person.
-*Pick this for a stronger individual character.`,
+*+3 Constitution. You have an entire army at your disposal, numbering 3 full divisions, ready to fight, kill and die in your name.
+*You have a set of 'Dreadnought' armour, which has 'light' armor, as if it were a vehicle.
+*It is tailored for you specifically. Nobody else can wear it.`,
   },
   {
     id: "japanese-kami-champion-arts-dexterity",
@@ -481,10 +433,8 @@ Disadvantages:
     description:
       `You are a patron Kami whose mastery expresses itself through practiced grace.
 
-*+3 Dexterity.
-*Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*+3 Dexterity. Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion, and automatically succeed in such checks.
 *You may ask the current GM for advice and answers in order to help you IRP, receiving advice you otherwise wouldn't get. Basically 'ask god for assistance'.
-*Many seek your wisdom, and your opinions are held in high regard.
 *You own an important artistic or religious tool.`,
   },
   {
@@ -500,10 +450,8 @@ Disadvantages:
     description:
       `You are a patron Kami whose mastery is rooted in scholarship and taste.
 
-*+3 Intelligence.
-*Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion.
+*+3 Intelligence. Your knowledge of the arts is without precedent. You are uncontestable in matters of history, arts, culture and religion, and automatically succeed in such checks.
 *You may ask the current GM for advice and answers in order to help you IRP, receiving advice you otherwise wouldn't get. Basically 'ask god for assistance'.
-*Many seek your wisdom, and your opinions are held in high regard.
 *You own an important artistic or religious tool.`,
   },
   {
@@ -518,12 +466,9 @@ Disadvantages:
     },
     description: `You are a convivial, politically dangerous Kami-Champion.
 
-*+3 Charisma.
-*Your very presence demands respect.
-*You rank higher even amongst other goddesses, mostly due to your connections.
-*It is much easier to form alliances and convince others to do your bidding.
-*You may enlist help from foreign nations much more easily than others.
-*Pick this to be the ultimate politician.`,
+*+3 Charisma. Your very presence demands respect. You rank higher even amongst other goddesses, mostly due to your connections.
+*You may order the execution of any whom disrespect you, and all Japanese present must oblidge, except for player characters.
+*It is much easier to form alliances and to convince others to do your bidding, automatically succeeding in such checks.`,
   },
   // ─────────────────────────────────────────────────────────────────────────
   // TEMPLATE: How to add a new faction perk

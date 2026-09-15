@@ -356,7 +356,7 @@ Disadvantages:
 *One per player. You may create another if yours dies. Must have the 'Tierfraun' perk; cannot have the 'Free-range' perk.
 *2 points are automatically assigned to each main stat (STR, DEX, CON, INT, CHA).
 *Keep a separate sheet for your daughters. They use normal PF rules, and must share your Tierfraun type. Choose your initial number at creation, additional daughters require RP and follow pregnancy rules.
-*A hunter may ambush your daughters. Your champion and the hunter make a contested INT vs INT check. The hunter gets +1 success per 2 daughters.
+*A hunter may ambush your daughters. Your champion and the hunter make a contested INT vs INT check. The hunter gets +1 success per 2 daughters. Roll-offs may only be called one per week.
 *If you are digested, your consciousness remains in your predator until they die by means other than digestion.
 *If a daughter is digested, roll 1d[total daughters] to determine her inheritance position, then record daughter #X as digested.
 *If you die and the next daughter in inheritance line has been digested, you inhabit the fat of the predator who ate her.`,

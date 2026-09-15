@@ -334,7 +334,7 @@ export function applyCharismaItemDiscount(
   charisma = 1,
 ): number {
   if (cost <= 0) return cost;
-  const discount = Math.max(0, charisma - 1);
+  const discount = Math.max(0, Math.floor((charisma - 1) / 2));
   return Math.max(1, cost - discount);
 }
 

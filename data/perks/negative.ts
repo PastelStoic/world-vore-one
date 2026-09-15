@@ -210,4 +210,22 @@ Example 2 If you're a merchant, they must be reasonably capable of outbidding yo
 *Every tier of cover is rated 1 tier lower, and you must spend an action to take cover - it is not taken automatically.
 *You cannot fit inside vehicles that aren't open-top, like bikes or motorcycles.`,
   },
+  {
+    id: "on-a-timer",
+    name: "On a timer.",
+    category: "negative",
+    isFree: true,
+    customInput: "Your condition & IRL death date.",
+    pointsGranted: 4,
+    description:
+      `You have a condition that will kill you sooner rather than later - you are on a timer for death!
+
+*This perk is free.
+*Gain 4 points by picking this perk.
+
+*During character creation, roll a 1d365. You only get one roll, and it must be clearly declared, without any jokes or messing around.
+*For absolute safety, write out, in full caps, "MY 'ON-A-TIMER' PERK ROLL", so that there will be absolutely no confusion.
+*The result is how many days the character has left before dying for good, even if they're a template or get a new body somehow.
+*Only the Artificer may reverse your fate, but her services do not come cheap. You must pay 6 points and convince her to treat you.`,
+  },
 ];

@@ -40,13 +40,16 @@ export const VEHICLES: VehicleDefinition[] = [
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike.
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      6 gunner & assistant gunners ( 3/3/4 ).
+      1 commander (3).
+      1 driver (3).
+      1 engineer (3).
+      2 cannon gunners (2).
+      2 mg gunners / assitant gunners (2).
+      2 loaders (2).
 
       *The commander mans one of the frontal machineguns.
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
+      *Assistant gunners can help reload the cannons. Loaders can help reload any weapon, except the commander's
       *One machinegun points left, one right, and one to the front.`,
   },
 
@@ -80,13 +83,15 @@ export const VEHICLES: VehicleDefinition[] = [
       `The first tank of the war, but outdated by this point - nevertheless, it remains in production and use alike. Female variant, sporting only MGs.
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      6 gunner & assistant gunners ( 3/3/4 ).
+      1 commander (3).
+      1 driver (3).
+      1 engineer (3).
+      4 mg gunners (2).
+      2 loaders (2).
 
       *The commander mans one of the frontal machineguns.
       *Two frontal machineguns can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
+      *Loaders can help reload any weapon, except the commander's.
       *One machinegun points left, one right, and one to the front.`,
   },
 
@@ -119,13 +124,13 @@ export const VEHICLES: VehicleDefinition[] = [
       `Light and fast "cavalry" tank, meant to fit Britain's armor doctrine. Faster than most other tanks, but only armed with machineguns!
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      2 gunner ( 3/3/3 ).
-      
-      *The vehicle has a rear gun port, allowing one of the machineguns to be slotted into it. It takes 3 turns to do so.
-      *One of the side machinegun points left, one points right.`,
+      1 commander (3).
+      1 driver (3).
+      1 engineer (3)
+      2 gunners (2).
+
+      *The vehicle has a rear gun port, allowing one of the machineguns to be moved into it. It takes 3 turns to do so.
+      *Two MGs point forward, one points left, one points right.`,
   },
 
   // FRENCH VEHICLES
@@ -157,8 +162,8 @@ export const VEHICLES: VehicleDefinition[] = [
       `The first turreted tank in the world! Very small and compact, as well as easy to destroy, making it cheaper than most tanks.
 
       Crew:
-      1 commander, gunner AND engineer. ( 3/3/4 ).
-      1 driver ( 3/3/4 ).
+      1 commander / gunner / engineer. (2).
+      1 driver (2).
       
       *The commander is also the gunner and the engineer. Good luck doing all the work alone!`,
   },
@@ -189,8 +194,8 @@ export const VEHICLES: VehicleDefinition[] = [
       `The first turreted tank in the world! Very small and compact, as well as easy to destroy, making it cheaper than most tanks.
 
       Crew:
-      1 commander, gunner AND engineer. ( 3/3/4 ).
-      1 driver ( 3/3/4 ).
+      1 commander / gunner / engineer. (2).
+      1 driver (2).
       
       *The commander is also the gunner and the engineer. Good luck doing all the work alone!
       *The machinegun is inside the turret, and turns alongside it.`,
@@ -223,17 +228,18 @@ export const VEHICLES: VehicleDefinition[] = [
       "wheels-4",
     ],
     description:
-      `Light armoured car with a pair of machineguns, with a pair of turrets!
+      `Light armoured car with a pair of turrets!
 
       Crew:
-      1 commander ( 3/3/4 ).
-      1 driver ( 3/3/4 ).
-      1 engineer ( 4/3/3 ).
-      1 frontal gunner (3/3/4)
-      1 rear gunner (4/3/3)
-      
+      1 commander (3).
+      1 driver (3).
+      1 engineer (3).
+      1 frontal gunner (2).
+      1 rear gunner (2).
+
+      *Two turrets, one at the front and one at the back.
       *The rear turret can only aim to the back or the sides of the vehicle - it cannot aim forwards!
-      *The machineguns are inside the turret, and turn alongside it.`,
+      *The machineguns are inside the turrets, and turn alongside it.`,
   },
 
   // GERMAN VEHICLES
@@ -270,14 +276,14 @@ export const VEHICLES: VehicleDefinition[] = [
       `German tank, more closely resembling a pilbox on threads! Outdated, but still used - crew has been optimized!
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      1 frontal gunner & assistant gunner ( 3/4/5 ).
-      1 rear gunner & assistant gunner ( 5/4/3 ).
-      4 lateral machinegunners ( 4/3/4 ).
+      1 commander (3)
+      1 driver (3)
+      1 engineer (3)
+      2 cannon gunners (2).
+      2 assistant gunners (2).
+      4 mg gunners (2).
 
-      *One cannon is aiming forwards, one cannon is aming backwards.
+      *One cannon is aiming forwards, one cannon is aming backwards. One gunner and asisstant gunner per cannon.
       *Two machineguns point left, and two machineguns point right.`,
   },
 
@@ -314,12 +320,12 @@ export const VEHICLES: VehicleDefinition[] = [
       `German tank, more closely resembling a pilbox on threads! Outdated, but still used - crew has been optimized! Female variant, with only MGs!
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      2 frontal machhinegunners ( 3/4/5 ).
-      2 rear machinegunners ( 5/4/3 ).
-      4 lateral machinegunners ( 4/3/4 ).
+      1 commander (3)
+      1 driver (3)
+      1 engineer (3)
+      2 frontal mg gunners (2).
+      2 rear mg gunners (2).
+      4 mg gunners (2).
 
       *Two machineguns in each direction; front, left, right and rear.`,
   },
@@ -328,7 +334,7 @@ export const VEHICLES: VehicleDefinition[] = [
     id: "k-wagen",
     name: "Großkampfwagen ( K-wagen )",
     nation: "Germany",
-    pointCost: 8,
+    pointCost: 12,
     armor: {
       front: "heavy",
       side: "heavy",
@@ -362,17 +368,21 @@ export const VEHICLES: VehicleDefinition[] = [
       `A massive bunker on threads. The pinacle of heavy tanks. Slow, cumbersome, but deadly.
 
       Crew:
-      1 commander ( 5/5/5 ).
-      1 driver ( 5/5/5 ).
-      1 engineer ( 5/5/5 ).
-      1 frontal gunner ( 3/4/4 )
-      4 lateral gunners ( mgs ) ( 4/3/4 )
-      2 lateral gunners ( flamethrowers ) ( 4/3/4 )
-      4 lateral gunners ( cannons ) ( 4/3/4 )
+      1 commander (3).
+      1 driver (3).
+      1 engineer (3).
+      1 frontal mg gunner (2).
+      4 lateral mg gunners (2).
+      2 lateral flamethrower gunners (2).
+      4 cannon gunners (2).
+      10 loaders / assistant gunners (2).
+
+      
       10 assistant gunners ( 4/3/4 )
 
-      *Two cannons aim forward, two cannons aim backwards; all can fire to the sides.
-      *One frontal machinegun, four lateral machineguns, two lateral flamethrowers.`,
+      *One frontal machinegun, four lateral machineguns, two lateral flamethrowers.
+      *Two cannons aim forward, two cannons aim backwards; all can fire to the sides and in their respective directions.
+      *Two loaders / assistant gunners per cannon; two per flamethrower.`,
   },
 
   // MILITARY BUT GENERIC
@@ -401,12 +411,11 @@ export const VEHICLES: VehicleDefinition[] = [
     description: `A light anti-tank gun, meant to take out ... tanks!
 
       Crew:
-      1 commander ( 3/0/0 )
-      1 gunner ( 3/0/0 )
-      3 loaders/assistant gunners ( 3/0/0 )
+      1 commander (1)
+      1 gunner (1)
+      3 loaders / assistant gunners (1)
       
-      *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *To push the gun, add together the Strength of all crew members pushing it. If the total is 5 or greater, the gun may move 1 distance.`,
+      *Light anti-tank gun, prone to being flanked. Reloads faster than most tanks. Crew has no protection from attacking coming from the sides/rear.`,
   },
 
   {
@@ -434,12 +443,11 @@ export const VEHICLES: VehicleDefinition[] = [
       `A medium anti-tank gun, packs a stronger punch, vehicles should avoid it greatly!
 
       Crew:
-      1 commander ( 3/0/0 )
-      1 gunner ( 3/0/0 )
-      4 loaders/assistant gunners ( 3/0/0 )
+      1 commander (1)
+      1 gunner (1)
+      4 loaders / assistant gunners (1)
       
-      *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks.
-      *To push the gun, add together the Strength of all crew members pushing it. If the total is 6 or greater, the gun may move 1 distance.`,
+      *Medium anti-tank gun, prone to being flanked. Reloads faster than most tanks. Crew has no protection from attacking coming from the sides/rear.`,
   },
 
   {
@@ -464,10 +472,9 @@ export const VEHICLES: VehicleDefinition[] = [
     description: `An artillery train, meant to carry artillery around.
 
       Crew:
-      1 conductor ( 0/0/0 ).
+      1 conductor (0)
       
-      *Required in order to move artillery around. Or better yet, use a truck! ...
-      *You're not using this if you can afford a truck, which means you're a brokie.`,
+      *Required in order to move artillery around. Or better yet, use a truck! ...`,
   },
 
   {
@@ -493,10 +500,9 @@ export const VEHICLES: VehicleDefinition[] = [
       `An artillery train, meant to carry artillery around, except its faster since it has more horses.
 
       Crew:
-      1 conductor ( 0/0/0 ).
+      1 conductor (0)
       
-      *Required in order to move artillery around. Or better yet, use a truck! ...
-      *You're still a brokie.`,
+      *Required in order to move artillery around. Or better yet, use a truck! ...`,
   },
 
   // CIVVIE VEHICLES
@@ -526,9 +532,9 @@ export const VEHICLES: VehicleDefinition[] = [
       `An average ol' car. It's just like a Puma, it drives on all fours.
 
       Crew:
-      1 driver ( 2/2/3 ).
-      1 front passenger seat ( 2/2/3 ).
-      3 passengers ( 3/2/2 ).
+      1 driver (1)
+      1 front passenger seat (1)
+      3 passengers (1)
       
       *The trunk can hold up to 10 weight units of cargo.
       *Remember that people are considered to have 3 weight.`,
@@ -558,13 +564,13 @@ export const VEHICLES: VehicleDefinition[] = [
       `A truck! A bit slower than most, but can carry a lot of weight!
 
       Crew:
-      1 driver ( 2/2/3 ).
-      1 front passenger seat ( 2/2/3 ).
-      16 passengers on the back ( 3/0/0 ).
+      1 driver (1)
+      1 front passenger seat (1)
+      16 passengers on the back (1)
 
       *Each seat for passengers on the back can carry 3 weight units, for a total of 16 x 3 = 48 weight.
       *Choose whether to have a tarp cover over the back of the truck. No cover leaves the stats as they are, and rear passengers can fire out of the vehicle.
-      *Covering the back with a tarp gives the rear passengers ( 3/3/0 ) cover instead, but only allows them to shoot backwards.
+      *Covering the back with a tarp gives the rear passengers (2) cover instead, but only allows them to shoot backwards.
       *The tarp limits the doors to 4 instead, as rear passengers can longer climb along the sides of the truck, only through the rear.`,
   },
   {
@@ -592,15 +598,15 @@ export const VEHICLES: VehicleDefinition[] = [
       `An average motorcycle. Pretty agile, but you can't bring all of your friends.
 
       Crew:
-      1 driver ( 0/0/0 ).
-      1 passenger ( 0/0/0 ).
+      1 driver (0).
+      1 passenger (0).
 
       *If the driver is incapacitated/dies while the vehicle is moving, it collapses immediately.
       *When collapsing, it will move however many distances it had moved last turn, dragging its rider(s) with it.
       *The riders take damage equal to how many distances it moves.
       *Optionally choose to have a Pannier - a side cart to your motorcycle. Not having a pannier leaves the stats unchanged.
       *Choosing to have a pannier decreases speed to 5, but allows a 3rd passenger, and raises the number of doors to 3.
-      *The 3rd passenger has ( 0/0/0 ) cover.`,
+      *The 3rd passenger has (0) cover.`,
   },
 ];
 

@@ -11,13 +11,13 @@ export const VEHICLE_TRAITS: VehicleTraitDefinition[] = [
     id: "tracked",
     name: "Tracked",
     description:
-      "Tracks do not take area damage, they must be targeted directly. Destroyed tracks immobilize the vehicle. Can be repaired at combat end without any checks. Takes 1 hour.",
+      "Takes 1 movement to change facings. Tracks do not take area damage, they must be targeted directly. Destroyed tracks immobilize the vehicle. Can be repaired at combat end without any checks. Takes 1 hour.",
   },
   {
     id: "wheeled",
     name: "Wheeled",
     description:
-      "Wheels have no armor. Destroyed wheels immobilize the vehicle. Can be repaired at combat end without any checks. Takes 15 minutes.",
+      "Takes 2 movements to change facings. Wheels have no armor. Destroyed wheels immobilize the vehicle. Can be repaired at combat end without any checks. Takes 15 minutes.",
   },
   {
     id: "turreted",

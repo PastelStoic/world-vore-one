@@ -130,7 +130,7 @@ Up to [SEATS] individuals - counting the crew - can take cover behind the mantle
     id: "flamer",
     name: "Flamer",
     description:
-      "Fire deals 3 damage at the end of the target's turn until extinguished. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.",
+      "Fire deals 3 damage at the end of the target's turn until extinguished. attacking a target already on fire does not deal more damage. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.",
   },
   
 ];

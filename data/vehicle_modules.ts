@@ -144,7 +144,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     addsTraitIDs: ["flammable"],
     destructionEffect:
       `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage does not make it explode.
-    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
+    *The flamethrowers may no longer reload.`,
   },
   {
     id: "light-ammo-stowage",

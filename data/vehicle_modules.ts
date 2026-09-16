@@ -124,10 +124,20 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     difficulty: 3,
     destructionEffect: "The vehicle can no longer move.",
   },
-
   {
     id: "fuel-tanks",
     name: "Fuel tanks",
+    hp: 2,
+    position: "internal",
+    difficulty: 3,
+    addsTraitIDs: ["flammable"],
+    destructionEffect:
+      `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage does not make it explode.
+    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
+  },
+  {
+    id: "flamethrower-fuel-tanks",
+    name: "Flamethrower fuel tanks",
     hp: 2,
     position: "internal",
     difficulty: 3,

@@ -75,7 +75,7 @@ Up to [SEATS] individuals - counting the crew - can take cover behind the mantle
     description:
       `Vehicle has internal fuel tanks, which, upon destruction, begin spreading fire throughout the vehicle.
 *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
-*The fire starts on the respective fuel tank, then begins to spread randomly with each passing turn, onto a crewmember or a module. A fuel tank cannot be set on fire again.
+*The fire starts on the respective fuel tank, then begins to spread randomly at the start of each turn, onto a crewmember or a module. A fuel tank cannot be set on fire again.
 *Fire deals 3 damage at the end of the target's turn until extinguished. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.`,
   },
 

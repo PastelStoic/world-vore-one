@@ -254,7 +254,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "flamethrower",
     name: "Flamethrower",
     description:
-      "Maximum range of 3 distances; cannot target anyone beyond. Ignores cover.\nFire deals 3 damage at the end of the target's turn until extinguished. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.",
+      "Maximum range of 3 distances; cannot target anyone beyond. Ignores cover.\nFire deals 3 damage at the end of the target's turn until extinguished, attacking a target already on fire does not deal more damage. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.",
   },
   {
     id: "volatile",

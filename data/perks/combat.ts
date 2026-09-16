@@ -247,7 +247,7 @@ You may use a one-handed weapon alongside the shield, but have -3d6 to attack wi
 
 *Every weapon and tool can be holsted, unholstered, grabbed or dropped as a free action. You can perform three reloading actions as if they were one.
 *Alternate firing techniques ( 'Mad minute technique', 'Walking fire', etc ... ) no longer have negative effects.
-*Semiautomatic weapons ( 3 rof or lower ) no longer need to waste a shot when multi-targetting.`,
+*When firing at 3 rof or lower, no longer need to waste a shot when multi-targetting.`,
   },
   {
     id: "gunslinger",

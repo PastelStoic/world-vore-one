@@ -49,7 +49,7 @@ export const VEHICLES: VehicleDefinition[] = [
 
       *The commander mans one of the frontal machineguns.
       *The cannons can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
-      *Assistant gunners can help reload the cannons. Loaders can help reload any weapon, except the commander's
+      *Assistant gunners can help reload the cannons on their respective side. Loaders can help reload any weapon on their respective side, except the commander's
       *One machinegun points left, one right, and one to the front.`,
   },
 
@@ -91,7 +91,7 @@ export const VEHICLES: VehicleDefinition[] = [
 
       *The commander mans one of the frontal machineguns.
       *Two frontal machineguns can only aim forward; they cannot target an enemy at distance 3 or closer, as the side-sponsons will not have visibility in such a case.
-      *Loaders can help reload any weapon, except the commander's.
+      *Loaders can help reload any weapon on their respective side, except the commander's.
       *One machinegun points left, one right, and one to the front.`,
   },
 

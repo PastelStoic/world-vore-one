@@ -69,6 +69,15 @@ export const VEHICLE_TRAITS: VehicleTraitDefinition[] = [
 Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around. Can be pushed so long as the sum of the pusher's strength = the vehicle's size.
 Up to [SEATS] individuals - counting the crew - can take cover behind the mantlet. It is 6d6 cover if one isn't manning it.`,
   },
+  {
+    id: "flammable",
+    name: "Flammable",
+    description:
+      `Vehicle has internal fuel tanks, which, upon destruction, begin spreading fire throughout the vehicle.
+*The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
+*The fire starts on the respective fuel tank, then begins to spread randomly with each passing turn, onto a crewmember or a module. A fuel tank cannot be set on fire again.
+*Fire deals 3 damage at the end of the target's turn until extinguished. Extinguish it by rolling a 6 on 1d6. Burning targets can do nothing besides extinguish the fire or flee from its source.`,
+  },
 
   // THE AMMO TYPES
   

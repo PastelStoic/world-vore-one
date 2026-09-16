@@ -351,6 +351,7 @@ export const VEHICLES: VehicleDefinition[] = [
       "machine-gun",
       "flamethrower",
       "flamethrower",
+      "flamethrower-fuel-tanks",
       "engine",
       "fuel-tanks",
       "medium-tracks",

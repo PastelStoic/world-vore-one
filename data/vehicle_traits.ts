@@ -69,6 +69,64 @@ export const VEHICLE_TRAITS: VehicleTraitDefinition[] = [
 Can be linked to other vehicles, such as cars, trucks and artillery trains, then pulled around. Can be pushed so long as the sum of the pusher's strength = the vehicle's size.
 Up to [SEATS] individuals - counting the crew - can take cover behind the mantlet. It is 6d6 cover if one isn't manning it.`,
   },
+
+  // THE AMMO TYPES
+  
+  {
+    id: "light-he",
+    name: "Light HE",
+    description:
+      "aa",
+  },
+  {
+    id: "medium-he",
+    name: "Medium HE",
+    description:
+      "aa",
+  },
+  {
+    id: "heavy-he",
+    name: "Heavy HE",
+    description:
+      "aa",
+  },
+  {
+    id: "light-aphe",
+    name: "Light APHE",
+    description:
+      "aa",
+  },
+  {
+    id: "medium-aphe",
+    name: "Medium APHE",
+    description:
+      "aa",
+  },
+  {
+    id: "heavy-aphe",
+    name: "Heavy APHE",
+    description:
+      "aa",
+  },
+  {
+    id: "light-ap",
+    name: "Light AP",
+    description:
+      "aa",
+  },
+  {
+    id: "medium-ap",
+    name: "Medium AP",
+    description:
+      "aa",
+  },
+  {
+    id: "heavy-ap",
+    name: "Heavy AP",
+    description:
+      "aa",
+  },
+  
 ];
 
 export const VEHICLE_TRAITS_BY_ID = new Map(

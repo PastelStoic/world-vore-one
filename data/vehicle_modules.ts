@@ -95,7 +95,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     position: "internal",
     difficulty: 2,
     destructionEffect: "Flamethrower destroyed.",
-    addsTraitIDs: ["Flamer"],
+    addsTraitIDs: ["flamer"],
     damage: "Variable",
     rateOfFire: 5,
     ammo: 100,
@@ -131,7 +131,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     hp: 2,
     position: "internal",
     difficulty: 3,
-    addsTraitIDs: ["Flammable"],
+    addsTraitIDs: ["flammable"],
     destructionEffect:
       `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage does not make it explode.
     *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,

@@ -35,7 +35,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
 *Free perk, grants 4 points, for PFs & variants only. You may not get the 'tough' and 'living furnace' perks.
 *If your prey's dice pool to escape is <3/4ths (round down) of your dice pool to keep them in, they cannot attempt to escape.
 
-*Digestion strength is automatically and permanently. set to -4. Regardless of digestion sgrength, prey takes 4 times as long to be digested and absorbed.
+*Digestion strength is automatically and permanently set to -4. Regardless of digestion strength, prey takes 4 times as long to be digested and absorbed.
 *Natural and perk-based healing takes 8x longer. You may not get instant healing from perks/items.
 *Digestion lasts multiple scenes; your prey takes days/weeks to digest. You must do 1 scene for every 20 digestion turns.
 *If you go out in public, roll a 1d6. On a 4 or below, someone takes note and calls the proper authorities. 

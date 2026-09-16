@@ -14,7 +14,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Light cannon",
     hp: 6,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Cannon destroyed.",
     addsTraitIds: ["light-he","light-aphe"],
     damage: "Variable",
@@ -27,7 +27,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Medium cannon",
     hp: 6,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Cannon destroyed.",
     addsTraitIds: ["medium-he","medium-aphe"],
     damage: "Variable",
@@ -40,7 +40,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Light high velocity cannon",
     hp: 6,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Cannon destroyed.",
     addsTraitIds: ["light-aphe","light-ap"],
     damage: "Variable",
@@ -53,7 +53,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Medium high velocity cannon",
     hp: 8,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Cannon destroyed.",
     addsTraitIds: ["medium-aphe","medium-ap"],
     damage: "Variable",
@@ -65,8 +65,8 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     id: "light-turret",
     name: "Light turret",
     hp: 6,
-    position: "internal",
-    difficulty: 3,
+    position: "external",
+    difficulty: 1,
     destructionEffect: "Turret destroyed, and can no longer turn.",
     addsTraitIds: ["turreted"],
   },
@@ -93,7 +93,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Flamethrower",
     hp: 4,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Flamethrower destroyed.",
     addsTraitIDs: ["Flamer"],
     damage: "Variable",
@@ -106,7 +106,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Machinegun",
     hp: 4,
     position: "internal",
-    difficulty: 5,
+    difficulty: 2,
     destructionEffect: "Machine gun destroyed.",
     damage: "3",
     rateOfFire: 11,
@@ -121,7 +121,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Engine",
     hp: 4,
     position: "internal",
-    difficulty: 5,
+    difficulty: 3,
     destructionEffect: "The vehicle can no longer move.",
   },
 
@@ -130,31 +130,27 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Fuel tanks",
     hp: 2,
     position: "internal",
-    difficulty: 5,
+    difficulty: 3,
+    addsTraitIDs: ["Flammable"],
     destructionEffect:
-      `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.
-    
-    *The crew must hold their breaths in order not to inhale toxic smoke for as long as it burns. A crewmember takes 3 damage for every turn they inhale toxic smoke.
-    *The fire deals a continuous 3 damage to the vehicle until it is put out and it will spread to another non-burning module, at random, on the next turn.
-    *Crew is unharmed from the fire; you manage to keep your distance from it. To put it out, one must roll a 6 on a 1d6. Any crewmember can attempt to put the fire(s) out.
-    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.
-    *A fire may only be started once per combat - it cannot be set alight again.`,
+      `The fuel tanks catch fire, which begins to spread throughout the vehicle. Only catches fire if directly destroyed by an attack, or if destroyed by fire - aoe damage does not make it explode.
+    *The vehicle will run out of fuel only at combat end or after 20 turns pass, whichever is faster, leaving it immobile.`,
   },
   {
     id: "light-ammo-stowage",
     name: "Light ammo stowage",
     hp: 2,
     position: "internal",
-    difficulty: 8,
+    difficulty: 5,
     destructionEffect:
-      "The vehicle immediately explodes, destroying it and killing off everyone within it. Only explodes if it is directly destroyed by an attack, or if destroyed by fire - aoe damage from grenades/HE/APHE does not make it explode.",
+      "The vehicle immediately explodes, destroying it and killing off everyone within it. Only explodes if it is directly destroyed by an attack, or if destroyed by fire - aoe damage does not make it explode.",
   },
   {
     id: "tracks",
     name: "Tracks",
     hp: 8,
     position: "external",
-    difficulty: 3,
+    difficulty: 1,
     destructionEffect:
       "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
     addsTraitIds: ["tracked"],
@@ -164,7 +160,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Medium racks",
     hp: 12,
     position: "external",
-    difficulty: 3,
+    difficulty: 1,
     destructionEffect:
       "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
     addsTraitIds: ["tracked"],
@@ -174,7 +170,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Wheels ( 2 wheels )",
     hp: 4,
     position: "external",
-    difficulty: 3,
+    difficulty: 1,
     destructionEffect:
       "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
     addsTraitIds: ["wheeled"],
@@ -184,7 +180,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Wheels ( 4 wheels )",
     hp: 6,
     position: "external",
-    difficulty: 3,
+    difficulty: 1,
     destructionEffect:
       "The vehicle can no longer move. Can be repaired at combat's end without the need for a check.",
     addsTraitIds: ["wheeled"],
@@ -215,7 +211,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Civilian engine",
     hp: 2,
     position: "internal",
-    difficulty: 2,
+    difficulty: 1,
     destructionEffect: "The vehicle can no longer move.",
   },
   {
@@ -223,7 +219,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Civilian fuel tanks",
     hp: 1,
     position: "internal",
-    difficulty: 2,
+    difficulty: 1,
     destructionEffect: `The fuel tanks catch fire!
 
     *The fire deals a continuous 3 damage to the vehicle until it is put out.
@@ -237,7 +233,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Civilian wheels ( 2 wheels )",
     hp: 2,
     position: "external",
-    difficulty: 2,
+    difficulty: 1,
     destructionEffect: "The vehicle can no longer move.",
     addsTraitIds: ["wheeled"],
   },
@@ -246,7 +242,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
     name: "Civilian wheels ( 4 wheels )",
     hp: 4,
     position: "external",
-    difficulty: 2,
+    difficulty: 1,
     destructionEffect: "The vehicle can no longer move.",
     addsTraitIds: ["wheeled"],
   },

@@ -126,6 +126,12 @@ Up to [SEATS] individuals - counting the crew - can take cover behind the mantle
     description:
       "Heavy armor piercing. Deals 36 damage to target. -9d6 to fire at non-vehicles.",
   },
+  {
+    id: "flamer",
+    name: "Flamer",
+    description:
+      "Fire deals 3 damage, then 3 damage every turn, until the fire is put out. Fire is put out by getting a 6 on a 1d6. Burning targets may not do anything besides putting the fire out, or running from a source of fire.",
+  },
   
 ];
 

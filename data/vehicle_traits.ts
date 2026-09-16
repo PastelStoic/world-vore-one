@@ -76,55 +76,55 @@ Up to [SEATS] individuals - counting the crew - can take cover behind the mantle
     id: "light-he",
     name: "Light HE",
     description:
-      "aa",
+      "Light armor piercing, deals AOE 5 / -3 damage, up to 7 targets.",
   },
   {
     id: "medium-he",
     name: "Medium HE",
     description:
-      "aa",
+      "Light armor piercing, deals AOE 7 / -4 damage, up to 7 targets.",
   },
   {
     id: "heavy-he",
     name: "Heavy HE",
     description:
-      "aa",
+      "Light armor piercing, deals AOE 9 / -5 damage, up to 7 targets.",
   },
   {
     id: "light-aphe",
     name: "Light APHE",
     description:
-      "aa",
+      "Medium armor piercing, deals 5 damage to target, plus deals AOE 3 / -2 damage, up to 7 targets. -3d6 to fire at non-vehicles.",
   },
   {
     id: "medium-aphe",
     name: "Medium APHE",
     description:
-      "aa",
+      "Heavy armor piercing, deals 7 damage to target, plus deals AOE 4 / -3 damage, up to 7 targets. -3d6 to fire at non-vehicles.",
   },
   {
     id: "heavy-aphe",
     name: "Heavy APHE",
     description:
-      "aa",
+      "Heavy armor piercing, deals 9 damage to target, plus deals AOE 5 / -4 damage, up to 7 targets. -3d6 to fire at non-vehicles.",
   },
   {
     id: "light-ap",
     name: "Light AP",
     description:
-      "aa",
+      "Heavy armor piercing, deals 16 damage to target. -3d6 to fire at non-vehicles.",
   },
   {
     id: "medium-ap",
     name: "Medium AP",
     description:
-      "aa",
+      "Heavy armor piercing. Deals 24 damage to target. -6d6 to fire at non-vehicles.",
   },
   {
     id: "heavy-ap",
     name: "Heavy AP",
     description:
-      "aa",
+      "Heavy armor piercing. Deals 36 damage to target. -9d6 to fire at non-vehicles.",
   },
   
 ];

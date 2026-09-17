@@ -181,6 +181,11 @@ export interface PerkDefinition {
    * remove it for a refund — useful for soft migrations before hard-deleting.
    */
   deprecated?: boolean;
+  /**
+   * When true, owners may remove this perk after approval by paying back any
+   * granted points. Ordinary perks stay locked on approved sheets.
+   */
+  refundable?: boolean;
   overridesRaceName?: { oldName: string; newName: string }[];
 }
 

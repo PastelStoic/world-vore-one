@@ -29,6 +29,7 @@ import {
 import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
 import {
+  canRemoveOwnedPerk,
   cleanupPerkData,
   normalizeCharacterPerkIds,
 } from "@/lib/perk_state_helpers.ts";
@@ -632,19 +633,16 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
   }
 
   function unbuyPerk(perkId: string) {
-    const perkDef = PERKS_BY_ID.get(perkId);
-    // Unknown or deprecated perks can always be removed (migration path)
-    const isForceRemovable = !perkDef || !!perkDef.deprecated;
-    if (
-      !isForceRemovable && !canRemoveOldPerks && initialPerkIds.includes(perkId)
-    ) {
-      return;
-    }
     if (!perkIds.includes(perkId)) {
       return;
     }
-    // Prevent removing a perk that is still derived from another active perk
-    if (derivedPerkIds.has(perkId)) {
+    if (
+      !canRemoveOwnedPerk(perkId, {
+        canRemoveOldPerks,
+        initialPerkIds,
+        isDerived: derivedPerkIds.has(perkId),
+      })
+    ) {
       return;
     }
 

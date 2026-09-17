@@ -107,6 +107,11 @@ Deno.test("gendered races are only valid for matching sex", () => {
   assertEquals(isRaceValidForSex("Baseliner", "Futa"), true);
 });
 
+Deno.test("crippling addiction grants 4 points that are paid back on removal", () => {
+  assertEquals(perkCost(["crippling-addiction"], "Pilzfraun"), -4);
+  assertEquals(perkCost([], "Pilzfraun"), 0);
+});
+
 Deno.test("extremely inefficient digestion grants a flat 4 points", () => {
   assertEquals(
     perkCost(["extremely-inefficient-digestion"], "Pilzfraun"),

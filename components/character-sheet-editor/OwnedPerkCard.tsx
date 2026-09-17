@@ -7,6 +7,7 @@ import {
   type PerkOrigin,
 } from "@/lib/character_types.ts";
 import { calculatePerksCost } from "@/lib/character_parsing.ts";
+import { canRemoveOwnedPerk } from "@/lib/perk_state_helpers.ts";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { getDisguiseTargetError } from "@/lib/draft_validation.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
@@ -83,11 +84,11 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
     : perkOrigin === "race"
     ? "Added by race"
     : undefined;
-  const canRemove = !isDerived && (
-    props.canRemoveOldPerks ||
-    !props.initialPerkIds.includes(perk.id) ||
-    !!perk.deprecated
-  );
+  const canRemove = canRemoveOwnedPerk(perk.id, {
+    canRemoveOldPerks: props.canRemoveOldPerks,
+    initialPerkIds: props.initialPerkIds,
+    isDerived,
+  });
   const currentRank = props.perkRanks[perk.id] ?? 1;
   const isUpgradable = perk?.upgradable ?? false;
   const initialRank = props.initialPerkRanks[perk.id] ??
@@ -136,6 +137,27 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
     : 0;
   const canAffordUpgrade =
     (props.unallocatedStatPoints - props.inventoryPointCost) >= upgradeCost;
+  const removalCost = canRemove
+    ? calculatePerksCost(
+      props.perkIds,
+      props.perkRanks,
+      props.perkSelections,
+      props.faction,
+      props.perkPointChoices,
+      props.perkOrigins,
+      props.race,
+    ) -
+      calculatePerksCost(
+        props.perkIds.filter((id) => id !== perk.id),
+        props.perkRanks,
+        props.perkSelections,
+        props.faction,
+        props.perkPointChoices,
+        props.perkOrigins,
+        props.race,
+      )
+    : 0;
+  const removalPayback = Math.max(0, -removalCost);
 
   return (
     <li>
@@ -191,9 +213,15 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
             onClick={() => props.onRemove(perk.id)}
             title={perk.deprecated
               ? "Remove deprecated perk and refund spent stat points"
+              : perk.refundable && removalPayback > 0
+              ? `Pay back ${removalPayback} granted points to remove this perk`
               : undefined}
           >
-            {perk.deprecated ? "Remove & refund" : "Remove"}
+            {perk.deprecated
+              ? "Remove & refund"
+              : perk.refundable && removalPayback > 0
+              ? `Remove (${removalPayback} SP)`
+              : "Remove"}
           </button>
         )}
       </div>
@@ -315,11 +343,11 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
         const disguiseOptions = props.allPerks.filter((p) =>
           p.id === currentDisguiseId ||
           getDisguiseTargetError(
-            perk,
-            p,
-            props.perkIds,
-            props.perkDisguises,
-          ) === null
+              perk,
+              p,
+              props.perkIds,
+              props.perkDisguises,
+            ) === null
         );
         return (
           <div class="mt-1">

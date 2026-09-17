@@ -145,3 +145,23 @@ export function normalizeLoadedDraft<T extends CharacterDraft>(
   if (inventory === withPerks.inventory) return withPerks;
   return { ...withPerks, inventory };
 }
+
+/**
+ * Whether an owned perk may be removed in the sheet editor.
+ * Approved sheets normally lock perks that were already saved; unknown,
+ * deprecated, and explicitly refundable perks stay removable.
+ */
+export function canRemoveOwnedPerk(
+  perkId: string,
+  options: {
+    canRemoveOldPerks: boolean;
+    initialPerkIds: readonly string[];
+    isDerived?: boolean;
+  },
+): boolean {
+  if (options.isDerived) return false;
+  const perk = PERKS_BY_ID.get(perkId);
+  if (!perk || perk.deprecated || perk.refundable) return true;
+  return options.canRemoveOldPerks ||
+    !options.initialPerkIds.includes(perkId);
+}

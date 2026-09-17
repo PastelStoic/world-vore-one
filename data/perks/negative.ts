@@ -63,11 +63,12 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
     category: "negative",
     isFree: true,
     pointsGranted: 4,
+    refundable: true,
     customInput: "Subject of your addiction",
     description:
       `You have an addiction so absolutely crippling that you cannot go without it.
 
-*Free perk, grants 4 points. May be refunded at a later date.
+*Free perk, grants 4 points. May be refunded at any time by paying back the 4 granted points.
 
 *Until you take your hit in a scene, your highest stat of: STR, DEX, CONS, INT, CHAR, is lowered to 1. Priority is in that order. Your other stats are halved, rounded down, until you take your hit.
 *Your high lasts 10 turns/1 hour. You must retake your drug or suffer the penalties once more.
@@ -147,8 +148,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
     category: "negative",
     isFree: true,
     pointsGranted: 4,
-    description:
-      `RAAAAAHHHHHHH
+    description: `RAAAAAHHHHHHH
 
 *Free perk, grants 4 points.
 

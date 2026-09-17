@@ -22,7 +22,10 @@ import {
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { PERKS_BY_ID } from "@/data/perks.ts";
 import { getStatFloor } from "./draft_validation.ts";
-import { collectGrantedPerkIds } from "./perk_state_helpers.ts";
+import {
+  collectGrantedPerkIds,
+  isPatronFundedPerk,
+} from "./perk_state_helpers.ts";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -177,7 +180,8 @@ export function parsePerkDisguises(raw: string): Record<string, string> {
 export function parsePerkOrigins(raw: string): Record<string, PerkOrigin> {
   return parseJsonRecord(raw, (_key, value) => {
     if (
-      value === "purchased" || value === "race" || value === "faction"
+      value === "purchased" || value === "race" || value === "faction" ||
+      value === "patron"
     ) {
       return value;
     }
@@ -357,6 +361,10 @@ export function calculatePerksCost(
     }
     totalFreePerks += (perk?.freePerks ?? 0) * rank;
     if (perk?.isFree) continue;
+
+    if (isPatronFundedPerk(perkId, perkIds, perkOrigins)) {
+      continue;
+    }
 
     if (
       derived.has(perkId) &&

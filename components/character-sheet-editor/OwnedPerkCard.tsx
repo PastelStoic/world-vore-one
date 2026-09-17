@@ -7,7 +7,13 @@ import {
   type PerkOrigin,
 } from "@/lib/character_types.ts";
 import { calculatePerksCost } from "@/lib/character_parsing.ts";
-import { canRemoveOwnedPerk } from "@/lib/perk_state_helpers.ts";
+import {
+  canRemoveOwnedPerk,
+  canTogglePatronPerk,
+} from "@/lib/perk_state_helpers.ts";
+import PatronToggle, {
+  PatronBadge,
+} from "@/components/inventory/PatronToggle.tsx";
 import { FACTION_DEFINITIONS_BY_ID } from "@/data/factions.ts";
 import { getDisguiseTargetError } from "@/lib/draft_validation.ts";
 import PerkDescription from "@/components/PerkDescription.tsx";
@@ -46,6 +52,7 @@ export interface OwnedPerkCardProps {
   onUpgrade: (perkId: string) => void;
   onDowngrade: (perkId: string) => void;
   onRemove: (perkId: string) => void;
+  onTogglePatron: (perkId: string) => void;
   onPerkStatChoiceChange: (
     perkId: string,
     rankIndex: number,
@@ -84,6 +91,13 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
     : perkOrigin === "race"
     ? "Added by race"
     : undefined;
+  const isPatronFunded = props.perkOrigins[perk.id] === "patron" &&
+    props.perkIds.includes("patron");
+  const canMarkPatron = canTogglePatronPerk(perk.id, {
+    perkIds: props.perkIds,
+    perkOrigins: props.perkOrigins,
+    isDerived,
+  });
   const canRemove = canRemoveOwnedPerk(perk.id, {
     canRemoveOldPerks: props.canRemoveOldPerks,
     initialPerkIds: props.initialPerkIds,
@@ -183,6 +197,7 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
               Rank {currentRank}
             </span>
           )}
+          {isPatronFunded && <PatronBadge />}
         </span>
         {isUpgradable && canUpgrade && canAffordUpgrade && (
           <button
@@ -196,6 +211,12 @@ export function OwnedPerkCard(props: OwnedPerkCardProps) {
               ? " (Free)"
               : ` (${upgradeCost} SP)`}
           </button>
+        )}
+        {canMarkPatron && (
+          <PatronToggle
+            active={isPatronFunded}
+            onClick={() => props.onTogglePatron(perk.id)}
+          />
         )}
         {canDowngrade && (
           <button

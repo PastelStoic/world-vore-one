@@ -27,6 +27,8 @@ export interface InventoryWeapon {
   partialMagazines: number[];
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** Whether this item is provided by the Patron perk and costs nothing */
+  isPatron?: boolean;
   /** Extra trait chosen for a Signature melee weapon */
   signatureExtraTraitId?: string;
   /** If set, this item was granted by the named perk and cannot be removed manually */
@@ -59,6 +61,8 @@ export interface InventoryMeleeWeapon {
   meleeWeaponId: string;
   /** Whether this is the character's Signature Weapon (from the perk) */
   isSignatureWeapon?: boolean;
+  /** Whether this item is provided by the Patron perk and costs nothing */
+  isPatron?: boolean;
   /** Extra trait chosen for a Signature melee weapon */
   signatureExtraTraitId?: string;
   /** If set, this item was granted by the named perk and cannot be removed manually */
@@ -84,6 +88,8 @@ export interface InventoryEquipment {
   usedCharges: number;
   /** If set, this item was granted by the named perk and cannot be removed manually */
   perkGranted?: string;
+  /** Whether this item is provided by the Patron perk and costs nothing */
+  isPatron?: boolean;
   /** Weight override from the granting perk (e.g. 0 for sapper equipment) */
   weightOverride?: number;
   /** Bulky override from the granting perk (e.g. false for sapper equipment) */
@@ -101,6 +107,8 @@ export interface InventoryEquipment {
 export interface InventoryVehicle {
   /** Reference to a VehicleDefinition.id */
   vehicleId: string;
+  /** Whether this item is provided by the Patron perk and costs nothing */
+  isPatron?: boolean;
 }
 
 /**
@@ -121,6 +129,8 @@ export interface InventoryAttachment {
   savedMagazineStates?: number[];
   /** If set, this item was granted by the named perk and is removed when that perk's effect ends */
   perkGranted?: string;
+  /** Whether this item is provided by the Patron perk and costs nothing */
+  isPatron?: boolean;
 }
 
 /**
@@ -150,7 +160,7 @@ export interface CharacterInventory {
   };
 }
 
-/** How many free item slots a character gets at creation */
+/** Base free item slots at Charisma 1. Extra slots come from Charisma. */
 export const CREATION_FREE_ITEM_SLOTS = 3;
 
 /** Cost in points per additional item beyond the free slots */
@@ -188,6 +198,7 @@ export {
   countAllItemSlots,
   countAllItemSlotsWithPerks,
   countCarriedItemSlots,
+  getFreeItemSlots,
   hasMultipleCarriedBulkyEquipment,
 } from "./inventory_calculations.ts";
 

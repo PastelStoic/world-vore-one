@@ -24,12 +24,15 @@ import type {
 } from "@/lib/inventory_types.ts";
 import {
   calculateInventoryWeight,
-  CREATION_FREE_ITEM_SLOTS,
   EXTRA_ITEM_POINT_COST,
 } from "@/lib/inventory_types.ts";
 import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
 import {
   addWeapon as addWeaponToInventory,
+  countSignatureWeapons,
+  type PatronItemKind,
+  rebuildSignatureAttachments,
+  togglePatronItem,
   toggleSignatureWeapon as toggleSignatureOnInventory,
 } from "@/lib/inventory_mutations.ts";
 import PerkDescription from "./PerkDescription.tsx";
@@ -53,6 +56,8 @@ import {
   convertMagazinesToAttachment,
   countAllItemSlotsWithPerks,
   getDependentAttachmentIds,
+  getFreeItemSlots,
+  getSignatureWeaponLimit,
   getVehiclePointCost,
   getWeaponPointCost,
   type InventoryLocation,
@@ -76,6 +81,8 @@ interface InventorySectionProps {
   characterId?: string;
   /** The character's perk IDs – used for features like Signature Weapon */
   perkIds?: string[];
+  /** Perk ranks, used for stacked Signature Weapon slots */
+  perkRanks?: Record<string, number>;
   /** Effective Charisma used to discount paid item costs */
   charisma?: number;
   /**
@@ -110,6 +117,7 @@ export default function InventorySection(props: InventorySectionProps) {
     availablePoints,
     characterId,
     perkIds,
+    perkRanks,
     charisma = 1,
     canEditCombatState,
     onLoseWeaponPermanently,
@@ -119,6 +127,10 @@ export default function InventorySection(props: InventorySectionProps) {
   const combatReadOnly = readOnly && !canEditCombatState;
   const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
     false;
+  const signatureLimit = getSignatureWeaponLimit(perkIds, perkRanks);
+  const signatureCount = countSignatureWeapons(inventory);
+  const signatureCapReached = signatureCount >= signatureLimit;
+  const hasPatronPerk = perkIds?.includes("patron") ?? false;
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const weaponMasterRestrictedUnlocks =
     inventory.weaponMasterRestrictedUnlocks ??
@@ -144,7 +156,8 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // ── Derived ──
-  const allSlots = countAllItemSlotsWithPerks(inventory, perkIds);
+  const allSlots = countAllItemSlotsWithPerks(inventory, perkIds, perkRanks);
+  const freeItemSlots = getFreeItemSlots(charisma);
   const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
     return count + (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isBulky ? 1 : 0);
   }, 0);
@@ -154,6 +167,7 @@ export default function InventorySection(props: InventorySectionProps) {
     inventory,
     perkIds,
     charisma,
+    perkRanks,
   );
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
@@ -163,7 +177,7 @@ export default function InventorySection(props: InventorySectionProps) {
 
   /** Compute the slot cost component for adding a new item */
   function slotCost(): number {
-    return allSlots >= CREATION_FREE_ITEM_SLOTS ? EXTRA_ITEM_POINT_COST : 0;
+    return allSlots >= freeItemSlots ? EXTRA_ITEM_POINT_COST : 0;
   }
 
   function costLabel(cost: number): string {
@@ -209,32 +223,25 @@ export default function InventorySection(props: InventorySectionProps) {
     saveCombatState(next);
   }
 
-  // ── Signature Weapon helpers ──
-
-  /** Clear the signature flag from ALL weapons/melee in the inventory */
-  function clearSignatureFlags(inv: CharacterInventory) {
-    for (const loc of ["carried", "stowed"] as const) {
-      for (const w of inv[loc].weapons) w.isSignatureWeapon = false;
-      for (const mw of inv[loc].meleeWeapons) mw.isSignatureWeapon = false;
-    }
-  }
-
-  /** Remove all attachments granted by the signature-weapon perk from inventory */
-  function removeSignatureAttachments(inv: CharacterInventory) {
-    for (const loc of ["carried", "stowed"] as const) {
-      inv[loc].attachments = inv[loc].attachments.filter(
-        (a) => a.perkGranted !== "signature-weapon",
-      );
-    }
-  }
-
   /** Toggle a ranged weapon as signature */
   function toggleSignatureWeapon(location: InventoryLocation, index: number) {
-    update((inv) => toggleSignatureOnInventory(inv, location, index));
+    update((inv) =>
+      toggleSignatureOnInventory(inv, location, index, signatureLimit)
+    );
   }
 
   function toggleSignatureMelee(location: InventoryLocation, index: number) {
-    update((inv) => toggleSignatureOnInventory(inv, location, index));
+    update((inv) =>
+      toggleSignatureOnInventory(inv, location, index, signatureLimit)
+    );
+  }
+
+  function togglePatron(
+    location: InventoryLocation,
+    kind: PatronItemKind,
+    index: number,
+  ) {
+    update((inv) => togglePatronItem(inv, location, kind, index));
   }
 
   // -- Add weapon --
@@ -264,11 +271,11 @@ export default function InventorySection(props: InventorySectionProps) {
         });
       }
     }
-    // If this was the signature weapon, remove its perk-granted loose attachments too
-    if (weapon.isSignatureWeapon) {
-      removeSignatureAttachments(inv);
-    }
+    const wasSignature = !!weapon.isSignatureWeapon;
     inv[location].weapons.splice(index, 1);
+    if (wasSignature) {
+      rebuildSignatureAttachments(inv);
+    }
   }
 
   // -- Remove weapon --
@@ -839,6 +846,10 @@ export default function InventorySection(props: InventorySectionProps) {
                   readOnly={readOnly}
                   combatReadOnly={combatReadOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
+                  signatureCapReached={signatureCapReached}
+                  hasPatronPerk={hasPatronPerk}
+                  onTogglePatron={(loc, i) =>
+                    togglePatron(loc, "weapons", i)}
                   onLoss={onLoseWeaponPermanently
                     ? loseWeaponPermanently
                     : undefined}
@@ -879,6 +890,10 @@ export default function InventorySection(props: InventorySectionProps) {
                   index={i}
                   readOnly={readOnly}
                   hasSignatureWeaponPerk={hasSignatureWeaponPerk}
+                  signatureCapReached={signatureCapReached}
+                  hasPatronPerk={hasPatronPerk}
+                  onTogglePatron={(loc, i) =>
+                    togglePatron(loc, "weapons", i)}
                   onToggleSignature={toggleSignatureMelee}
                   onSetSignatureTrait={setMeleeSignatureTrait}
                   onMove={moveWeapon}
@@ -904,6 +919,8 @@ export default function InventorySection(props: InventorySectionProps) {
                   readOnly={readOnly}
                   combatReadOnly={combatReadOnly}
                   carriedBulkyCount={carriedBulkyCount}
+                  hasPatronPerk={hasPatronPerk}
+                  onTogglePatron={(loc, i) => togglePatron(loc, "equipment", i)}
                   onMove={moveEquipment}
                   onRemove={removeEquipment}
                   onSetTotalCharges={setTotalCharges}
@@ -927,6 +944,9 @@ export default function InventorySection(props: InventorySectionProps) {
                   location={location}
                   index={i}
                   readOnly={readOnly}
+                  hasPatronPerk={hasPatronPerk}
+                  onTogglePatron={(loc, i) =>
+                    togglePatron(loc, "attachments", i)}
                   onMove={moveAttachment}
                   onRemove={removeAttachment}
                   onSetTotalCharges={setAttachmentTotalCharges}
@@ -949,6 +969,9 @@ export default function InventorySection(props: InventorySectionProps) {
                   location={location}
                   index={i}
                   readOnly={readOnly}
+                  hasPatronPerk={hasPatronPerk}
+                  onTogglePatron={(loc, i) =>
+                    togglePatron(loc, "vehicles", i)}
                   onMove={moveVehicle}
                   onRemove={removeVehicle}
                 />
@@ -1043,7 +1066,7 @@ export default function InventorySection(props: InventorySectionProps) {
             }`}
           >
             (Inventory cost: {inventoryPointCost}pt · Remaining:{" "}
-            {pointsAfterInventory}pt)
+            {pointsAfterInventory}pt · Free items: {freeItemSlots})
           </span>
         )}
       </h3>
@@ -1129,7 +1152,7 @@ export default function InventorySection(props: InventorySectionProps) {
                   perkIds,
                   weaponMasterRestrictedUnlocks,
                   charisma,
-                ) + slotCost();
+                ) + (hasWeaponMaster ? 0 : slotCost());
                 return (
                   <li
                     key={w.id}
@@ -1242,7 +1265,12 @@ export default function InventorySection(props: InventorySectionProps) {
               filterPlaceholder="Filter melee weapons by name…"
               emptyMessage="No matching melee weapons."
               renderItem={(mw) => {
-                const addCost = slotCost();
+                const addCost = getWeaponPointCost(
+                  mw.id,
+                  perkIds,
+                  weaponMasterRestrictedUnlocks,
+                  charisma,
+                ) + (hasWeaponMaster ? 0 : slotCost());
                 return (
                   <li
                     key={mw.id}

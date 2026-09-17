@@ -18,6 +18,7 @@ import {
 } from "./character_types.ts";
 import {
   calculatePerksCost,
+  parsePerkOrigins,
   validateCharacterProgression,
 } from "./character_parsing.ts";
 import { getStatFloor, validateStatCaps } from "./draft_validation.ts";
@@ -74,6 +75,55 @@ Deno.test("only the first paid perk is free for other races", () => {
   assertEquals(
     perkCost(PAID_PERKS, "Pilzfraun"),
     PERK_COST_STAT_POINTS * 2,
+  );
+});
+
+Deno.test("patron-funded perks do not consume paid perk slots", () => {
+  assertEquals(
+    calculatePerksCost(
+      ["patron", "runner", "tough"],
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { patron: "purchased", runner: "purchased", tough: "patron" },
+      "Pilzfraun",
+    ),
+    PERK_COST_STAT_POINTS,
+  );
+  assertEquals(
+    calculatePerksCost(
+      ["patron", "runner", "tough"],
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { patron: "purchased", runner: "purchased", tough: "purchased" },
+      "Pilzfraun",
+    ),
+    PERK_COST_STAT_POINTS * 2,
+  );
+});
+
+Deno.test("patron-funded perks cost normally if the patron perk is missing", () => {
+  assertEquals(
+    calculatePerksCost(
+      ["runner", "tough"],
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { runner: "purchased", tough: "patron" },
+      "Pilzfraun",
+    ),
+    PERK_COST_STAT_POINTS,
+  );
+});
+
+Deno.test("parsePerkOrigins accepts patron", () => {
+  assertEquals(
+    parsePerkOrigins(JSON.stringify({ runner: "patron", tough: "purchased" })),
+    { runner: "patron", tough: "purchased" },
   );
 });
 

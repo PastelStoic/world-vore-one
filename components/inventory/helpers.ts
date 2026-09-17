@@ -17,8 +17,10 @@ import type {
 import {
   calculateInventoryPointCostWithPerks,
   countAllItemSlotsWithPerks,
+  getFreeItemSlots,
   getSignatureAdjustedPointCost,
   getSignatureFreeAttachmentIds,
+  getSignatureWeaponLimit,
   getVehiclePointCost,
   getWeaponPointCost,
   slotLookups,
@@ -86,8 +88,10 @@ export function withoutConcealedItems(
 export {
   calculateInventoryPointCostWithPerks,
   countAllItemSlotsWithPerks,
+  getFreeItemSlots,
   getSignatureAdjustedPointCost,
   getSignatureFreeAttachmentIds,
+  getSignatureWeaponLimit,
   getVehiclePointCost,
   getWeaponPointCost,
   slotLookups,

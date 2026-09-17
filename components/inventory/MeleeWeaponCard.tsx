@@ -13,7 +13,7 @@ import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import { type InventoryLocation, isWeaponConcealed } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
 import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
-import InventoryItemActions from "./InventoryItemActions.tsx";
+import PatronToggle, { PatronBadge } from "./PatronToggle.tsx";
 
 interface MeleeWeaponCardProps {
   meleeWeapon: InventoryWeapon;
@@ -21,7 +21,10 @@ interface MeleeWeaponCardProps {
   index: number;
   readOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
+  signatureCapReached?: boolean;
+  hasPatronPerk?: boolean;
   onToggleSignature: (location: InventoryLocation, index: number) => void;
+  onTogglePatron?: (location: InventoryLocation, index: number) => void;
   onSetSignatureTrait: (
     location: InventoryLocation,
     index: number,
@@ -43,7 +46,10 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     index,
     readOnly,
     hasSignatureWeaponPerk,
+    signatureCapReached,
+    hasPatronPerk,
     onToggleSignature,
+    onTogglePatron,
     onSetSignatureTrait,
     onMove,
     onRemove,
@@ -72,6 +78,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
     : "carried";
 
   const isSignature = mw.isSignatureWeapon && hasSignatureWeaponPerk;
+  const isPatron = !!mw.isPatron && !!hasPatronPerk;
   const damage = def.damage;
   const damageDisplay = isSignature ? `${damage}+1` : String(damage);
   const weight = def.weight;
@@ -92,7 +99,11 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
   return (
     <div
       class={`border rounded p-2 space-y-1 ${
-        isSignature ? "bg-warning/10 border-warning/50" : "bg-base-100"
+        isSignature
+          ? "bg-warning/10 border-warning/50"
+          : isPatron
+          ? "bg-secondary/10 border-secondary/50"
+          : "bg-base-100"
       }`}
     >
       <div class="flex items-center justify-between flex-wrap gap-1">
@@ -112,6 +123,7 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
               [Signature Weapon · +1 extra trait]
             </span>
           )}
+          {isPatron && <PatronBadge />}
           {isPerkGranted && (
             <span class="ml-1 text-xs font-semibold text-primary">
               [{grantingPerkName}]
@@ -153,14 +165,23 @@ export default function MeleeWeaponCard(props: MeleeWeaponCardProps) {
                       isSignature
                         ? "bg-warning/20 border-warning/60 text-warning"
                         : "hover:bg-warning/10 text-warning"
-                    }`}
+                    } disabled:opacity-40 disabled:cursor-not-allowed`}
                     onClick={() => onToggleSignature(location, index)}
+                    disabled={!isSignature && !!signatureCapReached}
                     title={isSignature
                       ? "Unmark as Signature Weapon"
+                      : signatureCapReached
+                      ? "Already have the maximum number of signature weapons"
                       : "Mark as Signature Weapon"}
                   >
                     {isSignature ? "★ Signature" : "☆ Set Signature"}
                   </button>
+                )}
+                {!isPerkGranted && hasPatronPerk && onTogglePatron && (
+                  <PatronToggle
+                    active={isPatron}
+                    onClick={() => onTogglePatron(location, index)}
+                  />
                 )}
                 {!isPerkGranted && (
                   <button

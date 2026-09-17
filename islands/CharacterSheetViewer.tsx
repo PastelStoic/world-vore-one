@@ -19,6 +19,7 @@ import EncumbranceSection from "@/components/EncumbranceSection.tsx";
 import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import InventorySection from "@/components/InventorySection.tsx";
+import { PatronBadge } from "@/components/inventory/PatronToggle.tsx";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import {
@@ -335,6 +336,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
         readOnly
         characterId={characterId}
         perkIds={character.perkIds}
+        perkRanks={character.perkRanks}
         charisma={effectiveByStat.charisma}
         canEditCombatState={canEditCombatState}
       />
@@ -362,6 +364,8 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                         )?.perk
                         : undefined;
                       const perkOrigin = character.perkOrigins?.[id];
+                      const isPatronFunded = perkOrigin === "patron" &&
+                        character.perkIds.includes("patron");
                       const factionGrantStatus = perkOrigin === "faction"
                         ? (FACTION_DEFINITIONS_BY_ID.get(desc.faction)
                             ?.grantsPerkIds ?? []).includes(id)
@@ -398,6 +402,7 @@ export default function CharacterSheetViewer(props: CharacterSheetViewerProps) {
                               {factionGrantStatus}
                             </span>
                           )}
+                          {isPatronFunded && <PatronBadge />}
                           {perkDef?.upgradable && rank > 1 && (
                             <span class="ml-1 text-xs bg-primary/20 text-primary px-1 rounded">
                               Rank {rank}

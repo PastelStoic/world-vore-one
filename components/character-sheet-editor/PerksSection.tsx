@@ -41,8 +41,9 @@ interface PerksSectionProps {
   baseStats: BaseStats;
   faction: string;
   race: CharacterDraft["race"];
-  onBuyPerk: (perkId: string) => void;
+  onBuyPerk: (perkId: string, asPatron?: boolean) => void;
   onUnbuyPerk: (perkId: string) => void;
+  onTogglePatronPerk: (perkId: string) => void;
   onUpgradePerk: (perkId: string) => void;
   onDowngradePerk: (perkId: string) => void;
   onPerkPointChoiceChange: (perkId: string, value: number) => void;
@@ -95,6 +96,7 @@ export function PerksSection(props: PerksSectionProps) {
     onUpgrade: props.onUpgradePerk,
     onDowngrade: props.onDowngradePerk,
     onRemove: props.onUnbuyPerk,
+    onTogglePatron: props.onTogglePatronPerk,
     onPerkStatChoiceChange: props.onPerkStatChoiceChange,
     onPerkUpgradeNoteChange: props.onPerkUpgradeNoteChange,
     onPerkNoteChange: props.onPerkNoteChange,

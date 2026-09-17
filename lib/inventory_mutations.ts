@@ -24,29 +24,116 @@ export function removeSignatureAttachments(inv: CharacterInventory): void {
   }
 }
 
+export function rebuildSignatureAttachments(inv: CharacterInventory): void {
+  removeSignatureAttachments(inv);
+  for (const loc of ["carried", "stowed"] as const) {
+    for (const weapon of inv[loc].weapons) {
+      if (!weapon.isSignatureWeapon) continue;
+      const def = WEAPONS_BY_ID.get(weapon.weaponId);
+      if (!def || def.kind === "melee") continue;
+      for (const aId of def.compatibleAttachmentIds ?? []) {
+        const aDef = ATTACHMENTS_BY_ID.get(aId);
+        inv[loc].attachments.push({
+          attachmentId: aId,
+          totalCharges: aDef?.isCharge ? 1 : 0,
+          usedCharges: 0,
+          perkGranted: "signature-weapon",
+        });
+      }
+    }
+  }
+}
+
+export function countSignatureWeapons(inv: CharacterInventory): number {
+  let count = 0;
+  for (const loc of ["carried", "stowed"] as const) {
+    for (const w of inv[loc].weapons) {
+      if (w.isSignatureWeapon) count += 1;
+    }
+    for (const mw of inv[loc].meleeWeapons) {
+      if (mw.isSignatureWeapon) count += 1;
+    }
+  }
+  return count;
+}
+
+export function enforceSignatureWeaponLimit(
+  inv: CharacterInventory,
+  maxSignatures: number,
+): CharacterInventory {
+  if (maxSignatures <= 0) {
+    clearSignatureFlags(inv);
+    removeSignatureAttachments(inv);
+    return inv;
+  }
+  let kept = 0;
+  for (const loc of ["carried", "stowed"] as const) {
+    for (const w of inv[loc].weapons) {
+      if (!w.isSignatureWeapon) continue;
+      kept += 1;
+      if (kept > maxSignatures) w.isSignatureWeapon = false;
+    }
+    for (const mw of inv[loc].meleeWeapons) {
+      if (!mw.isSignatureWeapon) continue;
+      kept += 1;
+      if (kept > maxSignatures) mw.isSignatureWeapon = false;
+    }
+  }
+  rebuildSignatureAttachments(inv);
+  return inv;
+}
+
+export type PatronItemKind =
+  | "weapons"
+  | "meleeWeapons"
+  | "equipment"
+  | "vehicles"
+  | "attachments";
+
+export function clearPatronFlags(inv: CharacterInventory): void {
+  for (const loc of ["carried", "stowed"] as const) {
+    for (const w of inv[loc].weapons) w.isPatron = false;
+    for (const mw of inv[loc].meleeWeapons) mw.isPatron = false;
+    for (const e of inv[loc].equipment) e.isPatron = false;
+    for (const v of inv[loc].vehicles) v.isPatron = false;
+    for (const a of inv[loc].attachments) a.isPatron = false;
+  }
+}
+
+export function togglePatronItem(
+  inv: CharacterInventory,
+  location: InventoryLocation,
+  kind: PatronItemKind,
+  index: number,
+): CharacterInventory {
+  const item = inv[location][kind][index] as { isPatron?: boolean } | undefined;
+  if (!item) return inv;
+  item.isPatron = !item.isPatron;
+  return inv;
+}
+
 export function toggleSignatureWeapon(
   inv: CharacterInventory,
   location: InventoryLocation,
   index: number,
+  maxSignatures = 1,
 ): CharacterInventory {
-  const isAlready = inv[location].weapons[index].isSignatureWeapon;
-  clearSignatureFlags(inv);
-  removeSignatureAttachments(inv);
-  if (!isAlready) {
-    const weapon = inv[location].weapons[index];
-    weapon.isSignatureWeapon = true;
-    const def = WEAPONS_BY_ID.get(weapon.weaponId);
-    if (def?.kind === "melee") return inv;
-    for (const aId of def?.compatibleAttachmentIds ?? []) {
-      const aDef = ATTACHMENTS_BY_ID.get(aId);
-      inv[location].attachments.push({
-        attachmentId: aId,
-        totalCharges: aDef?.isCharge ? 1 : 0,
-        usedCharges: 0,
-        perkGranted: "signature-weapon",
-      });
+  const weapon = inv[location].weapons[index];
+  if (!weapon) return inv;
+  if (weapon.isSignatureWeapon) {
+    weapon.isSignatureWeapon = false;
+    rebuildSignatureAttachments(inv);
+    return inv;
+  }
+  if (countSignatureWeapons(inv) >= maxSignatures) {
+    if (maxSignatures <= 1) {
+      clearSignatureFlags(inv);
+    } else {
+      return inv;
     }
   }
+  weapon.isSignatureWeapon = true;
+  rebuildSignatureAttachments(inv);
   return inv;
 }
 

@@ -16,7 +16,7 @@ interface PerkPickerProps {
   race: CharacterDraft["race"];
   unallocatedStatPoints: number;
   inventoryPointCost: number;
-  onBuyPerk: (perkId: string) => void;
+  onBuyPerk: (perkId: string, asPatron?: boolean) => void;
 }
 
 export function PerkPicker(props: PerkPickerProps) {
@@ -122,6 +122,9 @@ export function PerkPicker(props: PerkPickerProps) {
                     : cost === 0
                     ? "Unlock (Free)"
                     : `Buy (${cost} SP)`;
+                  const canBuyAsPatron = props.perkIds.includes("patron") &&
+                    !perk.isFree &&
+                    perk.id !== "patron";
                   return (
                     <li
                       class={`flex items-start justify-between gap-2 ${
@@ -162,6 +165,27 @@ export function PerkPicker(props: PerkPickerProps) {
                         >
                           {costLabel}
                         </button>
+                        {canBuyAsPatron && (
+                          <button
+                            type="button"
+                            class="px-2 py-1 border rounded text-secondary disabled:opacity-40"
+                            disabled={isBlocked}
+                            aria-disabled={isBlocked || undefined}
+                            title={isBlocked
+                              ? blockReasons.join(" ")
+                              : "Take this perk for free via your patron"}
+                            onClick={() => {
+                              if (isBlocked) {
+                                setRevealedBlockedPerkId(perk.id);
+                                return;
+                              }
+                              setRevealedBlockedPerkId(null);
+                              props.onBuyPerk(perk.id, true);
+                            }}
+                          >
+                            Patron
+                          </button>
+                        )}
                         {perk.adminOnly && (
                           <span class="text-[11px] uppercase tracking-[0.15em] text-warning">
                             Admin only

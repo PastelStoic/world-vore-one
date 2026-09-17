@@ -12,6 +12,9 @@ import PerkDescription from "@/components/PerkDescription.tsx";
 import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import UnknownInventoryItem from "@/components/inventory/UnknownInventoryItem.tsx";
 import TraitBadge from "@/components/inventory/TraitBadge.tsx";
+import PatronToggle, {
+  PatronBadge,
+} from "@/components/inventory/PatronToggle.tsx";
 import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
 import {
   canAttachToWeapon,
@@ -32,11 +35,14 @@ interface WeaponCardProps {
   /** When true, ammo/magazines/reload inputs are disabled (non-owner viewer) */
   combatReadOnly?: boolean;
   hasSignatureWeaponPerk: boolean;
+  signatureCapReached?: boolean;
+  hasPatronPerk?: boolean;
   perkIds?: string[];
   charisma?: number;
   weaponMasterRestrictedUnlocks?: string[];
   inventory: CharacterInventory;
   onToggleSignature: (location: InventoryLocation, index: number) => void;
+  onTogglePatron?: (location: InventoryLocation, index: number) => void;
   onMove: (
     from: InventoryLocation,
     index: number,
@@ -93,6 +99,8 @@ export default function WeaponCard(props: WeaponCardProps) {
     readOnly,
     combatReadOnly,
     hasSignatureWeaponPerk,
+    signatureCapReached,
+    hasPatronPerk,
     perkIds,
     weaponMasterRestrictedUnlocks,
     inventory,
@@ -116,6 +124,7 @@ export default function WeaponCard(props: WeaponCardProps) {
     ? "stowed"
     : "carried";
   const isSignature = w.isSignatureWeapon && hasSignatureWeaponPerk;
+  const isPatron = !!w.isPatron && !!hasPatronPerk;
   const stats = getEffectiveWeaponStats(w)!;
   const effectiveAmmo = stats.ammo;
   const effectiveDamage = stats.damage;
@@ -215,7 +224,11 @@ export default function WeaponCard(props: WeaponCardProps) {
   return (
     <div
       class={`border rounded p-2 space-y-1 ${
-        isSignature ? "bg-warning/10 border-warning/50" : "bg-base-100"
+        isSignature
+          ? "bg-warning/10 border-warning/50"
+          : isPatron
+          ? "bg-secondary/10 border-secondary/50"
+          : "bg-base-100"
       }`}
     >
       <div class="flex items-center justify-between flex-wrap gap-1">
@@ -236,7 +249,8 @@ export default function WeaponCard(props: WeaponCardProps) {
               [Signature Weapon]
             </span>
           )}
-          {def.pointCost > 0 && (
+          {isPatron && <PatronBadge />}
+          {def.pointCost > 0 && !isPatron && (
             <span class="text-xs text-warning ml-1">
               [Cost: {isSignature
                 ? getSignatureAdjustedPointCost(
@@ -287,14 +301,23 @@ export default function WeaponCard(props: WeaponCardProps) {
                   isSignature
                     ? "bg-warning/20 border-warning/60 text-warning"
                     : "hover:bg-warning/10 text-warning"
-                }`}
+                } disabled:opacity-40 disabled:cursor-not-allowed`}
                 onClick={() => props.onToggleSignature(location, index)}
+                disabled={!isSignature && !!signatureCapReached}
                 title={isSignature
                   ? "Unmark as Signature Weapon"
+                  : signatureCapReached
+                  ? "Already have the maximum number of signature weapons"
                   : "Mark as Signature Weapon"}
               >
                 {isSignature ? "★ Signature" : "☆ Set Signature"}
               </button>
+            )}
+            {hasPatronPerk && !w.perkGranted && props.onTogglePatron && (
+              <PatronToggle
+                active={isPatron}
+                onClick={() => props.onTogglePatron!(location, index)}
+              />
             )}
             <button
               type="button"

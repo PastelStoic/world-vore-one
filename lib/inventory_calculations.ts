@@ -39,11 +39,12 @@ type InventoryPocket = CharacterInventory["carried"];
 export function countLocationSlots(
   pocket: InventoryPocket,
   lookups?: SlotLookups,
+  skipWeaponSlots = false,
 ): number {
   let slots = 0;
 
   for (const e of pocket.equipment) {
-    if (e.perkGranted) continue;
+    if (e.perkGranted || e.isPatron) continue;
     const def = lookups?.getEquipment?.(e.equipmentId);
     if (def?.isCharge) {
       slots += e.totalCharges;
@@ -53,8 +54,8 @@ export function countLocationSlots(
   }
 
   for (const w of pocket.weapons) {
-    if (w.perkGranted) continue;
-    slots += 1;
+    if (w.perkGranted || w.isPatron) continue;
+    if (!skipWeaponSlots) slots += 1;
     for (const attachmentId of w.attachedIds) {
       const def = lookups?.getAttachment?.(attachmentId);
       if (def?.isFree) continue;
@@ -63,13 +64,17 @@ export function countLocationSlots(
   }
 
   for (const mw of pocket.meleeWeapons) {
-    if (mw.perkGranted) continue;
+    if (mw.perkGranted || mw.isPatron) continue;
+    if (!skipWeaponSlots) slots += 1;
+  }
+
+  for (const v of pocket.vehicles ?? []) {
+    if (v.isPatron) continue;
     slots += 1;
   }
 
-  slots += (pocket.vehicles ?? []).length;
-
   for (const a of pocket.attachments ?? []) {
+    if (a.isPatron) continue;
     const def = lookups?.getAttachment?.(a.attachmentId);
     if (def?.isFree) continue;
     if (def?.isCharge) {
@@ -86,22 +91,18 @@ function countUsedFreeAttachments(
   pockets: InventoryPocket[],
   freeAttachmentIds: ReadonlySet<string>,
 ): number {
-  const freeUsed = new Set<string>();
+  let used = 0;
   for (const pocket of pockets) {
     for (const w of pocket.weapons) {
       for (const attachmentId of w.attachedIds) {
-        if (freeAttachmentIds.has(attachmentId)) {
-          freeUsed.add(attachmentId);
-        }
+        if (freeAttachmentIds.has(attachmentId)) used += 1;
       }
     }
     for (const a of pocket.attachments ?? []) {
-      if (freeAttachmentIds.has(a.attachmentId)) {
-        freeUsed.add(a.attachmentId);
-      }
+      if (freeAttachmentIds.has(a.attachmentId)) used += 1;
     }
   }
-  return freeUsed.size;
+  return used;
 }
 
 /**
@@ -116,8 +117,9 @@ export function countCarriedItemSlots(
   inv: CharacterInventory,
   lookups?: SlotLookups,
   freeAttachmentIds?: ReadonlySet<string>,
+  skipWeaponSlots = false,
 ): number {
-  let slots = countLocationSlots(inv.carried, lookups);
+  let slots = countLocationSlots(inv.carried, lookups, skipWeaponSlots);
   if (freeAttachmentIds && freeAttachmentIds.size > 0) {
     slots = Math.max(
       0,
@@ -129,17 +131,18 @@ export function countCarriedItemSlots(
 
 /**
  * Count item slots across BOTH carried AND stowed inventory.
- * Used for the shared free-item budget (3 free slots total, regardless of location).
+ * Used for the shared free-item budget (base 3 slots, plus Charisma extras).
  */
 export function countAllItemSlots(
   inv: CharacterInventory,
   lookups?: SlotLookups,
   freeAttachmentIds?: ReadonlySet<string>,
+  skipWeaponSlots = false,
 ): number {
   // Do not pass freeAttachmentIds into countCarriedItemSlots — the subtract
   // below covers both locations once.
-  let slots = countLocationSlots(inv.carried, lookups) +
-    countLocationSlots(inv.stowed, lookups);
+  let slots = countLocationSlots(inv.carried, lookups, skipWeaponSlots) +
+    countLocationSlots(inv.stowed, lookups, skipWeaponSlots);
 
   if (freeAttachmentIds && freeAttachmentIds.size > 0) {
     slots = Math.max(
@@ -392,33 +395,65 @@ export function getSignatureAdjustedPointCost(
   return applyCharismaItemDiscount(baseCost, charisma);
 }
 
+/** How many weapons may be marked Signature. Rank 1 = 1, rank 2 = 2. */
+export function getSignatureWeaponLimit(
+  perkIds?: string[],
+  perkRanks?: Record<string, number>,
+): number {
+  if (!perkIds?.includes("signature-weapon")) return 0;
+  const rank = perkRanks?.["signature-weapon"] ?? 1;
+  return Math.min(2, Math.max(1, rank));
+}
+
+export function getSignatureWeapons(
+  inventory: CharacterInventory,
+): CharacterInventory["carried"]["weapons"] {
+  return [
+    ...inventory.carried.weapons,
+    ...inventory.stowed.weapons,
+  ].filter((w) => w.isSignatureWeapon);
+}
+
 export function getSignatureFreeAttachmentIds(
   inventory: CharacterInventory,
   perkIds?: string[],
+  perkRanks?: Record<string, number>,
 ): Set<string> {
-  if (!perkIds?.includes("signature-weapon")) return new Set<string>();
+  const limit = getSignatureWeaponLimit(perkIds, perkRanks);
+  if (limit <= 0) return new Set<string>();
 
-  const signatureWeapon = [
-    ...inventory.carried.weapons,
-    ...inventory.stowed.weapons,
-  ].find((w) => w.isSignatureWeapon);
-  if (!signatureWeapon) return new Set<string>();
-
-  const def = WEAPONS_BY_ID.get(signatureWeapon.weaponId);
-  if (!def) return new Set<string>();
-
-  return new Set(def.compatibleAttachmentIds ?? []);
+  const ids = new Set<string>();
+  let used = 0;
+  for (const weapon of getSignatureWeapons(inventory)) {
+    if (used >= limit) break;
+    used += 1;
+    const def = WEAPONS_BY_ID.get(weapon.weaponId);
+    for (const attachmentId of def?.compatibleAttachmentIds ?? []) {
+      ids.add(attachmentId);
+    }
+  }
+  return ids;
 }
 
 export function countAllItemSlotsWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
+  perkRanks?: Record<string, number>,
 ): number {
   return countAllItemSlots(
     inventory,
     slotLookups,
-    getSignatureFreeAttachmentIds(inventory, perkIds),
+    getSignatureFreeAttachmentIds(inventory, perkIds, perkRanks),
+    perkIds?.includes("weapon-master") ?? false,
   );
+}
+
+/**
+ * Free item slots: 3 at Charisma 1, plus 1 more per 2 Charisma points invested.
+ */
+export function getFreeItemSlots(charisma = 1): number {
+  const invested = Math.max(0, charisma - 1);
+  return CREATION_FREE_ITEM_SLOTS + Math.floor(invested / 2);
 }
 
 /**
@@ -429,28 +464,37 @@ export function calculateInventoryPointCostWithPerks(
   inventory: CharacterInventory,
   perkIds?: string[],
   charisma = 1,
+  perkRanks?: Record<string, number>,
 ): number {
-  const hasSignatureWeaponPerk = perkIds?.includes("signature-weapon") ??
-    false;
+  const signatureLimit = getSignatureWeaponLimit(perkIds, perkRanks);
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
-  const freeAttachmentIds = getSignatureFreeAttachmentIds(inventory, perkIds);
+  const freeAttachmentIds = getSignatureFreeAttachmentIds(
+    inventory,
+    perkIds,
+    perkRanks,
+  );
   const unlockedIds = inventory.weaponMasterRestrictedUnlocks ?? [];
 
   const totalSlots = countAllItemSlots(
     inventory,
     slotLookups,
     freeAttachmentIds,
+    hasWeaponMaster,
   );
-  const overFree = Math.max(0, totalSlots - CREATION_FREE_ITEM_SLOTS);
+  const overFree = Math.max(0, totalSlots - getFreeItemSlots(charisma));
   let cost = overFree * EXTRA_ITEM_POINT_COST;
 
   if (hasWeaponMaster) {
     cost += new Set(unlockedIds).size;
   }
 
+  let signatureSlotsUsed = 0;
   for (const location of ["carried", "stowed"] as const) {
     for (const w of inventory[location].weapons) {
-      const isSignatureWeapon = hasSignatureWeaponPerk && !!w.isSignatureWeapon;
+      if (w.isPatron) continue;
+      const isSignatureWeapon = !!w.isSignatureWeapon &&
+        signatureSlotsUsed < signatureLimit;
+      if (isSignatureWeapon) signatureSlotsUsed += 1;
       if (isSignatureWeapon && !hasWeaponMaster) {
         cost += getSignatureAdjustedPointCost(
           w.weaponId,
@@ -463,6 +507,7 @@ export function calculateInventoryPointCostWithPerks(
       }
     }
     for (const v of inventory[location].vehicles ?? []) {
+      if (v.isPatron) continue;
       cost += getVehiclePointCost(v.vehicleId, charisma);
     }
   }

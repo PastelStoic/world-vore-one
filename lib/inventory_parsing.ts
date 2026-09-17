@@ -21,7 +21,9 @@ function asString(value: unknown): string | undefined {
 }
 
 function asNumber(value: unknown): number | undefined {
-  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : undefined;
 }
 
 function asBoolean(value: unknown): boolean | undefined {
@@ -69,6 +71,7 @@ function parseWeapon(raw: unknown): InventoryWeapon | null {
     partialMagazines: asNumberArray(raw.partialMagazines),
   };
   if (raw.isSignatureWeapon) weapon.isSignatureWeapon = true;
+  if (raw.isPatron) weapon.isPatron = true;
   const extraTrait = asString(raw.signatureExtraTraitId);
   if (extraTrait) weapon.signatureExtraTraitId = extraTrait;
   const weaponPerk = asString(raw.perkGranted);
@@ -92,6 +95,7 @@ function parseMeleeWeapon(raw: unknown): InventoryMeleeWeapon | null {
 
   const melee: InventoryMeleeWeapon = { instanceId, meleeWeaponId };
   if (raw.isSignatureWeapon) melee.isSignatureWeapon = true;
+  if (raw.isPatron) melee.isPatron = true;
   const extraTrait = asString(raw.signatureExtraTraitId);
   if (extraTrait) melee.signatureExtraTraitId = extraTrait;
   const perkGranted = asString(raw.perkGranted);
@@ -135,10 +139,13 @@ function parseEquipment(raw: unknown): InventoryEquipment | null {
   }
   const perkGranted = asString(raw.perkGranted);
   if (perkGranted) equipment.perkGranted = perkGranted;
+  if (raw.isPatron) equipment.isPatron = true;
   const weightOverride = asNumber(raw.weightOverride);
   if (weightOverride !== undefined) equipment.weightOverride = weightOverride;
   const isBulkyOverride = asBoolean(raw.isBulkyOverride);
-  if (isBulkyOverride !== undefined) equipment.isBulkyOverride = isBulkyOverride;
+  if (isBulkyOverride !== undefined) {
+    equipment.isBulkyOverride = isBulkyOverride;
+  }
   const concealed = asBoolean(raw.concealed);
   if (concealed !== undefined) equipment.concealed = concealed;
   return equipment;
@@ -148,7 +155,9 @@ function parseVehicle(raw: unknown): InventoryVehicle | null {
   if (!isRecord(raw)) return null;
   const vehicleId = asString(raw.vehicleId);
   if (!vehicleId) return null;
-  return { vehicleId };
+  const vehicle: InventoryVehicle = { vehicleId };
+  if (raw.isPatron) vehicle.isPatron = true;
+  return vehicle;
 }
 
 function parseAttachment(raw: unknown): InventoryAttachment | null {
@@ -165,6 +174,7 @@ function parseAttachment(raw: unknown): InventoryAttachment | null {
   if (saved.length > 0) attachment.savedMagazineStates = saved;
   const perkGranted = asString(raw.perkGranted);
   if (perkGranted) attachment.perkGranted = perkGranted;
+  if (raw.isPatron) attachment.isPatron = true;
   return attachment;
 }
 
@@ -232,6 +242,7 @@ export function parseInventory(raw: unknown): CharacterInventory | null {
             magazines: 0,
             partialMagazines: [],
             isSignatureWeapon: melee.isSignatureWeapon,
+            isPatron: melee.isPatron,
             signatureExtraTraitId: melee.signatureExtraTraitId,
             perkGranted: melee.perkGranted,
             concealed: melee.concealed,

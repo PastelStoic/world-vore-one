@@ -30,9 +30,14 @@ import { useCharacterStats } from "@/lib/useCharacterStats.ts";
 import { getStatCap } from "@/lib/stat_calculations.ts";
 import {
   canRemoveOwnedPerk,
+  canTogglePatronPerk,
   cleanupPerkData,
   normalizeCharacterPerkIds,
 } from "@/lib/perk_state_helpers.ts";
+import {
+  clearPatronFlags,
+  enforceSignatureWeaponLimit,
+} from "@/lib/inventory_mutations.ts";
 import { useImageUpload } from "@/lib/useImageUpload.ts";
 import type { CharacterInventory } from "@/lib/inventory_types.ts";
 import { createEmptyInventory } from "@/lib/inventory_types.ts";
@@ -184,6 +189,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     inventory,
     perkIds,
     effectiveByStat.charisma,
+    perkRanks,
   );
 
   const accountPerkCounts = useMemo(
@@ -373,6 +379,11 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     for (const perkId of toAdd) {
       nextPerkOrigins[perkId] = "faction";
     }
+    if (toRemove.includes("patron")) {
+      for (const [id, origin] of Object.entries(nextPerkOrigins)) {
+        if (origin === "patron") nextPerkOrigins[id] = "purchased";
+      }
+    }
     const nextCompensated = [
       ...keptCompensated,
       ...newlyCompensated,
@@ -421,6 +432,9 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
             .meleeWeapons.filter((weapon) =>
               !toRemove.includes(weapon.perkGranted ?? "")
             );
+        }
+        if (toRemove.includes("patron")) {
+          clearPatronFlags(newInv);
         }
         return newInv;
       });
@@ -537,7 +551,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
   }
 
-  function buyPerk(perkId: string) {
+  function buyPerk(perkId: string, asPatron = false) {
     if (perkIds.includes(perkId)) return;
 
     const perk = PERKS_BY_ID.get(perkId);
@@ -549,17 +563,24 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     if (availability.status !== "available") {
       return;
     }
+    if (asPatron && !canTogglePatronPerk(perkId, { perkIds, perkOrigins })) {
+      return;
+    }
     const includedIds = (perk?.includesPerks ?? []).filter((id) =>
       !perkIds.includes(id)
     );
     const newPerkIds = [...perkIds, perkId, ...includedIds];
+    const nextOrigins = {
+      ...perkOrigins,
+      [perkId]: asPatron ? "patron" as const : "purchased" as const,
+    };
     const cost = calculatePerksCost(
       newPerkIds,
       perkRanks,
       perkSelections,
       description.faction,
       perkPointChoices,
-      perkOrigins,
+      nextOrigins,
       race,
     ) -
       calculatePerksCost(
@@ -582,7 +603,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     }
 
     setPerkIds(newPerkIds);
-    setPerkOrigins((current) => ({ ...current, [perkId]: "purchased" }));
+    setPerkOrigins(nextOrigins);
     if (requiredPoints > 0) {
       setBaseStats(nextBaseStats);
     }
@@ -709,7 +730,16 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkDisguises(cleaned.perkDisguises);
     setPerkSelections(cleaned.perkSelections);
     setPerkPointChoices(cleaned.perkPointChoices);
-    setPerkOrigins(withoutRemovedOrigins(allRemovedIds));
+    let nextOrigins = withoutRemovedOrigins(allRemovedIds);
+    if (allRemovedIds.includes("patron")) {
+      nextOrigins = Object.fromEntries(
+        Object.entries(nextOrigins).map(([id, origin]) => [
+          id,
+          origin === "patron" ? "purchased" : origin,
+        ]),
+      );
+    }
+    setPerkOrigins(nextOrigins);
     setFactionCompensatedPerkIds(withoutRemovedCompensations(allRemovedIds));
     setUnallocatedStatPoints((current) => current + refund);
 
@@ -738,15 +768,62 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
 
     setInventory((inv) => {
       const next = applyPerkGrantedInventory(inv, [], allRemovedIds);
-      if (!allRemovedIds.includes("signature-weapon")) return next;
-      for (const location of ["carried", "stowed"] as const) {
-        for (const w of next[location].weapons) w.isSignatureWeapon = false;
-        for (const mw of next[location].meleeWeapons) {
-          mw.isSignatureWeapon = false;
+      if (allRemovedIds.includes("signature-weapon")) {
+        for (const location of ["carried", "stowed"] as const) {
+          for (const w of next[location].weapons) w.isSignatureWeapon = false;
+          for (const mw of next[location].meleeWeapons) {
+            mw.isSignatureWeapon = false;
+          }
         }
+      }
+      if (allRemovedIds.includes("patron")) {
+        clearPatronFlags(next);
       }
       return next;
     });
+  }
+
+  function togglePatronPerk(perkId: string) {
+    if (
+      !canTogglePatronPerk(perkId, {
+        perkIds,
+        perkOrigins,
+        isDerived: derivedPerkIds.has(perkId),
+      })
+    ) {
+      return;
+    }
+    const currentlyPatron = perkOrigins[perkId] === "patron";
+    const nextOrigins = {
+      ...perkOrigins,
+      [perkId]: currentlyPatron ? "purchased" as const : "patron" as const,
+    };
+    const oldCost = calculatePerksCost(
+      perkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      perkOrigins,
+      race,
+    );
+    const newCost = calculatePerksCost(
+      perkIds,
+      perkRanks,
+      perkSelections,
+      description.faction,
+      perkPointChoices,
+      nextOrigins,
+      race,
+    );
+    const delta = newCost - oldCost;
+    if (delta > 0 && unallocatedStatPoints - inventoryPointCost < delta) {
+      return;
+    }
+    setPerkOrigins(nextOrigins);
+    if (delta !== 0) {
+      setUnallocatedStatPoints((current) => current - delta);
+    }
   }
 
   function handlePerkPointChoiceChange(perkId: string, value: number) {
@@ -930,6 +1007,12 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     setPerkRanks(newRanks);
     setUnallocatedStatPoints((current) => current + refund);
 
+    if (perkId === "signature-weapon") {
+      setInventory((inv) =>
+        enforceSignatureWeaponLimit(structuredClone(inv), currentRank - 1)
+      );
+    }
+
     if (perk.customInput) {
       setPerkUpgradeNotes((current) => {
         const notes = [...(current[perkId] ?? [])];
@@ -1007,6 +1090,7 @@ export function useCharacterSheetEditor(props: CharacterSheetEditorProps) {
     canRemoveOldPerks,
     buyPerk,
     unbuyPerk,
+    togglePatronPerk,
     upgradePerk,
     downgradePerk,
     handlePerkPointChoiceChange,

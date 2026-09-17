@@ -12,6 +12,9 @@ import {
   countCarriedItemSlots,
   countLocationSlots,
   getEffectiveWeaponStats,
+  getFreeItemSlots,
+  getSignatureFreeAttachmentIds,
+  getSignatureWeaponLimit,
   getVehiclePointCost,
   getWeaponPointCost,
   slotLookups,
@@ -55,6 +58,89 @@ Deno.test("countAllItemSlots is carried plus stowed", () => {
   );
 });
 
+Deno.test("patron-marked items do not consume inventory slots", () => {
+  const inv = createEmptyInventory();
+  inv.carried.weapons.push({
+    weaponId: "lee-enfield",
+    currentAmmo: 10,
+    attachedIds: ["scope"],
+    magazines: 0,
+    partialMagazines: [],
+    isPatron: true,
+  });
+  inv.carried.equipment.push({
+    equipmentId: "grenades",
+    totalCharges: 2,
+    usedCharges: 0,
+    isPatron: true,
+  });
+  inv.carried.vehicles.push({ vehicleId: "motorcycle", isPatron: true });
+  inv.carried.attachments.push({
+    attachmentId: "bayonet",
+    totalCharges: 0,
+    usedCharges: 0,
+    isPatron: true,
+  });
+  assertEquals(countLocationSlots(inv.carried, slotLookups), 0);
+});
+
+Deno.test("patron-marked restricted weapons and vehicles add no point cost", () => {
+  const inv = createEmptyInventory();
+  inv.carried.weapons.push({
+    weaponId: "lewis-gun",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+    isPatron: true,
+  });
+  inv.stowed.vehicles.push({ vehicleId: "mark-v", isPatron: true });
+  assertEquals(calculateInventoryPointCostWithPerks(inv, ["patron"]), 0);
+});
+
+Deno.test("weapon master non-restricted weapons do not consume paid item slots", () => {
+  const inv = createEmptyInventory();
+  for (let i = 0; i < 4; i++) {
+    inv.carried.weapons.push({
+      weaponId: "lee-enfield",
+      currentAmmo: 10,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    });
+  }
+  assertEquals(calculateInventoryPointCostWithPerks(inv), 1);
+  assertEquals(
+    calculateInventoryPointCostWithPerks(inv, ["weapon-master"]),
+    0,
+  );
+});
+
+Deno.test("weapon master restricted weapons cost 1 with no extra slot tax", () => {
+  const inv = createEmptyInventory();
+  for (let i = 0; i < 3; i++) {
+    inv.carried.weapons.push({
+      weaponId: "lee-enfield",
+      currentAmmo: 10,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    });
+  }
+  inv.carried.weapons.push({
+    weaponId: "flamethrower",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+  assertEquals(getWeaponPointCost("flamethrower", ["weapon-master"]), 1);
+  assertEquals(
+    calculateInventoryPointCostWithPerks(inv, ["weapon-master"]),
+    1,
+  );
+});
+
 Deno.test("restricted weapons add their catalog point cost", () => {
   const inv = createEmptyInventory();
   const restrictedId = "lewis-gun";
@@ -72,6 +158,34 @@ Deno.test("restricted weapons add their catalog point cost", () => {
     calculateInventoryPointCostWithPerks(inv),
     weaponCost,
   );
+});
+
+Deno.test("base charisma keeps 3 free item slots", () => {
+  assertEquals(getFreeItemSlots(1), 3);
+  assertEquals(getFreeItemSlots(), 3);
+});
+
+Deno.test("every 2 charisma points invested add one free item slot", () => {
+  assertEquals(getFreeItemSlots(2), 3);
+  assertEquals(getFreeItemSlots(3), 4);
+  assertEquals(getFreeItemSlots(4), 4);
+  assertEquals(getFreeItemSlots(5), 5);
+  assertEquals(getFreeItemSlots(7), 6);
+});
+
+Deno.test("charisma 3 makes a fourth zero-cost item free", () => {
+  const inv = createEmptyInventory();
+  for (let i = 0; i < 4; i++) {
+    inv.carried.weapons.push({
+      weaponId: "lee-enfield",
+      currentAmmo: 10,
+      attachedIds: [],
+      magazines: 0,
+      partialMagazines: [],
+    });
+  }
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 1), 1);
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 3), 0);
 });
 
 Deno.test("applyCharismaItemDiscount leaves free items free", () => {
@@ -121,6 +235,43 @@ Deno.test("inventory point cost discounts paid weapons and vehicles by Charisma"
   assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 3), 5);
 });
 
+Deno.test("signature weapon limit is the perk rank capped at 2", () => {
+  assertEquals(getSignatureWeaponLimit(["runner"]), 0);
+  assertEquals(getSignatureWeaponLimit(["signature-weapon"]), 1);
+  assertEquals(
+    getSignatureWeaponLimit(["signature-weapon"], { "signature-weapon": 2 }),
+    2,
+  );
+  assertEquals(
+    getSignatureWeaponLimit(["signature-weapon"], { "signature-weapon": 9 }),
+    2,
+  );
+});
+
+Deno.test("two signature weapons grant the union of their attachments", () => {
+  const inv = createEmptyInventory();
+  inv.carried.weapons.push({
+    weaponId: "dagger",
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+    isSignatureWeapon: true,
+  });
+  inv.carried.weapons.push({
+    weaponId: "lee-enfield",
+    currentAmmo: 10,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+    isSignatureWeapon: true,
+  });
+  const freeIds = getSignatureFreeAttachmentIds(inv, ["signature-weapon"], {
+    "signature-weapon": 2,
+  });
+  assertEquals(freeIds.has("bayonet"), true);
+});
+
 Deno.test("getEffectiveWeaponStats returns catalog ammo when nothing is attached", () => {
   const stats = getEffectiveWeaponStats({
     weaponId: "lee-enfield",
@@ -146,6 +297,39 @@ Deno.test("parseInventory migrates meleeWeapons into weapons", async () => {
   assertEquals(parsed?.carried.weapons[0].weaponId, "dagger");
   assertEquals(parsed?.carried.weapons[0].instanceId, "mw-1");
   assertEquals(parsed?.carried.weapons[0].perkGranted, "brawler");
+});
+
+Deno.test("parseInventory preserves isPatron flags", async () => {
+  const { parseInventory } = await import("./inventory_parsing.ts");
+  const parsed = parseInventory({
+    carried: {
+      weapons: [{
+        weaponId: "lee-enfield",
+        currentAmmo: 10,
+        attachedIds: [],
+        magazines: 0,
+        partialMagazines: [],
+        isPatron: true,
+      }],
+      equipment: [{
+        equipmentId: "grenades",
+        totalCharges: 1,
+        usedCharges: 0,
+        isPatron: true,
+      }],
+      vehicles: [{ vehicleId: "motorcycle", isPatron: true }],
+      attachments: [{
+        attachmentId: "bayonet",
+        totalCharges: 0,
+        usedCharges: 0,
+        isPatron: true,
+      }],
+    },
+  });
+  assertEquals(parsed?.carried.weapons[0].isPatron, true);
+  assertEquals(parsed?.carried.equipment[0].isPatron, true);
+  assertEquals(parsed?.carried.vehicles[0].isPatron, true);
+  assertEquals(parsed?.carried.attachments[0].isPatron, true);
 });
 
 Deno.test("parseInventory remaps sapper ghost equipment", async () => {

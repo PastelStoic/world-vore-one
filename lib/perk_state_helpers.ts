@@ -165,3 +165,35 @@ export function canRemoveOwnedPerk(
   return options.canRemoveOldPerks ||
     !options.initialPerkIds.includes(perkId);
 }
+
+/** True when this perk is paid for by the Patron perk. */
+export function isPatronFundedPerk(
+  perkId: string,
+  perkIds: readonly string[],
+  perkOrigins?: Record<string, PerkOrigin>,
+): boolean {
+  return perkId !== "patron" &&
+    perkIds.includes("patron") &&
+    perkOrigins?.[perkId] === "patron";
+}
+
+/**
+ * Whether the Patron toggle can be shown on an owned perk.
+ * Free, derived, faction, and race-granted perks are already unpaid.
+ */
+export function canTogglePatronPerk(
+  perkId: string,
+  options: {
+    perkIds: readonly string[];
+    perkOrigins?: Record<string, PerkOrigin>;
+    isDerived?: boolean;
+  },
+): boolean {
+  if (!options.perkIds.includes("patron") || perkId === "patron") return false;
+  if (options.isDerived) return false;
+  const perk = PERKS_BY_ID.get(perkId);
+  if (!perk || perk.isFree) return false;
+  const origin = options.perkOrigins?.[perkId];
+  if (origin === "faction" || origin === "race") return false;
+  return true;
+}

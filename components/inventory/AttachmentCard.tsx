@@ -10,6 +10,7 @@ import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import type { InventoryLocation } from "./helpers.ts";
 import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
 import InventoryItemActions from "./InventoryItemActions.tsx";
+import PatronToggle, { PatronBadge } from "./PatronToggle.tsx";
 import ChargeTracker from "./ChargeTracker.tsx";
 
 interface AttachmentCardProps {
@@ -17,6 +18,8 @@ interface AttachmentCardProps {
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
+  hasPatronPerk?: boolean;
+  onTogglePatron?: (location: InventoryLocation, index: number) => void;
   onMove: (
     from: InventoryLocation,
     index: number,
@@ -41,6 +44,8 @@ export default function AttachmentCard(props: AttachmentCardProps) {
     location,
     index,
     readOnly,
+    hasPatronPerk,
+    onTogglePatron,
     onMove,
     onRemove,
     onSetTotalCharges,
@@ -64,12 +69,17 @@ export default function AttachmentCard(props: AttachmentCardProps) {
     : 0;
   const currentWeight = def.isCharge ? def.weight * remaining : def.weight;
   const isPerkGranted = !!att.perkGranted;
+  const isPatron = !!att.isPatron && !!hasPatronPerk;
   const grantingPerkName = isPerkGranted
     ? PERKS_BY_ID.get(att.perkGranted!)?.name ?? att.perkGranted
     : null;
 
   return (
-    <div class="border rounded p-2 space-y-1 bg-base-100">
+    <div
+      class={`border rounded p-2 space-y-1 ${
+        isPatron ? "bg-secondary/10 border-secondary/50" : "bg-base-100"
+      }`}
+    >
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           <strong>{def.name}</strong>
@@ -82,17 +92,26 @@ export default function AttachmentCard(props: AttachmentCardProps) {
               [{grantingPerkName}]
             </span>
           )}
+          {isPatron && <PatronBadge />}
         </div>
         {!readOnly && (
-          <InventoryItemActions
-            location={location}
-            deprecated={def.deprecated}
-            canMove
-            onMove={(to) => onMove(location, index, to)}
-            onRemove={!isPerkGranted || def.deprecated
-              ? () => onRemove(location, index)
-              : undefined}
-          />
+          <div class="flex gap-1 flex-wrap">
+            {!isPerkGranted && hasPatronPerk && onTogglePatron && (
+              <PatronToggle
+                active={isPatron}
+                onClick={() => onTogglePatron(location, index)}
+              />
+            )}
+            <InventoryItemActions
+              location={location}
+              deprecated={def.deprecated}
+              canMove
+              onMove={(to) => onMove(location, index, to)}
+              onRemove={!isPerkGranted || def.deprecated
+                ? () => onRemove(location, index)
+                : undefined}
+            />
+          </div>
         )}
       </div>
 

@@ -118,10 +118,11 @@ export default define.page(function WikiRulesCombat() {
         </p>
         <p>
           Every piece of misc gear has a flat 1 weight unless stated otherwise.
-          You start with 3 free pieces of gear, but you may need to justify how
-          you got them depending on how uncommon or rare they would be for you
-          to get. This is based on where you are, who you are, your role, and
-          similar factors.
+          You start with 3 free pieces of gear. Every 2 Charisma points you
+          invest past the first grants 1 additional free item. You may need to
+          justify how you got them depending on how uncommon or rare they would
+          be for you to get. This is based on where you are, who you are, your
+          role, and similar factors.
         </p>
       </RulesSection>
 

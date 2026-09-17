@@ -16,12 +16,15 @@ import type { InventoryLocation } from "./helpers.ts";
 import TraitBadge from "./TraitBadge.tsx";
 import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
 import InventoryItemActions from "./InventoryItemActions.tsx";
+import PatronToggle, { PatronBadge } from "./PatronToggle.tsx";
 
 interface VehicleCardProps {
   vehicle: InventoryVehicle;
   location: InventoryLocation;
   index: number;
   readOnly?: boolean;
+  hasPatronPerk?: boolean;
+  onTogglePatron?: (location: InventoryLocation, index: number) => void;
   onMove: (
     from: InventoryLocation,
     index: number,
@@ -31,7 +34,17 @@ interface VehicleCardProps {
 }
 
 export default function VehicleCard(props: VehicleCardProps) {
-  const { vehicle, location, index, readOnly, onMove, onRemove } = props;
+  const {
+    vehicle,
+    location,
+    index,
+    readOnly,
+    hasPatronPerk,
+    onTogglePatron,
+    onMove,
+    onRemove,
+  } = props;
+  const isPatron = !!vehicle.isPatron && !!hasPatronPerk;
   const def = VEHICLES_BY_ID.get(vehicle.vehicleId);
 
   if (!def) {
@@ -48,7 +61,11 @@ export default function VehicleCard(props: VehicleCardProps) {
   const traitIds = getEffectiveVehicleTraitIds(def);
 
   return (
-    <div class="border rounded p-2 space-y-1 bg-base-100">
+    <div
+      class={`border rounded p-2 space-y-1 ${
+        isPatron ? "bg-secondary/10 border-secondary/50" : "bg-base-100"
+      }`}
+    >
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           <strong>{def.name}</strong>
@@ -58,15 +75,24 @@ export default function VehicleCard(props: VehicleCardProps) {
             {getVehicleHp(def)} · Crew: {def.crew} · Seats: {def.seats} · Doors:
             {def.doors})
           </span>
+          {isPatron && <PatronBadge />}
         </div>
         {!readOnly && (
-          <InventoryItemActions
-            location={location}
-            deprecated={def.deprecated}
-            canMove={location === "carried"}
-            onMove={(to) => onMove(location, index, to)}
-            onRemove={() => onRemove(location, index)}
-          />
+          <div class="flex gap-1 flex-wrap">
+            {hasPatronPerk && onTogglePatron && (
+              <PatronToggle
+                active={isPatron}
+                onClick={() => onTogglePatron(location, index)}
+              />
+            )}
+            <InventoryItemActions
+              location={location}
+              deprecated={def.deprecated}
+              canMove={location === "carried"}
+              onMove={(to) => onMove(location, index, to)}
+              onRemove={() => onRemove(location, index)}
+            />
+          </div>
         )}
       </div>
       <div class="flex flex-wrap gap-3 text-xs text-base-content/70 ml-2">

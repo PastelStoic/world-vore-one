@@ -60,7 +60,8 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *So long as it is used to further your patron's interests, for a scene:
 ->You may be accompanied by 1 specialist provided by your patron, with two stats set at 6, one stat set at 7, 3 pieces of any equipment, one perk, and one fitting vehicle.
 ->You may get the effects of another perk, so long as it could be acquired through funding or material, as well as equipment/vehicles.
-->You lose all of this once the scene is over.`,
+->You lose all of this once the scene is over.
+*On your sheet, mark weapons, equipment, vehicles, attachments, and perks as Patron to take them for free.`,
   },
   {
     id: "spy",

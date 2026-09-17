@@ -10,6 +10,7 @@ import DeprecatedBadge from "@/components/DeprecatedBadge.tsx";
 import { type InventoryLocation, isEquipmentConcealed } from "./helpers.ts";
 import UnknownInventoryItem from "./UnknownInventoryItem.tsx";
 import InventoryItemActions from "./InventoryItemActions.tsx";
+import PatronToggle, { PatronBadge } from "./PatronToggle.tsx";
 import ChargeTracker from "./ChargeTracker.tsx";
 
 interface EquipmentCardProps {
@@ -20,6 +21,8 @@ interface EquipmentCardProps {
   /** When true, charge usage buttons are disabled (non-owner viewer) */
   combatReadOnly?: boolean;
   carriedBulkyCount: number;
+  hasPatronPerk?: boolean;
+  onTogglePatron?: (location: InventoryLocation, index: number) => void;
   onMove: (
     from: InventoryLocation,
     index: number,
@@ -47,6 +50,8 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     readOnly,
     combatReadOnly,
     carriedBulkyCount,
+    hasPatronPerk,
+    onTogglePatron,
     onMove,
     onRemove,
     onSetTotalCharges,
@@ -84,9 +89,14 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     ? PERKS_BY_ID.get(eq.perkGranted!)?.name ?? eq.perkGranted
     : null;
   const isConcealed = isEquipmentConcealed(eq);
+  const isPatron = !!eq.isPatron && !!hasPatronPerk;
 
   return (
-    <div class="border rounded p-2 space-y-1 bg-base-100">
+    <div
+      class={`border rounded p-2 space-y-1 ${
+        isPatron ? "bg-secondary/10 border-secondary/50" : "bg-base-100"
+      }`}
+    >
       <div class="flex items-center justify-between flex-wrap gap-1">
         <div>
           <strong>{def.name}</strong>
@@ -100,6 +110,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
               [{grantingPerkName}]
             </span>
           )}
+          {isPatron && <PatronBadge />}
           {isConcealed && (
             <span
               class="ml-1 text-xs font-semibold text-info"
@@ -125,6 +136,12 @@ export default function EquipmentCard(props: EquipmentCardProps) {
             >
               {isConcealed ? "Concealed" : "Conceal"}
             </button>
+            {!isPerkGranted && hasPatronPerk && onTogglePatron && (
+              <PatronToggle
+                active={isPatron}
+                onClick={() => onTogglePatron(location, index)}
+              />
+            )}
             {(!isPerkGranted || def.deprecated) && (
               <InventoryItemActions
                 location={location}

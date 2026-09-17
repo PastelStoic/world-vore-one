@@ -163,6 +163,7 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
         race={editor.race}
         onBuyPerk={editor.buyPerk}
         onUnbuyPerk={editor.unbuyPerk}
+        onTogglePatronPerk={editor.togglePatronPerk}
         onUpgradePerk={editor.upgradePerk}
         onDowngradePerk={editor.downgradePerk}
         onPerkPointChoiceChange={editor.handlePerkPointChoiceChange}
@@ -178,6 +179,7 @@ function CharacterSheetEditorForm(props: CharacterSheetEditorProps) {
         onChange={editor.setInventory}
         availablePoints={editor.unallocatedStatPoints}
         perkIds={editor.perkIds}
+        perkRanks={editor.perkRanks}
         charisma={editor.effectiveByStat.charisma}
         onLoseWeaponPermanently={(cost) =>
           editor.setUnallocatedStatPoints((current) => current - cost)}

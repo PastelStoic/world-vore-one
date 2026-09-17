@@ -5,8 +5,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "melee-fighter",
     name: "Melee fighter",
     category: "combat",
-    description:
-      `You are remarkably strong and precise with their strikes! 
+    description: `You are remarkably strong and precise with their strikes! 
       
 *In melee, when rolling to attack or defend against a target, gain +3d6, counting successes on a 4 and above.`,
   },
@@ -23,8 +22,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "runner",
     name: "Runner",
     category: "combat",
-    description:
-      `You are incredibly fast, and most struggle to keep up! 
+    description: `You are incredibly fast, and most struggle to keep up! 
 
 *Move up to two distances in combat. You are always at the top of initiative, regardless of your dexterity.
 *Compare dexterities if competing with someone with the same effect.`,
@@ -117,11 +115,14 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     id: "signature-weapon",
     name: "Signature weapon",
     category: "combat",
+    upgradable: true,
+    maxRanks: 2,
     description: `You have a special weapon that belongs to you, and only you! 
 
 *Select any ranged or melee weapon in the system. It deals +1 damage, and becomes free - unless it is restricted, instead, its cost is reduced to 1.
 *If it is a ranged weapon, gain a free copy lf all of its attachments. If it is a melee weapon, you may add 1 melee trait to it.
-*Your weapon always returns to you, it cannot be permanently lost, but you can be separated from it temporarily.`,
+*Your weapon always returns to you, it cannot be permanently lost, but you can be separated from it temporarily.
+*You may take this perk a second time to choose a second signature weapon. You cannot have more than two.`,
   },
   {
     id: "brawler",
@@ -231,8 +232,7 @@ You may use a one-handed weapon alongside the shield, but have -3d6 to attack wi
     id: "ambidextrous",
     name: "Ambidextrous",
     category: "combat",
-    description:
-      `You have no dominant hand - you can use either one perfectly!
+    description: `You have no dominant hand - you can use either one perfectly!
 
 *You can dual wield any pair of one handed weapons and attack with both of them in one turn. Each attack is rolled independently.
 *Your fists count as weapons for this purpose. You can punch someone twice, or hit them with a sword and punch them, etc.
@@ -265,9 +265,9 @@ You may use a one-handed weapon alongside the shield, but have -3d6 to attack wi
 *If you pick your revolver as a 'signature weapon', only a single revolver receives the benefits - all others utilize the normal stats.
 
 *GUNSLINGER'S HONOUR: When meeting another gunslinger, must initiate a duel. Both roll their dexterities; winner instantly kills the loser.`,
-      customInput: "Choosen revolver",
-      grantsEquipment: [
+    customInput: "Choosen revolver",
+    grantsEquipment: [
       { equipmentId: "revolver-bandolier" },
-      ],
+    ],
   },
 ];

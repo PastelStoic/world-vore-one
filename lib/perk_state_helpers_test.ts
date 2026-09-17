@@ -7,6 +7,7 @@ import { assertEquals } from "jsr:@std/assert@1";
 import { PERKS, PERKS_BY_ID } from "@/data/perks.ts";
 import {
   canRemoveOwnedPerk,
+  canTogglePatronPerk,
   collectGrantedPerkIds,
   normalizePerkIds,
 } from "./perk_state_helpers.ts";
@@ -101,6 +102,36 @@ Deno.test("derived perks cannot be dropped independently", () => {
       canRemoveOldPerks: true,
       initialPerkIds: ["crippling-addiction"],
       isDerived: true,
+    }),
+    false,
+  );
+});
+
+Deno.test("patron toggle is only available on paid perks while Patron is owned", () => {
+  assertEquals(
+    canTogglePatronPerk("runner", {
+      perkIds: ["patron", "runner"],
+      perkOrigins: { runner: "purchased" },
+    }),
+    true,
+  );
+  assertEquals(
+    canTogglePatronPerk("runner", {
+      perkIds: ["runner"],
+      perkOrigins: { runner: "purchased" },
+    }),
+    false,
+  );
+  assertEquals(
+    canTogglePatronPerk("patron", {
+      perkIds: ["patron"],
+      perkOrigins: { patron: "purchased" },
+    }),
+    false,
+  );
+  assertEquals(
+    canTogglePatronPerk("crippling-addiction", {
+      perkIds: ["patron", "crippling-addiction"],
     }),
     false,
   );

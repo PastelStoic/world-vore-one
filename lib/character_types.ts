@@ -87,7 +87,7 @@ export interface FactionDefinition {
   moderatorOnly?: boolean;
 }
 
-export type PerkOrigin = "purchased" | "race" | "faction";
+export type PerkOrigin = "purchased" | "race" | "faction" | "patron";
 
 export const SEX_OPTIONS = ["Female", "Male", "Futa"] as const;
 export type Sex = (typeof SEX_OPTIONS)[number];

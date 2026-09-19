@@ -234,7 +234,7 @@ If you have prey inside you, dead or alive:
     description:
       `You actively want to shove yourself or others into the tummies of your predators, or to just stuff them 'till they can't eat anything else!
 
-*You gain +3d6 to force-feed yourself or others to someone, and to keep your target from regurgitiating them. You must be grappling a target first in order to force-feed them to someone else.
+*You gain +3d6 to grapple force-feed yourself or others to someone, and to keep your target from regurgitiating them. You must be grappling a target first in order to force-feed them to someone else.
 *You now count successes on a 4 and above, rather than 5 and above, to do that.
 *This perk makes it so you do not need to grapple a predator in order to self-feed; you can simply feed yourself straight away!
 *You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regurtitation disgust.

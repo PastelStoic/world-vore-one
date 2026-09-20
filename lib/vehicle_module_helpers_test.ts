@@ -199,3 +199,25 @@ Deno.test("civilian vehicles pick up focused-driver and wheeled from catalog dat
   assertEquals(traitIds.includes("focused-driver"), true);
   assertEquals(traitIds.includes("wheeled"), true);
 });
+
+Deno.test("flamethrower and fuel tank modules grant flamer and flammable traits", () => {
+  assertEquals(
+    getEffectiveVehicleTraitIds({ modules: ["flamethrower"] }),
+    ["flamer"],
+  );
+  assertEquals(
+    getEffectiveVehicleTraitIds({ modules: ["flamethrower-fuel-tanks"] }),
+    ["flammable"],
+  );
+  assertEquals(
+    getEffectiveVehicleTraitIds({ modules: ["fuel-tanks"] }),
+    ["flammable"],
+  );
+});
+
+Deno.test("K-wagen receives flamer and flammable from its modules", () => {
+  const kWagen = catalogVehicle("k-wagen");
+  const traitIds = getEffectiveVehicleTraitIds(kWagen);
+  assertEquals(traitIds.includes("flamer"), true);
+  assertEquals(traitIds.includes("flammable"), true);
+});

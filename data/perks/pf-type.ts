@@ -489,7 +489,7 @@ export const PF_TYPE_PERKS: PerkDefinition[] = [
 *Due to *how* Vampyrs came to be, you have a set of codes you must follow. You cannot break them under any circunstances:
 ->"Pacts made in blood cannot be broken."
 ->"You cannot harm innocents."
-->"You may not forcefully turn others into Vampyrs."
+->"You may not forcefully turn others into Vampyrs nor ghouls."
 ->"You must obey your elder Vampyrs."
 ->"You may not harm a fellow Vampyr."
 

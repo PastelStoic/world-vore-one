@@ -9,6 +9,7 @@ export default define.page(async function Home(ctx) {
   const allCharacters = user ? await listCharacters(user.id) : [];
   const characters = allCharacters.filter((c) => !c.hidden);
   const hiddenCharacters = allCharacters.filter((c) => c.hidden);
+  const importError = ctx.url.searchParams.get("importError");
 
   return (
     <PageShell>
@@ -40,7 +41,37 @@ export default define.page(async function Home(ctx) {
         )
         : (
           <section class="space-y-4">
-            <ButtonLink href="/characters/new">Create Character</ButtonLink>
+            <div class="flex flex-wrap items-center gap-3">
+              <ButtonLink href="/characters/new">Create Character</ButtonLink>
+              <form
+                method="POST"
+                action="/characters/import"
+                enctype="multipart/form-data"
+                class="flex flex-wrap items-center gap-2"
+              >
+                <label class="text-sm text-base-content/80">
+                  <span class="sr-only">Upload character JSON</span>
+                  <input
+                    type="file"
+                    name="file"
+                    accept="application/json,.json"
+                    required
+                    class="block text-sm max-w-xs"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  class="px-3 py-2 border rounded bg-base-200 hover:bg-base-300 transition-colors"
+                >
+                  Upload JSON
+                </button>
+              </form>
+            </div>
+            {importError && (
+              <p class="text-error text-sm border border-error/40 bg-error/10 rounded px-3 py-2">
+                Could not import character: {importError}
+              </p>
+            )}
 
             <div class="border rounded-lg p-4 bg-base-100/80">
               <h2 class="text-xl font-semibold mb-2">Characters</h2>
@@ -66,6 +97,13 @@ export default define.page(async function Home(ctx) {
                             {formatDate(character.updatedAt)}
                           </span>
                         )}
+                        <a
+                          href={`/characters/${character.id}/export`}
+                          class="text-xs text-base-content/50 hover:text-base-content/80 ml-1 transition-colors"
+                          download
+                        >
+                          JSON
+                        </a>
                         <form
                           method="POST"
                           action={`/characters/${character.id}`}
@@ -108,6 +146,13 @@ export default define.page(async function Home(ctx) {
                             {formatDate(character.updatedAt)}
                           </span>
                         )}
+                        <a
+                          href={`/characters/${character.id}/export`}
+                          class="text-xs text-base-content/60 hover:text-base-content ml-1 underline transition-colors"
+                          download
+                        >
+                          JSON
+                        </a>
                         <form
                           method="POST"
                           action={`/characters/${character.id}`}

@@ -3,8 +3,8 @@ import { define } from "@/utils.ts";
 import CharacterSheetViewer from "@/islands/CharacterSheetViewer.tsx";
 import { getCharacter } from "@/lib/characters.ts";
 import {
-  type CharacterAdminAction,
   applyCharacterAdminAction,
+  type CharacterAdminAction,
 } from "@/lib/character_actions.ts";
 import { cfImageUrl } from "@/lib/images.ts";
 import CharacterPageLayout from "@/components/CharacterPageLayout.tsx";
@@ -202,9 +202,12 @@ export default define.page<typeof handler>(async function CharacterPage(ctx) {
         </div>
       )}
       {canEdit && (
-        <div class="flex gap-4">
+        <div class="flex gap-4 flex-wrap">
           <ButtonLink href={`/characters/${id}/edit`}>
             Edit Character
+          </ButtonLink>
+          <ButtonLink href={`/characters/${id}/export`}>
+            Download JSON
           </ButtonLink>
           <a href={`/characters/${id}/versions`} class="underline self-center">
             Previous Versions

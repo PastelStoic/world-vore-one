@@ -19,10 +19,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `Somehow, almost as if you are favoured by the gods, you always manage to find exactly what you need, whenever you need it. 
 
-*If you ever need to find something, you do find it - even in unlikely places!
-*It takes you time to find the thing. You may take anywhere between 1 to 3 turns to find it, up to GM's discretion. 
-*Something that'd be easy to find takes 1 turn, something moderately difficult takes 2, and something super difficult takes 3! 
-*There are some things you won't find at all, such as a five-course steak dinner in the middle of a battlefield!`,
+*If you need to find something, you do find it, even in unlikely places.
+*Searching for the desired object takes time, anywhere between 1 to 3 turns, based on how unlikely you are to find it.
+*Something that is easy to find would take 1 turn, whereas something really difficult would take 3 turns.`,
   },
   {
     id: "lucky",
@@ -30,10 +29,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     category: "gimmick",
     description: `Lady luck favours you in particular! 
 
-*You have a pool of 6 dice, which, in a single scene, may be applied into any rolls you perform. You may choose how many to apply to each roll.
-*A roll may only gain Lucky Dice once. Choose how many to spend. You can roll the dice before or after another roll. Unused dice carry over.
-*Optionally burn 2 dice to get the effects of a luck related perk ( scrounger, explosive intolerant, etc ). *The effects only apply in the same turn they were called upon.
-*The dice only regenerate once the scene is over and a new one starts.`,
+*You have a pool of 6 dice, which may be applied into any rolls you perform, before or after rolling. Dice may only be applied to an individual roll once.
+*You may choose how many dice to spend - you do not need to use all into a single roll. Your dice only regenerate at scene end.
+*You may also burn 2 dice to get the effects of a luck related perk, such as scrounger, explosive intolerant, etc.
+*The effects only apply in the same turn they were used.`,
   },
   {
     id: "allies",
@@ -58,7 +57,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *You have a very deep connection with a single person, or group of few individuals. They are powerful in some way, and offer you their full support.
 *Your patron(s) should be described in your sheet. They will not go out of their way to personally assist you, they are too important for that.
 *So long as it is used to further your patron's interests, for a scene:
-->You may be accompanied by 1 specialist provided by your patron, with two stats set at 6, one stat set at 7, 3 pieces of any equipment, one perk, and one fitting vehicle.
+->You may be accompanied by 1 especialist provided by your patron, with two stats set at 6, one stat set at 7, 3 pieces of any equipment, one perk, and one fitting vehicle.
 ->You may get the effects of another perk, so long as it could be acquired through funding or material, as well as equipment/vehicles.
 ->You lose all of this once the scene is over.
 *On your sheet, mark weapons, equipment, vehicles, attachments, and perks as Patron to take them for free.`,
@@ -72,11 +71,10 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     customInput: "Loyal faction and faction you're spying on",
     description: `You are a spy, infiltrated in an enemy faction! Sneaky sneak.
 
-*You must write out who you are loyal to, and who you are spying on.
+*You must explicit out who you are loyal to, and who you are spying on.
 *When interacting with your allies, you have a signal that immediately, without fail, identifies your true alignment.
-*You are always assumed to have spy gear, such as lockpicks, silenced gun, cyanide pulls, etc ... You can simply conjure them out of thin air.
-*You cannot be entirely disarmed, you always have items hidden in your body somehow.
-*The enemy is right to punish you if you're caught!`,
+*You always have spy gear, such as lockpicks, silenced gun, etc. You can conjure such items out of thin air as if you had them all along!
+*You cannot be entirely disarmed, you always have items hidden in your body somehow.`,
   },
   {
     id: "beastmaster",
@@ -85,11 +83,11 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     customInput: "Your animal companion (species and name)",
     description: `You have a pet animal. How cute! 
 
-*Your animal has special training - you can give it basic commands, such as attack, follow, sit etc. Your pet may use their natural instincts, such as: Flight, smell, sight, etc.
-*It must have a sheet of their own, it starts off with 12 points and two perks, and gains points at the same rate you do, including freebies.
-*If your animal is killed, the individual cannot be brought back. You may get a new pet, and may not refund this perk due to animal death.
-*You can command stray animals at will, within reason: A starving wolf will not refrain from eating you. You always understand an animal's body language and intention.
-*Have +3d6 when using Charisma against Tierfraun.`,
+*You have an animal with special training, they understand basic commands, such as follow, attack, etc.
+*Your animal must have a sheet of their own, they have 12 points, two perks, and gain point as the same rate as you do, including freebies.
+*Your animal can also make use of its natural abilities, such as flight, smell or etc.
+*You can command stray animals at will, and always understand them. Note that an already hostile animal will not obey you.
+*Have +3d6 when using charisma against a Tierfraun.`,
   },
   {
     id: "free-range",
@@ -107,14 +105,13 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     name: "Authoritarian",
     category: "gimmick",
     description:
-      `Your mere presence commands authority! Your rank is recognized by all! Most will not dare speak ill of you to your face!
+      `Your mere presence commands authority! You are a high rank within a renowed organization!
 
 *When attempting to force someone do something based on your authority, gain +3d6, rolling successes on a 4 and above.
-*You are a high rank within a renowed organization, and you can pull rank to get what you need.
-*If you succeed in pulling rank, your target(s) must obey your commands, so long as they are not suicidal orders!
+*You may use your rank to command others, and they must obey your commands, so long as they are not suicidal!
 *You may intimidate your own allies into breaking out of mental effects, such as being flashed or intimidated by another.
-*Your disappearance strikes concern within your organization; investigations can be launched against the character that kills you.
-*An investigation can be launched by anyone, once perk week. The investigator and the character roll a contested INT vs INT check.
+*Your disappearance is a big deal - an investigation can be launched upon a character that kills you. Anyone, once per week, may launch one.
+*When trying to investigate, both the investigator and the target roll a contested INT vs INT check.
 *If the investigator wins, the character's deeds are found out! They may be prosecuted or hunted in vengeance!`,
   },
   {
@@ -124,9 +121,9 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
     description:
       `People will eat your bullshit up like a well baked fresh blueberry pie!
 
-*Gain the special 'disguise-kit', which always returns to you somehow! When lying or manipulating someone, gain +3d6, and count successes on 4 and above.
-*You may disguise yourself as other characters, creating fake personas in order to act as them. 
-You may ask the owner of that character to post your posts on your behalf, so as to keep up the illusion better, or create a fake tupper.
+*When lying or manipulating someone, gain +3d6, and count successes on 4 and above.
+*Gain the special 'disguise-kit', which always returns to you somehow! You may disguise yourself as other characters, creating fake personas in order to act as them. 
+*You may ask the owner of that character to post your posts on your behalf, so as to keep up the illusion better, or create a fake tupper.
 *Consider sending your posts when you are certain your partner is not looking into the channel.
 *Like the 'spy' perk, this perk can be hidden and disguised as another.`,
     grantsEquipment: [

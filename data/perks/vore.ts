@@ -8,10 +8,9 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You have survived many stomachs before, or otherwise you're naturally good at escaping them!
 
-*You roll an extra 3d6 to avoid being grappled or eaten and gain +4 to your escape training stat.
+*When rolling to avoid being grappled or swallowed, gain +3d6. Gain a flat +3 to the 'escape training' stat.
 *Gain +3 escape attempts OR set your escape attempts to an exact 3; whichever would benefit you more when ingested.
-*Ignores any perks that'd prevent you from doing escape attempts, regardless of conditions.
-*You still digest at the exact same speed.`,
+*Ignores any perks that'd prevent you from doing escape attempts, regardless of conditions. You still digest at the exact same speed.`,
     modifiers: {
       baseStatBonuses: { escapeTraining: 3 },
     },
@@ -24,8 +23,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You are a man-eater and devour others without much difficulty at all. 
 
-*You roll an extra 3d6 to grapple, swallow and to keep prey down. 
-*You now count successes on a 4 and above, rather than a 5 and above, to do that.`,
+*When rolling to grapple, swallow and to keep prey down, gain +3d6, counting successes on a 4 and above.`,
   },
   {
     id: "hard-to-churn",
@@ -46,7 +44,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are closer to a furnace than a real person! 
 
-*Your points in digestion strenght are quadrupled. 
+*Your points in digestion strength are quadrupled. 
 *You can digest any objects you eat. Based on the material, it'll have 4/8/12 digestion resilience.
 *Digesting an object depends on its resilience - it takes as long as a person would with that same resilience.`,
     modifiers: {
@@ -61,16 +59,10 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You have an unreal amount of control over your digestive system! Mostly narrative perk.
 
-*By default, stomachs always digest, balls, womb and breasts are always safe. This perk ignores that.
-*You may decide if any organ is capable of digesting prey or holding them safely, whenever you wish. 
-*This does include changing how your acid feels, from painful to painless, numbing, pleasurable, etc. 
-*You may control how harsh or how nice the environment inside you is. 
-*You may choose how the fat of your prey is allocated within your body. 
-
-*You may move a person from one organ to another immediately as an action, it is a contested STR vs Escape Training check.
-*The organs must be connected, no sending prey from your stomach into your tits or womb!
-*Your control gives you +1d6 to keeping prey down.
-*You can choose where someone with the living-fat-advisor perk ends up in, and you can stop their shenanigans at will.`,
+*By default rules, stomachs always digest, whereas other organs are always safe. This perk circumvents the rule.
+*Pick, whenever, if any organ will digest or hold its prey safely. Have full control over how your acids feel and how your stomach treats its prey.
+*You can move a person from an organ to another, immediately, as a contested STR vs Escape Training check. The organs must be directly connected.
+*You may freely allocate where the fat from digested prey goes, including 'living-fat-advisors' or 'ever-lasting' prey. You may stop their shenanigans at will.`,
   },
   {
     id: "unreal-capacity",
@@ -93,7 +85,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `Once prey has grown weak and soft enough, they can't find a way out of you at all! 
 
-*If prey is at 0 HP, or is brought to 0 HP, and they're inside you - they cannot attempt any escapes! 
+*If prey is at, or reaches 0HP or lower, once swallowed, they cannot attempt any escapes.
 *They may only be rescued by someone from the outside, or released!`,
   },
   {
@@ -103,8 +95,7 @@ export const VORE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You've very strong legs! Carrying prey around is no biggie.
 
-*People weight only 1 weight when eaten by you.
-*Does not apply to vehicles.
+*People weight only 1 weight when eaten by you. Vehicles have 1/10th of their weight, rounded down.
 *If the prey has the "heavy" perk, typical rules apply.`,
   },
   {
@@ -115,9 +106,8 @@ export const VORE_PERKS: PerkDefinition[] = [
       `Fatty! You keep your predator pinned with your weight, or your struggles are very destabilizing!
 
 *This may be justified through you being very heavy, or your struggles being too strong to move around with.
-*When eaten by someone, you make them immobile, and they receive the respective penalties, regardless of your weight!
-*You now have a fixed weight of 15 for the purposes of being carried around, mounting, etc.
-*Your weight does not prevent you from being eaten by opponents - you obey standard rulings in such a scenario.
+*You now have a fixed weight of 15, and when eaten, you always make your predator immobile, with penalties applied, even if they have sufficient strength.
+*You take up 6 organ capacity when eaten - you cannot be eaten if your predator lacks the organ capacity!
 *If the pred has "hauling-meat", typical rules apply instead.`,
   },
   {
@@ -127,14 +117,10 @@ export const VORE_PERKS: PerkDefinition[] = [
     description:
       `You must certainly be mad! Rather than fighting outside of your predator, you'd rather do so from the inside!
 
-*When rolling your "escape training", you may choose to, instead of trying to escape, damage your predator! 
-*This must be declared before rolling, otherwise, it will automatically default to an escape attempt. 
-*For every success over your predator, you deal 2 damage. A predator can be killed through these means.
-*An incapacitated predator is still actively trying to keep you down, reducing them to 0 HP does not release you.
-*A dead predator can be escaped from without any rolls.
-*Fighting your predator is not considered an "escape" attempt, perks that'd help in keeping prey inside do not apply.
-*You still slide into other organs (i.e, along a cowgirl's four stomachs) when you fight.
-*The predator does not add the difference in strengths if you're fighting rather than escaping.`,
+*When eaten and rolling to escape, instead, you may try to damage your predator. This must be declared before rolling, or it defaults to an escape attempt.
+*For every success over your predator, you deal 2 damage to your predator. A predator that is incapacitated or in critical condition can still keep you down. A dead predator can be escaped freely as an action.
+*Fighting your predator is not considered an "escape" attempt, perks that'd help in keeping prey inside do not apply, such as 'natural predator'.
+*You still move between organs while fighting, as if doing escape attempts. The predator does not add the difference in strengths if you're fighting rather than escaping.`,
   },
   {
     id: "prey-as-armour",
@@ -143,18 +129,12 @@ export const VORE_PERKS: PerkDefinition[] = [
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You have a person inside you! That's basically cover, right? 
 
-*Damage reduction from other items/perks apply before this perk's own.
-*This only applies based on where the attack is coming from and the position of the organ.
-*For example, the stomach, breasts, and womb protect against attacks from the front. But a tail protects from attacks from behind.
-*Optionally, forego a grapple roll when trying to eat prey - you may eat them without grappling - but you must roll twice and take the worst result.
-
-If you have prey inside you, dead or alive:
-*When attacked, you take only 1 damage and your prey takes the remainder.
-*If you have multiple prey inside you, the one who takes the damage is picked randomly.
-*If the attack only dealt 1 damage, the prey takes the damage, not you.
-*If the attack originated from 6 distances away or further, the entirety of the damage is given to the prey.
-*You have +2d6 to cover rolls for as long as someone is inside you.
-*Prey that has spent 2/3rds or more of their entire processing time inside you no longer provides damage reduction/transference.`,
+*Damage reduction from other items/perks apply before this perk's own. The protection & effects only apply in the same direction your organ is facing.
+( Stomach, breasts, and womb protect from the front, but not sides and rear! But a tail would protect from the rear - however, not the front! )
+--->If you have prey inside you, dead or alive:
+*Have +2d6 to cover rolls, and cover is two tiers higher. 
+*When attacked, live prey takes all damage in your stead. If your prey is dead, only take 1 damage instead. Does not apply against explosions.
+*Prey that have gone through 2/3rds or more of their entire processing time no longer provide damage reduction/transference.`,
   },
   {
     id: "assimilator",
@@ -183,15 +163,12 @@ If you have prey inside you, dead or alive:
     name: "Ever lasting",
     category: "vore",
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
-    description: `You are never truly gone. You always come back!
+    description: `You are never truly gone. You always come back! Even when digested, you live on as fat within your predator's body!
 
-*When churned, you continue on as living fat within your predator's body! 
-*Even if your predator slims down, you still manage to live on, that's how resilient you are!
-*You are able to speak with your predator and control a bodypart you inhabit, however ...
-*The predator can easily shut you down and keep you from doing anything, contrary to 'living-fat-advisors'.
-*When your predator gives birth OR impregnates someone, your consciousness is transfered to that body and you live on! 
-*You'll be alive, but with a different body and appearance. You may need to make a new sheet to reflect that, unless you are a template and the birthling is your template too.
-*If you do have to make a new sheet, you keep the same point totals and amount of perks. Your intelligence and charisma stats remain the same, but all of your other stats may be re-arranged.
+*You may inhabit a bodypart of your predator of your choosing - you cannot change this choice! You have minimal control over this bodypart, but the predator can, freely, shut you down and keep you from doing anything.
+*When your predator gives birth OR impregnates someone, your consciousness is transfered to that body and you live on! if you are a template, they are guaranteed to birth a copy of your template.
+*Otherwise, you'll be alive, but with a different body and appearance. Make a new sheet to reflect this, keeping the point totals and number of perks. 
+*The Intelligence and Charisma stats remain the same, but points in strength, dexterity and constitution may be rearranged.
 *Perks related to your physicality can be changed ( hard to churn, unreal capacity, living furnace, etc ).
 *perks related to skills ( gunner, melee fighter, materful linguist, etc ), belongings ( Sig. Weapon, beastmaster, allies, etc ) may not be changed.`,
   },
@@ -203,16 +180,12 @@ If you have prey inside you, dead or alive:
     description:
       `The dead remain within you after churning, awakening as your fat!
 
-*Only Pilzfrauns/Pilzherrs, etc, are affected by this. Baseliners are not, they simply digest away normally.
-*Prey must pick a bodypart ( Boobs, butt, belly, testicles, balls, etc ) to live on as. They'll retain their consciousness and memories.
-*The pred will then be able hear their living fat within their mind, and may be advised by it, if they're willing.
-*The living fat has control over the body part they inhabit: You may lactate or grow hard spontaneously, etc.
-*It takes a consitution check vs your advisor's own to control them and make them stop.
+*Only Pilzfrauns and their variants may become advisors - baseliners digest away normally.
+*The advisor picks a body part to live on as. They'll retain their consciousness and memories. The predator can hear them within their mind.
+*The living fat has control over the body part they inhabit: You may lactate or grow hard spontaneously, etc. The predator requires a constitution vs constitution contested check to make them stop.
 *The in-charge perk allows you to choose where the prey ends up in, and you can stop their shenanigans at will.
-*For as long as you have the living fat within your body, you keep their stats: Strength, dexterity, intelligence, etc
-*For every living fat advisor residing within you, you must eat one prey every 3 scenes - otherwise, the fat burns away.
-*Failing to eat prey makes the advisor go away. The advisors are lost in order of acquiral! 
-*Eating NPCs does not count, you must feed on RPers' characters!`,
+*For as long as you have the living fat within your body, you add their stats to your own. For every living fat advisor residing within you, you must eat one prey every 3 scenes - otherwise, the fat burns away.
+*Failing to eat prey makes the advisor go away. The advisors are lost in order of acquiral!  Eating NPCs does not count, you must feed on RPers' characters!`,
   },
   {
     id: "bacta-tank",
@@ -221,10 +194,8 @@ If you have prey inside you, dead or alive:
     requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
     description: `You are oh so caring for your allies, oh my my!~
 
-*Your womb or balls can heal! People you unbirth or cockvore, get to heal inside you! 
-*They will gain HP at the same rate they'd otherwise lose HP from digestion.
-*If you have the 'in-charge' perk, you can choose to heal with any orifice, on top of the other benefits the in-charge perk gives.
-*Characters in critical condition are stabilized whilst inside a bacta-tank orifice; however ...
+*Your womb or balls can heal! People you unbirth or cockvore, get to heal inside you! They will gain HP at the same rate they'd otherwise lose HP from digestion.
+*If you have the 'in-charge' perk, you can choose to heal with any orifice. Characters in critical condition are stabilized whilst inside a bacta-tank orifice; however ...
 *If they're still in negative HP when spat out, they'll return to critical condition.`,
   },
   {
@@ -234,16 +205,12 @@ If you have prey inside you, dead or alive:
     description:
       `You actively want to shove yourself or others into the tummies of your predators, or to just stuff them 'till they can't eat anything else!
 
-*You gain +3d6 to grapple force-feed yourself or others to someone, and to keep your target from regurgitiating them. You must be grappling a target first in order to force-feed them to someone else.
-*You now count successes on a 4 and above, rather than 5 and above, to do that.
-*This perk makes it so you do not need to grapple a predator in order to self-feed; you can simply feed yourself straight away!
-*You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regurtitation disgust.
-*You can stuff someone up to 5 times their organ-capacity. For every point past their limit, they take 1 damage every turn. This can kill.
+*When rolling to grapple, force-feed yourself or others to someone, and to keep the target from regurtitating, gain +3d6, and count successes on 4 and above.
+*You must be grappling the victim in order to force-feed them to someone else. You do not need to grapple a predator in order to self-feed, you may attempt it right away.
+*Alternatively, stuff a predator with food! Each unit of food has 1 weight, and counts as a person for organ-capacity calculation. No need to grapple, you may attempt it right away.
+*You can force yourself inside a predator even if they've regurgitated you already, as you force through their post-regugitation disgust.
+*You can stuff someone up to 5 times their organ-capacity. For every point past their limit, they take 1 damage every turn.
 *Your target can try to regurgitate the contents of their stomach. So long as you are both in the same distance, you can prevent this as a free action. It is a contested STR vs STR check.
-
-->Alternatively, stuff a target with food instead:
-*You may carry foodstuffs on your person and force-feed others with food, rather than people. You do not need to be grappling them for this.
-*Each foodstuffs has 1 weight. You can stuff 3 foodstuffs to a target per turn. 3 units of food are equivalent to eating a person for organ capacity calculations.
 *If you have the 'milky' perk, you can force-feed your target with your milk/cum/whatever you produce as well!`,
   },
   {
@@ -253,19 +220,15 @@ If you have prey inside you, dead or alive:
     description:
       `When things are tough, you always seem to get hit by a strong second wind!
 
-->If you're inside someone and you're at 0 HP or below ( not self-inflicted ), 
-*You gain +6d6 to escape their stomach.
-*You now count successess on a 4 and above, rather than a 5 and above, to do that.
+*If you are inside someone and at 0HP or below ( not self-inflicted ), gain +6d6 to escape their stomach, counting successes on a 4 and above.
 
 ->If you escape, you are hit with an "escapist's rush": 
-*The rush lasts 10 turns, or 10 minutes, whichever is faster.
-*You have the 'runner' perk and you cannot be incapacitated for the duration of your rush.
-*Whenever hit, you must roll your constitution. You need 1 + [how negative your HP is] successes in order to keep the rush.
+*The rush lasts 10 turns, or 10 minutes, whichever is faster. For the duration, you have the 'runner' perk.
+*You cannot be incapacitated for the duration of your rush. Whenever hit, roll constitution, you need 1 + [how negative your HP is] successes in order to keep the rush.
 *Once your rush is over, you 'crash' out.
 
 ->Crash out:
-*You are incapacitated/critical condition'd until your HP heals back to full. You cannot do any escape rolls if you are eaten.
-*Being healed by allies does not speed this up; you've overexerted yourself, you need rest.`,
+*You are incapacitated until your HP heals back to full. You cannot do any escape rolls if you are eaten.`,
   },
   {
     id: "open-ended-tail",
@@ -285,7 +248,7 @@ If you have prey inside you, dead or alive:
 *It is constantly dripping acid from the tip, making you easy to track.
 
 ->Mouthless variant:
-*You may optionally choose to have no mouth at all. If so, you cannot vocalize any sounds and cannot eat normally, havint to do so through your tail.
+*You may optionally choose to have no mouth at all. If so, you cannot vocalize any sounds and cannot eat normally, having to do so through your tail.
 *Once prey is brought to your stomach, they must escape into the tail, as escaping through your mouth is impossible.`,
   },
   {

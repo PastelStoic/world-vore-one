@@ -64,7 +64,7 @@ export default define.page(function WikiRulesCore() {
           Every character may, in one turn, perform three actions:
           </p>
           <p>
-          <strong>Main action:</strong> Shoot, reload, stab, vaulting a ledge, anything that requires your two hands.
+          <strong>Main action:</strong> Shooting, reloading, stabbing, vaulting a ledge, anything that requires your two hands.
           </p>
           <p>
           <strong>Movement action:</strong> Walking, running, swimming, flying, anything that is, solely, movement.

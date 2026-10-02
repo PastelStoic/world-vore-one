@@ -57,8 +57,11 @@ export default define.page(function WikiRulesCore() {
 
       <RulesSection id="turns" title="Rounds, turns and actions">
         <p>
-          The game works by turns. In every round, each participant takes their turn. 
-          You take your turn, perform your actions, then your opponent takes theirs, performing their own. 
+          A round consists of everyone's turns, before it loops from the start once more. In every round, each participant takes a turn.
+        </p>
+        <p>
+          You & your party take their turns, perform your actions, then your opponents take theirs, performing their own, before looping once more. 
+        </p>
        </p>
           <p>
           Every character may, in one turn, perform three actions:

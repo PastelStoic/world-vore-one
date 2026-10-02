@@ -77,9 +77,9 @@ export default define.page(function WikiRulesCore() {
         </p>
       </RulesSection>
 
-     <RulesSection id="misc-actions" title="What is an action">
+     <RulesSection id="misc-actions" title="What is a main action">
         <p>
-          An action, during a turn, is any one thing a character can do within a
+          A main action, during a turn, is any one thing a character can do within a
           second. Firing their gun, reloading it, stabbing someone, moving,
           picking a lock, grabbing something, dropping it.
         </p>

@@ -21,7 +21,7 @@ export default define.page(function WikiRulesCore() {
           { id: "stats", label: "The five stats" },
           { id: "helping", label: "Helping someone" },
           { id: "lying", label: "Figuring out if someone is lying" },
-          { id: "misc-actions", label: "What is an action" },
+          { id: "misc-actions", label: "What is a main action" },
         ]}
       />
 

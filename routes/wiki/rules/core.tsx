@@ -55,11 +55,14 @@ export default define.page(function WikiRulesCore() {
         </p>
       </RulesSection>
 
-      <RulesSection id="turns" title="Turns and actions">
+      <RulesSection id="turns" title="Rounds, turns and actions">
         <p>
-          The game works by turns. You take your turn, then your opponent takes
-          theirs. During your turn you can take only <strong>one</strong>{" "}
-          action. Shoot, reload, move, stab — only a single action.
+          The game works by turns. In every round, each participant takes their turn. 
+          You take your turn, perform your actions, then your opponent takes theirs, performing their own. 
+          Every character may, in one turn, perform thre actions:
+          <strong>Main action:</strong> Shoot, reload, stab, vaulting a ledge, anything that requires your two hands.
+          <strong>Movement action:</strong> Walking, running, swimming, flying, anything that is, solely, movement.
+          <strong>Free action(s):</strong> Anything explicitly stated as a free action may be done within a turn. You may do any number of free actions as you wish.
         </p>
         <p>
           Some actions are{" "}

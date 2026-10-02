@@ -16,12 +16,12 @@ export default define.page(function WikiRulesCore() {
       <RulesToc
         items={[
           { id: "dice", label: "Dice and checks" },
-          { id: "turns", label: "Turns and actions" },
+          { id: "turns", label: "Rounds, turns and actions" },
+          { id: "misc-actions", label: "What is a main action" },
           { id: "points", label: "Points and perks" },
           { id: "stats", label: "The five stats" },
           { id: "helping", label: "Helping someone" },
           { id: "lying", label: "Figuring out if someone is lying" },
-          { id: "misc-actions", label: "What is a main action" },
         ]}
       />
 
@@ -57,30 +57,38 @@ export default define.page(function WikiRulesCore() {
 
       <RulesSection id="turns" title="Rounds, turns and actions">
         <p>
-          A round consists of everyone's turns, before it loops from the start once more. In every round, each participant takes a turn.
+          A round consists of everyone's turns, before it loops from the start
+          once more. In every round, each participant takes a turn.
         </p>
         <p>
-          You & your party take their turns, perform your actions, then your opponents take theirs, performing their own, before looping once more. 
+          You & your party take their turns, perform your actions, then your
+          opponents take theirs, performing their own, before looping once more.
         </p>
-          <p>
+        <p>
           Every character may, in one turn, perform three actions:
-          </p>
-          <p>
-          <strong>Main action:</strong> Shooting, reloading, stabbing, vaulting a ledge, anything that requires your two hands.
-          </p>
-          <p>
-          <strong>Movement action:</strong> Walking, running, swimming, flying, anything that is, solely, movement.
-          </p>
-          <p>
-          <strong>Free action(s):</strong> Anything explicitly stated as a free action may be done within a turn. You may do any number of free actions as you wish.
+        </p>
+        <p>
+          <strong>Main action:</strong>{" "}
+          Shooting, reloading, stabbing, vaulting a ledge, anything that
+          requires your two hands.
+        </p>
+        <p>
+          <strong>Movement action:</strong>{" "}
+          Walking, running, swimming, flying, anything that is, solely,
+          movement.
+        </p>
+        <p>
+          <strong>Free action(s):</strong>{" "}
+          Anything explicitly stated as a free action may be done within a turn.
+          You may do any number of free actions as you wish.
         </p>
       </RulesSection>
 
-     <RulesSection id="misc-actions" title="What is a main action">
+      <RulesSection id="misc-actions" title="What is a main action">
         <p>
-          A main action, during a turn, is any one thing a character can do within a
-          second. Firing their gun, reloading it, stabbing someone, moving,
-          picking a lock, grabbing something, dropping it.
+          A main action, during a turn, is any one thing a character can do
+          within a second. Firing their gun, reloading it, stabbing someone,
+          moving, picking a lock, grabbing something, dropping it.
         </p>
         <p>
           The most basic way to describe it is "doing a thing". Per turn, you
@@ -103,6 +111,7 @@ export default define.page(function WikiRulesCore() {
             something long and meaningful is an action.
           </li>
         </ul>
+      </RulesSection>
 
       <RulesSection id="points" title="Points and perks">
         <p>
@@ -135,8 +144,7 @@ export default define.page(function WikiRulesCore() {
             weapons
           </a>
           . Stats are broad categories (strength covers many things); perks are
-          much more selective in what they affect.
-          A character also has{" "}
+          much more selective in what they affect. A character also has{" "}
           <a href="/wiki/rules/vore" class="text-primary hover:underline">
             vore stats
           </a>
@@ -211,10 +219,15 @@ export default define.page(function WikiRulesCore() {
             .
           </li>
           <li>
-            Dealing with exhaustion: when you grow exhausted, constitution checks are called. See{" "}
-            <a href="/wiki/rules/health#rest" class="text-primary hover:underline">
+            Dealing with exhaustion: when you grow exhausted, constitution
+            checks are called. See{" "}
+            <a
+              href="/wiki/rules/health#rest"
+              class="text-primary hover:underline"
+            >
               exhaustion
             </a>
+            .
           </li>
           <li>
             Holding your breath: you can hold it for [Constitution] turns.
@@ -239,7 +252,10 @@ export default define.page(function WikiRulesCore() {
           <li>
             Solving puzzles, getting hints from the GM, mixing chemicals.
           </li>
-          <li>Social combat: to not be manipulated or to get a read on people, contested Intelligence vs Charisma checks.</li>
+          <li>
+            Social combat: to not be manipulated or to get a read on people,
+            contested Intelligence vs Charisma checks.
+          </li>
         </ul>
 
         <h3 class="text-lg font-semibold pt-2">Charisma</h3>
@@ -257,9 +273,9 @@ export default define.page(function WikiRulesCore() {
             want.
           </li>
           <li>
-            Haggling: every 2 points of Charisma, past the first one, reduce the point
-            cost of items by 1, to a minimum of 1. Every 2 Charisma points invested
-            past the first also grant 1 extra free item.
+            Haggling: every 2 points of Charisma, past the first one, reduce the
+            point cost of items by 1, to a minimum of 1. Every 2 Charisma points
+            invested past the first also grant 1 extra free item.
           </li>
         </ul>
       </RulesSection>

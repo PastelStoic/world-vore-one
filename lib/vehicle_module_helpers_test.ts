@@ -39,17 +39,13 @@ Deno.test("groupVehicleModules collapses consecutive copies of the same module",
     groupVehicleModules([
       "light-cannon",
       "light-cannon",
-      "side-machine-gun",
-      "side-machine-gun",
+      "machine-gun",
+      "machine-gun",
       "engine",
     ]),
     [
       { moduleId: "light-cannon", moduleIds: ["light-cannon"], count: 2 },
-      {
-        moduleId: "side-machine-gun",
-        moduleIds: ["side-machine-gun"],
-        count: 2,
-      },
+      { moduleId: "machine-gun", moduleIds: ["machine-gun"], count: 2 },
       { moduleId: "engine", moduleIds: ["engine"], count: 1 },
     ],
   );
@@ -65,20 +61,36 @@ Deno.test("groupVehicleModules collapses non-consecutive copies at first occurre
   );
 });
 
-Deno.test("groupVehicleModules combines same-name modules with different IDs", () => {
+Deno.test("groupVehicleModules groups by display name, not module ID", () => {
+  // No two catalog modules currently share a name, so supply the names.
+  const names: Record<string, string> = {
+    "mg-a": "Machinegun",
+    "mg-b": "Machinegun",
+    "cannon": "Light cannon",
+  };
   assertEquals(
-    groupVehicleModules(["light-turret", "rear-light-turret", "light-turret"]),
+    groupVehicleModules(
+      ["mg-a", "cannon", "mg-b", "mg-a"],
+      (moduleId) => names[moduleId],
+    ),
     [
-      {
-        moduleId: "light-turret",
-        moduleIds: ["light-turret", "rear-light-turret"],
-        count: 3,
-      },
+      { moduleId: "mg-a", moduleIds: ["mg-a", "mg-b"], count: 3 },
+      { moduleId: "cannon", moduleIds: ["cannon"], count: 1 },
+    ],
+  );
+});
+
+Deno.test("groupVehicleModules keeps distinctly named catalog modules apart", () => {
+  assertEquals(
+    groupVehicleModules(["light-turret", "light-mantlet", "light-turret"]),
+    [
+      { moduleId: "light-turret", moduleIds: ["light-turret"], count: 2 },
+      { moduleId: "light-mantlet", moduleIds: ["light-mantlet"], count: 1 },
     ],
   );
   assertEquals(
-    formatVehicleModuleLabel("light-turret", 3),
-    "3x Light turret",
+    formatVehicleModuleLabel("light-turret", 2),
+    "2x Light turret",
   );
 });
 
@@ -86,16 +98,7 @@ Deno.test("groupVehicleModules matches catalog vehicles that repeat module IDs",
   const markV = catalogVehicle("mark-v");
   assertEquals(groupVehicleModules(markV.modules), [
     { moduleId: "light-cannon", moduleIds: ["light-cannon"], count: 2 },
-    {
-      moduleId: "frontal-machine-gun",
-      moduleIds: ["frontal-machine-gun"],
-      count: 1,
-    },
-    {
-      moduleId: "side-machine-gun",
-      moduleIds: ["side-machine-gun"],
-      count: 2,
-    },
+    { moduleId: "machine-gun", moduleIds: ["machine-gun"], count: 3 },
     { moduleId: "engine", moduleIds: ["engine"], count: 1 },
     { moduleId: "fuel-tanks", moduleIds: ["fuel-tanks"], count: 1 },
     { moduleId: "tracks", moduleIds: ["tracks"], count: 1 },
@@ -107,24 +110,11 @@ Deno.test("groupVehicleModules matches catalog vehicles that repeat module IDs",
   ]);
 });
 
-Deno.test("groupVehicleModules combines Jeffery dual Light turret IDs", () => {
+Deno.test("groupVehicleModules combines the Jeffery's two Light turrets", () => {
   const jeffery = catalogVehicle("m1915-jeffery-armored-car");
   assertEquals(groupVehicleModules(jeffery.modules), [
-    {
-      moduleId: "frontal-machine-gun",
-      moduleIds: ["frontal-machine-gun"],
-      count: 1,
-    },
-    {
-      moduleId: "rear-machine-gun",
-      moduleIds: ["rear-machine-gun"],
-      count: 1,
-    },
-    {
-      moduleId: "light-turret",
-      moduleIds: ["light-turret", "rear-light-turret"],
-      count: 2,
-    },
+    { moduleId: "machine-gun", moduleIds: ["machine-gun"], count: 2 },
+    { moduleId: "light-turret", moduleIds: ["light-turret"], count: 2 },
     { moduleId: "engine", moduleIds: ["engine"], count: 1 },
     { moduleId: "fuel-tanks", moduleIds: ["fuel-tanks"], count: 1 },
     { moduleId: "wheels-4", moduleIds: ["wheels-4"], count: 1 },
@@ -139,15 +129,15 @@ Deno.test("formatVehicleModuleLabel prefixes the module name with Nx", () => {
   assertEquals(formatVehicleModuleLabel("light-cannon", 1), "1x Light cannon");
   assertEquals(formatVehicleModuleLabel("light-cannon", 2), "2x Light cannon");
   assertEquals(
-    formatVehicleModuleLabel("side-machine-gun", 4),
-    "4x Lateral machinegun",
+    formatVehicleModuleLabel("machine-gun", 3),
+    "3x Machinegun",
   );
 });
 
 Deno.test("formatVehicleModuleDetails keeps single-module output for one ID", () => {
   const expected = [
     "HP: 4",
-    "Difficulty: 5",
+    "Difficulty: 3",
     "Position: Internal",
     "On destruction: The vehicle can no longer move.",
   ].join("\n");
@@ -164,10 +154,9 @@ Deno.test("formatVehicleModuleDetails does not include module descriptions", () 
 Deno.test("formatVehicleModuleDetails shares one stats block for grouped Light turrets", () => {
   const details = formatVehicleModuleDetails([
     "light-turret",
-    "rear-light-turret",
+    "light-turret",
   ]);
   assertEquals(details.match(/HP: 6/g)?.length, 1);
-  assertEquals(details.includes("Aims backwards instead"), false);
 });
 
 Deno.test("getVehicleHp still counts each module copy", () => {

@@ -10,14 +10,19 @@ export interface GroupedVehicleModule {
   count: number;
 }
 
-/** Collapse modules that share a display name into first-seen order with a copy count. */
+/**
+ * Collapse modules that share a display name into first-seen order with a
+ * copy count. `getName` defaults to the catalog module name.
+ */
 export function groupVehicleModules(
-  moduleIds: string[],
+  moduleIds: readonly string[],
+  getName: (moduleId: string) => string = (moduleId) =>
+    resolveVehicleModule(moduleId).name,
 ): GroupedVehicleModule[] {
   const grouped: GroupedVehicleModule[] = [];
   const indexByName = new Map<string, number>();
   for (const moduleId of moduleIds) {
-    const name = resolveVehicleModule(moduleId).name;
+    const name = getName(moduleId);
     const existingIndex = indexByName.get(name);
     if (existingIndex !== undefined) {
       const group = grouped[existingIndex];

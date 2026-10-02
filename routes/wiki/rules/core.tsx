@@ -77,6 +77,34 @@ export default define.page(function WikiRulesCore() {
         </p>
       </RulesSection>
 
+     <RulesSection id="misc-actions" title="What is an action">
+        <p>
+          An action, during a turn, is any one thing a character can do within a
+          second. Firing their gun, reloading it, stabbing someone, moving,
+          picking a lock, grabbing something, dropping it.
+        </p>
+        <p>
+          The most basic way to describe it is "doing a thing". Per turn, you
+          can do one thing and one thing only.
+        </p>
+        <p>
+          Plenty of actions do not warrant their own rules section, but they
+          still count as actions:
+        </p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>Dropping an item is an action.</li>
+          <li>Putting an item in your inventory is an action.</li>
+          <li>Grabbing an item is an action.</li>
+          <li>
+            Giving someone else an item is an action from your part; accepting
+            it is free.
+          </li>
+          <li>
+            Talking is an action, within reason. A few quick words are free, but
+            something long and meaningful is an action.
+          </li>
+        </ul>
+
       <RulesSection id="points" title="Points and perks">
         <p>
           Like most TTRPGs, your character's capabilities are turned into
@@ -210,6 +238,7 @@ export default define.page(function WikiRulesCore() {
           <li>
             Solving puzzles, getting hints from the GM, mixing chemicals.
           </li>
+          <li>Social combat: to not be manipulated or to get a read on people, contested Intelligence vs Charisma checks.</li>
         </ul>
 
         <h3 class="text-lg font-semibold pt-2">Charisma</h3>
@@ -227,10 +256,8 @@ export default define.page(function WikiRulesCore() {
             want.
           </li>
           <li>
-            Haggling: each point of Charisma past the first reduces the point
-            cost of items by 1, to a minimum of 1. Free items stay free. The
-            minimum applies to an item's whole cost, including the extra point
-            for going past your free items. Every 2 Charisma points invested
+            Haggling: every 2 points of Charisma, past the first one, reduce the point
+            cost of items by 1, to a minimum of 1. Every 2 Charisma points invested
             past the first also grant 1 extra free item.
           </li>
         </ul>
@@ -240,8 +267,6 @@ export default define.page(function WikiRulesCore() {
         <p>
           When trying to help someone fulfill a task that can be helped with,
           both of you roll the proper stat, then add the successes together.
-        </p>
-        <p>
           Some tasks cannot be helped with, such as firing a rifle or picking a
           lock. The GM decides whether help applies.
         </p>
@@ -268,34 +293,6 @@ export default define.page(function WikiRulesCore() {
           </li>
         </ul>
       </RulesSection>
-
-      <RulesSection id="misc-actions" title="What is an action">
-        <p>
-          An action, during a turn, is any one thing a character can do within a
-          second. Firing their gun, reloading it, stabbing someone, moving,
-          picking a lock, grabbing something, dropping it.
-        </p>
-        <p>
-          The most basic way to describe it is "doing a thing". Per turn, you
-          can do one thing and one thing only.
-        </p>
-        <p>
-          Plenty of actions do not warrant their own rules section, but they
-          still count as actions:
-        </p>
-        <ul class="list-disc pl-6 space-y-1">
-          <li>Dropping an item is an action.</li>
-          <li>Putting an item in your inventory is an action.</li>
-          <li>Grabbing an item is an action.</li>
-          <li>
-            Giving someone else an item is an action from your part; accepting
-            it is free.
-          </li>
-          <li>
-            Talking is an action, within reason. A few quick words are free, but
-            something long and meaningful is an action.
-          </li>
-        </ul>
       </RulesSection>
     </WikiRulesLayout>
   );

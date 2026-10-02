@@ -59,15 +59,17 @@ export default define.page(function WikiRulesCore() {
         <p>
           The game works by turns. In every round, each participant takes their turn. 
           You take your turn, perform your actions, then your opponent takes theirs, performing their own. 
-          Every character may, in one turn, perform thre actions:
+          <p>
+          Every character may, in one turn, perform three actions:
+          </p>
+          <p>
           <strong>Main action:</strong> Shoot, reload, stab, vaulting a ledge, anything that requires your two hands.
+          </p>
+          <p>
           <strong>Movement action:</strong> Walking, running, swimming, flying, anything that is, solely, movement.
+          </p>
+          <p>
           <strong>Free action(s):</strong> Anything explicitly stated as a free action may be done within a turn. You may do any number of free actions as you wish.
-        </p>
-        <p>
-          Some actions are{" "}
-          <strong>free actions</strong>. You can take as many free actions as
-          you have, alongside your actual action.
         </p>
       </RulesSection>
 

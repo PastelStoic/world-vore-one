@@ -274,8 +274,11 @@ export default define.page(function WikiRulesCore() {
           </li>
           <li>
             Haggling: every 2 points of Charisma, past the first one, reduce the
-            point cost of items by 1, to a minimum of 1. Every 2 Charisma points
-            invested past the first also grant 1 extra free item.
+            point cost of items by 1, to a minimum of 1 (Charisma 3 takes 1
+            point off, Charisma 5 takes 2, and so on). Free items stay free. The
+            minimum applies to an item's whole cost, including the extra point
+            for going past your free items. Every 2 Charisma points invested
+            past the first also grant 1 extra free item.
           </li>
         </ul>
       </RulesSection>

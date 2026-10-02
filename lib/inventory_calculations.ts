@@ -328,14 +328,18 @@ export function calculateInventoryWeight(
   return total;
 }
 
-/** How many points Charisma takes off a paid item's cost. */
+/**
+ * How many points Charisma takes off a paid item's cost: 1 point for every
+ * 2 Charisma past the first (Charisma 3 = 1, 5 = 2, 20 = 9).
+ */
 export function getCharismaItemDiscount(charisma = 1): number {
   return Math.max(0, Math.floor((charisma - 1) / 2));
 }
 
 /**
- * Charisma reduces paid item costs (see {@link getCharismaItemDiscount}),
- * down to a minimum of 1. Free items (cost 0) stay free.
+ * Charisma reduces paid item costs by 1 per 2 Charisma past the first (see
+ * {@link getCharismaItemDiscount}), down to a minimum of 1. Free items
+ * (cost 0) stay free.
  */
 export function applyCharismaItemDiscount(
   cost: number,

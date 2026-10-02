@@ -11,6 +11,7 @@ import {
   countAllItemSlots,
   countCarriedItemSlots,
   countLocationSlots,
+  getCharismaItemDiscount,
   getEffectiveWeaponStats,
   getFreeItemSlots,
   getInventoryPointCostBreakdown,
@@ -200,9 +201,21 @@ Deno.test("applyCharismaItemDiscount does nothing at Charisma 1", () => {
   assertEquals(applyCharismaItemDiscount(1, 1), 1);
 });
 
-Deno.test("applyCharismaItemDiscount subtracts each point past the first", () => {
-  assertEquals(applyCharismaItemDiscount(6, 2), 5);
-  assertEquals(applyCharismaItemDiscount(6, 4), 3);
+Deno.test("Charisma takes 1 point off per 2 Charisma past the first", () => {
+  assertEquals(getCharismaItemDiscount(1), 0);
+  assertEquals(getCharismaItemDiscount(2), 0);
+  assertEquals(getCharismaItemDiscount(3), 1);
+  assertEquals(getCharismaItemDiscount(4), 1);
+  assertEquals(getCharismaItemDiscount(5), 2);
+  assertEquals(getCharismaItemDiscount(20), 9);
+});
+
+Deno.test("applyCharismaItemDiscount subtracts 1 per 2 Charisma past the first", () => {
+  assertEquals(applyCharismaItemDiscount(6, 2), 6);
+  assertEquals(applyCharismaItemDiscount(6, 3), 5);
+  assertEquals(applyCharismaItemDiscount(6, 4), 5);
+  assertEquals(applyCharismaItemDiscount(6, 5), 4);
+  assertEquals(applyCharismaItemDiscount(6, 7), 3);
 });
 
 Deno.test("applyCharismaItemDiscount never drops a paid item below 1", () => {
@@ -213,14 +226,19 @@ Deno.test("applyCharismaItemDiscount never drops a paid item below 1", () => {
 Deno.test("getWeaponPointCost applies Charisma discount after perk discounts", () => {
   const expensiveId = "flamethrower";
   assertEquals(getWeaponPointCost(expensiveId), 3);
-  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 2), 2);
+  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 2), 3);
+  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 3), 2);
+  assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 5), 1);
   assertEquals(getWeaponPointCost(expensiveId, undefined, undefined, 8), 1);
 });
 
 Deno.test("getVehiclePointCost applies Charisma discount with a minimum of 1", () => {
   assertEquals(getVehiclePointCost("mark-v"), 6);
   assertEquals(getVehiclePointCost("mark-v", 1), 6);
-  assertEquals(getVehiclePointCost("mark-v", 3), 4);
+  assertEquals(getVehiclePointCost("mark-v", 3), 5);
+  assertEquals(getVehiclePointCost("mark-v", 5), 4);
+  assertEquals(getVehiclePointCost("mark-v", 11), 1);
+  assertEquals(getVehiclePointCost("mark-v", 20), 1);
   assertEquals(getVehiclePointCost("motorcycle", 5), 1);
 });
 
@@ -235,7 +253,10 @@ Deno.test("inventory point cost discounts paid weapons and vehicles by Charisma"
   });
   inv.stowed.vehicles.push({ vehicleId: "mark-v" });
   assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 1), 9);
-  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 3), 5);
+  // Charisma 3 (discount 1): flamethrower 2 + Mark V 5.
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 3), 7);
+  // Charisma 5 (discount 2): flamethrower 1 + Mark V 4.
+  assertEquals(calculateInventoryPointCostWithPerks(inv, undefined, 5), 5);
 });
 
 Deno.test("signature weapon limit is the perk rank capped at 2", () => {

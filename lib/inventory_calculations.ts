@@ -328,8 +328,13 @@ export function calculateInventoryWeight(
   return total;
 }
 
+/** How many points Charisma takes off a paid item's cost. */
+export function getCharismaItemDiscount(charisma = 1): number {
+  return Math.max(0, Math.floor((charisma - 1) / 2));
+}
+
 /**
- * Charisma reduces paid item costs: each point past the first subtracts 1,
+ * Charisma reduces paid item costs (see {@link getCharismaItemDiscount}),
  * down to a minimum of 1. Free items (cost 0) stay free.
  */
 export function applyCharismaItemDiscount(
@@ -337,8 +342,39 @@ export function applyCharismaItemDiscount(
   charisma = 1,
 ): number {
   if (cost <= 0) return cost;
-  const discount = Math.max(0, Math.floor((charisma - 1) / 2));
-  return Math.max(1, cost - discount);
+  return Math.max(1, cost - getCharismaItemDiscount(charisma));
+}
+
+/**
+ * How much of the extra-item-slot surcharge the Charisma discount can also
+ * absorb for a paid item. The 1-point minimum applies to the item's whole
+ * cost (own cost + slot surcharge), not to each part separately, so a paid
+ * item whose own cost is already fully discounted should not end up costing
+ * more than 1 just because it sits past the free slots.
+ *
+ * `rawCost` is the item's own point cost before Charisma.
+ */
+export function getSlotSurchargeSaving(
+  rawCost: number,
+  charisma = 1,
+): number {
+  if (rawCost <= 0) return 0;
+  const separate = applyCharismaItemDiscount(rawCost, charisma) +
+    EXTRA_ITEM_POINT_COST;
+  const combined = applyCharismaItemDiscount(
+    rawCost + EXTRA_ITEM_POINT_COST,
+    charisma,
+  );
+  return Math.max(0, separate - combined);
+}
+
+/** Sum of the `count` largest savings (the player's best allocation). */
+function sumLargestSavings(savings: readonly number[], count: number): number {
+  if (count <= 0) return 0;
+  return [...savings]
+    .sort((a, b) => b - a)
+    .slice(0, count)
+    .reduce((sum, value) => sum + value, 0);
 }
 
 export function getWeaponPointCost(
@@ -456,6 +492,20 @@ export function getFreeItemSlots(charisma = 1): number {
   return CREATION_FREE_ITEM_SLOTS + Math.floor(invested / 2);
 }
 
+export type InventoryPointCostBreakdown = {
+  /** Total point cost of the inventory. */
+  total: number;
+  /** Item slots used (carried + stowed). */
+  usedSlots: number;
+  /** Free item slots granted by Charisma. */
+  freeSlots: number;
+  /**
+   * Per-item slot-surcharge savings (see {@link getSlotSurchargeSaving}) for
+   * paid items that occupy a slot.
+   */
+  surchargeSavings: number[];
+};
+
 /**
  * Extra points the inventory costs beyond the free creation slots, including
  * signature-weapon, weapon-master, faction, and Charisma discounts.
@@ -466,6 +516,28 @@ export function calculateInventoryPointCostWithPerks(
   charisma = 1,
   perkRanks?: Record<string, number>,
 ): number {
+  return getInventoryPointCostBreakdown(
+    inventory,
+    perkIds,
+    charisma,
+    perkRanks,
+  ).total;
+}
+
+/**
+ * Same as {@link calculateInventoryPointCostWithPerks}, plus the slot data
+ * needed to price adding one more item ({@link getItemAddPointCost}).
+ *
+ * Paid items past the free slots pay their own (Charisma-discounted) cost
+ * plus the extra-item surcharge, but the whole item still bottoms out at the
+ * 1-point minimum once Charisma is high enough.
+ */
+export function getInventoryPointCostBreakdown(
+  inventory: CharacterInventory,
+  perkIds?: string[],
+  charisma = 1,
+  perkRanks?: Record<string, number>,
+): InventoryPointCostBreakdown {
   const signatureLimit = getSignatureWeaponLimit(perkIds, perkRanks);
   const hasWeaponMaster = perkIds?.includes("weapon-master") ?? false;
   const freeAttachmentIds = getSignatureFreeAttachmentIds(
@@ -481,8 +553,10 @@ export function calculateInventoryPointCostWithPerks(
     freeAttachmentIds,
     hasWeaponMaster,
   );
-  const overFree = Math.max(0, totalSlots - getFreeItemSlots(charisma));
+  const freeSlots = getFreeItemSlots(charisma);
+  const overFree = Math.max(0, totalSlots - freeSlots);
   let cost = overFree * EXTRA_ITEM_POINT_COST;
+  const surchargeSavings: number[] = [];
 
   if (hasWeaponMaster) {
     cost += new Set(unlockedIds).size;
@@ -495,24 +569,59 @@ export function calculateInventoryPointCostWithPerks(
       const isSignatureWeapon = !!w.isSignatureWeapon &&
         signatureSlotsUsed < signatureLimit;
       if (isSignatureWeapon) signatureSlotsUsed += 1;
-      if (isSignatureWeapon && !hasWeaponMaster) {
-        cost += getSignatureAdjustedPointCost(
-          w.weaponId,
-          true,
-          perkIds,
-          charisma,
-        );
-      } else {
-        cost += getWeaponPointCost(w.weaponId, perkIds, unlockedIds, charisma);
+      // Own cost before Charisma (Charisma 1 = no discount).
+      const rawCost = isSignatureWeapon && !hasWeaponMaster
+        ? getSignatureAdjustedPointCost(w.weaponId, true, perkIds)
+        : getWeaponPointCost(w.weaponId, perkIds, unlockedIds);
+      cost += applyCharismaItemDiscount(rawCost, charisma);
+      // Weapon-master weapons and perk-granted weapons take no slot.
+      if (!hasWeaponMaster && !w.perkGranted) {
+        surchargeSavings.push(getSlotSurchargeSaving(rawCost, charisma));
       }
     }
     for (const v of inventory[location].vehicles ?? []) {
       if (v.isPatron) continue;
-      cost += getVehiclePointCost(v.vehicleId, charisma);
+      const rawCost = getVehiclePointCost(v.vehicleId);
+      cost += applyCharismaItemDiscount(rawCost, charisma);
+      surchargeSavings.push(getSlotSurchargeSaving(rawCost, charisma));
     }
   }
 
-  return cost;
+  cost -= sumLargestSavings(surchargeSavings, overFree);
+
+  return { total: cost, usedSlots: totalSlots, freeSlots, surchargeSavings };
+}
+
+/**
+ * Points it costs to add one more item to an inventory described by
+ * `breakdown`: the item's own Charisma-discounted cost, plus the extra-item
+ * surcharge if it lands past the free slots, with the whole item floored at
+ * the 1-point minimum. Matches the change in
+ * {@link calculateInventoryPointCostWithPerks} after adding the item.
+ *
+ * `rawCost` is the item's own point cost before Charisma (0 for gear and
+ * other free items).
+ */
+export function getItemAddPointCost(
+  breakdown: Omit<InventoryPointCostBreakdown, "total">,
+  rawCost: number,
+  occupiesSlot: boolean,
+  charisma = 1,
+): number {
+  const ownCost = applyCharismaItemDiscount(rawCost, charisma);
+  if (!occupiesSlot) return ownCost;
+
+  const { usedSlots, freeSlots, surchargeSavings } = breakdown;
+  const overBefore = Math.max(0, usedSlots - freeSlots);
+  const overAfter = Math.max(0, usedSlots + 1 - freeSlots);
+  const savingsAfter = rawCost > 0
+    ? [...surchargeSavings, getSlotSurchargeSaving(rawCost, charisma)]
+    : surchargeSavings;
+
+  const surcharge = (overAfter - overBefore) * EXTRA_ITEM_POINT_COST;
+  const extraSaving = sumLargestSavings(savingsAfter, overAfter) -
+    sumLargestSavings(surchargeSavings, overBefore);
+  return ownCost + surcharge - extraSaving;
 }
 
 /** @deprecated Use {@link calculateInventoryPointCostWithPerks}. */

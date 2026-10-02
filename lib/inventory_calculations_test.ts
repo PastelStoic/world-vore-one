@@ -13,12 +13,15 @@ import {
   countLocationSlots,
   getEffectiveWeaponStats,
   getFreeItemSlots,
+  getInventoryPointCostBreakdown,
+  getItemAddPointCost,
   getSignatureFreeAttachmentIds,
   getSignatureWeaponLimit,
   getVehiclePointCost,
   getWeaponPointCost,
   slotLookups,
 } from "./inventory_calculations.ts";
+import type { CharacterInventory } from "./inventory_types.ts";
 
 Deno.test("countCarriedItemSlots matches a single location count", () => {
   const inv = createEmptyInventory();
@@ -456,4 +459,119 @@ Deno.test("parseInventory keeps attachmentChargeData and attachment perkGranted"
     { totalCharges: 3, usedCharges: 1 },
   );
   assertEquals(parsed?.carried.attachments[0].perkGranted, "signature-weapon");
+});
+
+// ---------------------------------------------------------------------------
+// Charisma minimum applies to an item's whole cost (own cost + slot surcharge)
+// ---------------------------------------------------------------------------
+
+function pushWeapon(inv: CharacterInventory, weaponId: string) {
+  inv.carried.weapons.push({
+    weaponId,
+    currentAmmo: 0,
+    attachedIds: [],
+    magazines: 0,
+    partialMagazines: [],
+  });
+}
+
+/** Inventory with `count` zero-cost rifles filling item slots. */
+function inventoryWithFreeRifles(count: number): CharacterInventory {
+  const inv = createEmptyInventory();
+  for (let i = 0; i < count; i++) pushWeapon(inv, "lee-enfield");
+  return inv;
+}
+
+Deno.test("Charisma 20 drops an SMG past the free slots to the 1-point minimum", () => {
+  const charisma = 20;
+  const freeSlots = getFreeItemSlots(charisma);
+  const inv = inventoryWithFreeRifles(freeSlots);
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], charisma), 0);
+
+  // What the "Add" button shows for the SMG.
+  const breakdown = getInventoryPointCostBreakdown(inv, [], charisma);
+  assertEquals(
+    getItemAddPointCost(
+      breakdown,
+      getWeaponPointCost("thompson"),
+      true,
+      charisma,
+    ),
+    1,
+  );
+
+  // What the inventory total charges once it's added.
+  pushWeapon(inv, "thompson");
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], charisma), 1);
+});
+
+Deno.test("Charisma 20 makes every SMG cost 1, inside or past the free slots", () => {
+  const charisma = 20;
+  for (const smgId of ["mp-18", "thompson", "furrer-mp19"]) {
+    const inv = createEmptyInventory();
+    pushWeapon(inv, smgId);
+    assertEquals(calculateInventoryPointCostWithPerks(inv, [], charisma), 1);
+  }
+  const inv = inventoryWithFreeRifles(getFreeItemSlots(charisma));
+  pushWeapon(inv, "mp-18");
+  pushWeapon(inv, "furrer-mp19");
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], charisma), 2);
+});
+
+Deno.test("a paid item past the free slots: whole cost discounted, minimum 1", () => {
+  // Charisma 1: own cost 3 + 1 surcharge, no discount.
+  let inv = inventoryWithFreeRifles(getFreeItemSlots(1));
+  pushWeapon(inv, "thompson");
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], 1), 4);
+
+  // Charisma 5 (discount 2): 3 + 1 - 2 = 2.
+  inv = inventoryWithFreeRifles(getFreeItemSlots(5));
+  pushWeapon(inv, "thompson");
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], 5), 2);
+
+  // Charisma 7 (discount 3): 3 + 1 - 3 = 1.
+  inv = inventoryWithFreeRifles(getFreeItemSlots(7));
+  pushWeapon(inv, "thompson");
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], 7), 1);
+
+  // Vehicles too: Mark V (6) past the free slots at Charisma 20 costs 1.
+  inv = inventoryWithFreeRifles(getFreeItemSlots(20));
+  inv.stowed.vehicles.push({ vehicleId: "mark-v" });
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], 20), 1);
+});
+
+Deno.test("zero-cost items past the free slots still cost 1 at high Charisma", () => {
+  const charisma = 20;
+  const inv = inventoryWithFreeRifles(getFreeItemSlots(charisma) + 1);
+  assertEquals(calculateInventoryPointCostWithPerks(inv, [], charisma), 1);
+});
+
+Deno.test("add-item cost matches the change in the inventory total", () => {
+  const cases: Array<[number, number, string[]]> = [
+    [1, 3, ["thompson"]],
+    [1, 2, ["lee-enfield"]],
+    [5, 5, ["thompson", "lee-enfield"]],
+    [7, 6, ["flamethrower", "thompson"]],
+    [20, 11, ["thompson", "lee-enfield", "mp-18"]],
+    [20, 12, ["lee-enfield", "thompson"]],
+  ];
+  for (const [charisma, rifles, toAdd] of cases) {
+    const inv = inventoryWithFreeRifles(rifles);
+    for (const weaponId of toAdd) {
+      const before = getInventoryPointCostBreakdown(inv, [], charisma);
+      const quoted = getItemAddPointCost(
+        before,
+        getWeaponPointCost(weaponId),
+        true,
+        charisma,
+      );
+      pushWeapon(inv, weaponId);
+      const after = calculateInventoryPointCostWithPerks(inv, [], charisma);
+      assertEquals(
+        after - before.total,
+        quoted,
+        `CHA ${charisma}, ${rifles} rifles, adding ${weaponId}`,
+      );
+    }
+  }
 });

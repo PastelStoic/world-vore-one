@@ -22,11 +22,12 @@ import type {
   InventoryVehicle,
   InventoryWeapon,
 } from "@/lib/inventory_types.ts";
+import { calculateInventoryWeight } from "@/lib/inventory_types.ts";
 import {
-  calculateInventoryWeight,
-  EXTRA_ITEM_POINT_COST,
-} from "@/lib/inventory_types.ts";
-import { getEffectiveWeaponStats } from "@/lib/inventory_calculations.ts";
+  getEffectiveWeaponStats,
+  getInventoryPointCostBreakdown,
+  getItemAddPointCost,
+} from "@/lib/inventory_calculations.ts";
 import {
   addWeapon as addWeaponToInventory,
   countSignatureWeapons,
@@ -51,10 +52,8 @@ import {
   groupVehicleModules,
 } from "@/lib/vehicle_module_helpers.ts";
 import {
-  calculateInventoryPointCostWithPerks,
   canAttachToWeapon,
   convertMagazinesToAttachment,
-  countAllItemSlotsWithPerks,
   getDependentAttachmentIds,
   getFreeItemSlots,
   getSignatureWeaponLimit,
@@ -156,28 +155,37 @@ export default function InventorySection(props: InventorySectionProps) {
   }
 
   // ── Derived ──
-  const allSlots = countAllItemSlotsWithPerks(inventory, perkIds, perkRanks);
   const freeItemSlots = getFreeItemSlots(charisma);
   const carriedBulkyCount = inventory.carried.equipment.reduce((count, eq) => {
     return count + (EQUIPMENT_BY_ID.get(eq.equipmentId)?.isBulky ? 1 : 0);
   }, 0);
   const totalWeight = calculateInventoryWeight(inventory, weightLookups);
 
-  const inventoryPointCost = calculateInventoryPointCostWithPerks(
+  const inventoryCostBreakdown = getInventoryPointCostBreakdown(
     inventory,
     perkIds,
     charisma,
     perkRanks,
   );
+  const inventoryPointCost = inventoryCostBreakdown.total;
   const pointsAfterInventory = availablePoints != null
     ? availablePoints - inventoryPointCost
     : undefined;
 
   // ── Cost computation for adding an item ──
 
-  /** Compute the slot cost component for adding a new item */
-  function slotCost(): number {
-    return allSlots >= freeItemSlots ? EXTRA_ITEM_POINT_COST : 0;
+  /**
+   * Total cost of adding a new item: its own cost (before Charisma) plus the
+   * extra-slot surcharge, with the Charisma discount and 1-point minimum
+   * applied to the whole item.
+   */
+  function addItemCost(rawCost: number, occupiesSlot = true): number {
+    return getItemAddPointCost(
+      inventoryCostBreakdown,
+      rawCost,
+      occupiesSlot,
+      charisma,
+    );
   }
 
   function costLabel(cost: number): string {
@@ -1147,12 +1155,14 @@ export default function InventorySection(props: InventorySectionProps) {
                 onChange: setNationFilter,
               }}
               renderItem={(w) => {
-                const addCost = getWeaponPointCost(
-                  w.id,
-                  perkIds,
-                  weaponMasterRestrictedUnlocks,
-                  charisma,
-                ) + (hasWeaponMaster ? 0 : slotCost());
+                const addCost = addItemCost(
+                  getWeaponPointCost(
+                    w.id,
+                    perkIds,
+                    weaponMasterRestrictedUnlocks,
+                  ),
+                  !hasWeaponMaster,
+                );
                 return (
                   <li
                     key={w.id}
@@ -1214,7 +1224,7 @@ export default function InventorySection(props: InventorySectionProps) {
               filterPlaceholder="Filter equipment by name…"
               emptyMessage="No matching equipment."
               renderItem={(eq) => {
-                const addCost = slotCost();
+                const addCost = addItemCost(0);
                 const cannotCarryBulky = addTarget === "carried" &&
                   eq.isBulky && carriedBulkyCount > 0;
                 return (
@@ -1265,12 +1275,14 @@ export default function InventorySection(props: InventorySectionProps) {
               filterPlaceholder="Filter melee weapons by name…"
               emptyMessage="No matching melee weapons."
               renderItem={(mw) => {
-                const addCost = getWeaponPointCost(
-                  mw.id,
-                  perkIds,
-                  weaponMasterRestrictedUnlocks,
-                  charisma,
-                ) + (hasWeaponMaster ? 0 : slotCost());
+                const addCost = addItemCost(
+                  getWeaponPointCost(
+                    mw.id,
+                    perkIds,
+                    weaponMasterRestrictedUnlocks,
+                  ),
+                  !hasWeaponMaster,
+                );
                 return (
                   <li
                     key={mw.id}
@@ -1333,7 +1345,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 showGenericButton: true,
               }}
               renderItem={(att) => {
-                const addCost = att.isFree ? 0 : slotCost();
+                const addCost = att.isFree ? 0 : addItemCost(0);
                 return (
                   <li
                     key={att.id}
@@ -1381,8 +1393,7 @@ export default function InventorySection(props: InventorySectionProps) {
                 onChange: setVehicleNationFilter,
               }}
               renderItem={(vehicle) => {
-                const addCost = getVehiclePointCost(vehicle.id, charisma) +
-                  slotCost();
+                const addCost = addItemCost(getVehiclePointCost(vehicle.id));
                 const traitIds = getEffectiveVehicleTraitIds(vehicle);
                 return (
                   <li

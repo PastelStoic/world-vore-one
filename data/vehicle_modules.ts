@@ -167,7 +167,7 @@ export const VEHICLE_MODULES: VehicleModuleDefinition[] = [
   },
   {
     id: "medium-tracks",
-    name: "Medium racks",
+    name: "Medium tracks",
     hp: 12,
     position: "external",
     difficulty: 1,

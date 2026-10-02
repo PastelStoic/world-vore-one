@@ -326,7 +326,7 @@ export default define.page(function WikiRulesCombat() {
       </RulesSection>
 
       <RulesSection id="mounting" title="Mounting">
-        <p>It takes one turn to mount or dismount a creature.</p>
+        <p>It takes one turn to mount a creature.</p>
         <p>
           When mounting a mountable creature, you cannot move — it is the
           creature that does the moving instead. It uses their speed values, and
@@ -334,10 +334,11 @@ export default define.page(function WikiRulesCombat() {
           stuff, or having the Heavy perk, will affect your mount.
         </p>
         <p>
-          Whilst mounted, moving becomes free, as it is your mount that is
-          moving, not you. You may perform attacks at any point during movement:
-          at the start, in the middle, or after. This means you can move up to
-          someone, attack them, and then move away.
+          Whilst mounted, you don't move yourself; your mount does the moving,
+          so you can't use your own movement. You may perform attacks at any
+          point during your mount's movement: at the start, in the middle, or
+          after. This means you can ride up to someone, attack them, and then
+          ride away. You can dismount as an action.
         </p>
         <p>
           If the mounted creature is a player, they give up their actions and
@@ -379,14 +380,14 @@ export default define.page(function WikiRulesCombat() {
           pool.
         </p>
         <p>
-          After a target is grappled, you may do <strong>one</strong>{" "}
+          While you hold a grappled target, they are automatically dragged
+          wherever you move. Dragging them just uses your movement action.
+        </p>
+        <p>
+          After a target is grappled, you may also do <strong>one</strong>{" "}
           of several things as an action on your subsequent turns:
         </p>
         <ul class="list-disc pl-6 space-y-1">
-          <li>
-            You may drag them alongside you, moving them however many distances
-            you can also move.
-          </li>
           <li>
             You may pin them, putting them onto the ground and holding them
             there. In a pin, a character may do nothing but try to break free,

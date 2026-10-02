@@ -213,6 +213,7 @@ export default define.page(function WikiRulesCore() {
           <li>
             Dealing with exhaustion: when you grow exhausted, constitution checks are called. See{" "}
             <a href="/wiki/rules/health#rest" class="text-primary hover:underline">
+              exhaustion
             </a>
           </li>
           <li>

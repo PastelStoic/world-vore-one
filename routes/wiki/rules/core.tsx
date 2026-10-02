@@ -109,8 +109,6 @@ export default define.page(function WikiRulesCore() {
           </a>
           . Stats are broad categories (strength covers many things); perks are
           much more selective in what they affect.
-        </p>
-        <p>
           A character also has{" "}
           <a href="/wiki/rules/vore" class="text-primary hover:underline">
             vore stats
@@ -121,8 +119,7 @@ export default define.page(function WikiRulesCore() {
 
       <RulesSection id="stats" title="The five stats">
         <p>
-          Every character sheet has five main stats. After some confusion over
-          what each one actually does, use them as follows.
+          Every character sheet has five main stats. Use them as follows.
         </p>
 
         <h3 class="text-lg font-semibold pt-2">Strength</h3>
@@ -165,7 +162,7 @@ export default define.page(function WikiRulesCore() {
         <p>Use it for:</p>
         <ul class="list-disc pl-6 space-y-1">
           <li>Ranged combat: contested Dexterity vs cover checks.</li>
-          <li>Throwing things: contested Dexterity vs cover or accuracy.</li>
+          <li>Throwing things: contested Dexterity vs cover.</li>
           <li>Lockpicking, sleight of hand, fine dancing.</li>
           <li>Short bursts of sprint, parkour.</li>
         </ul>
@@ -180,15 +177,15 @@ export default define.page(function WikiRulesCore() {
         <p>Use it for:</p>
         <ul class="list-disc pl-6 space-y-1">
           <li>
-            Health points: each point in Constitution is 2 HP. See{" "}
+            Health points: each point in Constitution grants +2 HP. See{" "}
             <a href="/wiki/rules/health" class="text-primary hover:underline">
               health
             </a>
             .
           </li>
           <li>
-            Dealing with exhaustion: when you overspend your energy,
-            Constitution checks are called.
+            Dealing with exhaustion: when you grow exhausted, constitution checks are called. See{" "}
+            <a href="/wiki/rules/health#HP regeneration and exhaustion" class="text-primary hover:underline">
           </li>
           <li>
             Holding your breath: you can hold it for [Constitution] turns.

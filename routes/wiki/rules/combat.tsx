@@ -179,8 +179,9 @@ export default define.page(function WikiRulesCombat() {
           5 meters worth of distance.
         </p>
         <p>
-          Each character can only move 1 distance per turn. Moving is considered
-          your action for the turn; it is not free.
+          Each character can only move 1 distance per turn. Moving uses your
+          movement action for the turn; it is not free, and it does not use your
+          main action.
         </p>
         <ul class="list-disc pl-6 space-y-1">
           <li>

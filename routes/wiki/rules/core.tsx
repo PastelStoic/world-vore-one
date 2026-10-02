@@ -88,11 +88,12 @@ export default define.page(function WikiRulesCore() {
         <p>
           A main action, during a turn, is any one thing a character can do
           within a second. Firing their gun, reloading it, stabbing someone,
-          moving, picking a lock, grabbing something, dropping it.
+          picking a lock, grabbing something, dropping it.
         </p>
         <p>
           The most basic way to describe it is "doing a thing". Per turn, you
-          can do one thing and one thing only.
+          get one main action, one movement action, and any number of free
+          actions. Moving is not a main action; it uses your movement action.
         </p>
         <p>
           Plenty of actions do not warrant their own rules section, but they

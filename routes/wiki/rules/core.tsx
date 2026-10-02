@@ -59,6 +59,7 @@ export default define.page(function WikiRulesCore() {
         <p>
           The game works by turns. In every round, each participant takes their turn. 
           You take your turn, perform your actions, then your opponent takes theirs, performing their own. 
+       </p>
           <p>
           Every character may, in one turn, perform three actions:
           </p>

@@ -62,7 +62,6 @@ export default define.page(function WikiRulesCore() {
         <p>
           You & your party take their turns, perform your actions, then your opponents take theirs, performing their own, before looping once more. 
         </p>
-       </p>
           <p>
           Every character may, in one turn, perform three actions:
           </p>
@@ -214,6 +213,7 @@ export default define.page(function WikiRulesCore() {
           <li>
             Dealing with exhaustion: when you grow exhausted, constitution checks are called. See{" "}
             <a href="/wiki/rules/health#HP regeneration and exhaustion" class="text-primary hover:underline">
+            </a>
           </li>
           <li>
             Holding your breath: you can hold it for [Constitution] turns.
@@ -292,7 +292,6 @@ export default define.page(function WikiRulesCore() {
             If you succeed, you figure out whether or not the opponent is lying.
           </li>
         </ul>
-      </RulesSection>
       </RulesSection>
     </WikiRulesLayout>
   );

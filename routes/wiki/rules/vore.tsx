@@ -155,7 +155,7 @@ export default define.page(function WikiRulesVore() {
         </p>
         <p>
           During combat, however, prey may do their escape checks every time it
-          would be their turn, as the predator is too distracted to focus on
+          would be their turn, without consuming any attempts, as the predator is too distracted to focus on
           keeping them down.
         </p>
         <p>

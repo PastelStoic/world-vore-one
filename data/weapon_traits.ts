@@ -167,7 +167,7 @@ export const WEAPON_TRAITS: WeaponTraitDefinition[] = [
     id: "walking-fire",
     name: "Walking fire",
     description:
-      "Alternative firing technique, you may choose to gain -3d6 to accuracy, but may move and fire as part of the same action.",
+      "Alternative firing technique, you may choose to gain -3d6 to accuracy, but you may perform an attack as part of your movement action, forbidding you from attacking with that same weapon as a major action in the same turn.",
   },
   {
     id: "jams-frequently",

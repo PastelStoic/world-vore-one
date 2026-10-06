@@ -113,8 +113,6 @@ export default define.page(function WikiRulesCombat() {
           <a href="/wiki/equipment" class="text-primary hover:underline">
             equipment wiki
           </a>
-          . The consumables listed there are charges: you get an X amount of
-          uses per scene, and they regenerate afterwards.
         </p>
         <p>
           Every piece of misc gear has a flat 1 weight unless stated otherwise.

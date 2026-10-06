@@ -276,20 +276,11 @@ export default define.page(function WikiRulesVehicles() {
           dies, no matter how small of a fall it was.
         </p>
         <p>
-          It does not take an action to move a plane — they are always moving
-          forward. It takes an action to switch their speed.
-        </p>
-        <p>
-          Planes can only go up or down 1 speed per action, unless stated
-          otherwise.
-        </p>
-        <p>
-          If the engine is not working for whatever reason, the plane loses 1
-          speed per turn, until it hits 0.
+          Planes are always moving forward, unless their engine is not working, of which case, they lose 1 speed per turn.
         </p>
         <p>
           Airplanes have 6d6 cover naturally for as long as they are moving,
-          gaining +2d6 for every distance they have moved that turn. They can be
+          gaining +2d6 for every point of speed used last turn. They can be
           targeted by small arms; however, any such attacks immediately default
           to a 1d6, with successes on a 5 or a 6. Perks do not affect this. A
           weapon's rate of fire can increase the dice pool, obeying typical

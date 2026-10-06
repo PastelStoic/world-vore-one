@@ -246,7 +246,7 @@ export default define.page(function WikiRulesVehicles() {
         <p>
           Vehicles have facings: front, sides, and rear. Vehicles can only go
           back and forward, so if a vehicle is on its side, you have to turn
-          before you can start moving.
+          before you can start moving. Turning takes 1 unit of movement or more.
         </p>
         <p>
           Any vehicle can only reverse 1 distance per turn, unless stated

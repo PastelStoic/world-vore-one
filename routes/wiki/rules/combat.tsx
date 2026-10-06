@@ -116,10 +116,11 @@ export default define.page(function WikiRulesCombat() {
         <p>
           Every piece of misc gear has a flat 1 weight unless stated otherwise.
           You start with 3 free pieces of gear. Every 2 Charisma points you
-          invest past the first grants 1 additional free item, and reduces overall item cost by 1. You may need to
-          justify how you got them depending on how uncommon or rare they would
-          be for you to get. This is based on where you are, who you are, your
-          role, and similar factors.
+          invest past the first grants 1 additional free item, and reduces
+          overall item cost by 1. You may need to justify how you got them
+          depending on how uncommon or rare they would be for you to get. This
+          is based on where you are, who you are, your role, and similar
+          factors.
         </p>
       </RulesSection>
 
@@ -132,8 +133,8 @@ export default define.page(function WikiRulesCombat() {
 
       <RulesSection id="cover" title="Cover">
         <p>
-          You automatically take cover when you move into it, unless
-          specifically stated otherwise due to special conditions.
+          In order to take cover, you must be in the same distance as it, and
+          you must spend 1 unit of movement. Leaving cover is a free action.
         </p>
         <p>
           Cover has four ratings: weak (2d6), middling (4d6), strong (6d6), and
@@ -264,7 +265,10 @@ export default define.page(function WikiRulesCombat() {
           see them, and thus roll −3d6 for every 10 distances past your maximum
           comfortable view range.
         </p>
-        <p>If a target is within [intelligence] distances, you always spot them, immediately, without fail.</p>
+        <p>
+          If a target is within [intelligence] distances, you always spot them,
+          immediately, without fail.
+        </p>
       </RulesSection>
 
       <RulesSection id="traps" title="Traps">

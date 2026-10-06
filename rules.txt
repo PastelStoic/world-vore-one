@@ -270,7 +270,7 @@ Minimum attack hit-chance and damage.
 Every attack, unless stated otherwise through some perk or gimmick, always has a 1d6 chance to hit, and deals at minimum 1 damage.
 
 Covering cover:
-You automatically take cover when you move into it, unless specifically stated otherwise due to special conditions.
+In order to take cover, you must be in the same distance as it, and you must spend 1 unit of movement. Leaving cover is a free action.
 
 Cover has four ratings: Weak (2d6), middling (4d6) and strong (6d6) and fortified (8d6). Certain perks can make cover stronger!
 

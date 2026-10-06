@@ -180,7 +180,7 @@ export default define.page(function WikiRulesCombat() {
           A standard character may only move 1 distance per turn, taking their
           movement action. Certain characters may move several distances instead
           - actions can be taken at the start, middle, or end of a movement, and
-          you may spend 1 point of movement to go into cover.
+          you may spend 1 unit of movement to go into cover.
         </p>
         <ul class="list-disc pl-6 space-y-1">
           <li>

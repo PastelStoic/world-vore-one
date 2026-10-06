@@ -289,7 +289,7 @@ Initiative is ordered from highest dex to lowest. In case of ties, all tied part
 
 In this game, your distance to someone is measured in "distance" units. These are relative to you and your target, or a reference point of sorts. They represent 5 meters worth of distance.
  
-A standard character may only move 1 distance per turn, taking their movement action. Certain characters may move several distances instead - actions can be taken at the start, middle, or end of a movement, and you may spend 1 point of movement to go into cover.
+A standard character may only move 1 distance per turn, taking their movement action. Certain characters may move several distances instead - actions can be taken at the start, middle, or end of a movement, and you may spend 1 unit of movement to go into cover.
 
 Distance 0 is called "melee range". You can only melee attack someone if you're in distance 0. You cannot perform ranged attacks if there are enemies within distance 0. If someone tries to leave distance 0, they may be freely melee-attacked as a free action. Such an attack can only be done once per character. You may defend yourself from such attacks. There is no safe disengagement.
 

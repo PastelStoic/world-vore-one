@@ -190,7 +190,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
 *This perk is free.
 *Gain 4 points by picking this perk.
 
-*During character creation, roll a 1d365. You only get one roll, and it must be clearly declared, without any jokes or messing around.
+*During character creation, roll a 1d180 + 180. You only get one roll, and it must be clearly declared, without any jokes or messing around.
 *For absolute safety, write out, in full caps, "MY 'ON-A-TIMER' PERK ROLL", so that there will be absolutely no confusion.
 *The result is how many days the character has left before dying for good, even if they're a template or get a new body somehow.
 *Only the Artificer may reverse your fate, but her services do not come cheap. You must pay 6 points and convince her to treat you.`,

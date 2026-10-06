@@ -265,6 +265,7 @@ export default define.page(function WikiRulesCombat() {
           see them, and thus roll −3d6 for every 10 distances past your maximum
           comfortable view range.
         </p>
+        <p>If a target is within [intelligence] distances, you always spot them, immediately, without fail.</p>
       </RulesSection>
 
       <RulesSection id="traps" title="Traps">

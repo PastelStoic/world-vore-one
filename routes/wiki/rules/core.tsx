@@ -115,11 +115,13 @@ export default define.page(function WikiRulesCore() {
         </ul>
       </RulesSection>
 
-      <RulesSection id="holding" title="Holding actions">
+      <RulesSection id="holding" title="Holding actions & special actions">
         <p>
           You can create a basic "if [something] happens, then [I do this]"
           statement for your action. If the trigger does happen, your action
-          takes priority over anyone else's.
+          takes priority over anyone else's. In case of two players holding the same action,
+          the one with the highest dexterity goes first. You may hold either or both, your major action
+          and your movement action.
         </p>
       </RulesSection>
 

@@ -44,7 +44,7 @@ export const COMBAT_PERKS: PerkDefinition[] = [
     category: "combat",
     description: `You are careful and prefer to preserve your life! 
 
-*You always have at least 2d6 cover, even if you are not in cover.
+*You always have at least 2d6 cover, even if you are not in cover. Always take cover as a free action, if any is available.
 *When in cover, gain an additional +2d6 when rolling your cover, counting successes on a 4 and above.`,
   },
   {

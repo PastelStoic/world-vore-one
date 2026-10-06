@@ -18,7 +18,7 @@ export default define.page(function WikiRulesCore() {
           { id: "dice", label: "Dice and checks" },
           { id: "turns", label: "Rounds, turns and actions" },
           { id: "misc-actions", label: "What is a main action" },
-          { id: "holding", label: "Holding actions" },
+          { id: "holding", label: "Holding actions & special actions" },
           { id: "points", label: "Points and perks" },
           { id: "stats", label: "The five stats" },
           { id: "helping", label: "Helping someone" },
@@ -119,10 +119,33 @@ export default define.page(function WikiRulesCore() {
         <p>
           You can create a basic "if [something] happens, then [I do this]"
           statement for your action. If the trigger does happen, your action
-          takes priority over anyone else's. In case of two players holding the same action,
-          the one with the highest dexterity goes first. You may hold either or both, your major action
-          and your movement action.
+          takes priority over anyone else's. In case of two players holding the
+          same action, the one with the highest dexterity goes first. You may
+          hold either or both, your major action and your movement action.
         </p>
+        <p>
+          There are several special actions that may be performed within a turn,
+          each with their upsides and drawbacks. You may perform any of these
+          special actions as a held action. They are listed below:
+        </p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>
+            <strong>All-out-attack:</strong>{" "}
+            You may make no defense rolls that turn, and you do not take any
+            cover; however, any attacks you perform gain +3d6.
+          </li>
+          <li>
+            <strong>All-out-defense:</strong>{" "}
+            You make no attacks within that turn, including free or opportunity
+            attacks; however, any melee defense rolls gain +3d6, and cover rolls
+            gain +2d6.
+          </li>
+          <li>
+            <strong>All-out-movement:</strong>{" "}
+            You forego your major action in order to take a second movement
+            action.
+          </li>
+        </ul>
       </RulesSection>
 
       <RulesSection id="points" title="Points and perks">

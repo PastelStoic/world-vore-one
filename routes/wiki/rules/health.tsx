@@ -61,7 +61,12 @@ export default define.page(function WikiRulesHealth() {
         </p>
         <p>
           If you are brought to the negative of your max HP, you outright die.
-          If you have 5 max HP and are brought to −5 HP, you die.
+        </p>
+        <p>
+            <strong>Example:</strong>{" "}
+            If you have 5 max HP and are brought to −5 HP, you die.
+            {" "}
+        </p>
         </p>
         <p>
           It is up to the GM how quickly someone dies from being in critical

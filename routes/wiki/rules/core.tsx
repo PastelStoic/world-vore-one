@@ -18,6 +18,7 @@ export default define.page(function WikiRulesCore() {
           { id: "dice", label: "Dice and checks" },
           { id: "turns", label: "Rounds, turns and actions" },
           { id: "misc-actions", label: "What is a main action" },
+          { id: "holding", label: "Holding actions" },
           { id: "points", label: "Points and perks" },
           { id: "stats", label: "The five stats" },
           { id: "helping", label: "Helping someone" },
@@ -112,6 +113,14 @@ export default define.page(function WikiRulesCore() {
             something long and meaningful is an action.
           </li>
         </ul>
+      </RulesSection>
+
+      <RulesSection id="holding" title="Holding actions">
+        <p>
+          You can create a basic "if [something] happens, then [I do this]"
+          statement for your action. If the trigger does happen, your action
+          takes priority over anyone else's.
+        </p>
       </RulesSection>
 
       <RulesSection id="points" title="Points and perks">

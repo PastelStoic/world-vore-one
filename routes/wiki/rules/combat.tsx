@@ -25,7 +25,6 @@ export default define.page(function WikiRulesCombat() {
           { id: "traps", label: "Traps" },
           { id: "dual-wielding", label: "Dual wielding" },
           { id: "mounting", label: "Mounting" },
-          { id: "holding", label: "Holding actions" },
           { id: "grappling", label: "Grappling" },
           { id: "altitude", label: "Altitude and flying" },
           { id: "armor", label: "Armor" },
@@ -344,14 +343,6 @@ export default define.page(function WikiRulesCombat() {
           let you take control instead, provided they are willing. The mounted
           player cannot act on their own anymore — they behave well and truly
           like your mount.
-        </p>
-      </RulesSection>
-
-      <RulesSection id="holding" title="Holding actions">
-        <p>
-          You can create a basic "if [something] happens, then [I do this]"
-          statement for your action. If the trigger does happen, your action
-          takes priority over anyone else's.
         </p>
       </RulesSection>
 

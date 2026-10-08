@@ -159,7 +159,7 @@ In events, digestion is dragged on for as long as described above in 'digestion 
 
 By default, prey gets 4 attempts to escape their predator. They gain an additional attempt for each digestion resilience, and lose one attempt for each digestion strength of their predator. If the prey's resilience is overwheled and they'd have no escape attempts, they digest in 3 turns - meaning they have three turns to be saved! Their HP is set to 0 as well.
 
-During combat, however, prey may do their escape checks every time it'd be their turn, without consuming any attempts, as the predator is too distracted to focus on keeping them down. Though only if they had any escape attempts left! If they've been exhausted, then the prey can no longer do escape checks.
+During combat, however, prey may do their escape checks every time it'd be their turn, without consuming any attempts, as the predator is too distracted to focus on keeping them down. A predator may spend their main action to focus on keeping their prey down, preventing escape checks. Though only if they had any escape attempts left! If they've been exhausted, then the prey can no longer do escape checks.
 
 Stomachs digest by default, breasts, testicles and womb do not, they're safe. You do not have a choice on this, unless you have a perk that'd change it.
 

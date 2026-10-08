@@ -178,7 +178,7 @@ export default define.page(function WikiRulesVore() {
           During combat, however, prey may do their escape checks every time it
           would be their turn, without consuming any attempts, as the predator is
           too distracted to focus on keeping them down. A predator may spend their
-          main action to focus on keeping their prey down, preventing escape
+          major action to focus on keeping their prey down, preventing escape
           checks. Though only if they had any escape attempts left! If they've
           been exhausted, then the prey can no longer do escape checks.
         </p>

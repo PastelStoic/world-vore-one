@@ -109,7 +109,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 
 *When attempting to force someone do something based on your authority, gain +3d6, rolling successes on a 4 and above.
 *You may use your rank to command others, and they must obey your commands, so long as they are not suicidal!
-*You may intimidate your own allies into breaking out of mental effects, such as being flashed or intimidated by another.
+*As a free action, may intimidate allies into breaking out of behavior-altering effects, such as being flashed, intimidated, baited, or any other sucn condition.
 *Your disappearance is a big deal - an investigation can be launched upon a character that kills you. Anyone, once per week, may launch one.
 *When trying to investigate, both the investigator and the target roll a contested INT vs INT check.
 *If the investigator wins, the character's deeds are found out! They may be prosecuted or hunted in vengeance!`,

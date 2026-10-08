@@ -10,7 +10,7 @@ export default define.page(function WikiRulesCore() {
   return (
     <WikiRulesLayout
       title="Core Rules"
-      description="How the system fundamentally works: dice, checks, turns, stats, and actions."
+      description="How the system fundamentally works: dice, checks, turns, stats, points, and earning more."
       currentHref="/wiki/rules/core"
     >
       <RulesToc
@@ -20,6 +20,7 @@ export default define.page(function WikiRulesCore() {
           { id: "misc-actions", label: "What is a main action" },
           { id: "holding", label: "Holding actions & special actions" },
           { id: "points", label: "Points and perks" },
+          { id: "earning-points", label: "Earning more points" },
           { id: "stats", label: "The five stats" },
           { id: "lying", label: "Figuring out if someone is lying" },
         ]}
@@ -188,6 +189,44 @@ export default define.page(function WikiRulesCore() {
             vore stats
           </a>
           , covered on their own page.
+        </p>
+      </RulesSection>
+
+      <RulesSection id="earning-points" title="Earning more points">
+        <p>
+          Whenever you feel like you have earned a point, update your character
+          sheet so staff can review it.
+        </p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>
+            You gain 1 point whenever you finish a scene in which you have
+            fulfilled your role, as described on your character sheet.
+          </li>
+          <li>
+            You gain 1 point whenever you successfully digest someone as
+            predator, or successfully escape someone as prey. For this to apply,
+            one side must be unwilling — either the predator or the prey.
+            Willing vore awards no point.
+          </li>
+          <li>
+            Exception: if you prefer endo vore, or would rather spare your prey,
+            then keeping your prey inside of you for the same amount of checks
+            or time as it would have taken to digest awards you a point, even if
+            they leave or are expelled afterwards. In that case, your prey does
+            not get a point.
+          </li>
+          <li>
+            You gain 1 point for every three scenes in which your role is not
+            fulfilled (colloquially called "misc" scenes).
+          </li>
+          <li>
+            You gain points whenever an event ends and points are awarded.
+          </li>
+        </ul>
+        <p>
+          Points or perks added to a character in the middle of a scene do not
+          impact that scene. You must use the stats you had when starting the
+          scene.
         </p>
       </RulesSection>
 

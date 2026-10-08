@@ -22,6 +22,22 @@ Points are invested into your stats ( below ). Each point added to a stat increa
 An example: You have 1 strength by default. You can use 3 points to bring it to 4. This means you'll roll 4d6 whenever a strength check is called.
 
 A perk is a gimmick you can add to your character. They can be found in ⁠⭐perks-and-equipment . While stats are 'broad' categories ( strength encompasses many things! ), perks are much more selective and special in what they affect.
+
+Earning more points:
+Whenever you feel like you've earned a point, post so in ⁠📝character-updates so that staff is made aware of it and may check it so.
+
+You gain 1 point whenever you finish a scene in which you have fulfilled your 'role', described in your character sheet.
+
+You gain 1 point whenever you successfully digest someone as predator, or successfully escape someone as prey. For this to apply, one side must be unwilling, either the predator or the prey. Willing vore awards no point.
+
+Exception: If you prefer endo vore - or if you'd rather spare your prey - then keeping your prey inside of you for the same amount of checks/time as it would've taken to digest will award you with a point, even if they leave/are expelled afterwards. In such a case, your prey does not get a point.
+
+You gain 1 point for every three scenes in which your role is not fulfilled ( colloquially called 'misc' scenes ).
+
+You gain points whenever an event ends and points are awarded.
+
+Points/perks added to a character in the middle of a scene do not impact that scene - you must use the stats you had when starting the scene.
+
  
 Every character sheet has 5 main stats:
 Strength: Your body's overall strength! How hard you can punch, how much you can lift, so on and so forth. Primarily used for melee combat.
@@ -73,20 +89,7 @@ You can carry up to 2 + [STR] weight worth of gear without penalty. Between that
 
 People are worth 3 weight.
 
-Earning more points:
-Whenever you feel like you've earned a point, post so in ⁠📝character-updates so that staff is made aware of it and may check it so.
-
-You gain 1 point whenever you finish a scene in which you have fulfilled your 'role', described in your character sheet.
-
-You gain 1 point whenever you successfully digest someone as predator, or successfully escape someone as prey. For this to apply, one side must be unwilling, either the predator or the prey. Willing vore awards no point.
-
-Exception: If you prefer endo vore - or if you'd rather spare your prey - then keeping your prey inside of you for the same amount of checks/time as it would've taken to digest will award you with a point, even if they leave/are expelled afterwards. In such a case, your prey does not get a point.
-
-You gain 1 point for every three scenes in which your role is not fulfilled ( colloquially called 'misc' scenes ).
-
-You gain points whenever an event ends and points are awarded.
-
-Points/perks added to a character in the middle of a scene do not impact that scene - you must use the stats you had when starting the scene.
+Gamemastering.
 
 Creating and handling NPCs.
 Any user within the server is free to create and manage NPCs as they deem best, so long as it fits the scene they are in, and its participants consent to it. Whether or not they can do it in events is up to GM discretion.

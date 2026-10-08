@@ -10,7 +10,7 @@ export const RULES_PAGES: readonly RulesPageMeta[] = [
     href: "/wiki/rules/core",
     title: "Core Rules",
     description:
-      "Dice, checks, turns, stats, points, perks, helping, and what counts as an action.",
+      "Dice, checks, turns, stats, points, perks, earning points, helping, and what counts as an action.",
   },
   {
     href: "/wiki/rules/health",
@@ -19,10 +19,10 @@ export const RULES_PAGES: readonly RulesPageMeta[] = [
       "HP, incapacitation, critical condition, rest, exhaustion, and carrying weight.",
   },
   {
-    href: "/wiki/rules/progression",
-    title: "Progression",
+    href: "/wiki/rules/gamemastering",
+    title: "Gamemastering",
     description:
-      "How characters earn points, and how NPCs are created and scored.",
+      "How NPCs are created, managed, and scored for scenes and events.",
   },
   {
     href: "/wiki/rules/vore",

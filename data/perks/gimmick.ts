@@ -153,7 +153,7 @@ export const GIMMICK_PERKS: PerkDefinition[] = [
 *Immediately succeed in stabilizing someone, always. When you stabilize someone, their HP is healed back to 1, only once per target.
 *You always have the resources to treat poisons or other conditions/ailments someone has, immediately curing physical effects they may have.
 *You may heal targets with an intelligence check - each success heals 1 HP. A single target can only receive up to your [INTELLIGENCE] healing within a scene.
-*Ignore tatuses that'd prevent a person from being stabilized, such as 'crash out'. Any checks regarding medicine or human biology immediately succeed.`,
+*Ignore statuses that'd prevent a person from being stabilized, such as 'crash out'. Any checks regarding medicine or human biology immediately succeed.`,
   },
   {
     id: "master-tactician",

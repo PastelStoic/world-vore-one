@@ -154,11 +154,6 @@ export default define.page(function WikiRulesVore() {
           hours of in-event time.
         </p>
         <p>
-          During combat, however, prey may do their escape checks every time it
-          would be their turn, without consuming any attempts, as the predator is too distracted to focus on
-          keeping them down.
-        </p>
-        <p>
           Stomachs digest by default. Breasts, testicles, and womb do not — they
           are safe. You do not have a choice on this, unless you have a perk
           that would change it.
@@ -177,6 +172,14 @@ export default define.page(function WikiRulesVore() {
           resilience is overwhelmed and they would have no escape attempts, they
           digest in 3 turns — meaning they have three turns to be saved. Their
           HP is set to 0 as well.
+        </p>
+
+        <p>
+          During combat, however, prey may do their escape checks every time it
+          would be their turn, without consuming any attempts, as the predator is
+          too distracted to focus on keeping them down. Though only if they had
+          any escape attempts left! If they've been exhausted, then the prey can
+          no longer do escape checks.
         </p>
         <p>
           If a prey escapes their predator, they cannot be eaten again by that

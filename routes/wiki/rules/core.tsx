@@ -21,7 +21,6 @@ export default define.page(function WikiRulesCore() {
           { id: "holding", label: "Holding actions & special actions" },
           { id: "points", label: "Points and perks" },
           { id: "stats", label: "The five stats" },
-          { id: "helping", label: "Helping someone" },
           { id: "lying", label: "Figuring out if someone is lying" },
         ]}
       />
@@ -129,6 +128,11 @@ export default define.page(function WikiRulesCore() {
           special actions as a held action. They are listed below:
         </p>
         <ul class="list-disc pl-6 space-y-1">
+          <li>
+            <strong>Helping action:</strong>{" "}
+            To help someone do something, both of you roll the proper stat,
+            then add the successes together.
+          </li>
           <li>
             <strong>All-out-attack:</strong>{" "}
             You may make no defense rolls that turn, and you do not take any
@@ -318,14 +322,6 @@ export default define.page(function WikiRulesCore() {
         </ul>
       </RulesSection>
 
-      <RulesSection id="helping" title="Helping someone">
-        <p>
-          When trying to help someone fulfill a task that can be helped with,
-          both of you roll the proper stat, then add the successes together.
-          Some tasks cannot be helped with, such as firing a rifle or picking a
-          lock. The GM decides whether help applies.
-        </p>
-      </RulesSection>
 
       <RulesSection id="lying" title="Figuring out if someone is lying">
         <p>

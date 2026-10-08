@@ -71,11 +71,6 @@ You can carry up to 2 + [STR] weight worth of gear without penalty. Between that
 
 People are worth 3 weight.
 
-Helping someone:
-When trying to help someone fulfill a task, one that CAN be helped with, both of you roll the proper stat, and then add the successes together.
-
-Some tasks cannot be given help to, such as firing a rifle or picking a lock. It is up to GM interpretation to decide whether or not this applies.
-
 Earning more points:
 Whenever you feel like you've earned a point, post so in ⁠📝character-updates so that staff is made aware of it and may check it so.
 
@@ -353,6 +348,9 @@ If the mounted creature is a player, they give up their actions and let you take
 
 Holding actions!
 You can create a basic "if [something] happens then [I do this]" statement for your action. If the trigger does happen, your action takes priority over anyone else's.
+
+Helping action:
+To help someone do something, both of you roll the proper stat, then add the successes together.
 
 Grappling!
 Grappling is a contested Strength check, where the one initiating the grapple adds the differences in strength to their dice pool.

@@ -25,12 +25,18 @@ export default define.page(function WikiRulesHealth() {
 
       <RulesSection id="hp" title="HP and damage">
         <p>
-          Your HP is equal to 2 × Constitution. A 5 in Constitution means you
-          have 10 HP.
+          Your HP is equal to 2 × Constitution.
         </p>
+        <RulesCallout>
+          <p>
+            <strong>Example:</strong>{" "}
+            a 5 in Constitution means you have 10 HP.
+          </p>
+        </RulesCallout>
         <p>
           If an attack would bring your HP to 0 or below, your HP is set to 0
-          and you are considered <strong>incapacitated</strong>.
+          and you are considered <strong>incapacitated</strong>. Excess damage
+          is nullified: you are set to 0 HP even if you take way more damage.
         </p>
         <p>
           When being digested, your HP decreases over time. That is covered in

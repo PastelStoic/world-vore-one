@@ -37,9 +37,11 @@ Charisma: Your sociability! How well you are perceived, how well you communicate
 A character also has vore stats, but you should read about these in the vore thread instead!
 
 HP and damage!
-Your HP is equal to you 2 x Constitution. A 5 in constitution means you have 5 HP.
+Your HP is equal to 2 x Constitution.
 
-If an attack would bring your HP to 0 or below, your HP will be set to 0, and you will be considered 'Incapacitated'
+Example: A 5 in Constitution means you have 10 HP.
+
+If an attack would bring your HP to 0 or below, your HP will be set to 0, and you will be considered 'Incapacitated'. Excess damage is nullified: you are set to 0 HP even if you take way more damage.
 
 When incapacitated, you cannot fend off your assailants whatsoever. They may do as they please to you, and you may not contest their actions.The only exception to this is vore: If you are eaten, you are able to put up a fight, but even if you escape, you are still incapacitated.
 

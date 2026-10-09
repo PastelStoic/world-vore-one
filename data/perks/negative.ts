@@ -179,7 +179,7 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
   },
   {
     id: "on-a-timer",
-    name: "On a timer.",
+    name: "On a timer",
     category: "negative",
     isFree: true,
     customInput: "Your condition & IRL death date.",
@@ -194,5 +194,24 @@ export const NEGATIVE_PERKS: PerkDefinition[] = [
 *For absolute safety, write out, in full caps, "MY 'ON-A-TIMER' PERK ROLL", so that there will be absolutely no confusion.
 *The result is how many days the character has left before dying for good, even if they're a template or get a new body somehow.
 *Only the Artificer may reverse your fate, but her services do not come cheap. You must pay 6 points and convince her to treat you.`,
+  },
+  {
+    id: "vore-deficient",
+    name: "Vore deficient",
+    category: "negative",
+    isFree: true,
+    requiredRaces: ["Pilzherr", "Pilzfraun", "Tierherr", "Tierfraun"],
+    modifiers: {
+      organCapacityMultiplier: 0,
+    },
+    pointsGranted: 4,
+    description:
+      `You are a pilzfraun, but you're incapable of vore!
+
+*This perk is free. Only available for Pilzfraun & variants.
+*Gain 4 points by picking this perk.
+
+*You are completely incapable of vore. Your stomach capacity is 0, and your mouth cannot stretch wide enough to swallow large things.
+*You may not get any perks that'd increase your capacity, or that'd make you able to vore creatures through other means.`,
   },
 ];
